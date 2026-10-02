@@ -1,0 +1,22 @@
+# Build output
+/target/
+/dist/
+/out/
+/app/ui/dist/
+/app/src-tauri/gen/
+/app/ui/test-results/
+/app/ui/playwright-report/
+**/node_modules/
+
+# Downloaded tools and runtimes (scripts/setup.ps1)
+/.deps/
+
+# Models and test audio are downloaded, never committed
+/models/*
+!/models/manifest.json
+/testdata/fetched/
+
+# Partial downloads and caches
+**/*.part
+**/*.tmp
+**/__pycache__/

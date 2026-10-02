@@ -1,0 +1,16 @@
+[package]
+name = "lt-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = []
+sherpa = ["dep:lt-sherpa"]
+llm = ["dep:lt-llm"]
+
+[dependencies]
+lt-core.workspace = true
+lt-audio.workspace = true
+lt-sherpa = { workspace = true, optional = true }
+lt-llm = { workspace = true, optional = true }

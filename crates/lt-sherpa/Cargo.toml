@@ -1,0 +1,8 @@
+[package]
+name = "lt-sherpa"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+lt-core.workspace = true
