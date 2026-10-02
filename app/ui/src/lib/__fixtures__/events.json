@@ -1,0 +1,16 @@
+[
+  { "type": "speech_started", "id": 12, "at_ms": 45210 },
+  { "type": "asr_partial", "id": 12, "text": "我也想" },
+  { "type": "asr_final", "id": 12, "text": "我也想办一个。", "class": "chinese", "lang": "zh", "start_ms": 45210, "end_ms": 46300, "asr_ms": 330 },
+  { "type": "joined", "id": 12, "absorbed": [13], "text": "我也想办一个，伟大的公司。", "kind": "hold" },
+  { "type": "translation_delta", "id": 12, "text_so_far": "I also want to run" },
+  { "type": "translation_final", "id": 12, "text": "I also want to run a great company.", "timing": { "speech_end_ms": 47980, "asr_done_ms": 48310, "queued_ms": 48320, "sent_ms": 48320, "first_token_ms": 48790, "done_ms": 49210, "prompt_tokens": 17, "cached_tokens": 31, "generated_tokens": 9 } },
+  { "type": "skipped", "id": 14, "reason": "catch_up" },
+  { "type": "translation_failed", "id": 15, "reason": "timeout", "message": "Translation took too long" },
+  { "type": "dropped", "id": 16, "reason": "empty" },
+  { "type": "source_changed", "info": { "mode": "apps", "label": "Chrome, Discord", "sample_rate": 48000, "channels": 2 } },
+  { "type": "source_state", "state": "silent", "detail": "Chrome, Discord" },
+  { "type": "listening_state", "state": "listening" },
+  { "type": "engine_status", "engine": "translator", "state": "ready", "message": null },
+  { "type": "stats", "lag_ms": 400, "queue_depth": 1, "held": 0, "done_p50_ms": 1230, "done_p95_ms": 2100, "first_p50_ms": 700, "skipped_total": 2, "failed_total": 1, "cpu_app_pct": 2.5, "cpu_translator_pct": 150.0, "rss_app_mb": 520, "rss_translator_mb": 1380 }
+]
