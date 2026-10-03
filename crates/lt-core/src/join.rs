@@ -7,8 +7,9 @@ use crate::types::{StreamTime, TextClass, Transcript, UtteranceId};
 use std::collections::VecDeque;
 use std::sync::Arc;
 
-// Four queued ASR segments, the active segment, and up to three held segments.
-const MAX_START_NOTICES: usize = 8;
+// Four queued segments, one decoding, four ASR outputs, an open segment,
+// and up to three held constituents; retain a bounded margin for notices.
+const MAX_START_NOTICES: usize = 16;
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct JoinResult {

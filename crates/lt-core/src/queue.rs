@@ -233,6 +233,8 @@ pub fn translate_one(
     cancelled: Arc<AtomicBool>,
 ) -> PipelineEvent {
     let source = &item.transcript;
+    let span = tracing::info_span!("translation", id = source.id.0);
+    let _utterance = span.enter();
     let sent_ms = clock.now().millis();
     let control = TranslationControl {
         deadline: Instant::now() + Duration::from_secs_f32(config.timeout_s),
