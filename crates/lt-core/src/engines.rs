@@ -42,12 +42,19 @@ pub struct TranslatorCaps {
 pub struct TranslationControl {
     pub deadline: Instant,
     pub cancelled: Arc<AtomicBool>,
+    pub abort: Arc<AtomicBool>,
 }
 
 impl TranslationControl {
     pub fn check(&self) -> Result<()> {
         if self.cancelled.load(Ordering::Relaxed) {
             return Err(Error::Stopped);
+        }
+        if self.abort.load(Ordering::Relaxed) {
+            return Err(Error::Translation {
+                reason: crate::events::FailReason::Runaway,
+                message: "Translation started repeating".into(),
+            });
         }
         if Instant::now() >= self.deadline {
             return Err(Error::Translation {
