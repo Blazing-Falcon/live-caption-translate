@@ -28,6 +28,8 @@ pub struct AudioProducer {
     sender: Sender<AudioFrame>,
     pub cancelled: Arc<AtomicBool>,
     pub base_time: StreamTime,
+    deadline_origin: Instant,
+    deadline_base: StreamTime,
 }
 
 impl AudioProducer {
@@ -40,6 +42,43 @@ impl AudioProducer {
             sender,
             cancelled,
             base_time,
+            deadline_origin: Instant::now(),
+            deadline_base: base_time,
+        }
+    }
+
+    /// Pipeline adapters share the session wall origin when replay is paced.
+    pub fn with_session_clock(mut self, clock: &SessionClock) -> Self {
+        self.deadline_origin = clock.started;
+        self.deadline_base = StreamTime::ZERO;
+        self
+    }
+
+    /// A complete frame is available at its end, not at its first sample.
+    pub fn frame_deadline(&self, t0: StreamTime) -> Result<Instant> {
+        let end = StreamTime(t0.samples().saturating_add(512));
+        self.deadline_origin
+            .checked_add(Duration::from_secs_f64(
+                end.saturating_sub(self.deadline_base).seconds(),
+            ))
+            .ok_or_else(|| {
+                Error::Engine("Audio frame timestamp is outside the session clock range".into())
+            })
+    }
+
+    /// RealTime sources call this before send; fast replay omits it. Cancellation
+    /// remains responsive while waiting and never requires an audio device.
+    pub fn wait_until_frame_end(&self, t0: StreamTime) -> Result<()> {
+        let deadline = self.frame_deadline(t0)?;
+        loop {
+            if self.cancelled.load(Ordering::Acquire) {
+                return Err(Error::Stopped);
+            }
+            let remaining = deadline.saturating_duration_since(Instant::now());
+            if remaining.is_zero() {
+                return Ok(());
+            }
+            std::thread::sleep(remaining.min(Duration::from_millis(5)));
         }
     }
     pub fn send(&self, frame: AudioFrame) -> Result<()> {

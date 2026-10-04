@@ -11,18 +11,19 @@ use crate::{
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     join::{JoinResult, Joiner},
+    metrics::{canonical_language, Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
     segment::{SegmentBuilder, SegmentUpdate},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
     text::{classify_with_lang, clean, drop_reason},
-    types::{Segment, StreamTime, TextClass, Transcript, UtteranceId, FRAME_SAMPLES},
+    types::{PipelineStats, Segment, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use crossbeam_channel::{bounded, Receiver, Sender, TryRecvError, TrySendError};
 use std::{
     collections::{BTreeSet, VecDeque},
     sync::{
         atomic::{AtomicBool, Ordering},
-        Arc,
+        Arc, Mutex,
     },
     thread::{self, JoinHandle},
     time::{Duration, Instant},
@@ -44,6 +45,7 @@ enum FrontendNotice {
     Started(UtteranceId, StreamTime),
     Discontinuity(StreamTime),
     Progress(StreamTime),
+    SegmentClosed(UtteranceId, StreamTime),
 }
 
 enum AsrMessage {
@@ -69,6 +71,7 @@ pub struct PipelineHandle {
     finished: Arc<AtomicBool>,
     bus: EventBus,
     threads: Vec<JoinHandle<Result<()>>>,
+    latest_stats: Arc<Mutex<PipelineStats>>,
 }
 
 impl Pipeline {
@@ -84,12 +87,24 @@ impl Pipeline {
 
     /// Subscribe before calling this method when replay can finish immediately.
     pub fn start_with_bus(
+        config: Config,
+        source: Box<dyn AudioSource>,
+        vad: Box<dyn Vad>,
+        asr: Box<dyn SegmentAsr>,
+        translator: Box<dyn Translator>,
+        bus: EventBus,
+    ) -> Result<PipelineHandle> {
+        Self::start_with_bus_and_sampler(config, source, vad, asr, translator, bus, None)
+    }
+
+    pub fn start_with_bus_and_sampler(
         mut config: Config,
         source: Box<dyn AudioSource>,
         vad: Box<dyn Vad>,
         asr: Box<dyn SegmentAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
+        sampler: Option<Box<dyn ResourceSampler>>,
     ) -> Result<PipelineHandle> {
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
@@ -97,6 +112,8 @@ impl Pipeline {
         let cancelled = Arc::new(AtomicBool::new(false));
         let finished = Arc::new(AtomicBool::new(false));
         let clock = Arc::new(SessionClock::default());
+        let listening = Arc::new(AtomicBool::new(false));
+        let latest_stats = Arc::new(Mutex::new(PipelineStats::default()));
         let (command_tx, command_rx) = bounded(CONTROL_CAPACITY);
         let (segment_tx, segment_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
@@ -108,6 +125,7 @@ impl Pipeline {
             finished: finished.clone(),
             bus: bus.clone(),
             threads: Vec::with_capacity(3),
+            latest_stats: latest_stats.clone(),
         };
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
@@ -130,6 +148,8 @@ impl Pipeline {
         let scheduler_clock = clock.clone();
         let scheduler_bus = bus.clone();
         let scheduler_config = config.clone();
+        let scheduler_listening = listening.clone();
+        let scheduler_latest = latest_stats.clone();
         let scheduler_thread =
             thread::Builder::new()
                 .name("lt-scheduler".into())
@@ -143,6 +163,9 @@ impl Pipeline {
                         scheduler_clock,
                         scheduler_bus,
                         scheduler_cancel,
+                        scheduler_listening,
+                        scheduler_latest,
+                        sampler,
                     )
                 })?;
         handle.threads.push(scheduler_thread);
@@ -164,6 +187,8 @@ impl Pipeline {
                         front_bus,
                         front_cancel,
                         ready_tx,
+                        listening,
+                        latest_stats,
                     )
                 })?;
         handle.threads.insert(0, frontend_thread);
@@ -188,6 +213,13 @@ impl Pipeline {
 impl PipelineHandle {
     pub fn subscribe(&self, capacity: usize) -> EventReceiver {
         self.bus.subscribe(capacity)
+    }
+
+    pub fn get_stats(&self) -> PipelineStats {
+        self.latest_stats
+            .lock()
+            .map(|stats| stats.clone())
+            .unwrap_or_default()
     }
 
     pub fn pause(&self) -> Result<()> {
@@ -297,19 +329,22 @@ struct Frontend {
     bus: EventBus,
     ending: bool,
     started_once: bool,
+    listening: Arc<AtomicBool>,
+    latest_stats: Arc<Mutex<PipelineStats>>,
 }
 
 impl Frontend {
     fn start_source(&mut self) -> Result<()> {
         let at = if self.started_once {
-            aligned_time(self.clock.now().max(self.builder.current_time()))
+            self.clock.now().max(self.builder.current_time())
         } else {
             StreamTime::ZERO
         };
         self.cut(at);
         let (output, input) = bounded(AUDIO_CAPACITY);
         self.source_cancel = Arc::new(AtomicBool::new(false));
-        let producer = AudioProducer::new(output, self.source_cancel.clone(), at);
+        let producer = AudioProducer::new(output, self.source_cancel.clone(), at)
+            .with_session_clock(&self.clock);
         let info = match self
             .source
             .start(producer, SourceEvents::new(self.bus.clone()))
@@ -324,6 +359,7 @@ impl Frontend {
         self.started_once = true;
         self.ending = false;
         self.bus.publish(PipelineEvent::SourceChanged { info });
+        self.set_listening(true);
         self.bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Listening,
         });
@@ -331,9 +367,16 @@ impl Frontend {
     }
 
     fn stop_source(&mut self) {
+        self.set_listening(false);
         self.source_cancel.store(true, Ordering::Release);
         self.input = None;
         self.source.stop();
+    }
+
+    fn set_listening(&self, listening: bool) {
+        // Serialize the last Stats publication against the pause boundary.
+        let _guard = self.latest_stats.lock().ok();
+        self.listening.store(listening, Ordering::Release);
     }
 
     fn cut(&mut self, at: StreamTime) {
@@ -350,7 +393,11 @@ impl Frontend {
                 .into_iter()
                 .map(|(id, at)| FrontendNotice::Started(id, at)),
         );
-        self.segments.extend(update.segments);
+        for segment in update.segments {
+            self.notices
+                .push_back(FrontendNotice::SegmentClosed(segment.id, segment.end));
+            self.segments.push_back(segment);
+        }
     }
 
     fn command(&mut self, command: Command) {
@@ -424,6 +471,8 @@ fn frontend_loop(
     bus: EventBus,
     cancelled: Arc<AtomicBool>,
     ready: Sender<Result<()>>,
+    listening: Arc<AtomicBool>,
+    latest_stats: Arc<Mutex<PipelineStats>>,
 ) -> Result<()> {
     let mut frontend = Frontend {
         source,
@@ -437,6 +486,8 @@ fn frontend_loop(
         bus,
         ending: false,
         started_once: false,
+        listening,
+        latest_stats,
     };
     if let Err(error) = frontend.start_source() {
         let _ = ready.try_send(Err(Error::Engine(error.to_string())));
@@ -530,11 +581,6 @@ fn frontend_loop(
         }
     }
     Ok(())
-}
-
-fn aligned_time(at: StreamTime) -> StreamTime {
-    let frame = FRAME_SAMPLES as u64;
-    StreamTime(at.samples().saturating_add(frame - 1) / frame * frame)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -637,10 +683,12 @@ fn translates(transcript: &Transcript, config: &RoutingConfig) -> bool {
     match transcript.class {
         TextClass::Chinese | TextClass::Mixed => true,
         TextClass::English => false,
-        TextClass::Other => transcript
-            .lang_tag
-            .as_ref()
-            .is_some_and(|lang| config.translate_other.contains(lang)),
+        TextClass::Other => transcript.lang_tag.as_ref().is_some_and(|lang| {
+            config
+                .translate_other
+                .iter()
+                .any(|enabled| canonical_language(enabled) == *lang)
+        }),
     }
 }
 
@@ -670,9 +718,32 @@ struct Scheduler {
     in_flight: bool,
     started_through: Option<UtteranceId>,
     handled_through: Option<UtteranceId>,
+    closed_through: Option<UtteranceId>,
+    metrics: Metrics,
+    latest_stats: Arc<Mutex<PipelineStats>>,
+    asr_failed: bool,
 }
 
 impl Scheduler {
+    fn publish(&mut self, event: PipelineEvent) {
+        self.metrics.record(&event);
+        self.bus.publish(event);
+    }
+
+    fn refresh_stats(&mut self, live: StreamTime) {
+        let waiting = self
+            .queue
+            .len()
+            .saturating_add(self.ready.len())
+            .min(u32::MAX as usize) as u32;
+        let snapshot = self
+            .metrics
+            .snapshot(live, waiting, self.joiner.held_count());
+        if let Ok(mut latest) = self.latest_stats.lock() {
+            *latest = snapshot;
+        }
+    }
+
     fn joined(&mut self, result: JoinResult) {
         for event in result.events {
             if let PipelineEvent::Joined { absorbed, .. } = &event {
@@ -681,7 +752,7 @@ impl Scheduler {
                     self.translating.remove(id);
                 }
             }
-            self.bus.publish(event);
+            self.publish(event);
         }
         self.ready.extend(
             result
@@ -707,16 +778,29 @@ impl Scheduler {
                 self.joined(result);
             }
             FrontendNotice::Progress(_) => {}
+            FrontendNotice::SegmentClosed(id, end) => {
+                self.closed_through =
+                    Some(self.closed_through.map_or(id, |previous| previous.max(id)));
+                self.metrics.segment_closed(id, end);
+            }
         }
     }
 
     fn transcript(&mut self, message: AsrMessage) {
         let id = message.id();
         self.handled_through = Some(self.handled_through.map_or(id, |previous| previous.max(id)));
+        if self.asr_failed && !matches!(&message, AsrMessage::Failed(_, _)) {
+            self.asr_failed = false;
+            self.publish(PipelineEvent::EngineStatus {
+                engine: EngineKind::Asr,
+                state: EngineState::Ready,
+                message: None,
+            });
+        }
         match message {
             AsrMessage::Transcript(transcript) => {
                 self.observed.insert(transcript.id);
-                self.bus.publish(PipelineEvent::AsrFinal {
+                self.publish(PipelineEvent::AsrFinal {
                     id: transcript.id,
                     text: transcript.text.clone(),
                     class: transcript.class,
@@ -735,7 +819,7 @@ impl Scheduler {
             }
             AsrMessage::Dropped(id, reason) => {
                 self.observed.remove(&id);
-                self.bus.publish(PipelineEvent::Dropped { id, reason });
+                self.publish(PipelineEvent::Dropped { id, reason });
                 let result = self.joiner.dropped(id);
                 self.joined(result);
             }
@@ -743,12 +827,13 @@ impl Scheduler {
                 // There is no ASR-failure line type in the wire contract; the
                 // engine error is explicit and no nonexistent ASR text is sent.
                 self.observed.remove(&id);
-                self.bus.publish(PipelineEvent::EngineStatus {
+                self.asr_failed = true;
+                self.publish(PipelineEvent::EngineStatus {
                     engine: EngineKind::Asr,
                     state: EngineState::Failed,
                     message: Some(message),
                 });
-                self.bus.publish(PipelineEvent::Dropped {
+                self.publish(PipelineEvent::Dropped {
                     id,
                     reason: DropReason::Empty,
                 });
@@ -765,8 +850,27 @@ impl Scheduler {
             self.observed.remove(id);
             self.translating.remove(id);
         }
-        self.bus.publish(event);
+        self.publish(event);
         self.in_flight = false;
+    }
+}
+
+struct CachedSampler {
+    inner: Box<dyn ResourceSampler>,
+    at: Option<Instant>,
+    last: ResourceSample,
+}
+
+impl ResourceSampler for CachedSampler {
+    fn sample(&mut self) -> ResourceSample {
+        if self
+            .at
+            .is_none_or(|at| at.elapsed() >= Duration::from_secs(1))
+        {
+            self.last = self.inner.sample();
+            self.at = Some(Instant::now());
+        }
+        self.last
     }
 }
 
@@ -779,6 +883,9 @@ fn scheduler_loop(
     clock: Arc<SessionClock>,
     bus: EventBus,
     cancelled: Arc<AtomicBool>,
+    listening: Arc<AtomicBool>,
+    latest_stats: Arc<Mutex<PipelineStats>>,
+    sampler: Option<Box<dyn ResourceSampler>>,
 ) -> Result<()> {
     // This clock advances only after ordered frontend notices are consumed.
     // Fast replay must not expire a hold using future frames whose speech start
@@ -786,6 +893,14 @@ fn scheduler_loop(
     let join_clock = Arc::new(ManualClock::default());
     let mut frontier = StreamTime::ZERO;
     let mut anchor = Instant::now();
+    let mut metrics = Metrics::with_routing(&config.routing.translate_other);
+    metrics.set_sampler(sampler.map(|inner| {
+        Box::new(CachedSampler {
+            inner,
+            at: None,
+            last: ResourceSample::default(),
+        }) as Box<dyn ResourceSampler>
+    }));
     let mut scheduler = Scheduler {
         joiner: Joiner::new(config.join.clone(), join_clock.clone()),
         queue: TranslationQueue::new(config.translate.clone()),
@@ -797,6 +912,10 @@ fn scheduler_loop(
         in_flight: false,
         started_through: None,
         handled_through: None,
+        closed_through: None,
+        metrics,
+        latest_stats,
+        asr_failed: false,
     };
     let mut worker = TranslatorWorker::start(
         translator,
@@ -809,6 +928,9 @@ fn scheduler_loop(
     let mut asr_done = false;
     let mut holds_finished = false;
     let mut pending_asr = None;
+    let mut last_stats = Instant::now();
+    let mut was_listening = listening.load(Ordering::Acquire);
+    scheduler.refresh_stats(clock.now());
     while !cancelled.load(Ordering::Acquire) {
         let mut progressed = false;
         for _ in 0..CONTROL_CAPACITY * 2 {
@@ -867,6 +989,9 @@ fn scheduler_loop(
                     || scheduler
                         .started_through
                         .is_some_and(|id| id >= message.id())
+                        && scheduler
+                            .closed_through
+                            .is_some_and(|id| id >= message.id())
                 {
                     scheduler.transcript(message);
                     progressed = true;
@@ -907,7 +1032,7 @@ fn scheduler_loop(
                     }
                     _ => {}
                 }
-                scheduler.bus.publish(event);
+                scheduler.publish(event);
             }
             if let Some(item) = batch.item {
                 send_cooperative(&worker.input, item, &cancelled)?;
@@ -922,6 +1047,22 @@ fn scheduler_loop(
             && !scheduler.in_flight
         {
             break;
+        }
+        scheduler.refresh_stats(clock.now());
+        let is_listening = listening.load(Ordering::Acquire);
+        if is_listening != was_listening {
+            was_listening = is_listening;
+            last_stats = Instant::now();
+        }
+        if is_listening && last_stats.elapsed() >= Duration::from_secs(1) {
+            // Frontend clears listening under this lock before acknowledging
+            // pause. A timer cannot publish a stale Stats after that boundary.
+            if let Ok(latest) = scheduler.latest_stats.lock() {
+                if listening.load(Ordering::Acquire) && !cancelled.load(Ordering::Acquire) {
+                    scheduler.bus.publish(PipelineEvent::Stats(latest.clone()));
+                }
+            }
+            last_stats = Instant::now();
         }
         // Available messages wake the stage without an artificial frame/ASR
         // throttle. Idle polling remains bounded and does not spin a CPU core.
@@ -940,6 +1081,9 @@ fn scheduler_loop(
                         scheduler.observed.insert(id);
                     }
                 }
+                Ok(FrontendNotice::SegmentClosed(id, end)) => {
+                    scheduler.metrics.segment_closed(id, end);
+                }
                 Ok(_) => {}
                 Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}
                 Err(crossbeam_channel::RecvTimeoutError::Disconnected) => front_done = true,
@@ -956,21 +1100,25 @@ fn scheduler_loop(
     for event in worker.completed.try_iter() {
         scheduler.completed(event);
     }
-    for id in &scheduler.observed {
-        scheduler
-            .bus
-            .publish(if scheduler.translating.contains(id) {
-                PipelineEvent::TranslationFailed {
-                    id: *id,
-                    reason: FailReason::Error,
-                    message: "Listening stopped before this line finished".into(),
-                }
-            } else {
-                PipelineEvent::Dropped {
-                    id: *id,
-                    reason: DropReason::Empty,
-                }
-            });
+    let unfinished: Vec<_> = scheduler.observed.iter().copied().collect();
+    for id in unfinished {
+        scheduler.publish(if scheduler.translating.contains(&id) {
+            PipelineEvent::TranslationFailed {
+                id,
+                reason: FailReason::Error,
+                message: "Listening stopped before this line finished".into(),
+            }
+        } else {
+            PipelineEvent::Dropped {
+                id,
+                reason: DropReason::Empty,
+            }
+        });
     }
+    scheduler.ready.clear();
+    scheduler.queue = TranslationQueue::new(scheduler.config.translate.clone());
+    let _ = scheduler.joiner.finish();
+    scheduler.in_flight = false;
+    scheduler.refresh_stats(clock.now());
     Ok(())
 }

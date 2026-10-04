@@ -2,16 +2,21 @@ use crossbeam_channel::{bounded, Receiver, Sender};
 use lt_core::{
     bus::{EventBus, EventReceiver},
     config::Config,
-    engines::{TranslateRequest, TranslationControl, TranslationOut, Translator, TranslatorCaps},
+    engines::{
+        SegmentAsr, TranslateRequest, TranslationControl, TranslationOut, Translator,
+        TranslatorCaps,
+    },
     error::{Error, Result},
     events::{
-        DropReason, FailReason, JoinKind, ListeningStateKind, PipelineEvent, SourceStateKind,
+        DropReason, EngineKind, EngineState, FailReason, JoinKind, ListeningStateKind,
+        PipelineEvent, SourceStateKind,
     },
     fakes::{FakeAsr, FakeTranslator, FakeVad},
+    metrics::{ResourceSample, ResourceSampler},
     pipeline::{Pipeline, PipelineHandle},
     segment::FrameFlags,
     source::{AudioFrame, AudioProducer, AudioSource, SourceEvents},
-    types::{CaptureMode, SourceInfo, StreamTime, TextClass, UtteranceId},
+    types::{CaptureMode, Segment, SourceInfo, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use std::{
     collections::BTreeMap,
@@ -31,6 +36,7 @@ struct SyntheticWavSource {
     frame_delay: Duration,
     cancelled: Option<Arc<AtomicBool>>,
     thread: Option<JoinHandle<()>>,
+    realtime: bool,
 }
 
 impl SyntheticWavSource {
@@ -58,6 +64,7 @@ impl SyntheticWavSource {
             frame_delay: Duration::ZERO,
             cancelled: None,
             thread: None,
+            realtime: false,
         }
     }
 }
@@ -68,6 +75,7 @@ impl AudioSource for SyntheticWavSource {
         self.cancelled = Some(producer.cancelled.clone());
         let samples = self.samples.clone();
         let delay = self.frame_delay;
+        let realtime = self.realtime;
         self.thread = Some(
             thread::Builder::new()
                 .name("test-wav-adapter".into())
@@ -77,6 +85,10 @@ impl AudioSource for SyntheticWavSource {
                         detail: None,
                     });
                     for (index, chunk) in samples.chunks(512).enumerate() {
+                        let t0 = StreamTime(producer.base_time.samples() + index as u64 * 512);
+                        if realtime && producer.wait_until_frame_end(t0).is_err() {
+                            return;
+                        }
                         let deadline = Instant::now() + delay;
                         while Instant::now() < deadline {
                             if producer.cancelled.load(Ordering::Acquire) {
@@ -88,7 +100,7 @@ impl AudioSource for SyntheticWavSource {
                         frame[..chunk.len()].copy_from_slice(chunk);
                         if producer
                             .send(AudioFrame {
-                                t0: StreamTime(producer.base_time.samples() + index as u64 * 512),
+                                t0,
                                 samples: frame,
                                 flags: FrameFlags::EMPTY,
                             })
@@ -528,6 +540,12 @@ fn catch_up_skips_waiting_items_and_translates_the_newest_after_a_busy_request()
             .count(),
         12
     );
+    let stats = handle.get_stats();
+    assert_eq!(stats.skipped_total, 12);
+    assert_eq!(stats.failed_total, 0);
+    assert_eq!(stats.lag_ms, 0);
+    assert_eq!(stats.queue_depth, 0);
+    assert!(stats.done_p50_ms.is_some());
     assert_terminal_order(&recorded, &[]);
 }
 
@@ -565,6 +583,10 @@ fn an_echo_failure_is_terminal_and_the_next_request_can_complete() {
         }
     )));
     assert!(recorded.iter().any(|event| matches!(event, PipelineEvent::TranslationFinal { text, .. } if text == "The second line completed.")));
+    let stats = handle.get_stats();
+    assert_eq!(stats.failed_total, 1);
+    assert_eq!(stats.lag_ms, 0);
+    assert_eq!(stats.queue_depth, 0);
     assert_terminal_order(&recorded, &[]);
 }
 
@@ -698,6 +720,11 @@ fn stop_joins_every_worker_while_translation_is_busy_and_settles_pending_lines()
     handle.stop().unwrap();
     assert!(start.elapsed() < Duration::from_secs(1));
     assert!(handle.is_finished());
+    let stats = handle.get_stats();
+    assert_eq!(stats.lag_ms, 0);
+    assert_eq!(stats.queue_depth, 0);
+    assert_eq!(stats.held, 0);
+    assert!(stats.failed_total > 0);
     recorded.extend(events.try_iter());
     assert_terminal_order(&recorded, &[]);
 }
@@ -783,4 +810,298 @@ fn capture_startup_failure_stops_the_partial_adapter_and_joins_pipeline_workers(
     );
     assert!(start.elapsed() < Duration::from_secs(1));
     assert!(stops.load(Ordering::SeqCst) >= 1);
+}
+
+struct FixedSampler(Arc<AtomicUsize>);
+
+impl ResourceSampler for FixedSampler {
+    fn sample(&mut self) -> ResourceSample {
+        self.0.fetch_add(1, Ordering::SeqCst);
+        ResourceSample {
+            cpu_app_pct: 7.5,
+            cpu_translator_pct: 150.0,
+            rss_app_mb: 42,
+            rss_translator_mb: 1300,
+        }
+    }
+}
+
+#[test]
+fn fast_replay_refreshes_latest_final_latency_and_injected_resources_without_forcing_stats() {
+    let bus = EventBus::default();
+    let events = bus.subscribe(128);
+    let samples = Arc::new(AtomicUsize::new(0));
+    let mut config = Config::default();
+    config.join.hold_max_chars = 0;
+    let mut handle = Pipeline::start_with_bus_and_sampler(
+        config,
+        Box::new(SyntheticWavSource::from_bytes(&wav(1))),
+        Box::new(FakeVad::from_energy(0.001)),
+        Box::new(FakeAsr::new(vec!["你好。".into()])),
+        Box::new(FakeTranslator::default()),
+        bus,
+        Some(Box::new(FixedSampler(samples.clone()))),
+    )
+    .unwrap();
+    finish(&mut handle);
+    let recorded: Vec<_> = events.try_iter().collect();
+    assert!(!recorded
+        .iter()
+        .any(|event| matches!(event, PipelineEvent::Stats(_))));
+    let timing = recorded
+        .iter()
+        .find_map(|event| match event {
+            PipelineEvent::TranslationFinal { timing, .. } => Some(timing),
+            _ => None,
+        })
+        .unwrap();
+    let stats = handle.get_stats();
+    assert_eq!(
+        stats.done_p50_ms,
+        Some(timing.done_ms.saturating_sub(timing.speech_end_ms) as u32)
+    );
+    assert_eq!(
+        stats.first_p50_ms,
+        timing
+            .first_token_ms
+            .map(|first| first.saturating_sub(timing.speech_end_ms) as u32)
+    );
+    assert_eq!(stats.done_p95_ms, stats.done_p50_ms);
+    assert_eq!(stats.lag_ms, 0);
+    assert_eq!(stats.queue_depth, 0);
+    assert_eq!(
+        (
+            stats.cpu_app_pct,
+            stats.cpu_translator_pct,
+            stats.rss_app_mb,
+            stats.rss_translator_mb
+        ),
+        (7.5, 150.0, 42, 1300)
+    );
+    assert_eq!(samples.load(Ordering::SeqCst), 1);
+    assert_terminal_order(&recorded, &[]);
+}
+
+#[test]
+fn real_time_frames_and_stats_follow_wall_time_and_pause_excludes_stats() {
+    let bus = EventBus::default();
+    let events = bus.subscribe(256);
+    let samples = Arc::new(AtomicUsize::new(0));
+    let mut source = SyntheticWavSource::from_bytes(&wav(20));
+    source.realtime = true;
+    let started = Instant::now();
+    let mut handle = Pipeline::start_with_bus_and_sampler(
+        Config::default(),
+        Box::new(source),
+        Box::new(FakeVad::from_energy(0.001)),
+        Box::new(FakeAsr::new(vec!["Okay I see.".into(); 20])),
+        Box::new(FakeTranslator::default()),
+        bus,
+        Some(Box::new(FixedSampler(samples.clone()))),
+    )
+    .unwrap();
+    let mut recorded = Vec::new();
+    let mut stats_times = Vec::new();
+    let mut first_speech = None;
+    let deadline = started + Duration::from_secs(3);
+    while stats_times.len() < 2 && Instant::now() < deadline {
+        match events.recv_timeout(Duration::from_millis(20)) {
+            Ok(event) => {
+                match &event {
+                    PipelineEvent::SpeechStarted { .. } => {
+                        first_speech.get_or_insert_with(|| started.elapsed());
+                    }
+                    PipelineEvent::Stats(stats) => {
+                        stats_times.push(started.elapsed());
+                        assert_eq!(stats.rss_app_mb, 42);
+                        assert_eq!(stats.cpu_translator_pct, 150.0);
+                    }
+                    _ => {}
+                }
+                recorded.push(event);
+            }
+            Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}
+            Err(error) => panic!("Unexpected event closure: {error}"),
+        }
+    }
+    assert_eq!(stats_times.len(), 2);
+    // Opening needs eight complete 32 ms frames; the source must not deliver
+    // the first frame at t0 and bias end-of-speech latency by one frame.
+    assert!(first_speech.unwrap() >= Duration::from_millis(250));
+    assert!(stats_times[0] >= Duration::from_millis(950));
+    assert!(stats_times[1] - stats_times[0] >= Duration::from_millis(950));
+    handle.pause().unwrap();
+    let pause_window = Instant::now() + Duration::from_millis(1100);
+    while Instant::now() < pause_window {
+        match events.recv_timeout(Duration::from_millis(20)) {
+            Ok(event) => recorded.push(event),
+            Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}
+            Err(error) => panic!("Unexpected event closure: {error}"),
+        }
+    }
+    let paused = recorded
+        .iter()
+        .position(|event| {
+            matches!(
+                event,
+                PipelineEvent::ListeningState {
+                    state: ListeningStateKind::Paused
+                }
+            )
+        })
+        .unwrap();
+    assert!(!recorded[paused + 1..]
+        .iter()
+        .any(|event| matches!(event, PipelineEvent::Stats(_))));
+    let queries = samples.load(Ordering::SeqCst);
+    assert!(queries >= 3);
+    assert!(queries <= started.elapsed().as_secs() as usize + 1);
+    handle.stop().unwrap();
+    recorded.extend(events.try_iter());
+    assert_eq!(handle.get_stats().lag_ms, 0);
+    assert_terminal_order(&recorded, &[]);
+}
+
+struct WaitingAsr {
+    entered: Sender<StreamTime>,
+    release: Receiver<()>,
+    fake: FakeAsr,
+}
+
+impl SegmentAsr for WaitingAsr {
+    fn transcribe(&mut self, segment: &Segment) -> Result<Transcript> {
+        self.entered.try_send(segment.end).unwrap();
+        self.release
+            .recv_timeout(Duration::from_secs(1))
+            .map_err(|_| Error::Engine("Fixture ASR was not released".into()))?;
+        self.fake.transcribe(segment)
+    }
+}
+
+#[test]
+fn closed_segment_lag_is_visible_while_asr_is_pending_then_clears_on_final() {
+    let bus = EventBus::default();
+    let events = bus.subscribe(128);
+    let (entered, waiting) = bounded(1);
+    let (release, gate) = bounded(1);
+    let mut config = Config::default();
+    config.join.hold_max_chars = 0;
+    let asr = WaitingAsr {
+        entered,
+        release: gate,
+        fake: FakeAsr::new(vec!["你好。".into()]),
+    };
+    let mut handle = Pipeline::start_with_bus(
+        config,
+        Box::new(SyntheticWavSource::from_bytes(&wav(1))),
+        Box::new(FakeVad::from_energy(0.001)),
+        Box::new(asr),
+        Box::new(FakeTranslator::default()),
+        bus,
+    )
+    .unwrap();
+    waiting.recv_timeout(Duration::from_secs(1)).unwrap();
+    let deadline = Instant::now() + Duration::from_millis(300);
+    while handle.get_stats().lag_ms == 0 && Instant::now() < deadline {
+        thread::sleep(Duration::from_millis(2));
+    }
+    assert!(handle.get_stats().lag_ms > 0);
+    let mut recorded: Vec<_> = events.try_iter().collect();
+    assert!(!recorded
+        .iter()
+        .any(|event| matches!(event, PipelineEvent::AsrFinal { .. })));
+    release.send(()).unwrap();
+    finish(&mut handle);
+    recorded.extend(events.try_iter());
+    let stats = handle.get_stats();
+    assert_eq!(stats.lag_ms, 0);
+    assert_eq!(stats.queue_depth, 0);
+    assert!(stats.done_p50_ms.is_some());
+    assert_terminal_order(&recorded, &[]);
+}
+
+#[test]
+fn enabled_other_language_stays_in_stats_until_translation_finishes() {
+    let bus = EventBus::default();
+    let events = bus.subscribe(128);
+    let mut config = Config::default();
+    config.routing.translate_other = vec!["Japanese".into()];
+    let (translator, release, started, _) = gated();
+    let mut handle = Pipeline::start_with_bus(
+        config,
+        Box::new(SyntheticWavSource::from_bytes(&wav(1))),
+        Box::new(FakeVad::from_energy(0.001)),
+        Box::new(FakeAsr::with_metadata(vec![(
+            "こんにちは。".into(),
+            None,
+            None,
+        )])),
+        Box::new(translator),
+        bus,
+    )
+    .unwrap();
+    started.recv_timeout(Duration::from_secs(1)).unwrap();
+    assert!(handle.get_stats().lag_ms > 0);
+    release.send(()).unwrap();
+    finish(&mut handle);
+    let recorded: Vec<_> = events.try_iter().collect();
+    assert_eq!(handle.get_stats().lag_ms, 0);
+    assert!(handle.get_stats().done_p50_ms.is_some());
+    assert_terminal_order(&recorded, &["ja"]);
+}
+
+struct FailOnceAsr {
+    failed: bool,
+    fake: FakeAsr,
+}
+
+impl SegmentAsr for FailOnceAsr {
+    fn transcribe(&mut self, segment: &Segment) -> Result<Transcript> {
+        if !self.failed {
+            self.failed = true;
+            return Err(Error::Engine("Temporary fixture decode failure".into()));
+        }
+        self.fake.transcribe(segment)
+    }
+}
+
+#[test]
+fn asr_engine_recovers_its_ready_status_after_a_transient_failure() {
+    let bus = EventBus::default();
+    let events = bus.subscribe(128);
+    let mut config = Config::default();
+    config.join.hold_max_chars = 0;
+    let asr = FailOnceAsr {
+        failed: false,
+        fake: FakeAsr::new(vec!["再见。".into()]),
+    };
+    let mut handle = Pipeline::start_with_bus(
+        config,
+        Box::new(SyntheticWavSource::from_bytes(&wav(2))),
+        Box::new(FakeVad::from_energy(0.001)),
+        Box::new(asr),
+        Box::new(FakeTranslator::default()),
+        bus,
+    )
+    .unwrap();
+    finish(&mut handle);
+    let recorded: Vec<_> = events.try_iter().collect();
+    let status: Vec<_> = recorded
+        .iter()
+        .filter_map(|event| match event {
+            PipelineEvent::EngineStatus {
+                engine: EngineKind::Asr,
+                state,
+                ..
+            } => Some(*state),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        status,
+        [EngineState::Ready, EngineState::Failed, EngineState::Ready]
+    );
+    assert_eq!(handle.get_stats().lag_ms, 0);
+    assert!(handle.get_stats().done_p50_ms.is_some());
+    assert_terminal_order(&recorded, &[]);
 }
