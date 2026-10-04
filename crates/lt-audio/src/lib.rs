@@ -4,3 +4,4 @@ pub mod downmix;
 pub mod normalize;
 pub mod resample;
 pub mod resources;
+pub mod wav;
