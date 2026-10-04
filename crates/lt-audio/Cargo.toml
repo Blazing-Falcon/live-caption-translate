@@ -6,6 +6,12 @@ license.workspace = true
 
 [dependencies]
 lt-core.workspace = true
+hound = "3.5.1"
+rubato = { version = "5.0.1", default-features = false, features = ["fft_resampler"] }
+tracing.workspace = true
+
+[dev-dependencies]
+crossbeam-channel.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61.2", default-features = false, features = ["Win32_Foundation", "Win32_System_Threading", "Win32_System_ProcessStatus"] }
