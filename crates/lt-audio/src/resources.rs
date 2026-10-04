@@ -1,0 +1,387 @@
+//! Per-PID CPU/RSS sampling without enumerating unrelated processes.
+//!
+//! sysinfo 0.39.6's Windows `ProcessesToUpdate::Some` still takes a full
+//! Toolhelp process snapshot. Direct Win32 queries avoid that scan. Linux reads
+//! only `/proc/<pid>/stat` and `statm`. CPU is cumulative process time divided by
+//! elapsed monotonic time, expressed as percent of one core (and may exceed 100).
+//!
+//! Sources: Microsoft GetProcessTimes/GetProcessMemoryInfo documentation and
+//! Linux proc_pid_stat(5)/proc_pid_statm(5). A 200 ms minimum interval follows
+//! sysinfo's verified Windows minimum; the pipeline normally samples once a second.
+
+use std::{
+    sync::{
+        atomic::{AtomicU32, Ordering},
+        Arc,
+    },
+    time::{Duration, Instant},
+};
+
+use lt_core::{
+    error::{Error, Result},
+    metrics::{ResourceSample, ResourceSampler},
+};
+
+const MINIMUM_CPU_INTERVAL: Duration = Duration::from_millis(200);
+
+#[derive(Clone, Copy)]
+struct RawProcess {
+    identity: u64,
+    cpu_ns: u128,
+    rss_bytes: u64,
+}
+
+struct Baseline {
+    pid: u32,
+    identity: u64,
+    cpu_ns: u128,
+    at: Instant,
+}
+
+#[derive(Default)]
+struct CpuHistory {
+    baseline: Option<Baseline>,
+}
+
+impl CpuHistory {
+    fn observe(&mut self, pid: u32, raw: Option<RawProcess>, now: Instant) -> (f32, u32) {
+        let Some(raw) = raw else {
+            self.baseline = None;
+            return (0.0, 0);
+        };
+        let rss_mb = (raw.rss_bytes / 1_048_576).min(u64::from(u32::MAX)) as u32;
+        let mut usage = 0.0;
+        if let Some(previous) = &self.baseline {
+            if previous.pid == pid
+                && previous.identity == raw.identity
+                && raw.cpu_ns >= previous.cpu_ns
+            {
+                let elapsed = now.saturating_duration_since(previous.at);
+                if elapsed < MINIMUM_CPU_INTERVAL {
+                    // Keep the older baseline so frequent reads do not suppress CPU forever.
+                    return (0.0, rss_mb);
+                }
+                let ratio =
+                    (raw.cpu_ns - previous.cpu_ns) as f64 / elapsed.as_nanos() as f64 * 100.0;
+                if ratio.is_finite() {
+                    usage = ratio.min(f64::from(f32::MAX)) as f32;
+                }
+            }
+        }
+        self.baseline = Some(Baseline {
+            pid,
+            identity: raw.identity,
+            cpu_ns: raw.cpu_ns,
+            at: now,
+        });
+        (usage, rss_mb)
+    }
+}
+
+pub struct ProcessSampler {
+    app_pid: u32,
+    /// Zero means no supervised translator; the supervisor replaces this on restart.
+    child_pid: Arc<AtomicU32>,
+    backend: platform::Backend,
+    app_cpu: CpuHistory,
+    child_cpu: CpuHistory,
+}
+
+impl ProcessSampler {
+    pub fn new(child_pid: Arc<AtomicU32>) -> Result<Self> {
+        let backend = platform::Backend::new()?;
+        let app_pid = std::process::id();
+        if backend.read(app_pid).is_none() {
+            return Err(Error::Engine(
+                "Could not read application process counters".into(),
+            ));
+        }
+        Ok(Self {
+            app_pid,
+            child_pid,
+            backend,
+            app_cpu: CpuHistory::default(),
+            child_cpu: CpuHistory::default(),
+        })
+    }
+}
+
+impl ResourceSampler for ProcessSampler {
+    fn sample(&mut self) -> ResourceSample {
+        let child_pid = self.child_pid.load(Ordering::Acquire);
+        let app = self.backend.read(self.app_pid);
+        let child = if child_pid == 0 {
+            None
+        } else if child_pid == self.app_pid {
+            app
+        } else {
+            self.backend.read(child_pid)
+        };
+        let now = Instant::now();
+        let (cpu_app_pct, rss_app_mb) = self.app_cpu.observe(self.app_pid, app, now);
+        let (cpu_translator_pct, rss_translator_mb) = self.child_cpu.observe(child_pid, child, now);
+        ResourceSample {
+            cpu_app_pct,
+            cpu_translator_pct,
+            rss_app_mb,
+            rss_translator_mb,
+        }
+    }
+}
+
+#[cfg(windows)]
+mod platform {
+    use super::*;
+    use std::mem::size_of;
+    use windows_sys::Win32::{
+        Foundation::{CloseHandle, FILETIME, HANDLE, STILL_ACTIVE},
+        System::{
+            ProcessStatus::{K32GetProcessMemoryInfo, PROCESS_MEMORY_COUNTERS},
+            Threading::{
+                GetExitCodeProcess, GetProcessTimes, OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION,
+            },
+        },
+    };
+
+    pub struct Backend;
+
+    struct ProcessHandle(HANDLE);
+    impl Drop for ProcessHandle {
+        fn drop(&mut self) {
+            // SAFETY: OpenProcess returned this owned handle, closed exactly once here.
+            unsafe {
+                CloseHandle(self.0);
+            }
+        }
+    }
+
+    impl Backend {
+        pub fn new() -> Result<Self> {
+            // Check the current process rather than hiding an unsupported/query failure.
+            let backend = Self;
+            if backend.read(std::process::id()).is_none() {
+                return Err(Error::Engine(
+                    "Could not read Win32 process counters".into(),
+                ));
+            }
+            Ok(backend)
+        }
+
+        pub fn read(&self, pid: u32) -> Option<RawProcess> {
+            // SAFETY: This opens only the specified PID with query access and no inheritance.
+            let handle = unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid) };
+            if handle.is_null() {
+                return None;
+            }
+            let handle = ProcessHandle(handle);
+            let mut exit_code = 0;
+            // SAFETY: Valid query handle and initialized writable DWORD pointer.
+            if unsafe { GetExitCodeProcess(handle.0, &mut exit_code) } == 0
+                || exit_code != STILL_ACTIVE as u32
+            {
+                return None;
+            }
+            let mut creation = FILETIME::default();
+            let mut exit = FILETIME::default();
+            let mut kernel = FILETIME::default();
+            let mut user = FILETIME::default();
+            // SAFETY: All four FILETIME pointers refer to initialized writable storage.
+            if unsafe {
+                GetProcessTimes(handle.0, &mut creation, &mut exit, &mut kernel, &mut user)
+            } == 0
+            {
+                return None;
+            }
+            let mut memory = PROCESS_MEMORY_COUNTERS {
+                cb: size_of::<PROCESS_MEMORY_COUNTERS>() as u32,
+                ..PROCESS_MEMORY_COUNTERS::default()
+            };
+            let memory_size = memory.cb;
+            // SAFETY: Correct structure size, valid query handle and output buffer.
+            if unsafe { K32GetProcessMemoryInfo(handle.0, &mut memory, memory_size) } == 0 {
+                return None;
+            }
+            let cpu_ticks = u128::from(filetime(kernel)) + u128::from(filetime(user));
+            Some(RawProcess {
+                identity: filetime(creation),
+                cpu_ns: cpu_ticks * 100,
+                rss_bytes: memory.WorkingSetSize as u64,
+            })
+        }
+    }
+
+    fn filetime(time: FILETIME) -> u64 {
+        u64::from(time.dwLowDateTime) | (u64::from(time.dwHighDateTime) << 32)
+    }
+}
+
+#[cfg(target_os = "linux")]
+mod platform {
+    use super::*;
+
+    pub struct Backend {
+        ticks_per_second: u64,
+        page_bytes: u64,
+    }
+
+    impl Backend {
+        pub fn new() -> Result<Self> {
+            // SAFETY: sysconf takes only its constant selector and retains no pointers.
+            let ticks = unsafe { libc::sysconf(libc::_SC_CLK_TCK) };
+            // SAFETY: As above, querying the OS page size has no side effects.
+            let page_bytes = unsafe { libc::sysconf(libc::_SC_PAGESIZE) };
+            if ticks <= 0 || page_bytes <= 0 {
+                return Err(Error::Engine(
+                    "Could not read Linux clock/page-size counters".into(),
+                ));
+            }
+            Ok(Self {
+                ticks_per_second: ticks as u64,
+                page_bytes: page_bytes as u64,
+            })
+        }
+
+        pub fn read(&self, pid: u32) -> Option<RawProcess> {
+            let stat = std::fs::read_to_string(format!("/proc/{pid}/stat")).ok()?;
+            let statm = std::fs::read_to_string(format!("/proc/{pid}/statm")).ok()?;
+            parse(&stat, &statm, self.ticks_per_second, self.page_bytes)
+        }
+    }
+
+    fn parse(
+        stat: &str,
+        statm: &str,
+        ticks_per_second: u64,
+        page_bytes: u64,
+    ) -> Option<RawProcess> {
+        // comm (field 2) may itself contain spaces and ')'; subsequent fields cannot.
+        let (_, fields) = stat.rsplit_once(')')?;
+        let fields: Vec<_> = fields.split_whitespace().collect();
+        if matches!(*fields.first()?, "Z" | "X" | "x") {
+            return None;
+        }
+        // Remaining fields begin at field 3 (state).
+        let user_ticks = fields.get(11)?.parse::<u64>().ok()?;
+        let kernel_ticks = fields.get(12)?.parse::<u64>().ok()?;
+        let identity = fields.get(19)?.parse::<u64>().ok()?;
+        let resident_pages = statm.split_whitespace().nth(1)?.parse::<u64>().ok()?;
+        Some(RawProcess {
+            identity,
+            cpu_ns: (u128::from(user_ticks) + u128::from(kernel_ticks)) * 1_000_000_000
+                / u128::from(ticks_per_second),
+            rss_bytes: resident_pages.saturating_mul(page_bytes),
+        })
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        #[test]
+        fn proc_fields_handle_parentheses_and_ignore_waited_child_cpu() {
+            // State, then fields4..13, user14=25, kernel15=5, child16/17=999,
+            // fields18..21, starttime22=12345.
+            let stat = "42 (test (with) spaces)) R 1 2 3 4 5 6 7 8 9 10 25 5 999 999 0 0 1 0 12345";
+            let raw = parse(stat, "100 50 0 0 0 0 0", 100, 4096).unwrap();
+            assert_eq!(raw.cpu_ns, 300_000_000);
+            assert_eq!(raw.identity, 12345);
+            assert_eq!(raw.rss_bytes, 50 * 4096);
+            assert!(parse(&stat.replace(") R", ") Z"), "100 50", 100, 4096).is_none());
+            assert!(parse("malformed", "100 50", 100, 4096).is_none());
+        }
+    }
+}
+
+#[cfg(not(any(windows, target_os = "linux")))]
+mod platform {
+    use super::*;
+    pub struct Backend;
+    impl Backend {
+        pub fn new() -> Result<Self> {
+            Err(Error::Engine(
+                "Process sampling is supported on Windows and Linux".into(),
+            ))
+        }
+        pub fn read(&self, _: u32) -> Option<RawProcess> {
+            None
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn current_process_has_real_rss_and_no_child_is_zero() {
+        let child = Arc::new(AtomicU32::new(0));
+        let mut sampler = ProcessSampler::new(Arc::clone(&child)).unwrap();
+        let sample = sampler.sample();
+        assert!(
+            sample.rss_app_mb > 0,
+            "current process RSS must be observed"
+        );
+        assert_eq!(
+            sample.cpu_app_pct, 0.0,
+            "first sample only establishes the CPU baseline"
+        );
+        assert_eq!(sample.rss_translator_mb, 0);
+        assert_eq!(sample.cpu_translator_pct, 0.0);
+        child.store(u32::MAX, Ordering::Release);
+        let missing = sampler.sample();
+        assert_eq!(missing.rss_translator_mb, 0);
+        assert_eq!(missing.cpu_translator_pct, 0.0);
+        assert!(missing.rss_app_mb > 0);
+    }
+
+    #[test]
+    fn selected_pid_scope_and_pid_changes_clear_child_baselines() {
+        let child = Arc::new(AtomicU32::new(std::process::id()));
+        let mut sampler = ProcessSampler::new(Arc::clone(&child)).unwrap();
+        let first = sampler.sample();
+        assert!(first.rss_translator_mb > 0);
+        assert_eq!(first.rss_translator_mb, first.rss_app_mb);
+        assert_eq!(first.cpu_translator_pct, 0.0);
+        child.store(0, Ordering::Release);
+        assert_eq!(sampler.sample().rss_translator_mb, 0);
+        assert!(sampler.child_cpu.baseline.is_none());
+        child.store(std::process::id(), Ordering::Release);
+        assert_eq!(sampler.sample().cpu_translator_pct, 0.0);
+    }
+
+    #[test]
+    fn cpu_delta_is_percent_of_one_core_and_short_intervals_keep_the_baseline() {
+        let mut cpu = CpuHistory::default();
+        let at = Instant::now();
+        let raw = |cpu_ns| {
+            Some(RawProcess {
+                identity: 1,
+                cpu_ns,
+                rss_bytes: 2 * 1_048_576,
+            })
+        };
+        assert_eq!(cpu.observe(10, raw(0), at), (0.0, 2));
+        assert_eq!(
+            cpu.observe(10, raw(50_000_000), at + Duration::from_millis(50)),
+            (0.0, 2)
+        );
+        assert_eq!(
+            cpu.observe(10, raw(500_000_000), at + Duration::from_millis(250)),
+            (200.0, 2)
+        );
+        let reused = Some(RawProcess {
+            identity: 2,
+            cpu_ns: 1,
+            rss_bytes: u64::MAX,
+        });
+        assert_eq!(
+            cpu.observe(10, reused, at + Duration::from_secs(1)),
+            (0.0, u32::MAX)
+        );
+        assert_eq!(
+            cpu.observe(11, raw(1), at + Duration::from_secs(2)),
+            (0.0, 2)
+        );
+        assert_eq!(cpu.observe(11, None, at + Duration::from_secs(3)), (0.0, 0));
+        assert!(cpu.baseline.is_none());
+    }
+}
