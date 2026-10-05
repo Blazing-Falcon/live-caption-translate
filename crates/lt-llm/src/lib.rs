@@ -1,6 +1,7 @@
 //! Local translation client and llama-server supervision.
 
 pub mod client;
+pub mod models;
 pub mod prompts;
 pub mod supervisor;
 

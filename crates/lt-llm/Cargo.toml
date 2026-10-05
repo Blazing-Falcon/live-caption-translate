@@ -6,10 +6,13 @@ license.workspace = true
 
 [dependencies]
 lt-core.workspace = true
+serde.workspace = true
 serde_json.workspace = true
 tracing.workspace = true
-# The v1 translator has a cancellable HTTP transport for local servers.
-ureq = { version = "~3.4.2", default-features = false, features = ["json"] }
+sha2 = "0.10"
+# The translator supplies its own cancellable loopback transport. Separate
+# model-download agents can use the regular TLS/proxy-aware connector.
+ureq = { version = "~3.4.2", default-features = false, features = ["json", "rustls", "win-system-proxy"] }
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61.2", features = ["Win32_Foundation", "Win32_Security", "Win32_System_JobObjects", "Win32_System_Threading"] }
