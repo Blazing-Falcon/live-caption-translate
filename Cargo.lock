@@ -679,10 +679,12 @@ dependencies = [
 name = "lt-llm"
 version = "0.1.0"
 dependencies = [
+ "libc",
  "lt-core",
  "serde_json",
  "tracing",
  "ureq 3.4.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

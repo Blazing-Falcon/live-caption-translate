@@ -2,6 +2,7 @@
 
 pub mod client;
 pub mod prompts;
+pub mod supervisor;
 
 pub use client::OpenAiCompatTranslator;
 pub use prompts::HyMt2Prompts;
