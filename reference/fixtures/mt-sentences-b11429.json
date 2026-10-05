@@ -1,0 +1,192 @@
+{
+ "note": "Reviewed Windows CPU outputs from llama.cpp b11429, pinned Hy-MT2 Q4_0 with EOS120020, temperature0, 3 threads. Original mt-sentences.json remains the historical baseline. Different runtimes/CPU kernels can vary; 29 of37 matched the historical English exactly.",
+ "runtime": "b11429",
+ "threads": 3,
+ "sentences": [
+  {
+   "kind": "mixed_asr",
+   "src": "也不是也不完全是AI。",
+   "en": "It’s not, and it’s not entirely AI either."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "veification code输进去之后就可以。",
+   "en": "The verification code can be entered and it works."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "不能去desecide呃，你今天想要穿什么衣服，明天想要穿什么衣服，每天都穿一样。",
+   "en": "Can’t go to desecide… What do you want to wear today, what do you want to wear tomorrow? You wear the same thing every day."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "初中从小学，我不知道你们是初中跟小学有没有uni。",
+   "en": "From middle school to elementary school, I don’t know if there’s a \"uni\" between middle school and elementary school."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "It's not what I expected in the beginning, but just对最后就回到这里。",
+   "en": "It’s not what I expected at first, but eventually, it’s back here."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "对，因为就是mine他不会思考，我们很难去，它是像像一个black box。",
+   "en": "Yes, because it’s mine. He doesn’t think; it’s very difficult for us to do anything with it. It’s like a black box."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "对我同意就是self driving car，它是一个非常high standard的那个tenic。",
+   "en": "For me, agreeing means a self-driving car; it’s a very high-standard technology."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "你们意思是我们讲的是pricy的问题。",
+   "en": "You mean we’re talking about a price-related issue."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "哦，我我在UG的时候念的是electric engineering。",
+   "en": "Oh, when I was in UG, I studied electric engineering."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "对，因为就是很经常。就是我们早上上午有一个lectture刚上完，然后中午去听一个让 talk。",
+   "en": "Yes, because it happens very often. For example, we have a lecture in the morning, and then at noon we attend another talk."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "没有吗？那可能business school有的吧，就会让我们穿。",
+   "en": "No? Maybe it’s available at business schools, where they require us to wear them."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "그it card 어oc 가 쓸정 없이.",
+   "en": "It’s pointless to use a Git card."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "比较容易学的是swim。",
+   "en": "Swimming is easier to learn."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "啊，你是说你有一些就你最喜欢的sport是什么？",
+   "en": "Ah, you mean you have some preferences regarding your favorite sport?"
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "那图像识别其实上学上个ma我们。",
+   "en": "That image recognition is actually something we learned in school."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "那你现在住在 Hong港大概住了多久？",
+   "en": "How long have you been living in Hong?"
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "的的那种culture。",
+   "en": "That kind of culture."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "会关系到一个paenger的一个性命嗯。",
+   "en": "It will involve a passenger’s life."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "那你现在会不会去G打那个地球？",
+   "en": "So, are you going to G to play that Earth game now?"
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "对我也做过一些generation taskask。",
+   "en": "I’ve also done some generation taskasks for me."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "哦，那个是那个是wind，好像是做。",
+   "en": "Oh, that’s wind. It seems to be doing something."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "然后高不不高高三是我最胖的时候 because I do not work around and just stay.",
+   "en": "Then, my third year was when I was the fattest. Because I don’t work around there, I just stay at home."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "其实呢badminton有一个就是badminton，因为basketball的话主要是。",
+   "en": "Actually, badminton is just like badminton. As for basketball, it’s mainly about that."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "activities different kind of activities对，有时候去忙一些那种舞会啊，party啊，有时候忙一些应对啊，就是low summer camp for students. I have lots of different kinds of。",
+   "en": "Different types of activities. Sometimes, I go to dance parties or events. Other times, I’m involved in various preparations—like being a low summer camp for students. I have many different kinds of activities."
+  },
+  {
+   "kind": "mixed_asr",
+   "src": "大四上学期好像是反正好像是6月份的时候才开始准备I。",
+   "en": "It seems that preparations for I started in June during the first semester of senior year."
+  },
+  {
+   "kind": "chinese",
+   "src": "刚走，说是去医院了。",
+   "en": "Just left; said he went to the hospital."
+  },
+  {
+   "kind": "chinese",
+   "src": "结果被录取了，下个月就去上班。",
+   "en": "I was admitted, and I’ll start working next month."
+  },
+  {
+   "kind": "chinese",
+   "src": "它从来没让我失望过。",
+   "en": "It has never disappointed me."
+  },
+  {
+   "kind": "chinese",
+   "src": "那我们得多准备点零食了。",
+   "en": "So we need to prepare more snacks."
+  },
+  {
+   "kind": "chinese",
+   "src": "我还没看完，明天还她。",
+   "en": "I haven’t finished reading it yet; I’ll give it back tomorrow."
+  },
+  {
+   "kind": "chinese",
+   "src": "我觉得挺强的，就是上手难。",
+   "en": "I think it’s quite strong, but it’s difficult to get started with it."
+  },
+  {
+   "kind": "chinese",
+   "src": "听说他生病了，下周才回来。",
+   "en": "I heard he is sick and won’t return until next week."
+  },
+  {
+   "kind": "chinese",
+   "src": "就是排队的人太多了，等了一个多小时。",
+   "en": "There were too many people waiting in line, and it took over an hour."
+  },
+  {
+   "kind": "chinese_slang",
+   "src": "今天我们先打一会儿原神，然后再玩王者荣耀上分。",
+   "en": "Today, we’ll play Genshin Impact for a while, and then play Honor of Kings to level up."
+  },
+  {
+   "kind": "chinese_slang",
+   "src": "感谢B站的兄弟们发弹幕支持！",
+   "en": "Thanks to the brothers at B站 for their comments and support!"
+  },
+  {
+   "kind": "chinese_slang",
+   "src": "老八今天又来直播间了。",
+   "en": "Lao Ba came to the live stream today again."
+  },
+  {
+   "kind": "chinese_slang",
+   "src": "这个副本太难了，我们打了十次都没过。",
+   "en": "This copy is too difficult; we’ve tried ten times but still couldn’t pass it."
+  }
+ ]
+}
