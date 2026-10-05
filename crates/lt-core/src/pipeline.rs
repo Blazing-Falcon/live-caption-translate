@@ -16,13 +16,13 @@ use crate::{
     segment::{SegmentBuilder, SegmentUpdate},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
     text::{classify_with_lang, clean, drop_reason},
-    types::{PipelineStats, Segment, StreamTime, TextClass, Transcript, UtteranceId},
+    types::{CutReason, PipelineStats, Segment, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use crossbeam_channel::{bounded, Receiver, Sender, TryRecvError, TrySendError};
 use std::{
     collections::{BTreeSet, VecDeque},
     sync::{
-        atomic::{AtomicBool, Ordering},
+        atomic::{AtomicBool, AtomicU64, Ordering},
         Arc, Mutex,
     },
     thread::{self, JoinHandle},
@@ -65,6 +65,48 @@ impl AsrMessage {
 
 pub struct Pipeline;
 
+/// Aggregate frontend diagnostics for replay reports; this does not change IPC.
+#[derive(Clone, Copy, Debug, Default)]
+pub struct SegmentCounts {
+    pub pause: u64,
+    pub soft_cut: u64,
+    pub hard_cut: u64,
+    pub discontinuity: u64,
+    pub end: u64,
+}
+
+impl SegmentCounts {
+    pub fn total(self) -> u64 {
+        self.pause + self.soft_cut + self.hard_cut + self.discontinuity + self.end
+    }
+}
+
+#[derive(Default)]
+struct SegmentCounters([AtomicU64; 5]);
+
+impl SegmentCounters {
+    fn record(&self, reason: CutReason) {
+        let index = match reason {
+            CutReason::Pause => 0,
+            CutReason::SoftCut => 1,
+            CutReason::HardCut => 2,
+            CutReason::Discontinuity => 3,
+            CutReason::End => 4,
+        };
+        self.0[index].fetch_add(1, Ordering::Relaxed);
+    }
+    fn snapshot(&self) -> SegmentCounts {
+        let counts = self.0.each_ref().map(|count| count.load(Ordering::Relaxed));
+        SegmentCounts {
+            pause: counts[0],
+            soft_cut: counts[1],
+            hard_cut: counts[2],
+            discontinuity: counts[3],
+            end: counts[4],
+        }
+    }
+}
+
 pub struct PipelineHandle {
     commands: Sender<Command>,
     cancelled: Arc<AtomicBool>,
@@ -72,6 +114,7 @@ pub struct PipelineHandle {
     bus: EventBus,
     threads: Vec<JoinHandle<Result<()>>>,
     latest_stats: Arc<Mutex<PipelineStats>>,
+    segment_counts: Arc<SegmentCounters>,
 }
 
 impl Pipeline {
@@ -114,6 +157,7 @@ impl Pipeline {
         let clock = Arc::new(SessionClock::default());
         let listening = Arc::new(AtomicBool::new(false));
         let latest_stats = Arc::new(Mutex::new(PipelineStats::default()));
+        let segment_counts = Arc::new(SegmentCounters::default());
         let (command_tx, command_rx) = bounded(CONTROL_CAPACITY);
         let (segment_tx, segment_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
@@ -126,6 +170,7 @@ impl Pipeline {
             bus: bus.clone(),
             threads: Vec::with_capacity(3),
             latest_stats: latest_stats.clone(),
+            segment_counts: segment_counts.clone(),
         };
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
@@ -189,6 +234,7 @@ impl Pipeline {
                         ready_tx,
                         listening,
                         latest_stats,
+                        segment_counts,
                     )
                 })?;
         handle.threads.insert(0, frontend_thread);
@@ -220,6 +266,10 @@ impl PipelineHandle {
             .lock()
             .map(|stats| stats.clone())
             .unwrap_or_default()
+    }
+
+    pub fn segment_counts(&self) -> SegmentCounts {
+        self.segment_counts.snapshot()
     }
 
     pub fn pause(&self) -> Result<()> {
@@ -331,6 +381,7 @@ struct Frontend {
     started_once: bool,
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
+    segment_counts: Arc<SegmentCounters>,
 }
 
 impl Frontend {
@@ -394,6 +445,7 @@ impl Frontend {
                 .map(|(id, at)| FrontendNotice::Started(id, at)),
         );
         for segment in update.segments {
+            self.segment_counts.record(segment.cut_reason);
             self.notices
                 .push_back(FrontendNotice::SegmentClosed(segment.id, segment.end));
             self.segments.push_back(segment);
@@ -473,6 +525,7 @@ fn frontend_loop(
     ready: Sender<Result<()>>,
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
+    segment_counts: Arc<SegmentCounters>,
 ) -> Result<()> {
     let mut frontend = Frontend {
         source,
@@ -488,6 +541,7 @@ fn frontend_loop(
         started_once: false,
         listening,
         latest_stats,
+        segment_counts,
     };
     if let Err(error) = frontend.start_source() {
         let _ = ready.try_send(Err(Error::Engine(error.to_string())));
