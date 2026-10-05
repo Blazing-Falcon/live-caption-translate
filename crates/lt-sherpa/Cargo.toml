@@ -6,3 +6,11 @@ license.workspace = true
 
 [dependencies]
 lt-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+sherpa-onnx-sys = { version = "=1.13.8", default-features = false, features = ["shared"] }
+ort = { version = "=2.0.0-rc.13", default-features = false, features = ["std", "load-dynamic", "api-17"] }
+
+[dev-dependencies]
+hound = "3.5"
