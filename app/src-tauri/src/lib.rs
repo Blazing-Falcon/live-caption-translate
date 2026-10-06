@@ -15,6 +15,7 @@ mod overlay;
 mod paths;
 mod state;
 mod tray;
+mod webview2;
 mod windows;
 
 use app::{lock, Shared};
@@ -62,6 +63,9 @@ pub fn quit(shared: Arc<Shared>) {
 }
 
 pub fn run() {
+    if !webview2::ensure_runtime() {
+        return;
+    }
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             windows::show_control(app);
