@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
-members = ["crates/lt-core", "crates/lt-audio", "crates/lt-sherpa", "crates/lt-llm", "crates/lt-cli"]
+members = ["crates/lt-core", "crates/lt-audio", "crates/lt-sherpa", "crates/lt-llm", "crates/lt-cli", "app/src-tauri"]
+default-members = ["crates/lt-core", "crates/lt-audio", "crates/lt-sherpa", "crates/lt-llm", "crates/lt-cli"]
 
 [workspace.package]
 version = "0.1.0"

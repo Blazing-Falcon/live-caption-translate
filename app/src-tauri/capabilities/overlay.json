@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "overlay",
+  "description": "Caption overlay: events and window dragging only",
+  "windows": ["overlay"],
+  "permissions": ["core:event:default", "core:window:allow-start-dragging"]
+}
