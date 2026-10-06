@@ -1,8 +1,13 @@
 //! Windows capture sources. Native COM and device operations start only on workers.
+pub mod apps;
 pub(crate) mod capture;
 pub mod devices;
+pub mod manager;
+pub mod process;
 
 pub use devices::{list_audio_devices, AudioDevice, DeviceChoice};
+pub use manager::AppsCaptureSource;
+pub use process::ProcessLoopbackSource;
 
 use capture::{CaptureFormat, NativeWorker, OpenedClient, WorkerOptions};
 use devices::{choose_device, device_id, device_name, native_error};
