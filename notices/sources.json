@@ -1,0 +1,176 @@
+{
+  "checked": "2026-10-08",
+  "texts": [
+    {
+      "file": "FunASR-MODEL-LICENSE-v1.1.txt",
+      "source": "https://raw.githubusercontent.com/modelscope/FunASR/66d7a4c264a5993a2a63ed00c1f402c296ee521a/MODEL_LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/modelscope/FunASR/66d7a4c264a5993a2a63ed00c1f402c296ee521a/MODEL_LICENSE",
+      "sha256": "7dba975a2069691db4992b0592d70828b330d2f8a30a71450f4e152a554e84f8",
+      "size": 5306
+    },
+    {
+      "file": "SenseVoice-ONNX-LICENSE.txt",
+      "source": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/2365baeacb507f821a0c8120fcee3d484dba7a07/LICENSE",
+      "resolved_source": "https://huggingface.co/api/resolve-cache/models/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/2365baeacb507f821a0c8120fcee3d484dba7a07/LICENSE?%2Fcsukuangfj%2Fsherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17%2Fresolve%2F2365baeacb507f821a0c8120fcee3d484dba7a07%2FLICENSE=&etag=%22b5aafcccf5cfd5f7293c710bd6588dc6544eef2b%22",
+      "sha256": "221c6df10b0931a5629adad671ea48fb7747e034c414b6d2bfa275bc3dd4ea17",
+      "size": 71
+    },
+    {
+      "file": "SenseVoice-source-MIT.txt",
+      "source": "https://raw.githubusercontent.com/QwenAudio/SenseVoice/586bbdb2b052f4fe19322581825228b6810a9fb3/LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/QwenAudio/SenseVoice/586bbdb2b052f4fe19322581825228b6810a9fb3/LICENSE",
+      "sha256": "4bc3bffe14ebe38cc67309991e04f92866835eac1c5e2e1abd37163f67c6de5f",
+      "size": 1062
+    },
+    {
+      "file": "Hy-MT2-1.8B-LICENSE.txt",
+      "source": "https://huggingface.co/tencent/Hy-MT2-1.8B/resolve/9a341cd1b679d3efd23b46e847b01745a71ed792/LICENSE.txt",
+      "resolved_source": "https://huggingface.co/api/resolve-cache/models/tencent/Hy-MT2-1.8B/9a341cd1b679d3efd23b46e847b01745a71ed792/LICENSE.txt?%2Ftencent%2FHy-MT2-1.8B%2Fresolve%2F9a341cd1b679d3efd23b46e847b01745a71ed792%2FLICENSE.txt=&etag=%22360c110713e627c7dc239ce547ae466a734b30d7%22",
+      "sha256": "1af3c6dc0c697277cbb6b68720787c1caa43a79c5626bf9f19cd8c00de9c8cd4",
+      "size": 11629
+    },
+    {
+      "file": "Silero-VAD-v5-MIT.txt",
+      "source": "https://raw.githubusercontent.com/snakers4/silero-vad/84768cefdf5a3852400e9d8237f7315d14b64a08/LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/snakers4/silero-vad/84768cefdf5a3852400e9d8237f7315d14b64a08/LICENSE",
+      "sha256": "2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b",
+      "size": 1075
+    },
+    {
+      "file": "sherpa-onnx-1.13.8-Apache-2.0.txt",
+      "source": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/v1.13.8/LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/v1.13.8/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "size": 11358
+    },
+    {
+      "file": "llama.cpp-b11429-MIT.txt",
+      "source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/LICENSE",
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
+      "size": 1078
+    },
+    {
+      "file": "llama.cpp-jsonhpp-MIT.txt",
+      "source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/licenses/LICENSE-jsonhpp",
+      "resolved_source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/licenses/LICENSE-jsonhpp",
+      "sha256": "c0d068392ea65358b798b8c165103560f06e9e3b38c4ab4e2d8810a7b931af86",
+      "size": 1075
+    },
+    {
+      "file": "llama.cpp-httplib-MIT.txt",
+      "source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/cpp-httplib/LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/cpp-httplib/LICENSE",
+      "sha256": "4b45cbe16d7b71b89ae6127e26e0d90a029198ca5e958ad8e3d0b8bbed364d8b",
+      "size": 1075
+    },
+    {
+      "file": "llama.cpp-rotate-bits-MIT.txt",
+      "source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/hash/rotate-bits/LICENSE.md",
+      "resolved_source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/hash/rotate-bits/LICENSE.md",
+      "sha256": "ca0b44aec101afb6b46f4c39b23369fa06a64fb9c0add37c2689d702156fee55",
+      "size": 1088
+    },
+    {
+      "file": "llama.cpp-sha256-Public-Domain.txt",
+      "source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/hash/sha256/LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/hash/sha256/LICENSE",
+      "sha256": "b81d0022ca6367918c67b57e9647d3513ee58809fd4b0ef0b3492f1356bced25",
+      "size": 41
+    },
+    {
+      "file": "llama.cpp-xxhash-BSD-2-Clause.txt",
+      "source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/hash/xxhash/LICENSE",
+      "resolved_source": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11429/vendor/hash/xxhash/LICENSE",
+      "sha256": "6ffedbc0f7878612d2b23589f1ff2ab15633e1df7963a5d9fc750ec5500c7e7a",
+      "size": 1389
+    },
+    {
+      "file": "ONNX-Runtime-1.30.0-MIT.txt",
+      "source": "https://github.com/microsoft/onnxruntime/releases/download/v1.30.0/onnxruntime-win-x64-1.30.0.zip",
+      "source_member": "LICENSE",
+      "sha256": "c250d6278f0b47a6439fb7592b08b58a55eb9f535aa49a1db63211c3f982b674",
+      "size": 1094
+    },
+    {
+      "file": "ONNX-Runtime-1.30.0-ThirdPartyNotices.txt",
+      "source": "https://github.com/microsoft/onnxruntime/releases/download/v1.30.0/onnxruntime-win-x64-1.30.0.zip",
+      "source_member": "ThirdPartyNotices.txt",
+      "sha256": "c53a76501ef60db6f865f20599f220761201ac4057683acefdab37d861b86622",
+      "size": 344457
+    },
+    {
+      "file": "LLVM-OpenMP-b11429-LICENSE.txt",
+      "source": "https://github.com/ggml-org/llama.cpp/releases/download/b11429/llama-b11429-bin-win-cpu-x64.zip",
+      "source_member": "LICENSE-LLVM-OpenMP",
+      "sha256": "fdad1758a9e1f9d5a81e18879b3406772115edc92c24bfa36b70c654f325e8e4",
+      "size": 19741
+    },
+    {
+      "file": "sherpa-kaldi-native-fbank-Apache-2.0.txt",
+      "source": "https://raw.githubusercontent.com/csukuangfj/kaldi-native-fbank/v1.22.3/LICENSE",
+      "size": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "sherpa-kaldi-decoder-Apache-2.0.txt",
+      "source": "https://raw.githubusercontent.com/k2-fsa/kaldi-decoder/v0.3.0/LICENSE",
+      "size": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "sherpa-simple-sentencepiece-Apache-2.0.txt",
+      "source": "https://raw.githubusercontent.com/pkufool/simple-sentencepiece/v0.7/LICENSE",
+      "size": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "file": "sherpa-json-3.12.0-MIT.txt",
+      "source": "https://raw.githubusercontent.com/nlohmann/json/v3.12.0/LICENSE.MIT",
+      "size": 1076,
+      "sha256": "46a65cffd1ea955132d95a8dd921640714a8d6b537d2e4e482d31145ae95b603"
+    },
+    {
+      "file": "sherpa-hclust-cpp-LICENSE.txt",
+      "source": "https://raw.githubusercontent.com/csukuangfj/hclust-cpp/2026-02-25/LICENSE",
+      "size": 1483,
+      "sha256": "e361d842da1d290351860ad6dcce2673a1e42e4f873a3ae1ff4eb92c6adaa882"
+    },
+    {
+      "file": "sherpa-websocketpp-LICENSE.txt",
+      "source": "https://raw.githubusercontent.com/zaphoyd/websocketpp/b9aeec6eaf3d5610503439b4fae3581d9aff08e8/COPYING",
+      "size": 7494,
+      "sha256": "5ba81a1ed402517dce2581fa2d4042baf6a9c8ca0fe94fa6a7043ce6ab23064f"
+    },
+    {
+      "file": "sherpa-asio-1.24.0-Boost-1.0.txt",
+      "source": "https://raw.githubusercontent.com/chriskohlhoff/asio/asio-1-24-0/asio/LICENSE_1_0.txt",
+      "size": 1338,
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
+      "file": "sherpa-KissFFT-BSD-3-Clause.txt",
+      "source": "https://raw.githubusercontent.com/mborgerding/kissfft/febd4caeed32e33ad8b2e0bb5ea77542c40f18ec/COPYING",
+      "size": 246,
+      "sha256": "a2840585f8411be8e6826a31ef15ae65c950bd74a2437a73b013398a934ad0c6"
+    },
+    {
+      "file": "sherpa-kaldifst-1.8.0-Apache-2.0.txt",
+      "source": "https://raw.githubusercontent.com/k2-fsa/kaldifst/v1.8.0/LICENSE",
+      "size": 11728,
+      "sha256": "a682d6efd1ee5dee08a8e405c233c2c198ea70ae0718129daa83ab58cfe31c5d"
+    },
+    {
+      "file": "sherpa-OpenFst-1.8.5-Apache-2.0.txt",
+      "source": "https://raw.githubusercontent.com/csukuangfj/openfst/v1.8.5-2026-04-10/COPYING",
+      "size": 559,
+      "sha256": "4300529197035fd3452350718a0b8cee984e9412c9932d7f35fcde849fc97a4b"
+    },
+    {
+      "file": "sherpa-KissFFT-BSD-3-Clause-FULL.txt",
+      "source": "https://raw.githubusercontent.com/mborgerding/kissfft/febd4caeed32e33ad8b2e0bb5ea77542c40f18ec/LICENSES/BSD-3-Clause",
+      "size": 1830,
+      "sha256": "4d6bcab46f27d6d0c878e8305d4bdcfe040d52bf6656b9771f04c9fb9902c0ed"
+    }
+  ]
+}
