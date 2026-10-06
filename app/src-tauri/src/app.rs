@@ -33,6 +33,8 @@ pub struct Shared {
     pub overlay: Overlay,
     pub tray: Mutex<Option<Tray>>,
     pub quitting: AtomicBool,
+    /// Config problems found at startup, handed to the control window once.
+    pub startup_messages: Mutex<Vec<String>>,
 }
 
 /// A poisoned lock only means another thread panicked; the data is still usable.

@@ -14,6 +14,7 @@ mod models;
 mod overlay;
 mod paths;
 mod state;
+mod system;
 mod tray;
 mod webview2;
 mod windows;
@@ -107,6 +108,7 @@ pub fn run() {
                 overlay: Default::default(),
                 tray: Mutex::new(None),
                 quitting: Default::default(),
+                startup_messages: Mutex::new(messages),
             });
             app.manage(shared.clone());
             controller::spawn(shared.clone(), controller_rx)?;
@@ -152,6 +154,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::get_state,
+            commands::startup_notices,
             commands::start_listening,
             commands::pause_listening,
             commands::get_config,

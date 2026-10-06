@@ -25,6 +25,14 @@ pub fn get_state(shared: Shell) -> AppState {
     shared.state()
 }
 
+/// Config problems (shown once) plus hardware warnings, as plain sentences.
+#[tauri::command]
+pub fn startup_notices(shared: Shell) -> Vec<String> {
+    let mut notices = std::mem::take(&mut *crate::app::lock(&shared.startup_messages));
+    notices.extend(crate::system::current_warnings());
+    notices
+}
+
 #[tauri::command]
 pub async fn start_listening(shared: Shell<'_>) -> Reply<()> {
     let shared = shared.inner().clone();
