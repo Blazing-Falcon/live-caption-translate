@@ -103,6 +103,12 @@ pub struct LiveArgs {
     pub models: Option<PathBuf>,
     #[arg(long, env = "LT_LLAMA_SERVER")]
     pub server: Option<PathBuf>,
+    /// Stop and flush after this many seconds (omit to listen until Ctrl+C).
+    #[arg(long, value_parser = positive)]
+    pub dur: Option<f64>,
+    /// Write terminal JSONL records and the session latency summary here.
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 #[derive(Clone, Copy, ValueEnum)]
 pub enum CaptureModeArg {

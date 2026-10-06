@@ -1,10 +1,13 @@
 mod args;
 mod bench;
 mod engines;
+mod live;
 mod replay;
 mod report;
 
-use anyhow::{bail, Context, Result};
+#[cfg(not(feature = "llm"))]
+use anyhow::bail;
+use anyhow::{Context, Result};
 use args::{Cli, Commands, ModelCommands};
 use clap::Parser;
 use lt_core::config::Config;
@@ -39,10 +42,7 @@ fn main() -> Result<()> {
         Commands::Replay(args) => replay::replay(args, config, cancelled.clone()),
         Commands::Bench(args) => bench::bench(args, config, cancelled.clone()),
         Commands::Models { command } => models(command, config, cancelled.clone()),
-        Commands::Live(args) => {
-            let _ = args;
-            bail!("Windows live capture is being implemented in P2; use replay for file input")
-        }
+        Commands::Live(args) => live::live(args, config, cancelled.clone()),
     };
     match result {
         Err(error)

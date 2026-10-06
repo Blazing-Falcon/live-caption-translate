@@ -147,7 +147,7 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
     Ok(())
 }
 
-fn observe(report: &mut ReplayReport, event: &PipelineEvent) {
+pub(crate) fn observe(report: &mut ReplayReport, event: &PipelineEvent) {
     report.on_event(event);
     match event {
         PipelineEvent::AsrFinal { id, text, .. } => eprintln!("{} source: {text}", id.0),
