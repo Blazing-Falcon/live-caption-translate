@@ -112,6 +112,7 @@ impl Models {
                 if let Err(message) = outcome {
                     if !models.cancel.load(Ordering::Acquire) {
                         tracing::warn!(message, "Model download failed");
+                    let _ = shared.handle.emit_to("control", "models://error", serde_json::json!({ "message": message }));
                         let mut live = lock(&models.live);
                         for item in live.iter_mut() {
                             if item.state == ModelState::Downloading {

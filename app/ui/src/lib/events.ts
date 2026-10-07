@@ -20,6 +20,7 @@ export const EVENTS = {
   overlayVisible: "overlay://visible",
   /** Optional, not in 07: native cursor-over-panel observation, `{ hover: boolean }`. */
   overlayHover: "overlay://hover",
+  modelsError: "models://error",
   configChanged: "config://changed",
   modelsProgress: "models://progress",
   hotkeysError: "hotkeys://error",
@@ -244,6 +245,7 @@ export function createSession(options: SessionOptions): Session {
   if (options.kind === "control") {
     disposers.push(
       subscribe<ModelProgress[]>(EVENTS.modelsProgress, (rows) => models.set(rows)),
+      subscribe<{ message: string }>(EVENTS.modelsError, ({ message }) => pushNotice("error", message)),
       subscribe<HotkeyError>(EVENTS.hotkeysError, (error) =>
         hotkeyErrors.update((current) => ({ ...current, [error.action]: error })),
       ),

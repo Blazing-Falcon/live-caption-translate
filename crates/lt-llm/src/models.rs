@@ -16,7 +16,9 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 pub const EMBEDDED_MANIFEST: &str = include_str!("../../../models/manifest.json");
-const BODY_BUDGET: Duration = Duration::from_millis(500);
+// The budget covers one request including the CDN redirect and TLS start, so it must be
+// long enough for useful transfer; an interrupted request resumes from the saved offset.
+const BODY_BUDGET: Duration = Duration::from_secs(20);
 const PROGRESS_INTERVAL: Duration = Duration::from_millis(250);
 const BUFFER_SIZE: usize = 64 * 1_024;
 const NO_PROGRESS_LIMIT: usize = 4;
@@ -92,10 +94,10 @@ impl ModelManager {
         // Body budgets deliberately terminate/retry GETs from the saved byte offset.
         let agent = ureq::Agent::config_builder()
             .http_status_as_error(false)
-            .timeout_resolve(Some(Duration::from_secs(5)))
-            .timeout_connect(Some(Duration::from_secs(5)))
-            .timeout_send_request(Some(Duration::from_secs(5)))
-            .timeout_recv_response(Some(Duration::from_secs(5)))
+            .timeout_resolve(Some(Duration::from_secs(10)))
+            .timeout_connect(Some(Duration::from_secs(10)))
+            .timeout_send_request(Some(Duration::from_secs(10)))
+            .timeout_recv_response(Some(Duration::from_secs(20)))
             .timeout_recv_body(Some(BODY_BUDGET))
             .max_idle_connections(0)
             .build()
@@ -334,7 +336,8 @@ impl ModelManager {
             }
             let mut response = match request.call() {
                 Ok(response) => response,
-                Err(_) => {
+                Err(error) => {
+                    tracing::debug!(%error, "Model download request failed");
                     no_progress += 1;
                     if no_progress >= NO_PROGRESS_LIMIT {
                         return Err(Error::Engine(format!(
@@ -436,7 +439,8 @@ impl ModelManager {
                         written += read as u64;
                         progress.emit(dir, model, ModelState::Downloading, false)?;
                     }
-                    Err(_) => {
+                    Err(error) => {
+                        tracing::debug!(%error, offset, written, "Model download read interrupted");
                         interrupted = true;
                         break;
                     }

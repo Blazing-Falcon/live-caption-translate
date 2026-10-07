@@ -166,6 +166,11 @@ describe("session events", () => {
     expect(get(session.hover)).toBe(true);
     expect(get(session.models)).toHaveLength(1);
     expect(get(session.hotkeyErrors).pause?.message).toBe("already in use");
+    await emit(EVENTS.modelsError, { message: "Model download stopped making progress: x.gguf" });
+    expect(get(session.notices).map((n) => [n.kind, n.text])).toContainEqual([
+      "error",
+      "Model download stopped making progress: x.gguf",
+    ]);
     session.clearHotkeyError("pause");
     expect(get(session.hotkeyErrors)).toEqual({});
   });
