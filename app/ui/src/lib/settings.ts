@@ -114,6 +114,164 @@ export type DeepPartial<T> = T extends (infer Item)[]
     ? { [Key in keyof T]?: DeepPartial<T[Key]> | null }
     : T;
 
+export type AppliedKind = "live" | "capture" | "pipeline" | "restart";
+
+export interface SetConfigResult {
+  config: Config;
+  applied: AppliedKind;
+  messages: string[];
+}
+
+export type ConfigPatch = DeepPartial<Config>;
+
+export const OVERLAY_LIMITS = {
+  font_px: { min: 18, max: 40 },
+  background: { min: 0, max: 1 },
+  expire_s: { min: 3, max: 60 },
+  panel_lines: { min: 4, max: 6 },
+} as const;
+
+export const TRANSLATE_THREADS_MAX = 16;
+export const LOW_BACKGROUND_WARNING = 0.5;
+
+export const HOTKEY_ACTIONS = ["move_lock", "show_hide", "pause"] as const;
+export type HotkeyAction = (typeof HOTKEY_ACTIONS)[number];
+
+export function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+export function cloneConfig(config: Config): Config {
+  return structuredClone(config);
+}
+
+const CONFIG_TABLES = [
+  "capture", "audio", "vad", "asr", "filter", "routing", "join", "translate",
+  "overlay", "hotkeys", "transcript", "logging", "models",
+] as const;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Rejects payloads that are not a full config before the UI renders from them. */
+export function parseConfig(value: unknown): Config {
+  if (!isRecord(value) || typeof value.config_version !== "number") {
+    throw new Error("The app returned an unreadable settings file.");
+  }
+  for (const table of CONFIG_TABLES) {
+    if (!isRecord(value[table])) {
+      throw new Error(`The settings are missing the [${table}] section.`);
+    }
+  }
+  return value as Config;
+}
+
+/** Deep merge with the patch semantics the UI assumes: arrays replace, null removes a key. */
+export function applyPatch<T extends object>(base: T, patch: DeepPartial<T>): T {
+  const out: Record<string, unknown> = { ...(base as Record<string, unknown>) };
+  for (const [key, value] of Object.entries(patch as Record<string, unknown>)) {
+    if (value === undefined) continue;
+    if (value === null) {
+      delete out[key];
+    } else if (isRecord(value) && isRecord(out[key])) {
+      out[key] = applyPatch(out[key] as object, value as DeepPartial<object>);
+    } else {
+      out[key] = structuredClone(value);
+    }
+  }
+  return out as T;
+}
+
+export function normalizeLang(code: string | null | undefined): string | null {
+  if (!code) return null;
+  const cleaned = code.replace(/<\||\|>/g, "").trim().toLowerCase().replace(/_/g, "-");
+  const primary = cleaned.split("-")[0] ?? "";
+  if (primary === "jpn") return "ja";
+  if (primary === "kor") return "ko";
+  if (primary === "zho" || primary === "chi" || primary === "cmn") return "zh";
+  if (primary === "eng") return "en";
+  return primary === "" ? null : primary;
+}
+
+const LANGUAGE_NAMES: Readonly<Record<string, string>> = {
+  ja: "JAPANESE",
+  ko: "KOREAN",
+  zh: "CHINESE",
+  yue: "CANTONESE",
+  en: "ENGLISH",
+};
+
+export function languageLabel(code: string | null | undefined): string {
+  const lang = normalizeLang(code);
+  if (lang === null) return "OTHER LANGUAGE";
+  return LANGUAGE_NAMES[lang] ?? lang.toUpperCase();
+}
+
+export function isOtherLangTranslated(translateOther: readonly string[], lang: string | null | undefined): boolean {
+  const wanted = normalizeLang(lang);
+  if (wanted === null) return false;
+  return translateOther.some((code) => normalizeLang(code) === wanted);
+}
+
+export function sameExe(a: string, b: string): boolean {
+  return a.toLowerCase() === b.toLowerCase();
+}
+
+export function hasApp(apps: readonly CaptureApp[], exe: string): boolean {
+  return apps.some((app) => sameExe(app.exe, exe));
+}
+
+/** Returns the full replacement array for capture.apps; entries are matched by exe, case-insensitively. */
+export function toggledApps(apps: readonly CaptureApp[], entry: CaptureApp, selected: boolean): CaptureApp[] {
+  const rest = apps.filter((app) => !sameExe(app.exe, entry.exe));
+  return selected ? [...rest, { exe: entry.exe, name: entry.name }] : rest;
+}
+
+export function captureModePatch(mode: Config["capture"]["mode"]): ConfigPatch {
+  return { capture: { mode } };
+}
+
+export function captureDevicePatch(device: string): ConfigPatch {
+  return { capture: { device } };
+}
+
+export function captureAppsPatch(apps: CaptureApp[]): ConfigPatch {
+  return { capture: { apps } };
+}
+
+export function overlayPatch(values: DeepPartial<Config["overlay"]>): ConfigPatch {
+  return { overlay: values };
+}
+
+export function hotkeyPatch(action: HotkeyAction, accelerator: string): ConfigPatch {
+  return { hotkeys: { [action]: accelerator.trim() } };
+}
+
+/** Keeps every enabled code the UI does not expose (anything besides the toggled one). */
+export function translateOtherPatch(current: readonly string[], code: string, enabled: boolean): ConfigPatch {
+  const target = normalizeLang(code) ?? code;
+  const rest = current.filter((entry) => (normalizeLang(entry) ?? entry) !== target);
+  return { routing: { translate_other: enabled ? [...rest, target] : rest } };
+}
+
+export function translateThreadsPatch(threads: number): ConfigPatch {
+  return { translate: { threads: clamp(Math.round(threads), 0, TRANSLATE_THREADS_MAX) } };
+}
+
+export function transcriptPatch(enabled: boolean): ConfigPatch {
+  return { transcript: { enabled } };
+}
+
+export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
+  return { models: { source } };
+}
+
+/** "Ctrl+Shift+P" -> "Ctrl Shift P" as the spec prints bindings. */
+export function formatAccelerator(accelerator: string): string {
+  return accelerator.split("+").map((part) => part.trim()).filter(Boolean).join(" ");
+}
+
 /** Kept as a JSON initializer so the Rust parity test can read it directly. */
 export const DEFAULT_CONFIG: Config = {
   "config_version": 1,
