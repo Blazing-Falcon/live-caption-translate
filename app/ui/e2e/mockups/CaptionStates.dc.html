@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Caption line states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#E3A33B}a:hover{color:#F0BE6A}
+</style>
+</helmet>
+<div style="width: 1280px; height: 760px; box-sizing: border-box; padding: 48px 56px; background: #1C1D20; font-family: 'IBM Plex Sans', 'Noto Sans SC', sans-serif; color: #F4F4F2; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Caption line states</h1>
+<p style="margin: 0; font-size: 14px; color: #A3A6AC; max-width: 760px; line-height: 1.5">Each line is keyed by its utterance and updates in place. Only the newest line is full strength; older lines fade by age.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 32px">
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">PENDING · speech ended, waiting for translation</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; background: #0E0F11; border-radius: 8px">
+<div style="font-family: 'Noto Sans SC', sans-serif; font-size: 16px; color: #C9CBCF">你别误会，我不是那个意思。</div>
+<div style="font-size: 22px; font-weight: 500; color: #6F7278">···</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">STREAMING · words arrive, amber caret at the end</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; background: #0E0F11; border-radius: 8px">
+<div style="font-family: 'Noto Sans SC', sans-serif; font-size: 16px; color: #C9CBCF">你别误会，我不是那个意思。</div>
+<div style="font-size: 22px; font-weight: 500">Don't get it wrong, that's<span style="display: inline-block; width: 2px; height: 0.95em; margin-left: 4px; vertical-align: -0.1em; background: #E3A33B"></span></div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">FINAL</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; background: #0E0F11; border-radius: 8px">
+<div style="font-family: 'Noto Sans SC', sans-serif; font-size: 16px; color: #C9CBCF">你别误会，我不是那个意思。</div>
+<div style="font-size: 22px; font-weight: 500">Don't get it wrong, that's not what I mean.</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">ENGLISH SPEECH · shown as heard, no source line</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; background: #0E0F11; border-radius: 8px">
+<div style="font-size: 22px; font-weight: 500">OK, can you guys hear me now?</div>
+<div style="font-size: 11px; color: #9A9DA3; letter-spacing: 0.04em">ENGLISH · NOT TRANSLATED</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">OTHER LANGUAGE · untranslated unless enabled</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; background: #0E0F11; border-radius: 8px">
+<div style="font-size: 18px; color: #C9CBCF">みんな、ありがとう！</div>
+<div style="font-size: 11px; color: #9A9DA3; letter-spacing: 0.04em">JAPANESE · TURN ON IN SETTINGS TO TRANSLATE</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">SKIPPED · caught up to live speech</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; background: #0E0F11; border-radius: 8px; opacity: 0.6">
+<div style="font-family: 'Noto Sans SC', sans-serif; font-size: 16px; color: #C9CBCF">然后我们再去下一个地图看看。</div>
+<div style="font-size: 11px; color: #9A9DA3; letter-spacing: 0.04em">SKIPPED TO CATCH UP</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">FAILED · source stays, short reason</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; background: #0E0F11; border-radius: 8px">
+<div style="font-family: 'Noto Sans SC', sans-serif; font-size: 16px; color: #C9CBCF">这件事说来话长。</div>
+<div style="font-size: 11px; color: #E8B866; letter-spacing: 0.04em">TRANSLATION FAILED · RESTARTING TRANSLATOR</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A9DA3">STATUS · replaces captions when nothing can be heard</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: #0E0F11; border-radius: 8px; font-size: 15px; color: #C9CBCF">
+<span style="width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #9A9DA3; box-sizing: border-box"></span>
+<span>No audio playing on Speakers (Realtek)</span>
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":760}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
