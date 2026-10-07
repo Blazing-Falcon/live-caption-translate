@@ -1,0 +1,197 @@
+/* Every color, font and size used by the UI is defined here. Components only reference var(--...). */
+
+:root {
+  --font-ui: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --font-cjk: "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --font-mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+
+  --text-ui: 14px;
+  --text-label: 13px;
+  --text-help: 12px;
+  --text-meta: 11px;
+  --meta-tracking: 0.04em;
+  --source-scale: 0.65;
+  --older-scale: 0.8;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --caption-gap: 14px;
+  --panel-gap: 18px;
+
+  --radius-overlay: 10px;
+  --radius-card: 8px;
+  --radius-control: 6px;
+
+  --control-h: 36px;
+  --row-h: 44px;
+  --focus-width: 2px;
+
+  --slide-ms: 120ms;
+  --fade-ms: 200ms;
+  --caret-ms: 1000ms;
+
+  /* Overlay: always dark, independent of the Windows theme. */
+  --ov-ground-rgb: 14 15 17;
+  --ov-bar-alpha: 0.82;
+  --ov-text: #f4f4f2;
+  --ov-text-bright: #d5d7db;
+  --ov-text-secondary: #c9cbcf;
+  --ov-meta: #9a9da3;
+  --ov-chip-text: #b4b7bc;
+  --ov-pending: #6f7278;
+  --ov-accent: #e3a33b;
+  --ov-warning: #e8b866;
+  --ov-divider: #2b2d31;
+  --ov-hover: rgb(244 244 242 / 0.1);
+  --ov-chip-bg: rgb(var(--ov-ground-rgb) / 0.7);
+  --ov-move-bg: #111214;
+  --ov-key-border: #45484e;
+  --ov-button-text: #1a1b1d;
+  --ov-outline: var(--ov-accent);
+
+  /* Control window, light. */
+  --c-ground: #f7f7f5;
+  --c-surface: #ffffff;
+  --c-border: #e3e3de;
+  --c-border-strong: #cfcfca;
+  --c-row-sep: #f0f0ec;
+  --c-text: #1b1c1e;
+  --c-text-label: #44474c;
+  --c-text-secondary: #6b6e73;
+  --c-accent: #b27318;
+  --c-link: #8a5a12;
+  --c-warning: #8a5a12;
+  --c-nav-selected: #e9e9e4;
+  --c-track: #ecece7;
+  --c-btn-primary-bg: #1b1c1e;
+  --c-btn-primary-text: #f7f7f5;
+  --c-focus: #b27318;
+  --c-hollow: #8c8f94;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-ground: #1c1d20;
+    --c-surface: #25272a;
+    --c-border: #34363a;
+    --c-border-strong: #4a4d52;
+    --c-row-sep: #2d2f33;
+    --c-text: #ededea;
+    --c-text-label: #c4c7cc;
+    --c-text-secondary: #a3a6ac;
+    --c-accent: #e3a33b;
+    --c-link: #e3a33b;
+    --c-warning: #e8b866;
+    --c-nav-selected: #2f3134;
+    --c-track: #34363a;
+    --c-btn-primary-bg: #ededea;
+    --c-btn-primary-text: #1c1d20;
+    --c-focus: #e3a33b;
+    --c-hollow: #a3a6ac;
+  }
+}
+
+:root[data-theme="dark"] {
+  --c-ground: #1c1d20;
+  --c-surface: #25272a;
+  --c-border: #34363a;
+  --c-border-strong: #4a4d52;
+  --c-row-sep: #2d2f33;
+  --c-text: #ededea;
+  --c-text-label: #c4c7cc;
+  --c-text-secondary: #a3a6ac;
+  --c-accent: #e3a33b;
+  --c-link: #e3a33b;
+  --c-warning: #e8b866;
+  --c-nav-selected: #2f3134;
+  --c-track: #34363a;
+  --c-btn-primary-bg: #ededea;
+  --c-btn-primary-text: #1c1d20;
+  --c-focus: #e3a33b;
+  --c-hollow: #a3a6ac;
+}
+
+/* Re-resolved per element so the user opacity set on the overlay root applies. */
+.overlay-root {
+  --ov-bar-bg: rgb(var(--ov-ground-rgb) / var(--ov-bar-alpha));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: transparent;
+}
+
+html:has(> body.control-body) {
+  background: var(--c-ground);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-ui);
+  -webkit-font-smoothing: auto;
+}
+
+body.overlay-body {
+  background: transparent;
+  color: var(--ov-text);
+  overflow: hidden;
+  user-select: none;
+}
+
+body.control-body {
+  background: var(--c-ground);
+  color: var(--c-text);
+}
+
+#app {
+  height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: 2px;
+}
+
+.overlay-body :focus-visible {
+  outline-color: var(--ov-accent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
