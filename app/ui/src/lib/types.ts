@@ -110,12 +110,33 @@ export interface AudioAppList {
   apps: AudioApp[];
 }
 
+export type ModelState = "missing" | "downloading" | "paused" | "verifying" | "ready" | "corrupt";
+export type ModelSource = "huggingface" | "modelscope";
+export type FolderKind = "transcripts" | "logs" | "models";
+
 export interface ModelStatus {
   id: string;
   name: string;
   bytes_total: number;
   bytes_done: number;
-  state: "missing" | "downloading" | "paused" | "verifying" | "ready" | "corrupt";
+  state: ModelState;
+}
+
+/** Payload of `models://progress`: the same rows as models_status. */
+export type ModelProgress = ModelStatus;
+
+export interface HotkeyError {
+  action: string;
+  accelerator: string;
+  message: string;
+}
+
+export interface OverlayModePayload {
+  moving: boolean;
+}
+
+export interface OverlayVisiblePayload {
+  visible: boolean;
 }
 
 export type LineState = "pending" | "streaming" | "final" | "english" | "other" | "skipped" | "failed";
