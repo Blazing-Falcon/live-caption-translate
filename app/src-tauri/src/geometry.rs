@@ -39,7 +39,8 @@ pub fn default_rect(panel: bool, edge_right: bool, monitor: &Monitor) -> Overlay
         (x, 24.0, w, h)
     } else {
         let w = 960.0_f64.min(work_w * 0.9).max(MIN_W);
-        let h = 150.0;
+        // Two utterances with source lines plus the status chip row need about 190 DIPs.
+        let h = 200.0;
         ((work_w - w) / 2.0, work_h - h - 40.0, w, h)
     };
     OverlayRect {

@@ -115,6 +115,7 @@ pub fn run() {
             bridge::spawn(shared.clone())?;
             windows::create_control(&handle)?;
             shared.overlay.create(&shared)?;
+            overlay::spawn_hover_observer(shared.clone())?;
             *lock(&shared.tray) = Some(tray::build(&handle)?);
             shared.refresh_tray();
             hotkeys::register(&handle, &config.hotkeys);

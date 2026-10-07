@@ -203,3 +203,50 @@ fn apply_native_styles(window: &WebviewWindow) {
 
 #[cfg(not(windows))]
 fn apply_native_styles(_: &WebviewWindow) {}
+
+/// CSS `:hover` cannot fire through a click-through window, so the panel header is revealed by
+/// observing the cursor natively. Only the panel style uses it; the page ignores it otherwise.
+pub fn spawn_hover_observer(shared: std::sync::Arc<Shared>) -> std::io::Result<()> {
+    use std::{sync::atomic::Ordering, time::Duration};
+    use tauri::Emitter;
+    std::thread::Builder::new()
+        .name("lt-hover".into())
+        .spawn(move || {
+            let mut last = false;
+            while !shared.quitting.load(Ordering::Acquire) {
+                std::thread::sleep(Duration::from_millis(100));
+                let inside = shared.overlay.cursor_over_panel(&shared);
+                if inside != last {
+                    last = inside;
+                    let _ = shared.handle.emit_to(
+                        LABEL,
+                        "overlay://hover",
+                        serde_json::json!({ "hover": inside }),
+                    );
+                }
+            }
+        })
+        .map(|_| ())
+}
+
+impl Overlay {
+    fn cursor_over_panel(&self, shared: &Shared) -> bool {
+        if self.moving.load(Ordering::Acquire) || shared.config().overlay.style != "panel" {
+            return false;
+        }
+        let Some(window) = self.window(&shared.handle) else {
+            return false;
+        };
+        let (Ok(cursor), Ok(position), Ok(size)) = (
+            window.cursor_position(),
+            window.outer_position(),
+            window.outer_size(),
+        ) else {
+            return false;
+        };
+        cursor.x >= f64::from(position.x)
+            && cursor.y >= f64::from(position.y)
+            && cursor.x < f64::from(position.x) + f64::from(size.width)
+            && cursor.y < f64::from(position.y) + f64::from(size.height)
+    }
+}

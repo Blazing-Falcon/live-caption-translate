@@ -3,5 +3,5 @@
   "identifier": "control",
   "description": "Control window: events and the folder picker",
   "windows": ["control"],
-  "permissions": ["core:event:default", "dialog:allow-open"]
+  "permissions": ["core:event:default", "core:window:default", "dialog:allow-open"]
 }
