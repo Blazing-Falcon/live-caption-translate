@@ -1,0 +1,562 @@
+[
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "正好我没看。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 5
+ },
+ {
+  "prev_zh": "正好我没看。",
+  "prev_en": "I didn't see it.",
+  "new_zh": "正好我没看过这个电。",
+  "expected_prefix": "I didn't ",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": "正好我没看过这个电。",
+  "prev_en": "I didn't watch this movie.",
+  "new_zh": "正好我没看过这个电影就讲。",
+  "expected_prefix": "I didn't watch ",
+  "new_zh_word_chars": 12
+ },
+ {
+  "prev_zh": "正好我没看过这个电影就讲。",
+  "prev_en": "I didn't watch the movie, so I'm not going to say anything.",
+  "new_zh": "啊，正好我没看过这个电影就讲讲吧。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 15
+ },
+ {
+  "prev_zh": "啊，正好我没看过这个电影就讲讲吧。",
+  "prev_en": "Oh, I just wanted to say that I haven't seen the movie.",
+  "new_zh": "，正好我没看过这个电影，就讲讲吧。嗯，行，你看。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 18
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "你可你可不要听着睡着。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 10
+ },
+ {
+  "prev_zh": "你可你可不要听着睡着。",
+  "prev_en": "You know, you don't have to listen to it.",
+  "new_zh": "你可你可不要听着睡着了，睡不着。",
+  "expected_prefix": "You know, you don't have to listen ",
+  "new_zh_word_chars": 14
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "睡不着我跟你讲。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 7
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "就是这个。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 4
+ },
+ {
+  "prev_zh": "就是这个。",
+  "prev_en": "That's it.",
+  "new_zh": "就是这个我是这。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 7
+ },
+ {
+  "prev_zh": "就是这个我是这。",
+  "prev_en": "That's what I am.",
+  "new_zh": "就是这个我是这有这个店。",
+  "expected_prefix": "That's what ",
+  "new_zh_word_chars": 11
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "他是那个有。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 5
+ },
+ {
+  "prev_zh": "他是那个有。",
+  "prev_en": "He's got it.",
+  "new_zh": "他是那个由杨幂和那个鹿。",
+  "expected_prefix": "He's ",
+  "new_zh_word_chars": 11
+ },
+ {
+  "prev_zh": "他是那个由杨幂和那个鹿。",
+  "prev_en": "He's the one with Yang and the one with the deer.",
+  "new_zh": "他是那个由杨幂和那个鹿晗主演。",
+  "expected_prefix": "He's the one with Yang and the one with ",
+  "new_zh_word_chars": 14
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 3
+ },
+ {
+  "prev_zh": "然后就。",
+  "prev_en": "And then.",
+  "new_zh": "然后就就讲述的是。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 8
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后那个。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 4
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "嗯，一开始。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 4
+ },
+ {
+  "prev_zh": "嗯，一开始。",
+  "prev_en": "Well, at first.",
+  "new_zh": "嗯，一开始的时候是。",
+  "expected_prefix": "Well, ",
+  "new_zh_word_chars": 8
+ },
+ {
+  "prev_zh": "嗯，一开始的时候是。",
+  "prev_en": "Well, at first.",
+  "new_zh": "嗯，一开始的时候是杨幂那个。",
+  "expected_prefix": "Well, ",
+  "new_zh_word_chars": 12
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "我也不知道他。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 6
+ },
+ {
+  "prev_zh": "我也不知道他。",
+  "prev_en": "I don't know him.",
+  "new_zh": "我也不知道他这里面。",
+  "expected_prefix": "I don't ",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": "我也不知道他这里面。",
+  "prev_en": "I don't know anything about him.",
+  "new_zh": "我也不知道他在里面叫啥，就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 12
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "就就称那个叫。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 6
+ },
+ {
+  "prev_zh": "就就称那个叫。",
+  "prev_en": "It's called.",
+  "new_zh": "就就称那个叫杨米板。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后他。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 3
+ },
+ {
+  "prev_zh": "然后他。",
+  "prev_en": "Then he.",
+  "new_zh": "然后他嗯他的弟。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 7
+ },
+ {
+  "prev_zh": "然后他嗯他的弟。",
+  "prev_en": "Then he, uh, his brother.",
+  "new_zh": "然后他嗯他的弟弟特别。",
+  "expected_prefix": "Then he, uh, ",
+  "new_zh_word_chars": 10
+ },
+ {
+  "prev_zh": "然后他嗯他的弟弟特别。",
+  "prev_en": "Then he, uh, his brother was special.",
+  "new_zh": "然后他嗯他的弟弟特别喜欢英语。",
+  "expected_prefix": "Then he, uh, his brother ",
+  "new_zh_word_chars": 14
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "但是但是。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 4
+ },
+ {
+  "prev_zh": "但是但是。",
+  "prev_en": "But.",
+  "new_zh": "但是但是他就他就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 8
+ },
+ {
+  "prev_zh": "但是但是他就他就。",
+  "prev_en": "But",
+  "new_zh": "但是但是他就他就不想让他。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 12
+ },
+ {
+  "prev_zh": "但是但是他就他就不想让他。",
+  "prev_en": "But",
+  "new_zh": "但是但是他就他就不想让他他弟弟出事这个音乐。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 21
+ },
+ {
+  "prev_zh": "但是但是他就他就不想让他他弟弟出事这个音乐。",
+  "prev_en": "But",
+  "new_zh": "但是但是他就他就不想让他他的弟弟从事这个音乐行业的。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 25
+ },
+ {
+  "prev_zh": "但是但是他就他就不想让他他的弟弟从事这个音乐行业的。",
+  "prev_en": "But, but, he didn't want his brother to get involved in the music industry.",
+  "new_zh": "但是但是他就他就不想让他他弟弟从事这个音乐行业的事情啥的。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 28
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "他那会是个一个警察。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后他就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 4
+ },
+ {
+  "prev_zh": "然后他就。",
+  "prev_en": "And then he.",
+  "new_zh": "然后他就嗯不想嘛。",
+  "expected_prefix": "And ",
+  "new_zh_word_chars": 8
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "他就他弟弟开演唱。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 8
+ },
+ {
+  "prev_zh": "他就他弟弟开演唱。",
+  "prev_en": "He sang about his brother.",
+  "new_zh": "他就他弟弟开演唱会呢，然后。",
+  "expected_prefix": "He sang about ",
+  "new_zh_word_chars": 12
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后他就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 4
+ },
+ {
+  "prev_zh": "然后他就。",
+  "prev_en": "And then he.",
+  "new_zh": "然后他就进呃他就进。",
+  "expected_prefix": "And ",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": "然后他就进呃他就进。",
+  "prev_en": "And he went in.",
+  "new_zh": "然后他就进呃他就进去，然后。",
+  "expected_prefix": "And he ",
+  "new_zh_word_chars": 12
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后打打乱了。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 6
+ },
+ {
+  "prev_zh": "然后打打乱了。",
+  "prev_en": "And then it got messed up.",
+  "new_zh": "然后打打乱了，然后让。",
+  "expected_prefix": "And then it got ",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "那他就走了然。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 6
+ },
+ {
+  "prev_zh": "那他就走了然。",
+  "prev_en": "Then he left.",
+  "new_zh": "那他就走了，然后他就。",
+  "expected_prefix": "Then ",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": "那他就走了，然后他就。",
+  "prev_en": "Then he left, and then he left.",
+  "new_zh": "那他弟弟走了，然后他就嗯把他弟弟。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 15
+ },
+ {
+  "prev_zh": "那他弟弟走了，然后他就嗯把他弟弟。",
+  "prev_en": "Then his brother left, and then he um, he left his brother.",
+  "new_zh": "到他弟弟走了，然后他就嗯把他弟弟嗯绑上了车。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 20
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后就那啥。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 5
+ },
+ {
+  "prev_zh": "然后就那啥。",
+  "prev_en": "And then nothing.",
+  "new_zh": "然后就那啥他就开。",
+  "expected_prefix": "And ",
+  "new_zh_word_chars": 8
+ },
+ {
+  "prev_zh": "然后就那啥他就开。",
+  "prev_en": "And then he started driving.",
+  "new_zh": "然后就那啥，他就开车走呢。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 11
+ },
+ {
+  "prev_zh": "然后就那啥，他就开车走呢。",
+  "prev_en": "And then, he just drove away.",
+  "new_zh": "然后就那啥，他就开车走呢，最后他弟弟。",
+  "expected_prefix": "And then, he just ",
+  "new_zh_word_chars": 16
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "走着走着，因为。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 6
+ },
+ {
+  "prev_zh": "走着走着，因为。",
+  "prev_en": "As I walked,",
+  "new_zh": "走着走着，因为他弟弟。",
+  "expected_prefix": "As ",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": "走着走着，因为他弟弟。",
+  "prev_en": "As he walked along with his brother.",
+  "new_zh": "走着走着，因为他弟弟他有他弟。",
+  "expected_prefix": "As he walked along with ",
+  "new_zh_word_chars": 13
+ },
+ {
+  "prev_zh": "走着走着，因为他弟弟他有他弟。",
+  "prev_en": "As he walked along with his brother, he had his brother.",
+  "new_zh": "走着走着，因为他弟弟他和他弟弟发生的。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 17
+ },
+ {
+  "prev_zh": "走着走着，因为他弟弟他和他弟弟发生的。",
+  "prev_en": "As he walked, he and his brother had a fight.",
+  "new_zh": "走着走着，因为他弟弟他和他弟弟发生了争执，然后。",
+  "expected_prefix": "As he walked, he and his brother had ",
+  "new_zh_word_chars": 21
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后他就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 4
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "最后就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 3
+ },
+ {
+  "prev_zh": "最后就。",
+  "prev_en": "And finally.",
+  "new_zh": "最后就走到走到一个。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": "最后就走到走到一个。",
+  "prev_en": "And then I walked over to one.",
+  "new_zh": "最后就走到走到一个桥桥的上面。",
+  "expected_prefix": "And then I walked over ",
+  "new_zh_word_chars": 14
+ },
+ {
+  "prev_zh": "最后就走到走到一个桥桥的上面。",
+  "prev_en": "And then I walked over to the bridge.",
+  "new_zh": "最后就走到走到一个桥桥的上面，他俩就。",
+  "expected_prefix": "And then I walked over to ",
+  "new_zh_word_chars": 17
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "他俩就发生了这只。然后。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 10
+ },
+ {
+  "prev_zh": "他俩就发生了这只。然后。",
+  "prev_en": "They had an affair.",
+  "new_zh": "他俩就发生了争只，然后他就他。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 13
+ },
+ {
+  "prev_zh": "他俩就发生了争只，然后他就他。",
+  "prev_en": "He got angry and then he left.",
+  "new_zh": "他俩就发生了争执，然后他就他弟弟就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 16
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后他就他弟弟就。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 8
+ },
+ {
+  "prev_zh": "然后他就他弟弟就。",
+  "prev_en": "And then he said to his brother.",
+  "new_zh": "然后他就他弟弟就就那啥。",
+  "expected_prefix": "And then he said to ",
+  "new_zh_word_chars": 11
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后我就出。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 5
+ },
+ {
+  "prev_zh": "然后我就出。",
+  "prev_en": "And then I went out.",
+  "new_zh": "然后我就出嗯出车祸了。",
+  "expected_prefix": "And then I ",
+  "new_zh_word_chars": 10
+ },
+ {
+  "prev_zh": "然后我就出嗯出车祸了。",
+  "prev_en": "And then I um I got into an accident.",
+  "new_zh": "然后就出嗯出车祸了嘛，然后他。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 13
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后他还一直在车里这。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 10
+ },
+ {
+  "prev_zh": "然后他还一直在车里这。",
+  "prev_en": "He was also in the car.",
+  "new_zh": "然后他俩一直在车里争执争执然后。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 15
+ },
+ {
+  "prev_zh": "然后他俩一直在车里争执争执然后。",
+  "prev_en": "Then they started arguing in the car.",
+  "new_zh": "然后他一直在车里挣执挣执，然后就没刹住砸。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 19
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后就没杀住砸啥的。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 9
+ },
+ {
+  "prev_zh": "然后就没杀住砸啥的。",
+  "prev_en": "And then it just went away.",
+  "new_zh": "然后就没杀住砸啥的，然后就。",
+  "expected_prefix": "And then it just ",
+  "new_zh_word_chars": 12
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "然后就嗯他。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 5
+ },
+ {
+  "prev_zh": null,
+  "prev_en": null,
+  "new_zh": "死了，然后他那。",
+  "expected_prefix": "",
+  "new_zh_word_chars": 6
+ },
+ {
+  "prev_zh": "死了，然后他那。",
+  "prev_en": "He died, and then he was.",
+  "new_zh": "死了，然后他得掉下去死了。",
+  "expected_prefix": "He died, and then ",
+  "new_zh_word_chars": 11
+ },
+ {
+  "prev_zh": "死了，然后他得掉下去死了。",
+  "prev_en": "He died, and then he had to drop down and die.",
+  "new_zh": "死了，然后他得掉下去死了，然后他就。",
+  "expected_prefix": "He died, and then he had to drop down ",
+  "new_zh_word_chars": 15
+ }
+]

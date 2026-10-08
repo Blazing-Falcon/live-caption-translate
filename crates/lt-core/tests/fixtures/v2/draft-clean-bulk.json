@@ -1,0 +1,2722 @@
+[
+{
+"raw": "  spaced   out  ",
+"expected": "spaced out"
+},
+{
+"raw": "A, a, a.",
+"expected": "A."
+},
+{
+"raw": "Although I'm mainly talking about the 9050pro today, I am.",
+"expected": "Although I'm mainly talking about the 9050pro today, I am."
+},
+{
+"raw": "Although today 9050pro is the  main topic, I.",
+"expected": "Although today 9050pro is the main topic, I."
+},
+{
+"raw": "Although today 9050pro is the main topic.",
+"expected": "Although today 9050pro is the main topic."
+},
+{
+"raw": "Although today I will mainly talk about the 9050pro.",
+"expected": "Although today I will mainly talk about the 9050pro."
+},
+{
+"raw": "Although today I will talk mainly about 9050pro, ah, but I am still.",
+"expected": "Although today I will talk mainly about 9050pro, ah, but I am still."
+},
+{
+"raw": "Although today I will talk mainly about the 9050pro.",
+"expected": "Although today I will talk mainly about the 9050pro."
+},
+{
+"raw": "Although today I'm mainly talking about the 9050pro, but I.",
+"expected": "Although today I'm mainly talking about the 9050pro, but I."
+},
+{
+"raw": "Although today is 9050.",
+"expected": "Although today is 9050."
+},
+{
+"raw": "Although today is mainly about.",
+"expected": "Although today is mainly about."
+},
+{
+"raw": "Although today we will talk 9050pro, I.",
+"expected": "Although today we will talk 9050pro, I."
+},
+{
+"raw": "Although today we will talk mainly 9050pro.",
+"expected": "Although today we will talk mainly 9050pro."
+},
+{
+"raw": "Although today we will talk mainly about 9050.",
+"expected": "Although today we will talk mainly about 9050."
+},
+{
+"raw": "And  he  didn't  want  to  do  it.",
+"expected": "And he didn't want to do it."
+},
+{
+"raw": "And  he  hmm  that  thing.",
+"expected": "And he hmm that thing."
+},
+{
+"raw": "And  he  went  in.",
+"expected": "And he went in."
+},
+{
+"raw": "And  the  sheep.",
+"expected": "And the sheep."
+},
+{
+"raw": "And  then  I  recommended  her.",
+"expected": "And then I recommended her."
+},
+{
+"raw": "And  then  he  felt  something.",
+"expected": "And then he felt something."
+},
+{
+"raw": "And  then  he  started  driving.",
+"expected": "And then he started driving."
+},
+{
+"raw": "And  then  on  the  phone.",
+"expected": "And then on the phone."
+},
+{
+"raw": "And  then  walk  away.",
+"expected": "And then walk away."
+},
+{
+"raw": "And  then he just went away.",
+"expected": "And then he just went away."
+},
+{
+"raw": "And finally, I walked to one.",
+"expected": "And finally, I walked to one."
+},
+{
+"raw": "And finally.",
+"expected": "And finally."
+},
+{
+"raw": "And he  he went in, and then.",
+"expected": "And he he went in, and then."
+},
+{
+"raw": "And he hmm  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh",
+"expected": "And he hmm oh"
+},
+{
+"raw": "And he hmm  what?",
+"expected": "And he hmm what?"
+},
+{
+"raw": "And he said,",
+"expected": "And he said,"
+},
+{
+"raw": "And that's it.",
+"expected": "And that's it."
+},
+{
+"raw": "And that's what I said.",
+"expected": "And that's what I said."
+},
+{
+"raw": "And the mate90 with 709050pro.",
+"expected": "And the mate90 with 709050pro."
+},
+{
+"raw": "And the mate90 with the 709050pro.",
+"expected": "And the mate90 with the 709050pro."
+},
+{
+"raw": "And the mate90pro max with the 709050pro.",
+"expected": "And the mate90pro max with the 709050pro."
+},
+{
+"raw": "And then",
+"expected": "And then"
+},
+{
+"raw": "And then  I walked over to one.",
+"expected": "And then I walked over to one."
+},
+{
+"raw": "And then  it's about the story.",
+"expected": "And then it's about the story."
+},
+{
+"raw": "And then  the man  asked  me  to  drink.",
+"expected": "And then the man asked me to drink."
+},
+{
+"raw": "And then 1.",
+"expected": "And then 1."
+},
+{
+"raw": "And then I  crashed.",
+"expected": "And then I crashed."
+},
+{
+"raw": "And then I  um  I got into an accident.",
+"expected": "And then I um I got into an accident."
+},
+{
+"raw": "And then I got into an accident.",
+"expected": "And then I got into an accident."
+},
+{
+"raw": "And then I walked over  to a bridge.",
+"expected": "And then I walked over to a bridge."
+},
+{
+"raw": "And then I walked over  to the bridge.",
+"expected": "And then I walked over to the bridge."
+},
+{
+"raw": "And then I walked over to  the bridge and he walked over to me.",
+"expected": "And then I walked over to the bridge and he walked over to me."
+},
+{
+"raw": "And then I walked over to  the bridge.",
+"expected": "And then I walked over to the bridge."
+},
+{
+"raw": "And then I walked over to a bridge.",
+"expected": "And then I walked over to a bridge."
+},
+{
+"raw": "And then I walked over to one.",
+"expected": "And then I walked over to one."
+},
+{
+"raw": "And then I went out.",
+"expected": "And then I went out."
+},
+{
+"raw": "And then I went to  the bridge and he went.",
+"expected": "And then I went to the bridge and he went."
+},
+{
+"raw": "And then I went to  the bridge.",
+"expected": "And then I went to the bridge."
+},
+{
+"raw": "And then I went to a bridge.",
+"expected": "And then I went to a bridge."
+},
+{
+"raw": "And then I went to a place.",
+"expected": "And then I went to a place."
+},
+{
+"raw": "And then another day.",
+"expected": "And then another day."
+},
+{
+"raw": "And then finally.",
+"expected": "And then finally."
+},
+{
+"raw": "And then he  drove away.",
+"expected": "And then he drove away."
+},
+{
+"raw": "And then he  he drove away.",
+"expected": "And then he he drove away."
+},
+{
+"raw": "And then he  he went in, and then.",
+"expected": "And then he he went in, and then."
+},
+{
+"raw": "And then he  oh, well, he just.",
+"expected": "And then he oh, well, he just."
+},
+{
+"raw": "And then he drove away, and then his brother.",
+"expected": "And then he drove away, and then his brother."
+},
+{
+"raw": "And then he felt it.",
+"expected": "And then he felt it."
+},
+{
+"raw": "And then he felt.",
+"expected": "And then he felt."
+},
+{
+"raw": "And then he heard it, because of the  guy behind uh, uh, the back seat.",
+"expected": "And then he heard it, because of the guy behind uh, uh, the back seat."
+},
+{
+"raw": "And then he heard it, because of the guy behind uh, uh, the  back of the train.",
+"expected": "And then he heard it, because of the guy behind uh, uh, the back of the train."
+},
+{
+"raw": "And then he heard it, because of the guy behind uh, uh, the back of  the train.",
+"expected": "And then he heard it, because of the guy behind uh, uh, the back of the train."
+},
+{
+"raw": "And then he heard it, because of the man  behind, uh, the back seat.",
+"expected": "And then he heard it, because of the man behind, uh, the back seat."
+},
+{
+"raw": "And then he heard it, because of the man behind him.",
+"expected": "And then he heard it, because of the man behind him."
+},
+{
+"raw": "And then he heard it, because of the man behind, uh, the  back of the train.",
+"expected": "And then he heard it, because of the man behind, uh, the back of the train."
+},
+{
+"raw": "And then he heard it, because of the man behind, uh, the  back of the wagon, a woman.",
+"expected": "And then he heard it, because of the man behind, uh, the back of the wagon, a woman."
+},
+{
+"raw": "And then he heard it, because of the man behind, uh, the back of  the train, there was a woman.",
+"expected": "And then he heard it, because of the man behind, uh, the back of the train, there was a woman."
+},
+{
+"raw": "And then he heard it, because of the man behind, uh, the back of  the train.",
+"expected": "And then he heard it, because of the man behind, uh, the back of the train."
+},
+{
+"raw": "And then he heard it, because of the man behind.",
+"expected": "And then he heard it, because of the man behind."
+},
+{
+"raw": "And then he heard it, because that guy was behind, uh, the back seat.",
+"expected": "And then he heard it, because that guy was behind, uh, the back seat."
+},
+{
+"raw": "And then he heard it, because that guy was in the back of the train.",
+"expected": "And then he heard it, because that guy was in the back of the train."
+},
+{
+"raw": "And then he heard it, because that man had a bag in the back of his truck.",
+"expected": "And then he heard it, because that man had a bag in the back of his truck."
+},
+{
+"raw": "And then he heard it, because that man was behind, uh, behind.",
+"expected": "And then he heard it, because that man was behind, uh, behind."
+},
+{
+"raw": "And then he heard it, because that man was in the back of the train.",
+"expected": "And then he heard it, because that man was in the back of the train."
+},
+{
+"raw": "And then he heard it, because the man was in the back of the wagon, uh, a woman.",
+"expected": "And then he heard it, because the man was in the back of the wagon, uh, a woman."
+},
+{
+"raw": "And then he heard it.",
+"expected": "And then he heard it."
+},
+{
+"raw": "And then he heard, because the man was behind, uh, the back of the wagon, and there was a woman.",
+"expected": "And then he heard, because the man was behind, uh, the back of the wagon, and there was a woman."
+},
+{
+"raw": "And then he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he",
+"expected": "And then he just"
+},
+{
+"raw": "And then he just didn't  like it.",
+"expected": "And then he just didn't like it."
+},
+{
+"raw": "And then he just didn't want to.",
+"expected": "And then he just didn't want to."
+},
+{
+"raw": "And then he just drove away, and then his brother just drove away.",
+"expected": "And then he just drove away, and then his brother just drove away."
+},
+{
+"raw": "And then he just drove away.",
+"expected": "And then he just drove away."
+},
+{
+"raw": "And then he just drove.",
+"expected": "And then he just drove."
+},
+{
+"raw": "And then he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he",
+"expected": "And then he just"
+},
+{
+"raw": "And then he just kicked the girl out.",
+"expected": "And then he just kicked the girl out."
+},
+{
+"raw": "And then he just kicked the girl, and then he just.",
+"expected": "And then he just kicked the girl, and then he just."
+},
+{
+"raw": "And then he just played.",
+"expected": "And then he just played."
+},
+{
+"raw": "And then he just started.",
+"expected": "And then he just started."
+},
+{
+"raw": "And then he just walked away, he just walked away, and then he recommended this woman, and then he just walked away.",
+"expected": "And then he just walked away, he just walked away, and then he recommended this woman, and then he just walked away."
+},
+{
+"raw": "And then he just walked away, he just walked away, and then he recommended this woman.",
+"expected": "And then he just walked away, he just walked away, and then he recommended this woman."
+},
+{
+"raw": "And then he lost his brother.",
+"expected": "And then he lost his brother."
+},
+{
+"raw": "And then he ouch felt it.",
+"expected": "And then he ouch felt it."
+},
+{
+"raw": "And then he said to  his brother.",
+"expected": "And then he said to his brother."
+},
+{
+"raw": "And then he said to his brother.",
+"expected": "And then he said to his brother."
+},
+{
+"raw": "And then he said, \"Yeah.\"",
+"expected": "And then he said, \"Yeah.\""
+},
+{
+"raw": "And then he said, because of that man.",
+"expected": "And then he said, because of that man."
+},
+{
+"raw": "And then he said, because.",
+"expected": "And then he said, because."
+},
+{
+"raw": "And then he was gone.",
+"expected": "And then he was gone."
+},
+{
+"raw": "And then he was like, \"Oh, my brother.\"",
+"expected": "And then he was like, \"Oh, my brother.\""
+},
+{
+"raw": "And then he went in.",
+"expected": "And then he went in."
+},
+{
+"raw": "And then he.",
+"expected": "And then he."
+},
+{
+"raw": "And then it  was on the phone.",
+"expected": "And then it was on the phone."
+},
+{
+"raw": "And then it comes out.",
+"expected": "And then it comes out."
+},
+{
+"raw": "And then it got iced.",
+"expected": "And then it got iced."
+},
+{
+"raw": "And then it got messed up and then let it go.",
+"expected": "And then it got messed up and then let it go."
+},
+{
+"raw": "And then it got messed up.",
+"expected": "And then it got messed up."
+},
+{
+"raw": "And then it just  crashed and everything.",
+"expected": "And then it just crashed and everything."
+},
+{
+"raw": "And then it just crashed.",
+"expected": "And then it just crashed."
+},
+{
+"raw": "And then it just disappeared.",
+"expected": "And then it just disappeared."
+},
+{
+"raw": "And then it just goes away.",
+"expected": "And then it just goes away."
+},
+{
+"raw": "And then it just killed him, and then it just killed him.",
+"expected": "And then it just killed him, and then it just killed him."
+},
+{
+"raw": "And then it just went away.",
+"expected": "And then it just went away."
+},
+{
+"raw": "And then it was gone.",
+"expected": "And then it was gone."
+},
+{
+"raw": "And then it was just like that.",
+"expected": "And then it was just like that."
+},
+{
+"raw": "And then it was on  the phone  what I call a call.",
+"expected": "And then it was on the phone what I call a call."
+},
+{
+"raw": "And then it was on  the phone.",
+"expected": "And then it was on the phone."
+},
+{
+"raw": "And then it was on the phone what I  call a call, and then he.",
+"expected": "And then it was on the phone what I call a call, and then he."
+},
+{
+"raw": "And then it was on the phone what I call  something like a call.",
+"expected": "And then it was on the phone what I call something like a call."
+},
+{
+"raw": "And then it was on the phone what I call  something.",
+"expected": "And then it was on the phone what I call something."
+},
+{
+"raw": "And then it was on the phone what I call something like  a call, and then he.",
+"expected": "And then it was on the phone what I call something like a call, and then he."
+},
+{
+"raw": "And then it was over.",
+"expected": "And then it was over."
+},
+{
+"raw": "And then it's about 1.",
+"expected": "And then it's about 1."
+},
+{
+"raw": "And then it's about what's going on.",
+"expected": "And then it's about what's going on."
+},
+{
+"raw": "And then it's all about the story.",
+"expected": "And then it's all about the story."
+},
+{
+"raw": "And then it's just one story.",
+"expected": "And then it's just one story."
+},
+{
+"raw": "And then it's just one.",
+"expected": "And then it's just one."
+},
+{
+"raw": "And then it's like a phone call.",
+"expected": "And then it's like a phone call."
+},
+{
+"raw": "And then it's over.",
+"expected": "And then it's over."
+},
+{
+"raw": "And then just like on a phone, like a call, and then he.",
+"expected": "And then just like on a phone, like a call, and then he."
+},
+{
+"raw": "And then just like on a phone.",
+"expected": "And then just like on a phone."
+},
+{
+"raw": "And then just like the kind of call thing on your phone, and then he.",
+"expected": "And then just like the kind of call thing on your phone, and then he."
+},
+{
+"raw": "And then nothing.",
+"expected": "And then nothing."
+},
+{
+"raw": "And then nothing. Then he.",
+"expected": "And then nothing. Then he."
+},
+{
+"raw": "And then on  the phone  what  kind  of  call.",
+"expected": "And then on the phone what kind of call."
+},
+{
+"raw": "And then on  the phone.",
+"expected": "And then on the phone."
+},
+{
+"raw": "And then on the phone what kind  of calls and stuff.",
+"expected": "And then on the phone what kind of calls and stuff."
+},
+{
+"raw": "And then on the phone what kind of calls  and stuff, and then he.",
+"expected": "And then on the phone what kind of calls and stuff, and then he."
+},
+{
+"raw": "And then on the phone.",
+"expected": "And then on the phone."
+},
+{
+"raw": "And then push.",
+"expected": "And then push."
+},
+{
+"raw": "And then that car of  the man's  under the back seat.",
+"expected": "And then that car of the man's under the back seat."
+},
+{
+"raw": "And then that car of the man's under 100, and then that.",
+"expected": "And then that car of the man's under 100, and then that."
+},
+{
+"raw": "And then that car of the man's under the  trailer.",
+"expected": "And then that car of the man's under the trailer."
+},
+{
+"raw": "And then that car of the man.",
+"expected": "And then that car of the man."
+},
+{
+"raw": "And then that dog  was a guide dog.",
+"expected": "And then that dog was a guide dog."
+},
+{
+"raw": "And then that dog was a.",
+"expected": "And then that dog was a."
+},
+{
+"raw": "And then that guy's car trunk.",
+"expected": "And then that guy's car trunk."
+},
+{
+"raw": "And then that lamb.",
+"expected": "And then that lamb."
+},
+{
+"raw": "And then that man's  car trunk opened.",
+"expected": "And then that man's car trunk opened."
+},
+{
+"raw": "And then that man's car trunk opened.",
+"expected": "And then that man's car trunk opened."
+},
+{
+"raw": "And then that man's car trunk.",
+"expected": "And then that man's car trunk."
+},
+{
+"raw": "And then that person, and then the other.",
+"expected": "And then that person, and then the other."
+},
+{
+"raw": "And then that person.",
+"expected": "And then that person."
+},
+{
+"raw": "And then that was it, that  was it, and then.",
+"expected": "And then that was it, that was it, and then."
+},
+{
+"raw": "And then that was it, that was it, and then.",
+"expected": "And then that was it, that was it, and then."
+},
+{
+"raw": "And then that was it, that was it.",
+"expected": "And then that was it, that was it."
+},
+{
+"raw": "And then that's it.",
+"expected": "And then that's it."
+},
+{
+"raw": "And then that's what he did, and then that's what he did, and then that's what he did.",
+"expected": "And then that's what he did, and then that's what he did, and then that's what he did."
+},
+{
+"raw": "And then that.",
+"expected": "And then that."
+},
+{
+"raw": "And then the blindfold.",
+"expected": "And then the blindfold."
+},
+{
+"raw": "And then the guide dog,  because it's blind.",
+"expected": "And then the guide dog, because it's blind."
+},
+{
+"raw": "And then the guide dog, because  it's blind.",
+"expected": "And then the guide dog, because it's blind."
+},
+{
+"raw": "And then the guide dog, because he.",
+"expected": "And then the guide dog, because he."
+},
+{
+"raw": "And then the guide dog, because of him.",
+"expected": "And then the guide dog, because of him."
+},
+{
+"raw": "And then the kind of call that comes on your phone.",
+"expected": "And then the kind of call that comes on your phone."
+},
+{
+"raw": "And then the kind of thing that's on your phone.",
+"expected": "And then the kind of thing that's on your phone."
+},
+{
+"raw": "And then the man asked me  to drink water, and then he.",
+"expected": "And then the man asked me to drink water, and then he."
+},
+{
+"raw": "And then the man asked me  to drink water.",
+"expected": "And then the man asked me to drink water."
+},
+{
+"raw": "And then the man asked me to  drink water, and then he.",
+"expected": "And then the man asked me to drink water, and then he."
+},
+{
+"raw": "And then the ride.",
+"expected": "And then the ride."
+},
+{
+"raw": "And then there's the accident, and then they're fighting in the car, and then.",
+"expected": "And then there's the accident, and then they're fighting in the car, and then."
+},
+{
+"raw": "And then there's the blind dog, because it's blind.",
+"expected": "And then there's the blind dog, because it's blind."
+},
+{
+"raw": "And then there's the car accident, and then he.",
+"expected": "And then there's the car accident, and then he."
+},
+{
+"raw": "And then there's the car crash, and then he's been doing all sorts of things in the car, and then he's not been able to stop, and then it's all over.",
+"expected": "And then there's the car crash, and then he's been doing all sorts of things in the car, and then he's not been able to stop, and then it's all over."
+},
+{
+"raw": "And then there's the guide dog, because he's blind.",
+"expected": "And then there's the guide dog, because he's blind."
+},
+{
+"raw": "And then there's the killing of pigs and all that.",
+"expected": "And then there's the killing of pigs and all that."
+},
+{
+"raw": "And then there's the pigs and all that.",
+"expected": "And then there's the pigs and all that."
+},
+{
+"raw": "And then they kept on driving.",
+"expected": "And then they kept on driving."
+},
+{
+"raw": "And then, he drove away, and his brother.",
+"expected": "And then, he drove away, and his brother."
+},
+{
+"raw": "And then, he drove away, and then his brother drove away.",
+"expected": "And then, he drove away, and then his brother drove away."
+},
+{
+"raw": "And then, he drove away, and then his brother.",
+"expected": "And then, he drove away, and then his brother."
+},
+{
+"raw": "And then, he just  drove away,  and his brother.",
+"expected": "And then, he just drove away, and his brother."
+},
+{
+"raw": "And then, he just  drove away,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left",
+"expected": "And then, he just drove away, and then he left"
+},
+{
+"raw": "And then, he just drove away, and then he left, and then he left, and then he left, and then he le",
+"expected": "And then, he just drove away, and then he left"
+},
+{
+"raw": "And then, he just drove away, eventually.",
+"expected": "And then, he just drove away, eventually."
+},
+{
+"raw": "And then, he just drove away.",
+"expected": "And then, he just drove away."
+},
+{
+"raw": "And then, um, the accident happened, and then they were both on the other side.",
+"expected": "And then, um, the accident happened, and then they were both on the other side."
+},
+{
+"raw": "And then, um, the accident, and then he.",
+"expected": "And then, um, the accident, and then he."
+},
+{
+"raw": "And then, yeah, that's it.",
+"expected": "And then, yeah, that's it."
+},
+{
+"raw": "And then.",
+"expected": "And then."
+},
+{
+"raw": "As  he  walked  along  with  his  brother.",
+"expected": "As he walked along with his brother."
+},
+{
+"raw": "As I walked,",
+"expected": "As I walked,"
+},
+{
+"raw": "As he walked along with  his brother, he had his brother.",
+"expected": "As he walked along with his brother, he had his brother."
+},
+{
+"raw": "As he walked, because of his brother.",
+"expected": "As he walked, because of his brother."
+},
+{
+"raw": "As he walked, he and his brother got into a fight, and then he.",
+"expected": "As he walked, he and his brother got into a fight, and then he."
+},
+{
+"raw": "As he walked, he and his brother got into a fight.",
+"expected": "As he walked, he and his brother got into a fight."
+},
+{
+"raw": "As he walked, he and his brother had  a fight, and then.",
+"expected": "As he walked, he and his brother had a fight, and then."
+},
+{
+"raw": "As he walked, he and his brother had a fight.",
+"expected": "As he walked, he and his brother had a fight."
+},
+{
+"raw": "As he walked, he had his brother, he had his brother.",
+"expected": "As he walked, he had his brother, he had his brother."
+},
+{
+"raw": "As he walked, he saw his brother and he and his brother had a fight.",
+"expected": "As he walked, he saw his brother and he and his brother had a fight."
+},
+{
+"raw": "As he walked, he walked, and his  brother's footsteps.",
+"expected": "As he walked, he walked, and his brother's footsteps."
+},
+{
+"raw": "As he walked, he walked, and his brother walked.",
+"expected": "As he walked, he walked, and his brother walked."
+},
+{
+"raw": "As he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked, he walked,",
+"expected": "As he walked,"
+},
+{
+"raw": "Because  he's a cop.",
+"expected": "Because he's a cop."
+},
+{
+"raw": "Because he is.",
+"expected": "Because he is."
+},
+{
+"raw": "Because he's  a cop, he's  a bit of a  dog.",
+"expected": "Because he's a cop, he's a bit of a dog."
+},
+{
+"raw": "Because he's  a cop, he's  a cop.",
+"expected": "Because he's a cop, he's a cop."
+},
+{
+"raw": "Because he's a cop, he's  a cop.",
+"expected": "Because he's a cop, he's a cop."
+},
+{
+"raw": "Because he's a cop, he's  sensitive to things.",
+"expected": "Because he's a cop, he's sensitive to things."
+},
+{
+"raw": "Because he's a cop, he's a bit of  a sensitive person.",
+"expected": "Because he's a cop, he's a bit of a sensitive person."
+},
+{
+"raw": "Because he's a cop, he's a bit of a  sensitive to some things, and then he.",
+"expected": "Because he's a cop, he's a bit of a sensitive to some things, and then he."
+},
+{
+"raw": "Because he's a cop, he's a cop.",
+"expected": "Because he's a cop, he's a cop."
+},
+{
+"raw": "Because he's a cop, he's got a sense of what's going on.",
+"expected": "Because he's a cop, he's got a sense of what's going on."
+},
+{
+"raw": "Because he's a cop, he's more of a.",
+"expected": "Because he's a cop, he's more of a."
+},
+{
+"raw": "Because he's a cop, he's more sensitive to some things, and then he's like,",
+"expected": "Because he's a cop, he's more sensitive to some things, and then he's like,"
+},
+{
+"raw": "Because he's a cop, he's more sensitive to some things, and then he.",
+"expected": "Because he's a cop, he's more sensitive to some things, and then he."
+},
+{
+"raw": "Because he's a cop, he's more sensitive to some things.",
+"expected": "Because he's a cop, he's more sensitive to some things."
+},
+{
+"raw": "Because he's a cop, he's more sensitive to things.",
+"expected": "Because he's a cop, he's more sensitive to things."
+},
+{
+"raw": "Because he's a cop, he's sensitive  to some things, and then he.",
+"expected": "Because he's a cop, he's sensitive to some things, and then he."
+},
+{
+"raw": "Because he's a cop.",
+"expected": "Because he's a cop."
+},
+{
+"raw": "But  I just talked.",
+"expected": "But I just talked."
+},
+{
+"raw": "But  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but",
+"expected": "But"
+},
+{
+"raw": "But I  will just say a few words.",
+"expected": "But I will just say a few words."
+},
+{
+"raw": "But I  would like to talk about two other things.",
+"expected": "But I would like to talk about two other things."
+},
+{
+"raw": "But I just talked.",
+"expected": "But I just talked."
+},
+{
+"raw": "But I just want to talk about something else.",
+"expected": "But I just want to talk about something else."
+},
+{
+"raw": "But I still.",
+"expected": "But I still."
+},
+{
+"raw": "But I will just say a 2nd word.",
+"expected": "But I will just say a 2nd word."
+},
+{
+"raw": "But I'll just say a few words.",
+"expected": "But I'll just say a few words."
+},
+{
+"raw": "But I'll just talk about the other two.",
+"expected": "But I'll just talk about the other two."
+},
+{
+"raw": "But but but but but but but but but but but but but but but but but but but but but but but but but  but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+"expected": "But"
+},
+{
+"raw": "But but but but but but but but but but but but but but but but but but but but but but but but but  but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+"expected": "But"
+},
+{
+"raw": "But but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+"expected": "But"
+},
+{
+"raw": "But but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+"expected": "But"
+},
+{
+"raw": "But but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+"expected": "But"
+},
+{
+"raw": "But but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+"expected": "But"
+},
+{
+"raw": "But but but.",
+"expected": "But."
+},
+{
+"raw": "But but he didn't want his brother to be in the music industry.",
+"expected": "But but he didn't want his brother to be in the music industry."
+},
+{
+"raw": "But but he didn't want his brother to get hurt.",
+"expected": "But but he didn't want his brother to get hurt."
+},
+{
+"raw": "But but he didn't want to let him.",
+"expected": "But but he didn't want to let him."
+},
+{
+"raw": "But but.",
+"expected": "But but."
+},
+{
+"raw": "But he did.",
+"expected": "But he did."
+},
+{
+"raw": "But he didn't want his brother to be in the  music industry.",
+"expected": "But he didn't want his brother to be in the music industry."
+},
+{
+"raw": "But he didn't want his brother to be in the music industry.",
+"expected": "But he didn't want his brother to be in the music industry."
+},
+{
+"raw": "But he just didn't want his brother to be in the music industry.",
+"expected": "But he just didn't want his brother to be in the music industry."
+},
+{
+"raw": "But he was just him.",
+"expected": "But he was just him."
+},
+{
+"raw": "But, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but, but,",
+"expected": "But,"
+},
+{
+"raw": "But, but, but, he didn't want his brother to get hurt.",
+"expected": "But, he didn't want his brother to get hurt."
+},
+{
+"raw": "But, but, he didn't want his brother to be in the music industry.",
+"expected": "But, but, he didn't want his brother to be in the music industry."
+},
+{
+"raw": "But, but, he didn't want his brother to get hurt.",
+"expected": "But, but, he didn't want his brother to get hurt."
+},
+{
+"raw": "But, but, he didn't want his brother to get involved in the music industry.",
+"expected": "But, but, he didn't want his brother to get involved in the music industry."
+},
+{
+"raw": "Don't go too far.",
+"expected": "Don't go too far."
+},
+{
+"raw": "Don't say anything, get up.",
+"expected": "Don't say anything, get up."
+},
+{
+"raw": "Don't say anything, just look.",
+"expected": "Don't say anything, just look."
+},
+{
+"raw": "Finally he.",
+"expected": "Finally he."
+},
+{
+"raw": "Finally, I walked up to the bridge.",
+"expected": "Finally, I walked up to the bridge."
+},
+{
+"raw": "Finally, he walked up to a bridge and they had a fight, and then he.",
+"expected": "Finally, he walked up to a bridge and they had a fight, and then he."
+},
+{
+"raw": "Finally, he walked up to the bridge and they had  a fight.",
+"expected": "Finally, he walked up to the bridge and they had a fight."
+},
+{
+"raw": "Finally, he walked up to the bridge and they had a fight.",
+"expected": "Finally, he walked up to the bridge and they had a fight."
+},
+{
+"raw": "Finally, he walked up to the bridge and they.",
+"expected": "Finally, he walked up to the bridge and they."
+},
+{
+"raw": "Finally, move.",
+"expected": "Finally, move."
+},
+{
+"raw": "Finally, they walked up to a bridge.",
+"expected": "Finally, they walked up to a bridge."
+},
+{
+"raw": "For such a brilliant show, we must give it a thumbs up, a like, a comment, and a like.",
+"expected": "For such a brilliant show, we must give it a thumbs up, a like, a comment, and a like."
+},
+{
+"raw": "For such a brilliant show, we must give it a thumbs up, a like, a comment?",
+"expected": "For such a brilliant show, we must give it a thumbs up, a like, a comment?"
+},
+{
+"raw": "For such a brilliant show, we should give it a thumbs up, a like, a comment, and a like.",
+"expected": "For such a brilliant show, we should give it a thumbs up, a like, a comment, and a like."
+},
+{
+"raw": "Go go go! Let's go.",
+"expected": "Go! Let's go."
+},
+{
+"raw": "He  feels  he  feels  he  feels.",
+"expected": "He feels."
+},
+{
+"raw": "He  feels.",
+"expected": "He feels."
+},
+{
+"raw": "He and she fired at it, then.",
+"expected": "He and she fired at it, then."
+},
+{
+"raw": "He and she fired the gun.",
+"expected": "He and she fired the gun."
+},
+{
+"raw": "He and she had an affair, and then he.",
+"expected": "He and she had an affair, and then he."
+},
+{
+"raw": "He became blind.",
+"expected": "He became blind."
+},
+{
+"raw": "He did it.",
+"expected": "He did it."
+},
+{
+"raw": "He died,  and then he fell.",
+"expected": "He died, and then he fell."
+},
+{
+"raw": "He died, and then  he had to drop down and die.",
+"expected": "He died, and then he had to drop down and die."
+},
+{
+"raw": "He died, and then he fell and died.",
+"expected": "He died, and then he fell and died."
+},
+{
+"raw": "He died, and then he fell, and then he died.",
+"expected": "He died, and then he fell, and then he died."
+},
+{
+"raw": "He died, and then he fell.",
+"expected": "He died, and then he fell."
+},
+{
+"raw": "He died, and then he had to drop down  and die, and then he was.",
+"expected": "He died, and then he had to drop down and die, and then he was."
+},
+{
+"raw": "He died, and then he was.",
+"expected": "He died, and then he was."
+},
+{
+"raw": "He died, then he.",
+"expected": "He died, then he."
+},
+{
+"raw": "He feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels",
+"expected": "He feels"
+},
+{
+"raw": "He feels he feels  he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+"expected": "He feels"
+},
+{
+"raw": "He feels he feels  he feels like that.",
+"expected": "He feels like that."
+},
+{
+"raw": "He feels he feels he feels  he feels like a normal cop.",
+"expected": "He feels like a normal cop."
+},
+{
+"raw": "He feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+"expected": "He feels"
+},
+{
+"raw": "He feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+"expected": "He feels"
+},
+{
+"raw": "He feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+"expected": "He feels"
+},
+{
+"raw": "He feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+"expected": "He feels"
+},
+{
+"raw": "He feels he feels he feels he feels like a  typical police officer.",
+"expected": "He feels like a typical police officer."
+},
+{
+"raw": "He feels he feels he feels he feels like a typical  police officer who is sensitive.",
+"expected": "He feels like a typical police officer who is sensitive."
+},
+{
+"raw": "He feels he feels he feels he feels like a typical  police officer.",
+"expected": "He feels like a typical police officer."
+},
+{
+"raw": "He felt him.",
+"expected": "He felt him."
+},
+{
+"raw": "He felt like a police officer, he felt like a police officer, he felt like a police officer.",
+"expected": "He felt like a police officer, he felt like a police officer, he felt like a police officer."
+},
+{
+"raw": "He felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt like he felt",
+"expected": "He felt like"
+},
+{
+"raw": "He felt like he was a general police officer who was sensitive to everything.",
+"expected": "He felt like he was a general police officer who was sensitive to everything."
+},
+{
+"raw": "He felt like he was just a normal cop, he was sensitive, and then he.",
+"expected": "He felt like he was just a normal cop, he was sensitive, and then he."
+},
+{
+"raw": "He felt like he was just a normal cop, sensitive to what he was doing, and then he.",
+"expected": "He felt like he was just a normal cop, sensitive to what he was doing, and then he."
+},
+{
+"raw": "He got angry and then he left.",
+"expected": "He got angry and then he left."
+},
+{
+"raw": "He got into a fight with her, and then he got into a fight with his brother.",
+"expected": "He got into a fight with her, and then he got into a fight with his brother."
+},
+{
+"raw": "He had 1 dog, 1 dog that was special.",
+"expected": "He had 1 dog, 1 dog that was special."
+},
+{
+"raw": "He had 1 dog, and that dog was 1 special.",
+"expected": "He had 1 dog, and that dog was 1 special."
+},
+{
+"raw": "He had 1 dog, and that dog was 1 very cute.",
+"expected": "He had 1 dog, and that dog was 1 very cute."
+},
+{
+"raw": "He had 1 dog, and that dog was a bit.",
+"expected": "He had 1 dog, and that dog was a bit."
+},
+{
+"raw": "He had 1 dog, that dog.",
+"expected": "He had 1 dog, that dog."
+},
+{
+"raw": "He had a dog, that dog, that dog.",
+"expected": "He had a dog, that dog, that dog."
+},
+{
+"raw": "He had a dog.",
+"expected": "He had a dog."
+},
+{
+"raw": "He had a fight with him, and then he took his brother.",
+"expected": "He had a fight with him, and then he took his brother."
+},
+{
+"raw": "He has a dog, and that dog is also a dog.",
+"expected": "He has a dog, and that dog is also a dog."
+},
+{
+"raw": "He has a dog, and that dog is so cute.",
+"expected": "He has a dog, and that dog is so cute."
+},
+{
+"raw": "He has a dog, and that dog is special.",
+"expected": "He has a dog, and that dog is special."
+},
+{
+"raw": "He has a dog, and that dog is very cute.",
+"expected": "He has a dog, and that dog is very cute."
+},
+{
+"raw": "He is starring in the movie with Yang and the Han.",
+"expected": "He is starring in the movie with Yang and the Han."
+},
+{
+"raw": "He is the one starring by Yang and the one starring by Luo Han.",
+"expected": "He is the one starring by Yang and the one starring by Luo Han."
+},
+{
+"raw": "He just felt like he was.",
+"expected": "He just felt like he was."
+},
+{
+"raw": "He just got up  and pushed.",
+"expected": "He just got up and pushed."
+},
+{
+"raw": "He just got up  and recommended the woman.",
+"expected": "He just got up and recommended the woman."
+},
+{
+"raw": "He just got up and recommended  the woman and then he.",
+"expected": "He just got up and recommended the woman and then he."
+},
+{
+"raw": "He just got up and then.",
+"expected": "He just got up and then."
+},
+{
+"raw": "He just played.",
+"expected": "He just played."
+},
+{
+"raw": "He just stood up  and then recommended the woman.",
+"expected": "He just stood up and then recommended the woman."
+},
+{
+"raw": "He just stood up and pushed.",
+"expected": "He just stood up and pushed."
+},
+{
+"raw": "He just stood up and then recommended  the woman and then he just.",
+"expected": "He just stood up and then recommended the woman and then he just."
+},
+{
+"raw": "He let his brother go, and then he hung him up in the car.",
+"expected": "He let his brother go, and then he hung him up in the car."
+},
+{
+"raw": "He let his brother go, and then he hung his brother in the car.",
+"expected": "He let his brother go, and then he hung his brother in the car."
+},
+{
+"raw": "He said he felt.",
+"expected": "He said he felt."
+},
+{
+"raw": "He said, \"That's what I call it.\"",
+"expected": "He said, \"That's what I call it.\""
+},
+{
+"raw": "He said.",
+"expected": "He said."
+},
+{
+"raw": "He sang about  his brother's concert.",
+"expected": "He sang about his brother's concert."
+},
+{
+"raw": "He sang about his brother.",
+"expected": "He sang about his brother."
+},
+{
+"raw": "He was a cop back then.",
+"expected": "He was a cop back then."
+},
+{
+"raw": "He was also in the car.",
+"expected": "He was also in the car."
+},
+{
+"raw": "He was doing his brother's concert, and then he.",
+"expected": "He was doing his brother's concert, and then he."
+},
+{
+"raw": "He was doing his brother's concert, then.",
+"expected": "He was doing his brother's concert, then."
+},
+{
+"raw": "He was doing his brother's concert.",
+"expected": "He was doing his brother's concert."
+},
+{
+"raw": "He's  the one with Yang and the one with the deer.",
+"expected": "He's the one with Yang and the one with the deer."
+},
+{
+"raw": "He's also more sensitive to some things.",
+"expected": "He's also more sensitive to some things."
+},
+{
+"raw": "He's got it.",
+"expected": "He's got it."
+},
+{
+"raw": "He's just like a normal police officer who is sensitive to what he feels and what he feels.",
+"expected": "He's just like a normal police officer who is sensitive to what he feels and what he feels."
+},
+{
+"raw": "He's not a police officer, and he's not a good one anyway.",
+"expected": "He's not a police officer, and he's not a good one anyway."
+},
+{
+"raw": "He's that by Yang and that by the deer.",
+"expected": "He's that by Yang and that by the deer."
+},
+{
+"raw": "He's the one with Yang and the one with  Lu Han.",
+"expected": "He's the one with Yang and the one with Lu Han."
+},
+{
+"raw": "Hmm, I don't know. Yeah, it's raining, and then that guy.",
+"expected": "Hmm, I don't know. Yeah, it's raining, and then that guy."
+},
+{
+"raw": "Hmm, I don't know. Yeah, it's raining, then.",
+"expected": "Hmm, I don't know. Yeah, it's raining, then."
+},
+{
+"raw": "Hmm, I don't know. Yeah, it's raining.",
+"expected": "Hmm, I don't know. Yeah, it's raining."
+},
+{
+"raw": "I can't sleep, I can't sleep.",
+"expected": "I can't sleep, I can't sleep."
+},
+{
+"raw": "I didn't  watch this movie.",
+"expected": "I didn't watch this movie."
+},
+{
+"raw": "I didn't see it.",
+"expected": "I didn't see it."
+},
+{
+"raw": "I didn't see the movie, so I'll just tell you. Well, okay, you don't have to sleep while listening to it.",
+"expected": "I didn't see the movie, so I'll just tell you. Well, okay, you don't have to sleep while listening to it."
+},
+{
+"raw": "I didn't see the movie, so I'll just tell you. Well, you see.",
+"expected": "I didn't see the movie, so I'll just tell you. Well, you see."
+},
+{
+"raw": "I didn't watch  the movie, so I said that.",
+"expected": "I didn't watch the movie, so I said that."
+},
+{
+"raw": "I didn't watch  the movie, so I'm not going to say anything.",
+"expected": "I didn't watch the movie, so I'm not going to say anything."
+},
+{
+"raw": "I didn't watch the movie, so I'll just say it. Well, you see.",
+"expected": "I didn't watch the movie, so I'll just say it. Well, you see."
+},
+{
+"raw": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+"expected": "I didn't watch the movie, so I'll just tell you. Well, you see."
+},
+{
+"raw": "I didn't watch the movie.",
+"expected": "I didn't watch the movie."
+},
+{
+"raw": "I didn't watch this movie.",
+"expected": "I didn't watch this movie."
+},
+{
+"raw": "I don't  know anything about him.",
+"expected": "I don't know anything about him."
+},
+{
+"raw": "I don't know anything about him.",
+"expected": "I don't know anything about him."
+},
+{
+"raw": "I don't know him.",
+"expected": "I don't know him."
+},
+{
+"raw": "I don't know what he called it.",
+"expected": "I don't know what he called it."
+},
+{
+"raw": "I don't know what he was calling inside.",
+"expected": "I don't know what he was calling inside."
+},
+{
+"raw": "I just said that because I didn't see the movie.",
+"expected": "I just said that because I didn't see the movie."
+},
+{
+"raw": "I just wanted to say that I haven't seen the movie. Well, you know, you know.",
+"expected": "I just wanted to say that I haven't seen the movie. Well, you know, you know."
+},
+{
+"raw": "I think so, I think so, I think so, I think so.",
+"expected": "I think so."
+},
+{
+"raw": "I was on a taxi, and then it was like that.",
+"expected": "I was on a taxi, and then it was like that."
+},
+{
+"raw": "I'm blind.",
+"expected": "I'm blind."
+},
+{
+"raw": "I'm just going to say it because I haven't seen the movie. Well, okay.",
+"expected": "I'm just going to say it because I haven't seen the movie. Well, okay."
+},
+{
+"raw": "I'm just going to say it out loud. Well, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you know, you",
+"expected": "I'm just going to say it out loud. Well, you know"
+},
+{
+"raw": "I'm just going to say it right now, I haven't seen the movie. Well, you know, you know, don't.",
+"expected": "I'm just going to say it right now, I haven't seen the movie. Well, you know, you know, don't."
+},
+{
+"raw": "In any case, he is more sensitive to some things. He has 1 dog.",
+"expected": "In any case, he is more sensitive to some things. He has 1 dog."
+},
+{
+"raw": "In any case, he is more sensitive to some things. He has a dog.",
+"expected": "In any case, he is more sensitive to some things. He has a dog."
+},
+{
+"raw": "In any case, he's more sensitive to some things. He has a dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog, and that dog",
+"expected": "In any case, he's more sensitive to some things. He has a dog, and that"
+},
+{
+"raw": "In any case, it is more sensitive to  some things, he said.",
+"expected": "In any case, it is more sensitive to some things, he said."
+},
+{
+"raw": "In any case, it is more sensitive to some things.",
+"expected": "In any case, it is more sensitive to some things."
+},
+{
+"raw": "In any case, it's a bit more than  sensitive to some things.",
+"expected": "In any case, it's a bit more than sensitive to some things."
+},
+{
+"raw": "In any case, it's a bit more than I expected.",
+"expected": "In any case, it's a bit more than I expected."
+},
+{
+"raw": "Is this not a great show?",
+"expected": "Is this not a great show?"
+},
+{
+"raw": "It includes 9030 Mate9.",
+"expected": "It includes 9030 Mate9."
+},
+{
+"raw": "It includes the 9030.",
+"expected": "It includes the 9030."
+},
+{
+"raw": "It includes the mate90 with 9030.",
+"expected": "It includes the mate90 with 9030."
+},
+{
+"raw": "It is equipped with 9035  and 9050  pro.",
+"expected": "It is equipped with 9035 and 9050 pro."
+},
+{
+"raw": "It is equipped with 9035  and 9050.",
+"expected": "It is equipped with 9035 and 9050."
+},
+{
+"raw": "It is equipped with 9035 Kirin.",
+"expected": "It is equipped with 9035 Kirin."
+},
+{
+"raw": "It is equipped with 9035 and 9.",
+"expected": "It is equipped with 9035 and 9."
+},
+{
+"raw": "It is equipped with 9035 and 9035 Pro.",
+"expected": "It is equipped with 9035 and 9035 Pro."
+},
+{
+"raw": "It is equipped with 9035, 9035  and 9.",
+"expected": "It is equipped with 9035, 9035 and 9."
+},
+{
+"raw": "It is equipped with 9035, 9035 and 9035.",
+"expected": "It is equipped with 9035, 9035 and 9035."
+},
+{
+"raw": "It is equipped with 9035, and 90pro, 9050.",
+"expected": "It is equipped with 9035, and 90pro, 9050."
+},
+{
+"raw": "It is equipped with 9035, and 90pro, and 9.",
+"expected": "It is equipped with 9035, and 90pro, and 9."
+},
+{
+"raw": "It is equipped with 9035, and the mate90pro.",
+"expected": "It is equipped with 9035, and the mate90pro."
+},
+{
+"raw": "It is equipped with 9035, the mate90pro.",
+"expected": "It is equipped with 9035, the mate90pro."
+},
+{
+"raw": "It is equipped with the 9035",
+"expected": "It is equipped with the 9035"
+},
+{
+"raw": "It is equipped with the 9035 Kirin chip.",
+"expected": "It is equipped with the 9035 Kirin chip."
+},
+{
+"raw": "It is equipped with the 9035 Kirin.",
+"expected": "It is equipped with the 9035 Kirin."
+},
+{
+"raw": "It is equipped with the Kirin 90.",
+"expected": "It is equipped with the Kirin 90."
+},
+{
+"raw": "It is equipped with the Kirin 903.",
+"expected": "It is equipped with the Kirin 903."
+},
+{
+"raw": "It is equipped with the Kirin 9035.",
+"expected": "It is equipped with the Kirin 9035."
+},
+{
+"raw": "It was like it was  rain, and then he.",
+"expected": "It was like it was rain, and then he."
+},
+{
+"raw": "It was like it was  rain.",
+"expected": "It was like it was rain."
+},
+{
+"raw": "It was like it was just rain, and then he.",
+"expected": "It was like it was just rain, and then he."
+},
+{
+"raw": "It was like it was just raining, and then he.",
+"expected": "It was like it was just raining, and then he."
+},
+{
+"raw": "It was like it was just raining.",
+"expected": "It was like it was just raining."
+},
+{
+"raw": "It was like it was just right.",
+"expected": "It was like it was just right."
+},
+{
+"raw": "It was like it was right there.",
+"expected": "It was like it was right there."
+},
+{
+"raw": "It's 1970.",
+"expected": "It's 1970."
+},
+{
+"raw": "It's called Yang Mi-Bo.",
+"expected": "It's called Yang Mi-Bo."
+},
+{
+"raw": "It's called Yimie.",
+"expected": "It's called Yimie."
+},
+{
+"raw": "It's called.",
+"expected": "It's called."
+},
+{
+"raw": "It's like  blind, then.",
+"expected": "It's like blind, then."
+},
+{
+"raw": "It's like being blind.",
+"expected": "It's like being blind."
+},
+{
+"raw": "It's like it's just raining.",
+"expected": "It's like it's just raining."
+},
+{
+"raw": "It's like.",
+"expected": "It's like."
+},
+{
+"raw": "It's over.",
+"expected": "It's over."
+},
+{
+"raw": "It's this I am, this this movie, he.",
+"expected": "It's this I am, this this movie, he."
+},
+{
+"raw": "Let him go, and then  he hung his brother in the car.",
+"expected": "Let him go, and then he hung his brother in the car."
+},
+{
+"raw": "Let him go, and then he'll go.",
+"expected": "Let him go, and then he'll go."
+},
+{
+"raw": "No, no.",
+"expected": "No, no."
+},
+{
+"raw": "Oh, I didn't see the movie, so I'll just tell you.",
+"expected": "Oh, I didn't see the movie, so I'll just tell you."
+},
+{
+"raw": "Oh, I didn't see the movie, so let me tell you. Well, you know, you don't have to sleep while listening to it.",
+"expected": "Oh, I didn't see the movie, so let me tell you. Well, you know, you don't have to sleep while listening to it."
+},
+{
+"raw": "Oh, I didn't watch the movie, so I'll just tell you.",
+"expected": "Oh, I didn't watch the movie, so I'll just tell you."
+},
+{
+"raw": "Oh, I just wanted to say that I haven't seen the movie.",
+"expected": "Oh, I just wanted to say that I haven't seen the movie."
+},
+{
+"raw": "Oh, just to say, I haven't seen the movie.",
+"expected": "Oh, just to say, I haven't seen the movie."
+},
+{
+"raw": "One day  he said,  oh.",
+"expected": "One day he said, oh."
+},
+{
+"raw": "One day  he said.",
+"expected": "One day he said."
+},
+{
+"raw": "One day he did.",
+"expected": "One day he did."
+},
+{
+"raw": "One day he said,",
+"expected": "One day he said,"
+},
+{
+"raw": "One day he said.",
+"expected": "One day he said."
+},
+{
+"raw": "One day he was like,",
+"expected": "One day he was like,"
+},
+{
+"raw": "Such a  big show, right?",
+"expected": "Such a big show, right?"
+},
+{
+"raw": "Such a big  show, we have to get it.",
+"expected": "Such a big show, we have to get it."
+},
+{
+"raw": "Such a big  show, we have to get it?",
+"expected": "Such a big show, we have to get it?"
+},
+{
+"raw": "Such a great show.",
+"expected": "Such a great show."
+},
+{
+"raw": "That's it.",
+"expected": "That's it."
+},
+{
+"raw": "That's the way I am, that's the way this movie is.",
+"expected": "That's the way I am, that's the way this movie is."
+},
+{
+"raw": "That's what  I'm doing in this store.",
+"expected": "That's what I'm doing in this store."
+},
+{
+"raw": "That's what I am.",
+"expected": "That's what I am."
+},
+{
+"raw": "That's what I'm here for.",
+"expected": "That's what I'm here for."
+},
+{
+"raw": "The Mate 9, including the Mate 9 9030.",
+"expected": "The Mate 9, including the Mate 9 9030."
+},
+{
+"raw": "The mate90 is equipped with the Kirin 9035.",
+"expected": "The mate90 is equipped with the Kirin 9035."
+},
+{
+"raw": "The mate90pro is equipped with the Kirin 9035, and the mate9050 is equipped with the Kirin 9050.",
+"expected": "The mate90pro is equipped with the Kirin 9035, and the mate9050 is equipped with the Kirin 9050."
+},
+{
+"raw": "The mate90pro is equipped with the Kirin 9035, and the mate9050pro is equipped with the Kirin 9050.",
+"expected": "The mate90pro is equipped with the Kirin 9035, and the mate9050pro is equipped with the Kirin 9050."
+},
+{
+"raw": "The mate90pro is equipped with the Kirin 9035.",
+"expected": "The mate90pro is equipped with the Kirin 9035."
+},
+{
+"raw": "The mate90pro with the Kirin 9035 and the mate90 with the Kirin 90.",
+"expected": "The mate90pro with the Kirin 9035 and the mate90 with the Kirin 90."
+},
+{
+"raw": "The mate90pro with the Kirin 9035 and the mate90 with the Kirin 9000.",
+"expected": "The mate90pro with the Kirin 9035 and the mate90 with the Kirin 9000."
+},
+{
+"raw": "The mate90pro with the Kirin 9035 and the mate9050 with the Kirin 9050.",
+"expected": "The mate90pro with the Kirin 9035 and the mate9050 with the Kirin 9050."
+},
+{
+"raw": "The mate90pro with the Kirin 9035 and the mate9050pro with the Kirin 9050.",
+"expected": "The mate90pro with the Kirin 9035 and the mate9050pro with the Kirin 9050."
+},
+{
+"raw": "The mate90pro with the Kirin 9035 and the mate90pro with the Kirin 9050.",
+"expected": "The mate90pro with the Kirin 9035 and the mate90pro with the Kirin 9050."
+},
+{
+"raw": "The mate90pro with the Kirin 9035.",
+"expected": "The mate90pro with the Kirin 9035."
+},
+{
+"raw": "Then  he added.",
+"expected": "Then he added."
+},
+{
+"raw": "Then  he left, and then he left.",
+"expected": "Then he left, and then he left."
+},
+{
+"raw": "Then  he recommended.",
+"expected": "Then he recommended."
+},
+{
+"raw": "Then  he said, because.",
+"expected": "Then he said, because."
+},
+{
+"raw": "Then  he wasn't a cop?",
+"expected": "Then he wasn't a cop?"
+},
+{
+"raw": "Then I recommended this woman.",
+"expected": "Then I recommended this woman."
+},
+{
+"raw": "Then he  he went in, and then.",
+"expected": "Then he he went in, and then."
+},
+{
+"raw": "Then he  said, because of that man.",
+"expected": "Then he said, because of that man."
+},
+{
+"raw": "Then he added.",
+"expected": "Then he added."
+},
+{
+"raw": "Then he didn't.",
+"expected": "Then he didn't."
+},
+{
+"raw": "Then he got into an accident, and then his brother died, and then he.",
+"expected": "Then he got into an accident, and then his brother died, and then he."
+},
+{
+"raw": "Then he just didn't want to.",
+"expected": "Then he just didn't want to."
+},
+{
+"raw": "Then he just said, \"Because of this.\"",
+"expected": "Then he just said, \"Because of this.\""
+},
+{
+"raw": "Then he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just, he just",
+"expected": "Then he just"
+},
+{
+"raw": "Then he kept arguing in the car.",
+"expected": "Then he kept arguing in the car."
+},
+{
+"raw": "Then he kept on digging in his car and then he stopped.",
+"expected": "Then he kept on digging in his car and then he stopped."
+},
+{
+"raw": "Then he kept on digging in the car, and then he stopped.",
+"expected": "Then he kept on digging in the car, and then he stopped."
+},
+{
+"raw": "Then he kept on driving, and then he didn't stop.",
+"expected": "Then he kept on driving, and then he didn't stop."
+},
+{
+"raw": "Then he left, and then he um, he left his brother.",
+"expected": "Then he left, and then he um, he left his brother."
+},
+{
+"raw": "Then he left, and then he um, he left.",
+"expected": "Then he left, and then he um, he left."
+},
+{
+"raw": "Then he left.",
+"expected": "Then he left."
+},
+{
+"raw": "Then he lost his eyesight because of the car accident.",
+"expected": "Then he lost his eyesight because of the car accident."
+},
+{
+"raw": "Then he posted.",
+"expected": "Then he posted."
+},
+{
+"raw": "Then he recommended.",
+"expected": "Then he recommended."
+},
+{
+"raw": "Then he said,  Well, that's a big car.",
+"expected": "Then he said, Well, that's a big car."
+},
+{
+"raw": "Then he said,  because of that car accident,  and then he said,",
+"expected": "Then he said, because of that car accident, and then he said,"
+},
+{
+"raw": "Then he said,  because of this.",
+"expected": "Then he said, because of this."
+},
+{
+"raw": "Then he said, \"Because  because.\"",
+"expected": "Then he said, \"Because because.\""
+},
+{
+"raw": "Then he said, \"Because of me.\"",
+"expected": "Then he said, \"Because of me.\""
+},
+{
+"raw": "Then he said, \"Because of that.\"",
+"expected": "Then he said, \"Because of that.\""
+},
+{
+"raw": "Then he said, \"Because of this car accident.\"",
+"expected": "Then he said, \"Because of this car accident.\""
+},
+{
+"raw": "Then he said, \"Hmm.\"",
+"expected": "Then he said, \"Hmm.\""
+},
+{
+"raw": "Then he said, \"I don't want to.\"",
+"expected": "Then he said, \"I don't want to.\""
+},
+{
+"raw": "Then he said, \"Oh, well, he  was outside, and I came home, and then.",
+"expected": "Then he said, \"Oh, well, he was outside, and I came home, and then."
+},
+{
+"raw": "Then he said, \"Oh, well, he was outside.\"",
+"expected": "Then he said, \"Oh, well, he was outside.\""
+},
+{
+"raw": "Then he said, \"Oh, well, he's outside, and I'm home.\"",
+"expected": "Then he said, \"Oh, well, he's outside, and I'm home.\""
+},
+{
+"raw": "Then he said, \"Oh, well, that's a big car,  he was outside, and I came home, and.",
+"expected": "Then he said, \"Oh, well, that's a big car, he was outside, and I came home, and."
+},
+{
+"raw": "Then he said, \"Oh, well, that's a big car,  he was outside, and then he went back.",
+"expected": "Then he said, \"Oh, well, that's a big car, he was outside, and then he went back."
+},
+{
+"raw": "Then he said, \"Oh, well, that's a big car, he's outside.\"",
+"expected": "Then he said, \"Oh, well, that's a big car, he's outside.\""
+},
+{
+"raw": "Then he said, \"Oh, well, that's a big car.\"",
+"expected": "Then he said, \"Oh, well, that's a big car.\""
+},
+{
+"raw": "Then he said, \"Oh, yeah.\"",
+"expected": "Then he said, \"Oh, yeah.\""
+},
+{
+"raw": "Then he said, \"Yeah.\"",
+"expected": "Then he said, \"Yeah.\""
+},
+{
+"raw": "Then he said, because  um, because of that car accident, and then.",
+"expected": "Then he said, because um, because of that car accident, and then."
+},
+{
+"raw": "Then he said, because.",
+"expected": "Then he said, because."
+},
+{
+"raw": "Then he said, well, that's a big car, he was outside, and I went home and called.",
+"expected": "Then he said, well, that's a big car, he was outside, and I went home and called."
+},
+{
+"raw": "Then he said, well, that's a big car, he was outside.",
+"expected": "Then he said, well, that's a big car, he was outside."
+},
+{
+"raw": "Then he um his brother.",
+"expected": "Then he um his brother."
+},
+{
+"raw": "Then he was like, oh, well, he was outside, and I was home.",
+"expected": "Then he was like, oh, well, he was outside, and I was home."
+},
+{
+"raw": "Then he was like, oh, well, he was outside, and he  was home.",
+"expected": "Then he was like, oh, well, he was outside, and he was home."
+},
+{
+"raw": "Then he was like, oh, well, he was outside, and he went back.",
+"expected": "Then he was like, oh, well, he was outside, and he went back."
+},
+{
+"raw": "Then he wasn't  a cop,  or at least not for the most part.",
+"expected": "Then he wasn't a cop, or at least not for the most part."
+},
+{
+"raw": "Then he wasn't  a cop, or at least not for the most part.",
+"expected": "Then he wasn't a cop, or at least not for the most part."
+},
+{
+"raw": "Then he wasn't  a cop? Anyway, that's it.",
+"expected": "Then he wasn't a cop? Anyway, that's it."
+},
+{
+"raw": "Then he went in.",
+"expected": "Then he went in."
+},
+{
+"raw": "Then he went, uh, he went in, and he hit.",
+"expected": "Then he went, uh, he went in, and he hit."
+},
+{
+"raw": "Then he went, uh, he went in, and then he messed up, and then he let it go.",
+"expected": "Then he went, uh, he went in, and then he messed up, and then he let it go."
+},
+{
+"raw": "Then he went, uh, he went in, and then.",
+"expected": "Then he went, uh, he went in, and then."
+},
+{
+"raw": "Then he went, uh, he went.",
+"expected": "Then he went, uh, he went."
+},
+{
+"raw": "Then he's not a police officer, and anyway, he's not a police officer.",
+"expected": "Then he's not a police officer, and anyway, he's not a police officer."
+},
+{
+"raw": "Then he, uh,  his brother loved it.",
+"expected": "Then he, uh, his brother loved it."
+},
+{
+"raw": "Then he, uh,  his brother was particularly happy.",
+"expected": "Then he, uh, his brother was particularly happy."
+},
+{
+"raw": "Then he, uh,  his brother was special.",
+"expected": "Then he, uh, his brother was special."
+},
+{
+"raw": "Then he, uh, his brother  loved English.",
+"expected": "Then he, uh, his brother loved English."
+},
+{
+"raw": "Then he, uh, his brother  loved the English.",
+"expected": "Then he, uh, his brother loved the English."
+},
+{
+"raw": "Then he, uh, his brother loved it.",
+"expected": "Then he, uh, his brother loved it."
+},
+{
+"raw": "Then he, uh, his brother was  particularly fond of.",
+"expected": "Then he, uh, his brother was particularly fond of."
+},
+{
+"raw": "Then he, uh, his brother was special.",
+"expected": "Then he, uh, his brother was special."
+},
+{
+"raw": "Then he, uh, his brother, he loved music.",
+"expected": "Then he, uh, his brother, he loved music."
+},
+{
+"raw": "Then he, uh, his brother.",
+"expected": "Then he, uh, his brother."
+},
+{
+"raw": "Then he.",
+"expected": "Then he."
+},
+{
+"raw": "Then his brother died,  and he became blind.",
+"expected": "Then his brother died, and he became blind."
+},
+{
+"raw": "Then his brother died, and he.",
+"expected": "Then his brother died, and he."
+},
+{
+"raw": "Then his brother left, and then he um, he left his brother.",
+"expected": "Then his brother left, and then he um, he left his brother."
+},
+{
+"raw": "Then it goes to the warehouse.",
+"expected": "Then it goes to the warehouse."
+},
+{
+"raw": "Then it's like a phone call or something.",
+"expected": "Then it's like a phone call or something."
+},
+{
+"raw": "Then it's like that on a phone.",
+"expected": "Then it's like that on a phone."
+},
+{
+"raw": "Then that dog was a dog?",
+"expected": "Then that dog was a dog?"
+},
+{
+"raw": "Then that dog was a guide dog.",
+"expected": "Then that dog was a guide dog."
+},
+{
+"raw": "Then that dog was a jerk.",
+"expected": "Then that dog was a jerk."
+},
+{
+"raw": "Then that he.",
+"expected": "Then that he."
+},
+{
+"raw": "Then that person, then ask him to drink.",
+"expected": "Then that person, then ask him to drink."
+},
+{
+"raw": "Then that person, then asked him to drink water, and then he.",
+"expected": "Then that person, then asked him to drink water, and then he."
+},
+{
+"raw": "Then that person, then he asked for water, and then he did.",
+"expected": "Then that person, then he asked for water, and then he did."
+},
+{
+"raw": "Then that person, then please ask him to drink water.",
+"expected": "Then that person, then please ask him to drink water."
+},
+{
+"raw": "Then there was a car accident, and then they kept on driving, and then they didn't stop.",
+"expected": "Then there was a car accident, and then they kept on driving, and then they didn't stop."
+},
+{
+"raw": "Then there was nothing to do, and then he killed his brother.",
+"expected": "Then there was nothing to do, and then he killed his brother."
+},
+{
+"raw": "Then there was the accident, and then they were in the car.",
+"expected": "Then there was the accident, and then they were in the car."
+},
+{
+"raw": "Then there's the accident, and then he's been doing all sorts of things in the car, and then he's been doing all sorts of things, and then he's been doing all sorts of things.",
+"expected": "Then there's the accident, and then he's been doing all sorts of things in the car, and then he's been doing all sorts of things, and then he's been doing all sorts of things."
+},
+{
+"raw": "Then there's the accident, and then he's been running around in the car, and then he's not been able to stop.",
+"expected": "Then there's the accident, and then he's been running around in the car, and then he's not been able to stop."
+},
+{
+"raw": "Then they started arguing in the car.",
+"expected": "Then they started arguing in the car."
+},
+{
+"raw": "They had  something happen.",
+"expected": "They had something happen."
+},
+{
+"raw": "They had an affair.",
+"expected": "They had an affair."
+},
+{
+"raw": "They will be right.",
+"expected": "They will be right."
+},
+{
+"raw": "This  is what Huawei has released.",
+"expected": "This is what Huawei has released."
+},
+{
+"raw": "This is a great show, we have to give it a try.",
+"expected": "This is a great show, we have to give it a try."
+},
+{
+"raw": "This is such a brilliant show, we have to give it a 5 stars, a 5 stars, a 5 stars.",
+"expected": "This is such a brilliant show, we have to give it a 5 stars."
+},
+{
+"raw": "This is such a brilliant show, we have to give it a 5 stars, a 5 stars, a 5 stars?",
+"expected": "This is such a brilliant show, we have to give it a 5 stars?"
+},
+{
+"raw": "This is such a brilliant show, we have to give it a thumbs up?",
+"expected": "This is such a brilliant show, we have to give it a thumbs up?"
+},
+{
+"raw": "This is such a great show, we have to give it a 5 stars and 100% review.",
+"expected": "This is such a great show, we have to give it a 5 stars and 100% review."
+},
+{
+"raw": "This is such a great show, we have to give it a 5 stars and a review?",
+"expected": "This is such a great show, we have to give it a 5 stars and a review?"
+},
+{
+"raw": "This is such a great show, we have to give it a 5 stars.",
+"expected": "This is such a great show, we have to give it a 5 stars."
+},
+{
+"raw": "This is such a great show, we have to give it a 5 stars?",
+"expected": "This is such a great show, we have to give it a 5 stars?"
+},
+{
+"raw": "This is such a great show, we have to give it a thumbs up and a collection?",
+"expected": "This is such a great show, we have to give it a thumbs up and a collection?"
+},
+{
+"raw": "This is such a great show, we have to give it a thumbs up, a like, a comment.",
+"expected": "This is such a great show, we have to give it a thumbs up, a like, a comment."
+},
+{
+"raw": "This is such a great show, we have to give it a thumbs up.",
+"expected": "This is such a great show, we have to give it a thumbs up."
+},
+{
+"raw": "This is such a great show, we have to give it a thumbs up?",
+"expected": "This is such a great show, we have to give it a thumbs up?"
+},
+{
+"raw": "This is such a great show, we have to give it a try.",
+"expected": "This is such a great show, we have to give it a try."
+},
+{
+"raw": "This is such a great show, we must give it a thumbs up, a like, a comment.",
+"expected": "This is such a great show, we must give it a thumbs up, a like, a comment."
+},
+{
+"raw": "This is such a great show, we should give it a thumbs up, a like, a comment.",
+"expected": "This is such a great show, we should give it a thumbs up, a like, a comment."
+},
+{
+"raw": "This is what Huawei  released this time.",
+"expected": "This is what Huawei released this time."
+},
+{
+"raw": "This is what Huawei released  for the whole mate90.",
+"expected": "This is what Huawei released for the whole mate90."
+},
+{
+"raw": "This is what Huawei released for the 90s family.",
+"expected": "This is what Huawei released for the 90s family."
+},
+{
+"raw": "This time  Huawei released the whole thing.",
+"expected": "This time Huawei released the whole thing."
+},
+{
+"raw": "This time  Huawei released the whole.",
+"expected": "This time Huawei released the whole."
+},
+{
+"raw": "This time Huawei  released the whole mate907.",
+"expected": "This time Huawei released the whole mate907."
+},
+{
+"raw": "This time Huawei released  the whole mate90 family.",
+"expected": "This time Huawei released the whole mate90 family."
+},
+{
+"raw": "This time Huawei released  whole mate907.",
+"expected": "This time Huawei released whole mate907."
+},
+{
+"raw": "This time Huawei released  whole.",
+"expected": "This time Huawei released whole."
+},
+{
+"raw": "This time Huawei released the  whole mate90 family.",
+"expected": "This time Huawei released the whole mate90 family."
+},
+{
+"raw": "This time Huawei released the  whole mate907.",
+"expected": "This time Huawei released the whole mate907."
+},
+{
+"raw": "This time Huawei released the whole 90s family, including.",
+"expected": "This time Huawei released the whole 90s family, including."
+},
+{
+"raw": "This time Huawei released the whole 90s family.",
+"expected": "This time Huawei released the whole 90s family."
+},
+{
+"raw": "This time Huawei released the whole thing.",
+"expected": "This time Huawei released the whole thing."
+},
+{
+"raw": "This time Huawei released.",
+"expected": "This time Huawei released."
+},
+{
+"raw": "This time Huawei.",
+"expected": "This time Huawei."
+},
+{
+"raw": "This time, Huawei released the whole mate90 family, including.",
+"expected": "This time, Huawei released the whole mate90 family, including."
+},
+{
+"raw": "This time, Huawei released the whole mate90 family.",
+"expected": "This time, Huawei released the whole mate90 family."
+},
+{
+"raw": "This time, Huawei released the whole mate90.",
+"expected": "This time, Huawei released the whole mate90."
+},
+{
+"raw": "This time, Huawei released the whole mate907.",
+"expected": "This time, Huawei released the whole mate907."
+},
+{
+"raw": "This time, Huawei released the whole.",
+"expected": "This time, Huawei released the whole."
+},
+{
+"raw": "This time.",
+"expected": "This time."
+},
+{
+"raw": "To whom.",
+"expected": "To whom."
+},
+{
+"raw": "Uh, I don't know, yeah, it's raining.",
+"expected": "Uh, I don't know, yeah, it's raining."
+},
+{
+"raw": "Uh, I don't know. Yeah, it's raining, and then that guy.",
+"expected": "Uh, I don't know. Yeah, it's raining, and then that guy."
+},
+{
+"raw": "Uh, I don't know. Yeah, it's raining, and then that.",
+"expected": "Uh, I don't know. Yeah, it's raining, and then that."
+},
+{
+"raw": "Up.",
+"expected": "Up."
+},
+{
+"raw": "Well,  at first.",
+"expected": "Well, at first."
+},
+{
+"raw": "Well,  at the beginning,  it was Yang.",
+"expected": "Well, at the beginning, it was Yang."
+},
+{
+"raw": "Well,  he drank it.",
+"expected": "Well, he drank it."
+},
+{
+"raw": "Well,  the first one was Yang Mi.",
+"expected": "Well, the first one was Yang Mi."
+},
+{
+"raw": "Well,  then he drank it.",
+"expected": "Well, then he drank it."
+},
+{
+"raw": "Well,  then he drank.",
+"expected": "Well, then he drank."
+},
+{
+"raw": "Well, I didn't see the movie, so I'll just tell you.",
+"expected": "Well, I didn't see the movie, so I'll just tell you."
+},
+{
+"raw": "Well, I don't know. Yeah, it's raining, and then.",
+"expected": "Well, I don't know. Yeah, it's raining, and then."
+},
+{
+"raw": "Well, I don't know. Yeah, it's raining.",
+"expected": "Well, I don't know. Yeah, it's raining."
+},
+{
+"raw": "Well, I don't watch movies, so I'll just tell you.",
+"expected": "Well, I don't watch movies, so I'll just tell you."
+},
+{
+"raw": "Well, at first it was Yang Mi.",
+"expected": "Well, at first it was Yang Mi."
+},
+{
+"raw": "Well, at first it was Yang.",
+"expected": "Well, at first it was Yang."
+},
+{
+"raw": "Well, at first.",
+"expected": "Well, at first."
+},
+{
+"raw": "Well, at the beginning, it  was Yang Mi.",
+"expected": "Well, at the beginning, it was Yang Mi."
+},
+{
+"raw": "Well, he  drank, he said.",
+"expected": "Well, he drank, he said."
+},
+{
+"raw": "Well, he drank,  he said he didn't drink, and then.",
+"expected": "Well, he drank, he said he didn't drink, and then."
+},
+{
+"raw": "Well, he was because of his brother, his brother's accident, and then his brother died.",
+"expected": "Well, he was because of his brother, his brother's accident, and then his brother died."
+},
+{
+"raw": "Well, he was just like, \"I'm not going to be able to do that.\"",
+"expected": "Well, he was just like, \"I'm not going to be able to do that.\""
+},
+{
+"raw": "Well, he was out of his mind about his brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's",
+"expected": "Well, he was out of his mind about his brother's"
+},
+{
+"raw": "Well, he's  his brother's brother.",
+"expected": "Well, he's his brother's brother."
+},
+{
+"raw": "Well, he's because  his brother, his brother.",
+"expected": "Well, he's because his brother, his brother."
+},
+{
+"raw": "Well, he's because his brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's",
+"expected": "Well, he's because his brother's"
+},
+{
+"raw": "Well, he's because his brother,  his brother's thing.",
+"expected": "Well, he's because his brother, his brother's thing."
+},
+{
+"raw": "Well, he's because of him.",
+"expected": "Well, he's because of him."
+},
+{
+"raw": "Well, he's been doing things to his brother, and his brother's brother.",
+"expected": "Well, he's been doing things to his brother, and his brother's brother."
+},
+{
+"raw": "Well, he's been in a car accident because of his brother, and then his brother, and then he.",
+"expected": "Well, he's been in a car accident because of his brother, and then his brother, and then he."
+},
+{
+"raw": "Well, he's been out of the game for his brother's brother's thing.",
+"expected": "Well, he's been out of the game for his brother's brother's thing."
+},
+{
+"raw": "Well, he's been out of the house for his brother's brother's thing.",
+"expected": "Well, he's been out of the house for his brother's brother's thing."
+},
+{
+"raw": "Well, he's been out of town about his brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's brother's",
+"expected": "Well, he's been out of town about his brother's"
+},
+{
+"raw": "Well, he's been talking about his brother's brother.",
+"expected": "Well, he's been talking about his brother's brother."
+},
+{
+"raw": "Well, he's for  his brother's  his brother's things.",
+"expected": "Well, he's for his brother's his brother's things."
+},
+{
+"raw": "Well, he's for him.",
+"expected": "Well, he's for him."
+},
+{
+"raw": "Well, he's for his brother.",
+"expected": "Well, he's for his brother."
+},
+{
+"raw": "Well, he's his  brother's  thing, then.",
+"expected": "Well, he's his brother's thing, then."
+},
+{
+"raw": "Well, it was Yang Mi at first.",
+"expected": "Well, it was Yang Mi at first."
+},
+{
+"raw": "Well, it was Yang Mi.",
+"expected": "Well, it was Yang Mi."
+},
+{
+"raw": "Well, no, it's raining.",
+"expected": "Well, no, it's raining."
+},
+{
+"raw": "Well, no, yeah.",
+"expected": "Well, no, yeah."
+},
+{
+"raw": "Well, no.",
+"expected": "Well, no."
+},
+{
+"raw": "Well, then  he drank it.",
+"expected": "Well, then he drank it."
+},
+{
+"raw": "Well, then  that's it, then  that's it.",
+"expected": "Well, then that's it, then that's it."
+},
+{
+"raw": "Well, then he  drank, he said.",
+"expected": "Well, then he drank, he said."
+},
+{
+"raw": "Well, then he drank it.",
+"expected": "Well, then he drank it."
+},
+{
+"raw": "Well, then he drank,  and he said he didn't.",
+"expected": "Well, then he drank, and he said he didn't."
+},
+{
+"raw": "Well, then he drank,  and then he said he didn't drink, and then.",
+"expected": "Well, then he drank, and then he said he didn't drink, and then."
+},
+{
+"raw": "Well, then he drank, and he said  he didn't drink.",
+"expected": "Well, then he drank, and he said he didn't drink."
+},
+{
+"raw": "Well, then he drank, and he said he  didn't drink, and then.",
+"expected": "Well, then he drank, and he said he didn't drink, and then."
+},
+{
+"raw": "Well, then he drank, and he said he didn't drink, and then.",
+"expected": "Well, then he drank, and he said he didn't drink, and then."
+},
+{
+"raw": "Well, then he drank, and he said he didn't drink.",
+"expected": "Well, then he drank, and he said he didn't drink."
+},
+{
+"raw": "Well, then he drank, and he said he didn't.",
+"expected": "Well, then he drank, and he said he didn't."
+},
+{
+"raw": "Well, then he drank, and then he said he didn't drink, and then",
+"expected": "Well, then he drank, and then he said he didn't drink, and then"
+},
+{
+"raw": "Well, then he drank, he said.",
+"expected": "Well, then he drank, he said."
+},
+{
+"raw": "Well, then he drank.",
+"expected": "Well, then he drank."
+},
+{
+"raw": "Well, then he.",
+"expected": "Well, then he."
+},
+{
+"raw": "Well, then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that,",
+"expected": "Well, then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that, and then it was like that,"
+},
+{
+"raw": "Well, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like",
+"expected": "Well, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like that, then it was like"
+},
+{
+"raw": "Well, then it was over.",
+"expected": "Well, then it was over."
+},
+{
+"raw": "Well, then it's over.",
+"expected": "Well, then it's over."
+},
+{
+"raw": "Well, then that's it, then  a few years later.",
+"expected": "Well, then that's it, then a few years later."
+},
+{
+"raw": "Well, then that's it, then  it's been a few years.",
+"expected": "Well, then that's it, then it's been a few years."
+},
+{
+"raw": "Well, then that's it, then  it's over.",
+"expected": "Well, then that's it, then it's over."
+},
+{
+"raw": "Well, then that's it, then  that's it.",
+"expected": "Well, then that's it, then that's it."
+},
+{
+"raw": "Well, then that's it, then  then that's it.",
+"expected": "Well, then that's it, then then that's it."
+},
+{
+"raw": "Well, then that's it, then that's it.",
+"expected": "Well, then that's it, then that's it."
+},
+{
+"raw": "Well, then that's it, then then  a few years later.",
+"expected": "Well, then that's it, then then a few years later."
+},
+{
+"raw": "Well, then that's it, then then a few  years later.",
+"expected": "Well, then that's it, then then a few years later."
+},
+{
+"raw": "Well, then that's it.",
+"expected": "Well, then that's it."
+},
+{
+"raw": "Well, then.",
+"expected": "Well, then."
+},
+{
+"raw": "What kind of what kind of what",
+"expected": "What kind of what kind of what"
+},
+{
+"raw": "What kind of what kind of what kind of.",
+"expected": "What kind of."
+},
+{
+"raw": "What, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what,",
+"expected": "What,"
+},
+{
+"raw": "What, what, what, what.",
+"expected": "What."
+},
+{
+"raw": "What?",
+"expected": "What?"
+},
+{
+"raw": "When he left,  he said, \"Yeah.\"",
+"expected": "When he left, he said, \"Yeah.\""
+},
+{
+"raw": "When he left, he left.",
+"expected": "When he left, he left."
+},
+{
+"raw": "When his brother left, he hung his brother in the car.",
+"expected": "When his brother left, he hung his brother in the car."
+},
+{
+"raw": "When his brother left, he said, \"Yeah.\"",
+"expected": "When his brother left, he said, \"Yeah.\""
+},
+{
+"raw": "Yeah, it's because of him.",
+"expected": "Yeah, it's because of him."
+},
+{
+"raw": "You know, you don't have to listen  and then you don't have to sleep.",
+"expected": "You know, you don't have to listen and then you don't have to sleep."
+},
+{
+"raw": "You know, you don't have to listen to it to fall asleep, I told you.",
+"expected": "You know, you don't have to listen to it to fall asleep, I told you."
+},
+{
+"raw": "You know, you don't have to listen to it.",
+"expected": "You know, you don't have to listen to it."
+},
+{
+"raw": "You know, you know, don't go to sleep, you don't sleep.",
+"expected": "You know, you know, don't go to sleep, you don't sleep."
+},
+{
+"raw": "go go go! Let's go.",
+"expected": "go! Let's go."
+},
+{
+"raw": "he said he said he said, and",
+"expected": "he said, and"
+},
+{
+"raw": "including 9.",
+"expected": "including 9."
+},
+{
+"raw": "including 9030 mate.",
+"expected": "including 9030 mate."
+},
+{
+"raw": "including 9030.",
+"expected": "including 9030."
+},
+{
+"raw": "including the 9.",
+"expected": "including the 9."
+},
+{
+"raw": "including the 9030.",
+"expected": "including the 9030."
+},
+{
+"raw": "the the the the",
+"expected": "the"
+},
+{
+"raw": "then that.",
+"expected": "then that."
+},
+{
+"raw": "very very good",
+"expected": "very very good"
+},
+{
+"raw": "x y x y x y x",
+"expected": "x y"
+}
+]

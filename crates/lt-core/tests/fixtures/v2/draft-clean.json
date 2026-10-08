@@ -1,0 +1,767 @@
+[
+ {
+  "zh": "正好我没看过这个电。",
+  "raw": "I didn't  watch this movie.",
+  "expected": "I didn't watch this movie.",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "正好我没看过这个电影就讲。",
+  "raw": "I didn't watch  the movie, so I'm not going to say anything.",
+  "expected": "I didn't watch the movie, so I'm not going to say anything.",
+  "max_tokens_for_zh": 47
+ },
+ {
+  "zh": "你可你可不要听着睡着了，睡不着。",
+  "raw": "You know, you don't have to listen  and then you don't have to sleep.",
+  "expected": "You know, you don't have to listen and then you don't have to sleep.",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "就是这个我是这有这个店。",
+  "raw": "That's what  I'm doing in this store.",
+  "expected": "That's what I'm doing in this store.",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "他是那个由杨幂和那个鹿。",
+  "raw": "He's  the one with Yang and the one with the deer.",
+  "expected": "He's the one with Yang and the one with the deer.",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "他是那个由杨幂和那个鹿晗主演。",
+  "raw": "He's the one with Yang and the one with  Lu Han.",
+  "expected": "He's the one with Yang and the one with Lu Han.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "嗯，一开始的时候是。",
+  "raw": "Well,  at first.",
+  "expected": "Well, at first.",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "嗯，一开始的时候是杨幂那个。",
+  "raw": "Well,  the first one was Yang Mi.",
+  "expected": "Well, the first one was Yang Mi.",
+  "max_tokens_for_zh": 50
+ },
+ {
+  "zh": "我也不知道他这里面。",
+  "raw": "I don't  know anything about him.",
+  "expected": "I don't know anything about him.",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "然后他嗯他的弟弟特别。",
+  "raw": "Then he, uh,  his brother was special.",
+  "expected": "Then he, uh, his brother was special.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "然后他嗯他的弟弟特别喜欢英乐。",
+  "raw": "Then he, uh, his brother  loved the English.",
+  "expected": "Then he, uh, his brother loved the English.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "但是但是。",
+  "raw": "But but but.",
+  "expected": "But.",
+  "max_tokens_for_zh": 23
+ },
+ {
+  "zh": "但是但是他就他就。",
+  "raw": "But  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but  but",
+  "expected": "But",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "但是但是他就他就不想让他。",
+  "raw": "But but but but but but but but but but but but but but but but but but but but but but but but but  but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+  "expected": "But",
+  "max_tokens_for_zh": 47
+ },
+ {
+  "zh": "但是但是他就他就不想让他他的弟弟出事。",
+  "raw": "But but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but but",
+  "expected": "But",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "但是但是他就他就不想让他他弟弟出事这个音乐。",
+  "raw": "But, but, but, he didn't want his brother to get hurt.",
+  "expected": "But, he didn't want his brother to get hurt.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后他就嗯不想嘛。",
+  "raw": "And  he  didn't  want  to  do  it.",
+  "expected": "And he didn't want to do it.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "他就他弟弟开演唱会呢，然后。",
+  "raw": "He sang about  his brother's concert.",
+  "expected": "He sang about his brother's concert.",
+  "max_tokens_for_zh": 50
+ },
+ {
+  "zh": "然后他就进呃他就进。",
+  "raw": "And  he  went  in.",
+  "expected": "And he went in.",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "那他就走了，然后他就。",
+  "raw": "Then  he left, and then he left.",
+  "expected": "Then he left, and then he left.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "然后就那啥他就开。",
+  "raw": "And  then  he  started  driving.",
+  "expected": "And then he started driving.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "然后就那啥，他就开车走呢，最后他弟弟。",
+  "raw": "And then, he just  drove away,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left,  and then he left",
+  "expected": "And then, he just drove away, and then he left",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "走着走着，因为他弟弟。",
+  "raw": "As  he  walked  along  with  his  brother.",
+  "expected": "As he walked along with his brother.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "走着走着，因为他弟弟他有他弟。",
+  "raw": "As he walked along with  his brother, he had his brother.",
+  "expected": "As he walked along with his brother, he had his brother.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "走着走着，因为他弟弟他和他弟弟发生了争执，然后。",
+  "raw": "As he walked, he and his brother had  a fight, and then.",
+  "expected": "As he walked, he and his brother had a fight, and then.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "最后就走到走到一个桥桥的上面。",
+  "raw": "And then I walked over  to the bridge.",
+  "expected": "And then I walked over to the bridge.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "最后就走到走到一个桥桥的上面，他俩就。",
+  "raw": "And then I walked over to  the bridge and he walked over to me.",
+  "expected": "And then I walked over to the bridge and he walked over to me.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "他俩就发生这只。然后。",
+  "raw": "They had  something happen.",
+  "expected": "They had something happen.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "然后他就他弟弟就就那啥。",
+  "raw": "And then he said to  his brother.",
+  "expected": "And then he said to his brother.",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "死了，然后他得掉下。",
+  "raw": "He died,  and then he fell.",
+  "expected": "He died, and then he fell.",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "死了，然后他得掉下去死了。",
+  "raw": "He died, and then  he had to drop down and die.",
+  "expected": "He died, and then he had to drop down and die.",
+  "max_tokens_for_zh": 47
+ },
+ {
+  "zh": "死了，然后他得掉下去死了，然后他就。",
+  "raw": "He died, and then he had to drop down  and die, and then he was.",
+  "expected": "He died, and then he had to drop down and die, and then he was.",
+  "max_tokens_for_zh": 62
+ },
+ {
+  "zh": "然后他就他就因为。",
+  "raw": "And  then he just went away.",
+  "expected": "And then he just went away.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "然后他就他就因为嗯因为。",
+  "raw": "And then he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he just  he",
+  "expected": "And then he just",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "然后他就他就因为嗯因为这场车祸，然后。",
+  "raw": "And then he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he just he",
+  "expected": "And then he just",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "嗯，然后就那啥了，然后就。",
+  "raw": "Well, then  that's it, then  that's it.",
+  "expected": "Well, then that's it, then that's it.",
+  "max_tokens_for_zh": 47
+ },
+ {
+  "zh": "嗯，然后就那啥了，然后就过了过了。",
+  "raw": "Well, then that's it, then  that's it.",
+  "expected": "Well, then that's it, then that's it.",
+  "max_tokens_for_zh": 59
+ },
+ {
+  "zh": "嗯，然后就那啥了，然后就过了过了几年吧。",
+  "raw": "Well, then that's it, then  it's been a few years.",
+  "expected": "Well, then that's it, then it's been a few years.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后他不是个警察吗？",
+  "raw": "Then  he wasn't a cop?",
+  "expected": "Then he wasn't a cop?",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "然后他不是个警察吗，也反正对。",
+  "raw": "Then he wasn't  a cop, or at least not for the most part.",
+  "expected": "Then he wasn't a cop, or at least not for the most part.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "也反正对一些事就比较敏感啥的。",
+  "raw": "In any case, it's a bit more than  sensitive to some things.",
+  "expected": "In any case, it's a bit more than sensitive to some things.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "然后就是导盲犬，因为它是个盲。",
+  "raw": "And then the guide dog, because  it's blind.",
+  "expected": "And then the guide dog, because it's blind.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "嗯，他因为他弟他弟弟。",
+  "raw": "Well, he's  his brother's brother.",
+  "expected": "Well, he's his brother's brother.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "嗯，他因为他弟他弟的事情，然后。",
+  "raw": "Well, he's his  brother's  thing, then.",
+  "expected": "Well, he's his brother's thing, then.",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "然后他弟弟死了，他就成了盲人了。",
+  "raw": "Then his brother died,  and he became blind.",
+  "expected": "Then his brother died, and he became blind.",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "然后那那条狗是个导盲犬。",
+  "raw": "And then that dog  was a guide dog.",
+  "expected": "And then that dog was a guide dog.",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "有一天他就那啥呢。",
+  "raw": "One day  he said.",
+  "expected": "One day he said.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "因为他是个警察，他对。",
+  "raw": "Because  he's a cop.",
+  "expected": "Because he's a cop.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "因为他是个警察，他对一些事情都。",
+  "raw": "Because he's  a cop, he's  a bit of a  dog.",
+  "expected": "Because he's a cop, he's a bit of a dog.",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "因为他是个警察，他对一些事情都比较敏感。",
+  "raw": "Because he's a cop, he's a bit of  a sensitive person.",
+  "expected": "Because he's a cop, he's a bit of a sensitive person.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "因为他是个警察，他对一些事情都比较敏感，然后他就。",
+  "raw": "Because he's a cop, he's a bit of a  sensitive to some things, and then he.",
+  "expected": "Because he's a cop, he's a bit of a sensitive to some things, and then he.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后他就嗯那啥。",
+  "raw": "And  he  hmm  that  thing.",
+  "expected": "And he hmm that thing.",
+  "max_tokens_for_zh": 32
+ },
+ {
+  "zh": "然后他就嗯那啥呢大车了嘛他就。",
+  "raw": "And he hmm  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh  oh",
+  "expected": "And he hmm oh",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "然后他就嗯那啥呢大车了嘛，他就在外边，然后我回家呀，然后。",
+  "raw": "Then he was like, oh, well, he was outside, and he  was home.",
+  "expected": "Then he was like, oh, well, he was outside, and he was home.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后就在手机上弄。",
+  "raw": "And  then  on  the  phone.",
+  "expected": "And then on the phone.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "然后就在手机上弄的那种。",
+  "raw": "And then on  the phone.",
+  "expected": "And then on the phone.",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "然后就在手机上弄的那种什么呼叫。",
+  "raw": "And then on  the phone  what  kind  of  call.",
+  "expected": "And then on the phone what kind of call.",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "然后就在手机上弄的那种什么呼叫呀啥的。",
+  "raw": "And then on the phone what kind  of calls and stuff.",
+  "expected": "And then on the phone what kind of calls and stuff.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后就在手机上弄的那种什么呼叫呀啥的，然后他就。",
+  "raw": "And then on the phone what kind of calls  and stuff, and then he.",
+  "expected": "And then on the phone what kind of calls and stuff, and then he.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "他就他就感觉他就因为他就。",
+  "raw": "He  feels  he  feels  he  feels.",
+  "expected": "He feels.",
+  "max_tokens_for_zh": 47
+ },
+ {
+  "zh": "他就他就感觉他就因为他就那啥一0。",
+  "raw": "He feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels  he feels he feels",
+  "expected": "He feels",
+  "max_tokens_for_zh": 59
+ },
+ {
+  "zh": "他就他就感觉他就因为他就那啥一般警察嘛都。",
+  "raw": "He feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+  "expected": "He feels",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "他就他就感觉他就因为他就那啥一般警察嘛都对敏感的。",
+  "raw": "He feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+  "expected": "He feels",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "他就他就感觉他就因为他就那啥一般警察嘛都对敏感的，然后他就。",
+  "raw": "He feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels he feels",
+  "expected": "He feels",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后他就呃感感觉。",
+  "raw": "And  then  he  felt  something.",
+  "expected": "And then he felt something.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "是个啥啥啥样的啥样。",
+  "raw": "What kind of what kind of what kind of.",
+  "expected": "What kind of.",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "之后那个那个人，然后请他喝。",
+  "raw": "And then  the man  asked  me  to  drink.",
+  "expected": "And then the man asked me to drink.",
+  "max_tokens_for_zh": 50
+ },
+ {
+  "zh": "之后那个那个人，然后请他喝水呢，然后他。",
+  "raw": "And then the man asked me  to drink water, and then he.",
+  "expected": "And then the man asked me to drink water, and then he.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "嗯，然后他就喝他。",
+  "raw": "Well,  he drank it.",
+  "expected": "Well, he drank it.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "嗯，然后他就喝，他就说他。",
+  "raw": "Well, he  drank, he said.",
+  "expected": "Well, he drank, he said.",
+  "max_tokens_for_zh": 47
+ },
+ {
+  "zh": "嗯，然后他就喝，他就说他不喝，然后。",
+  "raw": "Well, he drank,  he said he didn't drink, and then.",
+  "expected": "Well, he drank, he said he didn't drink, and then.",
+  "max_tokens_for_zh": 62
+ },
+ {
+  "zh": "然后就他就提荐，因为。",
+  "raw": "Then  he said, because.",
+  "expected": "Then he said, because.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "然后就他就提荐，因为那个男。",
+  "raw": "Then he  said, because of that man.",
+  "expected": "Then he said, because of that man.",
+  "max_tokens_for_zh": 50
+ },
+ {
+  "zh": "然后就他就听见，因为那个男的后边呃后备车。",
+  "raw": "And then he heard it, because of the  guy behind uh, uh, the back seat.",
+  "expected": "And then he heard it, because of the guy behind uh, uh, the back seat.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后就他就听见，因为那个男的后边呃后备车厢里装了一。",
+  "raw": "And then he heard it, because of the guy behind uh, uh, the  back of the train.",
+  "expected": "And then he heard it, because of the guy behind uh, uh, the back of the train.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后就他就听见，因为那个男的后边呃后备车厢里装了一个女的。",
+  "raw": "And then he heard it, because of the guy behind uh, uh, the back of  the train.",
+  "expected": "And then he heard it, because of the guy behind uh, uh, the back of the train.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后那个他就添加。",
+  "raw": "Then  he added.",
+  "expected": "Then he added.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "然后那个他就踢见了，他就踢见了，然后。",
+  "raw": "And then that was it, that  was it, and then.",
+  "expected": "And then that was it, that was it, and then.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后就推荐这个女的。",
+  "raw": "And  then  I  recommended  her.",
+  "expected": "And then I recommended her.",
+  "max_tokens_for_zh": 38
+ },
+ {
+  "zh": "到了一个，好像是正好下雨呢，然后他。",
+  "raw": "It was like it was  rain, and then he.",
+  "expected": "It was like it was rain, and then he.",
+  "max_tokens_for_zh": 62
+ },
+ {
+  "zh": "然后那个男的那个车后备车厢就开了。",
+  "raw": "And then that man's  car trunk opened.",
+  "expected": "And then that man's car trunk opened.",
+  "max_tokens_for_zh": 59
+ },
+ {
+  "zh": "然后他嗯他的弟弟特别喜欢英语。",
+  "raw": "Then he, uh, his brother  loved English.",
+  "expected": "Then he, uh, his brother loved English.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "然后他就进呃他就进去，然后。",
+  "raw": "And he  he went in, and then.",
+  "expected": "And he he went in, and then.",
+  "max_tokens_for_zh": 50
+ },
+ {
+  "zh": "然后我就出嗯出车祸了。",
+  "raw": "And then I  um  I got into an accident.",
+  "expected": "And then I um I got into an accident.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "然后就没杀住砸啥的，然后就。",
+  "raw": "And then it just  crashed and everything.",
+  "expected": "And then it just crashed and everything.",
+  "max_tokens_for_zh": 50
+ },
+ {
+  "zh": "然后他不是个警察吗？也反正对。",
+  "raw": "Then he wasn't  a cop? Anyway, that's it.",
+  "expected": "Then he wasn't a cop? Anyway, that's it.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "然后他就嗯那啥呢，大车了嘛他就。",
+  "raw": "And he hmm  what?",
+  "expected": "And he hmm what?",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "然后他就嗯那啥呢大车了嘛，他就在外边，然后我回家呀，然后。",
+  "raw": "Then he said, \"Oh, well, he  was outside, and I came home, and then.",
+  "expected": "Then he said, \"Oh, well, he was outside, and I came home, and then.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后就在手机上弄。",
+  "raw": "And then it  was on the phone.",
+  "expected": "And then it was on the phone.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "然后就在手机上弄的那种。",
+  "raw": "And then it was on  the phone.",
+  "expected": "And then it was on the phone.",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "然后就在手机上弄的那种什么呼叫。",
+  "raw": "And then it was on  the phone  what I call a call.",
+  "expected": "And then it was on the phone what I call a call.",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "然后就在手机上弄的那种什么呼叫呀啥的。",
+  "raw": "And then it was on the phone what I call  something like a call.",
+  "expected": "And then it was on the phone what I call something like a call.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后就在手机上弄的那种什么呼叫呀啥的，然后他就。",
+  "raw": "And then it was on the phone what I call something like  a call, and then he.",
+  "expected": "And then it was on the phone what I call something like a call, and then he.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "然后那个男的那个车后备车下。",
+  "raw": "And then that car of  the man's  under the back seat.",
+  "expected": "And then that car of the man's under the back seat.",
+  "max_tokens_for_zh": 50
+ },
+ {
+  "zh": "然后那个男的那个车后备车厢就开了。",
+  "raw": "And then that car of the man's under the  trailer.",
+  "expected": "And then that car of the man's under the trailer.",
+  "max_tokens_for_zh": 59
+ },
+ {
+  "zh": "这么劲爆的节目是不是得？",
+  "raw": "Such a  big show, right?",
+  "expected": "Such a big show, right?",
+  "max_tokens_for_zh": 44
+ },
+ {
+  "zh": "这么劲爆的节目是不是得先给我们？",
+  "raw": "Such a big  show, we have to get it.",
+  "expected": "Such a big show, we have to get it.",
+  "max_tokens_for_zh": 56
+ },
+ {
+  "zh": "这么劲爆的节目，是不是得先给我们点赞、收藏、评论？",
+  "raw": "This is such a brilliant show, we have to give it a 5 stars, a 5 stars, a 5 stars?",
+  "expected": "This is such a brilliant show, we have to give it a 5 stars?",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "这么劲爆的节目，是不是得先给我们点赞、收藏、评论支持一下呢？",
+  "raw": "This is such a brilliant show, we have to give it a 5 stars, a 5 stars, a 5 stars.",
+  "expected": "This is such a brilliant show, we have to give it a 5 stars.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "这次华为发布的呢。",
+  "raw": "This  is what Huawei has released.",
+  "expected": "This is what Huawei has released.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "这次华为发布的呢是整个美。",
+  "raw": "This is what Huawei  released this time.",
+  "expected": "This is what Huawei released this time.",
+  "max_tokens_for_zh": 47
+ },
+ {
+  "zh": "这次华为发布的呢是整个mate90。",
+  "raw": "This is what Huawei released  for the whole mate90.",
+  "expected": "This is what Huawei released for the whole mate90.",
+  "max_tokens_for_zh": 62
+ },
+ {
+  "zh": "搭载了麒麟9035的mate90pro以及搭载了麒麟9050。",
+  "raw": "It is equipped with 9035  and 9050.",
+  "expected": "It is equipped with 9035 and 9050.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "虽然今天主要聊的是9050pro啊，但我。",
+  "raw": "Although today 9050pro is the  main topic, I.",
+  "expected": "Although today 9050pro is the main topic, I.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "但我还是简单的聊。",
+  "raw": "But  I just talked.",
+  "expected": "But I just talked.",
+  "max_tokens_for_zh": 35
+ },
+ {
+  "zh": "但我还是简单的聊一下另外两位。",
+  "raw": "But I  would like to talk about two other things.",
+  "expected": "But I would like to talk about two other things.",
+  "max_tokens_for_zh": 53
+ },
+ {
+  "zh": "这次华为发布的呢是整。",
+  "raw": "This time  Huawei released the whole.",
+  "expected": "This time Huawei released the whole.",
+  "max_tokens_for_zh": 41
+ },
+ {
+  "zh": "这次华为发布的呢是整个mate907。",
+  "raw": "This time Huawei released  whole mate907.",
+  "expected": "This time Huawei released whole mate907.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "这次华为发布的呢是整个mate90家族啊包。",
+  "raw": "This time Huawei released  the whole mate90 family.",
+  "expected": "This time Huawei released the whole mate90 family.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "zh": "搭载了麒麟9035的mate90pro以及搭载了麒麟9050pro。",
+  "raw": "It is equipped with 9035  and 9050  pro.",
+  "expected": "It is equipped with 9035 and 9050 pro.",
+  "max_tokens_for_zh": 64
+ },
+ {
+  "raw": "I didn't see it.",
+  "expected": "I didn't see it.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "Oh, I just wanted to say that I haven't seen the movie.",
+  "expected": "Oh, I just wanted to say that I haven't seen the movie.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+  "expected": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "You know, you don't have to listen to it.",
+  "expected": "You know, you don't have to listen to it.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "I can't sleep, I can't sleep.",
+  "expected": "I can't sleep, I can't sleep.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "That's it.",
+  "expected": "That's it.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "That's what I am.",
+  "expected": "That's what I am.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "That's the way I am, that's the way this movie is.",
+  "expected": "That's the way I am, that's the way this movie is.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "He's got it.",
+  "expected": "He's got it.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "And then.",
+  "expected": "And then.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "And then it's about what's going on.",
+  "expected": "And then it's about what's going on.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "then that.",
+  "expected": "then that.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "Well, at first.",
+  "expected": "Well, at first.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "I don't know him.",
+  "expected": "I don't know him.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "I don't know what he was calling inside.",
+  "expected": "I don't know what he was calling inside.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "But, but, but, he didn't want his brother to get hurt.",
+  "expected": "But, he didn't want his brother to get hurt.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "And then, he just drove away, and then he left, and then he left, and then he left, and then he le",
+  "expected": "And then, he just drove away, and then he left",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "very very good",
+  "expected": "very very good",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "I think so, I think so, I think so, I think so.",
+  "expected": "I think so.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "Go go go! Let's go.",
+  "expected": "Go! Let's go.",
+  "max_tokens_for_zh": null
+ },
+ {
+  "raw": "  spaced   out  ",
+  "expected": "spaced out",
+  "max_tokens_for_zh": null
+ }
+]
