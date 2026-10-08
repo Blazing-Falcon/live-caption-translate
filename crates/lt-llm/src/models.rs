@@ -33,6 +33,10 @@ pub struct Manifest {
 pub struct ModelEntry {
     pub id: String,
     pub name: String,
+    /// Optional models (the v2 draft model) are never part of the required set. Until the
+    /// v2 download tasks land, status, fetch and import ignore them so v1 behavior is unchanged.
+    #[serde(default)]
+    pub optional: bool,
     pub files: Vec<FileEntry>,
 }
 
@@ -129,6 +133,7 @@ impl ModelManager {
         self.manifest
             .models
             .iter()
+            .filter(|model| !model.optional)
             .map(|model| model_status(dir.as_ref(), model))
             .collect()
     }
@@ -154,6 +159,7 @@ impl ModelManager {
             .models
             .iter()
             .enumerate()
+            .filter(|(_, model)| !model.optional)
             .flat_map(|(model_index, model)| {
                 model
                     .files
@@ -239,7 +245,7 @@ impl ModelManager {
         fs::create_dir_all(dir)?;
         let mut progress = Progress::new(on_progress);
         let mut found = false;
-        for model in &self.manifest.models {
+        for model in self.manifest.models.iter().filter(|model| !model.optional) {
             for file in &model.files {
                 check_cancel(cancelled, &mut progress, dir, model)?;
                 let flat = from.join(&file.name);
@@ -804,14 +810,17 @@ mod tests {
     #[test]
     fn embedded_manifest_is_valid_and_sizes_are_known() {
         let manifest = embedded_manifest().unwrap();
-        assert_eq!(manifest.models.len(), 3);
+        assert_eq!(manifest.models.len(), 4);
+        let required: Vec<_> = manifest.models.iter().filter(|m| !m.optional).collect();
+        assert_eq!(required.len(), 3);
+        assert_eq!(required.iter().flat_map(|model| &model.files).count(), 4);
         assert_eq!(
-            manifest
-                .models
-                .iter()
-                .flat_map(|model| &model.files)
-                .count(),
-            4
+            ModelManager::new()
+                .unwrap()
+                .status(std::env::temp_dir().join("lt-no-such-models"))
+                .unwrap()
+                .len(),
+            3
         );
         assert!(!ModelManager::new()
             .unwrap()

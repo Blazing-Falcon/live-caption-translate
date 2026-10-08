@@ -1,6 +1,6 @@
 {
   "manifest_version": 1,
-  "checked": "2026-10-07",
+  "checked": "2026-10-09",
   "models": [
     {
       "id": "sensevoice-2024-07-17-int8",
@@ -23,7 +23,8 @@
           "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/tokens.txt",
           "mirror": ""
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "silero-vad-v5",
@@ -39,7 +40,8 @@
           "url": "https://huggingface.co/csukuangfj/vad/resolve/main/silero_vad_v5.onnx",
           "mirror": ""
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "hy-mt2-1.8b-q4_0",
@@ -48,7 +50,15 @@
       "license": "Recorded as Apache-2.0; confirm on https://huggingface.co/tencent/Hy-MT2-1.8B",
       "page": "https://huggingface.co/mradermacher/Hy-MT2-1.8B-i1-GGUF",
       "runtime": {
-        "server_args": ["--jinja", "-np", "1", "-c", "1024", "--override-kv", "tokenizer.ggml.eos_token_id=int:120020"],
+        "server_args": [
+          "--jinja",
+          "-np",
+          "1",
+          "-c",
+          "1024",
+          "--override-kv",
+          "tokenizer.ggml.eos_token_id=int:120020"
+        ],
         "bos_token_id": 120000,
         "eos_token_id_override": 120020
       },
@@ -58,6 +68,34 @@
           "size": 1079997440,
           "sha256": "77b7db506ed5dddd79b30553d346af1bfbed5999838441964ade98c970512087",
           "url": "https://huggingface.co/mradermacher/Hy-MT2-1.8B-i1-GGUF/resolve/main/Hy-MT2-1.8B.i1-Q4_0.gguf",
+          "mirror": ""
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "lmt-60-0.6b-q4_k_m",
+      "name": "Faster captions (LMT-60 0.6B, Q4_K_M)",
+      "role": "draft_translator",
+      "optional": true,
+      "recommended_min_physical_cores": 6,
+      "license": "Apache-2.0 (Hugging Face card of NiuTrans/LMT-60-0.6B and the GGUF repo, checked 2026-10-09)",
+      "page": "https://huggingface.co/mradermacher/LMT-60-0.6B-GGUF",
+      "runtime": {
+        "server_args": [
+          "--jinja",
+          "-np",
+          "1",
+          "-c",
+          "1024"
+        ]
+      },
+      "files": [
+        {
+          "name": "LMT-60-0.6B.Q4_K_M.gguf",
+          "size": 484220000,
+          "sha256": "743c6cdc13294b5c470ec0e89e79d64f96ef0cab94ce1285c78da4dc0f56be5c",
+          "url": "https://huggingface.co/mradermacher/LMT-60-0.6B-GGUF/resolve/main/LMT-60-0.6B.Q4_K_M.gguf",
           "mirror": ""
         }
       ]
