@@ -78,13 +78,40 @@ impl CpuHistory {
     }
 }
 
+/// Whole-PC CPU busy percent from consecutive (idle, total) tick readings.
+#[derive(Default)]
+struct SystemCpu {
+    last: Option<(u64, u64)>,
+}
+
+impl SystemCpu {
+    fn observe(&mut self, reading: Option<(u64, u64)>) -> f32 {
+        let Some((idle, total)) = reading else {
+            return 0.0;
+        };
+        let pct = match self.last {
+            Some((last_idle, last_total)) if total > last_total && idle >= last_idle => {
+                let busy = (total - last_total).saturating_sub(idle - last_idle);
+                busy as f64 / (total - last_total) as f64 * 100.0
+            }
+            _ => 0.0,
+        };
+        self.last = Some((idle, total));
+        pct.clamp(0.0, 100.0) as f32
+    }
+}
+
 pub struct ProcessSampler {
     app_pid: u32,
     /// Zero means no supervised translator; the supervisor replaces this on restart.
     child_pid: Arc<AtomicU32>,
+    /// The draft translator's server; zero when there is none.
+    draft_pid: Arc<AtomicU32>,
     backend: platform::Backend,
     app_cpu: CpuHistory,
     child_cpu: CpuHistory,
+    draft_cpu: CpuHistory,
+    system_cpu: SystemCpu,
 }
 
 impl ProcessSampler {
@@ -99,10 +126,19 @@ impl ProcessSampler {
         Ok(Self {
             app_pid,
             child_pid,
+            draft_pid: Arc::new(AtomicU32::new(0)),
             backend,
             app_cpu: CpuHistory::default(),
             child_cpu: CpuHistory::default(),
+            draft_cpu: CpuHistory::default(),
+            system_cpu: SystemCpu::default(),
         })
+    }
+
+    /// Also sample the draft translator's server process.
+    pub fn with_draft(mut self, draft_pid: Arc<AtomicU32>) -> Self {
+        self.draft_pid = draft_pid;
+        self
     }
 }
 
@@ -117,14 +153,25 @@ impl ResourceSampler for ProcessSampler {
         } else {
             self.backend.read(child_pid)
         };
+        let draft_pid = self.draft_pid.load(Ordering::Acquire);
+        let draft = if draft_pid == 0 {
+            None
+        } else {
+            self.backend.read(draft_pid)
+        };
         let now = Instant::now();
         let (cpu_app_pct, rss_app_mb) = self.app_cpu.observe(self.app_pid, app, now);
         let (cpu_translator_pct, rss_translator_mb) = self.child_cpu.observe(child_pid, child, now);
+        let (cpu_draft_pct, rss_draft_mb) = self.draft_cpu.observe(draft_pid, draft, now);
+        let cpu_system_pct = self.system_cpu.observe(self.backend.system_times());
         ResourceSample {
             cpu_app_pct,
             cpu_translator_pct,
             rss_app_mb,
             rss_translator_mb,
+            cpu_system_pct,
+            cpu_draft_pct,
+            rss_draft_mb,
         }
     }
 }
@@ -213,6 +260,21 @@ mod platform {
     fn filetime(time: FILETIME) -> u64 {
         u64::from(time.dwLowDateTime) | (u64::from(time.dwHighDateTime) << 32)
     }
+
+    impl Backend {
+        /// `(idle, total)` ticks over all logical CPUs; kernel time already includes idle.
+        pub fn system_times(&self) -> Option<(u64, u64)> {
+            use windows_sys::Win32::System::Threading::GetSystemTimes;
+            let mut idle = FILETIME::default();
+            let mut kernel = FILETIME::default();
+            let mut user = FILETIME::default();
+            // SAFETY: three initialized writable FILETIME outputs.
+            if unsafe { GetSystemTimes(&mut idle, &mut kernel, &mut user) } == 0 {
+                return None;
+            }
+            Some((filetime(idle), filetime(kernel) + filetime(user)))
+        }
+    }
 }
 
 #[cfg(target_os = "linux")]
@@ -246,6 +308,23 @@ mod platform {
             let statm = std::fs::read_to_string(format!("/proc/{pid}/statm")).ok()?;
             parse(&stat, &statm, self.ticks_per_second, self.page_bytes)
         }
+
+        /// `(idle, total)` jiffies from the aggregate `cpu` line of `/proc/stat`.
+        pub fn system_times(&self) -> Option<(u64, u64)> {
+            parse_system(&std::fs::read_to_string("/proc/stat").ok()?)
+        }
+    }
+
+    fn parse_system(stat: &str) -> Option<(u64, u64)> {
+        let line = stat.lines().next()?.strip_prefix("cpu")?;
+        let values: Vec<u64> = line
+            .split_whitespace()
+            .filter_map(|v| v.parse().ok())
+            .collect();
+        // user nice system idle iowait irq softirq steal
+        let idle = values.get(3)? + values.get(4).copied().unwrap_or(0);
+        let total: u64 = values.iter().take(8).sum();
+        Some((idle, total))
     }
 
     fn parse(
@@ -277,6 +356,12 @@ mod platform {
     mod tests {
         use super::*;
         #[test]
+        fn proc_stat_reads_idle_and_total_jiffies() {
+            let stat = "cpu  100 5 50 800 20 3 2 1 0 0\ncpu0 1 1 1 1 1 1 1 1";
+            assert_eq!(parse_system(stat), Some((820, 981)));
+            assert!(parse_system("garbage").is_none());
+        }
+        #[test]
         fn proc_fields_handle_parentheses_and_ignore_waited_child_cpu() {
             // State, then fields4..13, user14=25, kernel15=5, child16/17=999,
             // fields18..21, starttime22=12345.
@@ -304,12 +389,30 @@ mod platform {
         pub fn read(&self, _: u32) -> Option<RawProcess> {
             None
         }
+        pub fn system_times(&self) -> Option<(u64, u64)> {
+            None
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn system_cpu_is_the_busy_share_between_readings() {
+        let mut cpu = SystemCpu::default();
+        assert_eq!(
+            cpu.observe(Some((100, 200))),
+            0.0,
+            "first reading is a baseline"
+        );
+        // 50 ticks passed, 30 of them idle: 40% busy.
+        assert!((cpu.observe(Some((130, 250))) - 40.0).abs() < 1e-3);
+        assert_eq!(cpu.observe(None), 0.0);
+        // counters that go backwards restart the baseline
+        assert_eq!(cpu.observe(Some((10, 20))), 0.0);
+    }
 
     #[test]
     fn current_process_has_real_rss_and_no_child_is_zero() {

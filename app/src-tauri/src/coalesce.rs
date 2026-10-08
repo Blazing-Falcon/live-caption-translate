@@ -168,6 +168,7 @@ mod tests {
             start_ms: 0,
             end_ms: 1,
             asr_ms: 1,
+            cut: lt_core::types::CutReason::Pause,
         }
     }
 

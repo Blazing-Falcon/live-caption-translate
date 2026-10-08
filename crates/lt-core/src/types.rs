@@ -99,6 +99,12 @@ pub enum CutReason {
     HardCut,
     Discontinuity,
     End,
+    /// The recognizer committed a clause at punctuation or the wait cap.
+    Commit,
+}
+
+fn default_cut() -> CutReason {
+    CutReason::Pause
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -138,6 +144,9 @@ pub struct Transcript {
     pub timing: StageTiming,
     #[serde(default)]
     pub absorbed: Vec<UtteranceId>,
+    /// How the clause ended. Early-commit clauses skip the short-phrase hold.
+    #[serde(default = "default_cut")]
+    pub cut: CutReason,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -168,6 +177,27 @@ pub struct Timing {
     pub generated_tokens: u32,
 }
 
+/// The caption mode that is actually running, as opposed to the one the user chose.
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EffectiveMode {
+    Continuous,
+    Light,
+    #[default]
+    Off,
+}
+
+/// Why the effective mode differs from the chosen one, or how `auto` resolved.
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ModeReason {
+    User,
+    Auto,
+    Cpu,
+    Lag,
+    DraftUnavailable,
+}
+
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct PipelineStats {
     pub lag_ms: u64,
@@ -183,6 +213,17 @@ pub struct PipelineStats {
     pub cpu_translator_pct: f32,
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
+    pub mode: EffectiveMode,
+    pub mode_reason: Option<ModeReason>,
+    /// Whole-PC CPU busy percent over the last second.
+    pub cpu_system_pct: f32,
+    /// Draft server, percent of one core.
+    pub cpu_draft_pct: f32,
+    pub rss_draft_mb: u32,
+    pub word_first_p50_ms: Option<u32>,
+    pub word_final_p50_ms: Option<u32>,
+    pub drafts_total: u32,
+    pub drafts_failed: u32,
 }
 
 #[cfg(test)]

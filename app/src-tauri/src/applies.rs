@@ -49,6 +49,7 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
         "routing",
         "join",
         "translate",
+        "latency",
     ] {
         raise(Applies::Pipeline, table(old, name) != table(new, name));
     }
@@ -77,6 +78,11 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
             config.translate.threads,
             config.translate.ctx,
             config.translate.engine,
+            config.latency.low_priority,
+            config.latency.draft_server_url,
+            config.latency.draft_engine,
+            // A server started for Off mode runs at normal priority.
+            config.latency.mode == "off",
         ])
     };
     key(old) != key(new)
@@ -121,6 +127,16 @@ mod tests {
             Applies::Pipeline
         );
         assert_eq!(changed(|c| c.translate.threads = 3), Applies::Pipeline);
+        assert_eq!(
+            changed(|c| c.latency.mode = "light".into()),
+            Applies::Pipeline
+        );
+        assert_eq!(changed(|c| c.latency.step_down = false), Applies::Pipeline);
+        assert_eq!(changed(|c| c.overlay.live_source = false), Applies::Live);
+        assert_eq!(
+            changed(|c| c.overlay.draft_display = "all".into()),
+            Applies::Live
+        );
         assert_eq!(changed(|c| c.capture.autostart = false), Applies::Restart);
         assert_eq!(
             changed(|c| c.logging.level = "debug".into()),
@@ -145,5 +161,11 @@ mod tests {
         assert!(!server_changed(&old, &new));
         new.translate.ctx = 2048;
         assert!(server_changed(&old, &new));
+        let mut new = old.clone();
+        new.latency.low_priority = false;
+        assert!(server_changed(&old, &new));
+        let mut new = old.clone();
+        new.latency.cap_tokens = 30;
+        assert!(!server_changed(&old, &new));
     }
 }

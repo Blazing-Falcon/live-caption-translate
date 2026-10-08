@@ -5,6 +5,10 @@ use crate::types::{PipelineStats, StreamTime, TextClass, UtteranceId};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
 const WINDOW_SIZE: usize = 50;
+/// Per-word delay medians cover clauses that finished within this long.
+const WORD_WINDOW_MS: u64 = 60_000;
+/// Instants sampled inside each clause (an approximation of VAD-detected speech).
+const WORD_STEP_MS: u64 = 100;
 
 /// Shared routing for event subscribers: Other is terminal only if untranslated.
 #[derive(Default)]
@@ -50,6 +54,11 @@ pub struct ResourceSample {
     pub cpu_translator_pct: f32,
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
+    /// Whole-PC CPU busy percent over the last second.
+    pub cpu_system_pct: f32,
+    /// The draft server, percent of one core.
+    pub cpu_draft_pct: f32,
+    pub rss_draft_mb: u32,
 }
 
 /// The shell/CLI supplies OS-specific process counters; core stays portable.
@@ -62,6 +71,22 @@ struct FinalSample {
     first_ms: Option<u32>,
 }
 
+/// What is known about a clause until its final translation finishes.
+#[derive(Default)]
+struct ClauseTrack {
+    start_ms: u64,
+    end_ms: u64,
+    /// `(end_ms of the translated partial, session ms when the draft was published)`.
+    drafts: Vec<(u64, u64)>,
+}
+
+/// Per-word delays of one finished clause, in milliseconds.
+struct WordClause {
+    done_ms: u64,
+    first: Vec<u32>,
+    last: Vec<u32>,
+}
+
 #[derive(Default)]
 pub struct Metrics {
     finals: VecDeque<FinalSample>,
@@ -71,6 +96,12 @@ pub struct Metrics {
     leaked_cjk_total: u64,
     sampler: Option<Box<dyn ResourceSampler>>,
     routing: OtherRouting,
+    tracks: BTreeMap<UtteranceId, ClauseTrack>,
+    /// Drafts can be published before the clause's `AsrFinal`.
+    early_drafts: BTreeMap<UtteranceId, Vec<(u64, u64)>>,
+    words: VecDeque<WordClause>,
+    drafts_failed: u32,
+    resources: ResourceSample,
 }
 
 impl Metrics {
@@ -109,7 +140,126 @@ impl Metrics {
         self.leaked_cjk_total
     }
 
+    /// How far the oldest unfinished clause trails the stream, in milliseconds.
+    pub fn lag_ms(&self, live: StreamTime) -> u64 {
+        self.unfinished
+            .values()
+            .min()
+            .map_or(0, |end| live.millis().saturating_sub(*end))
+    }
+
+    /// Whole-PC CPU busy percent from the latest snapshot.
+    pub fn system_cpu_pct(&self) -> f32 {
+        self.resources.cpu_system_pct
+    }
+
+    pub fn draft_failed(&mut self) {
+        self.drafts_failed = self.drafts_failed.saturating_add(1);
+    }
+
     pub fn record(&mut self, event: &PipelineEvent) {
+        self.record_at(event, 0);
+    }
+
+    fn forget_clause(&mut self, id: &UtteranceId) {
+        self.tracks.remove(id);
+        self.early_drafts.remove(id);
+    }
+
+    /// Per-word delay samples for a finished clause: first English is the earliest of a
+    /// draft that covers the instant and the final; final English is the final alone.
+    fn finish_words(&mut self, id: UtteranceId, done_ms: u64) {
+        let Some(track) = self.tracks.remove(&id) else {
+            return;
+        };
+        let mut clause = WordClause {
+            done_ms,
+            first: Vec::new(),
+            last: Vec::new(),
+        };
+        let mut t = track.start_ms;
+        while t < track.end_ms {
+            let covered = track
+                .drafts
+                .iter()
+                .filter(|(covers_to, _)| *covers_to > t)
+                .map(|(_, published)| *published)
+                .min()
+                .map_or(done_ms, |published| published.min(done_ms));
+            clause
+                .first
+                .push(milliseconds_u32(covered.saturating_sub(t)));
+            clause
+                .last
+                .push(milliseconds_u32(done_ms.saturating_sub(t)));
+            t += WORD_STEP_MS;
+        }
+        self.words.push_back(clause);
+        while self
+            .words
+            .front()
+            .is_some_and(|front| front.done_ms + WORD_WINDOW_MS < done_ms)
+        {
+            self.words.pop_front();
+        }
+    }
+
+    /// `now_ms` is the session time at which the event was published; drafts need it.
+    pub fn record_at(&mut self, event: &PipelineEvent, now_ms: u64) {
+        match event {
+            PipelineEvent::TranslationDraft { id, end_ms, .. } => {
+                if let Some(track) = self.tracks.get_mut(id) {
+                    track.drafts.push((*end_ms, now_ms));
+                } else {
+                    self.early_drafts
+                        .entry(*id)
+                        .or_default()
+                        .push((*end_ms, now_ms));
+                }
+            }
+            _ => self.record_event(event),
+        }
+        match event {
+            PipelineEvent::AsrFinal {
+                id,
+                start_ms,
+                end_ms,
+                ..
+            } => {
+                let drafts = self.early_drafts.remove(id).unwrap_or_default();
+                self.tracks.insert(
+                    *id,
+                    ClauseTrack {
+                        start_ms: *start_ms,
+                        end_ms: *end_ms,
+                        drafts,
+                    },
+                );
+            }
+            PipelineEvent::Joined { id, absorbed, .. } => {
+                for gone in absorbed {
+                    if let Some(track) = self.tracks.remove(gone) {
+                        let leader = self.tracks.entry(*id).or_default();
+                        if leader.end_ms == 0 {
+                            leader.start_ms = track.start_ms;
+                        }
+                        leader.start_ms = leader.start_ms.min(track.start_ms);
+                        leader.end_ms = leader.end_ms.max(track.end_ms);
+                    }
+                    self.early_drafts.remove(gone);
+                }
+            }
+            PipelineEvent::TranslationFinal { id, timing, .. } => {
+                self.finish_words(*id, timing.done_ms);
+            }
+            PipelineEvent::Skipped { id, .. }
+            | PipelineEvent::TranslationFailed { id, .. }
+            | PipelineEvent::Dropped { id, .. } => self.forget_clause(id),
+            _ => {}
+        }
+    }
+
+    fn record_event(&mut self, event: &PipelineEvent) {
         match event {
             PipelineEvent::AsrFinal {
                 id,
@@ -179,6 +329,37 @@ impl Metrics {
             .sampler
             .as_mut()
             .map_or_else(ResourceSample::default, |sampler| sampler.sample());
+        self.resources = resources;
+        let word_first: Vec<u32> = self
+            .words
+            .iter()
+            .flat_map(|clause| clause.first.iter().copied())
+            .collect();
+        let word_last: Vec<u32> = self
+            .words
+            .iter()
+            .flat_map(|clause| clause.last.iter().copied())
+            .collect();
+        PipelineStats {
+            word_first_p50_ms: nearest_rank(&word_first, 50),
+            word_final_p50_ms: nearest_rank(&word_last, 50),
+            drafts_failed: self.drafts_failed,
+            cpu_system_pct: resources.cpu_system_pct,
+            cpu_draft_pct: resources.cpu_draft_pct,
+            rss_draft_mb: resources.rss_draft_mb,
+            ..self.base_snapshot(live, queue_depth, held, &done, &first, resources)
+        }
+    }
+
+    fn base_snapshot(
+        &self,
+        live: StreamTime,
+        queue_depth: u32,
+        held: u32,
+        done: &[u32],
+        first: &[u32],
+        resources: ResourceSample,
+    ) -> PipelineStats {
         PipelineStats {
             lag_ms: self
                 .unfinished
@@ -187,15 +368,16 @@ impl Metrics {
                 .map_or(0, |end| live.millis().saturating_sub(*end)),
             queue_depth,
             held,
-            done_p50_ms: nearest_rank(&done, 50),
-            done_p95_ms: nearest_rank(&done, 95),
-            first_p50_ms: nearest_rank(&first, 50),
+            done_p50_ms: nearest_rank(done, 50),
+            done_p95_ms: nearest_rank(done, 95),
+            first_p50_ms: nearest_rank(first, 50),
             skipped_total: self.skipped_total,
             failed_total: self.failed_total,
             cpu_app_pct: resources.cpu_app_pct,
             cpu_translator_pct: resources.cpu_translator_pct,
             rss_app_mb: resources.rss_app_mb,
             rss_translator_mb: resources.rss_translator_mb,
+            ..PipelineStats::default()
         }
     }
 }
@@ -229,6 +411,7 @@ mod tests {
             start_ms: end.saturating_sub(500),
             end_ms: end,
             asr_ms: 100,
+            cut: crate::types::CutReason::Pause,
         }
     }
     fn final_event(id: u64, done: u64, first: Option<u64>) -> PipelineEvent {
@@ -239,6 +422,82 @@ mod tests {
                 speech_end_ms: 1_000,
                 done_ms: 1_000 + done,
                 first_token_ms: first.map(|first| first + 1_000),
+                ..Timing::default()
+            },
+        }
+    }
+
+    fn draft_event(id: u64, end_ms: u64) -> PipelineEvent {
+        PipelineEvent::TranslationDraft {
+            id: UtteranceId(id),
+            rev: 1,
+            text: "so far".into(),
+            end_ms,
+        }
+    }
+
+    #[test]
+    fn per_word_delays_use_the_earliest_covering_draft_or_the_final() {
+        let mut metrics = Metrics::new();
+        // Clause 1 spans 1000..1500 ms; instants at 1000, 1100, 1200, 1300, 1400.
+        metrics.record_at(&asr(1, 1_500, TextClass::Chinese), 1_500);
+        // A draft covering up to 1250 is published at 1700; one covering to 1500 at 2000.
+        metrics.record_at(&draft_event(1, 1_250), 1_700);
+        metrics.record_at(&draft_event(1, 1_500), 2_000);
+        // The final finishes at 3000.
+        metrics.record_at(&final_event_at(1, 3_000), 3_000);
+        let stats = metrics.snapshot(StreamTime::from_millis(3_000), 0, 0);
+        // first English per instant: 1000->700, 1100->600, 1200->500, 1300->700, 1400->600
+        // sorted 500 600 600 700 700 -> median (nearest rank, 3rd of 5) = 600
+        assert_eq!(stats.word_first_p50_ms, Some(600));
+        // final English per instant: 2000 1900 1800 1700 1600 -> median 1800
+        assert_eq!(stats.word_final_p50_ms, Some(1_800));
+    }
+
+    #[test]
+    fn a_clause_without_drafts_has_equal_first_and_final_delays() {
+        let mut metrics = Metrics::new();
+        metrics.record_at(&asr(1, 1_300, TextClass::Chinese), 1_300);
+        metrics.record_at(&final_event_at(1, 2_000), 2_000);
+        let stats = metrics.snapshot(StreamTime::from_millis(2_000), 0, 0);
+        // instants 800, 900, 1000, 1100, 1200 -> delays 1200 1100 1000 900 800 -> median 1000
+        assert_eq!(stats.word_first_p50_ms, Some(1_000));
+        assert_eq!(stats.word_first_p50_ms, stats.word_final_p50_ms);
+    }
+
+    #[test]
+    fn drafts_published_before_the_asr_final_still_count() {
+        let mut metrics = Metrics::new();
+        metrics.record_at(&draft_event(1, 1_300), 1_050);
+        metrics.record_at(&asr(1, 1_300, TextClass::Chinese), 1_300);
+        metrics.record_at(&final_event_at(1, 2_000), 2_000);
+        let stats = metrics.snapshot(StreamTime::from_millis(2_000), 0, 0);
+        // every instant is covered by the draft published at 1050: delays 250 150 50 0 0 (saturating)
+        assert_eq!(stats.word_first_p50_ms, Some(50));
+    }
+
+    #[test]
+    fn old_clauses_leave_the_sixty_second_window_and_draft_failures_are_counted() {
+        let mut metrics = Metrics::new();
+        metrics.record_at(&asr(1, 1_300, TextClass::Chinese), 1_300);
+        metrics.record_at(&final_event_at(1, 2_000), 2_000);
+        metrics.record_at(&asr(2, 71_300, TextClass::Chinese), 71_300);
+        metrics.record_at(&final_event_at(2, 72_000), 72_000);
+        let stats = metrics.snapshot(StreamTime::from_millis(72_000), 0, 0);
+        assert_eq!(metrics.words.len(), 1);
+        assert_eq!(stats.word_final_p50_ms, Some(1_000));
+        metrics.draft_failed();
+        metrics.draft_failed();
+        assert_eq!(metrics.snapshot(StreamTime::ZERO, 0, 0).drafts_failed, 2);
+    }
+
+    fn final_event_at(id: u64, done_ms: u64) -> PipelineEvent {
+        PipelineEvent::TranslationFinal {
+            id: UtteranceId(id),
+            text: "We are here.".into(),
+            timing: Timing {
+                speech_end_ms: 0,
+                done_ms,
                 ..Timing::default()
             },
         }
@@ -356,6 +615,9 @@ mod tests {
                     cpu_translator_pct: 150.0,
                     rss_app_mb: 50,
                     rss_translator_mb: 1_300,
+                    cpu_system_pct: 0.0,
+                    cpu_draft_pct: 0.0,
+                    rss_draft_mb: 0,
                 }
             }
         }

@@ -4,6 +4,7 @@ mod engines;
 mod live;
 mod replay;
 mod report;
+mod wordreport;
 
 #[cfg(not(feature = "llm"))]
 use anyhow::bail;

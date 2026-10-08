@@ -33,10 +33,12 @@ pub struct Manifest {
 pub struct ModelEntry {
     pub id: String,
     pub name: String,
-    /// Optional models (the v2 draft model) are never part of the required set. Until the
-    /// v2 download tasks land, status, fetch and import ignore them so v1 behavior is unchanged.
+    /// Optional models (the draft model) are not needed to start listening.
     #[serde(default)]
     pub optional: bool,
+    /// Optional models are recommended on PCs with at least this many physical cores.
+    #[serde(default)]
+    pub recommended_min_physical_cores: Option<u32>,
     pub files: Vec<FileEntry>,
 }
 
@@ -75,6 +77,19 @@ pub struct ModelStatus {
     pub bytes_total: u64,
     pub bytes_done: u64,
     pub state: ModelState,
+    /// Not needed to start listening (the draft model).
+    #[serde(default)]
+    pub optional: bool,
+    /// Included in the first-run download on this PC.
+    #[serde(default)]
+    pub recommended: bool,
+}
+
+fn recommended(model: &ModelEntry, physical_cores: usize) -> bool {
+    !model.optional
+        || model
+            .recommended_min_physical_cores
+            .is_some_and(|min| physical_cores >= min as usize)
 }
 
 pub fn embedded_manifest() -> Result<Manifest> {
@@ -129,19 +144,72 @@ impl ModelManager {
                 .all(|file| !file.mirror.is_empty())
     }
 
-    pub fn status(&self, dir: impl AsRef<Path>) -> Result<Vec<ModelStatus>> {
+    /// Every model, required first; `physical_cores` decides which optional ones are
+    /// recommended.
+    pub fn status_for_cores(
+        &self,
+        dir: impl AsRef<Path>,
+        physical_cores: usize,
+    ) -> Result<Vec<ModelStatus>> {
         self.manifest
             .models
             .iter()
-            .filter(|model| !model.optional)
-            .map(|model| model_status(dir.as_ref(), model))
+            .map(|model| {
+                let mut status = model_status(dir.as_ref(), model)?;
+                status.recommended = recommended(model, physical_cores);
+                Ok(status)
+            })
             .collect()
     }
 
+    pub fn status(&self, dir: impl AsRef<Path>) -> Result<Vec<ModelStatus>> {
+        self.status_for_cores(dir, usize::MAX)
+    }
+
+    /// Ids downloaded by default: every required model plus the recommended optional ones.
+    pub fn default_ids(&self, physical_cores: usize) -> Vec<String> {
+        self.manifest
+            .models
+            .iter()
+            .filter(|model| recommended(model, physical_cores))
+            .map(|model| model.id.clone())
+            .collect()
+    }
+
+    /// Download the required models only.
     pub fn fetch(
         &self,
         source: ModelSource,
         dir: impl AsRef<Path>,
+        cancelled: &AtomicBool,
+        on_progress: &mut dyn FnMut(ModelStatus),
+    ) -> Result<Vec<ModelStatus>> {
+        self.fetch_where(source, dir, |model| !model.optional, cancelled, on_progress)
+    }
+
+    /// Download exactly the named models.
+    pub fn fetch_ids(
+        &self,
+        source: ModelSource,
+        dir: impl AsRef<Path>,
+        ids: &[String],
+        cancelled: &AtomicBool,
+        on_progress: &mut dyn FnMut(ModelStatus),
+    ) -> Result<Vec<ModelStatus>> {
+        self.fetch_where(
+            source,
+            dir,
+            |model| ids.contains(&model.id),
+            cancelled,
+            on_progress,
+        )
+    }
+
+    fn fetch_where(
+        &self,
+        source: ModelSource,
+        dir: impl AsRef<Path>,
+        wanted: impl Fn(&ModelEntry) -> bool,
         cancelled: &AtomicBool,
         on_progress: &mut dyn FnMut(ModelStatus),
     ) -> Result<Vec<ModelStatus>> {
@@ -159,7 +227,7 @@ impl ModelManager {
             .models
             .iter()
             .enumerate()
-            .filter(|(_, model)| !model.optional)
+            .filter(|(_, model)| wanted(model))
             .flat_map(|(model_index, model)| {
                 model
                     .files
@@ -245,7 +313,7 @@ impl ModelManager {
         fs::create_dir_all(dir)?;
         let mut progress = Progress::new(on_progress);
         let mut found = false;
-        for model in self.manifest.models.iter().filter(|model| !model.optional) {
+        for model in &self.manifest.models {
             for file in &model.files {
                 check_cancel(cancelled, &mut progress, dir, model)?;
                 let flat = from.join(&file.name);
@@ -596,6 +664,8 @@ fn model_status(dir: &Path, model: &ModelEntry) -> Result<ModelStatus> {
         bytes_total: total,
         bytes_done: done,
         state,
+        optional: model.optional,
+        recommended: !model.optional,
     })
 }
 
@@ -814,14 +884,20 @@ mod tests {
         let required: Vec<_> = manifest.models.iter().filter(|m| !m.optional).collect();
         assert_eq!(required.len(), 3);
         assert_eq!(required.iter().flat_map(|model| &model.files).count(), 4);
-        assert_eq!(
-            ModelManager::new()
-                .unwrap()
-                .status(std::env::temp_dir().join("lt-no-such-models"))
-                .unwrap()
-                .len(),
-            3
+        let manager = ModelManager::new().unwrap();
+        let missing = std::env::temp_dir().join("lt-no-such-models");
+        let statuses = manager.status_for_cores(&missing, 8).unwrap();
+        assert_eq!(statuses.len(), 4);
+        let draft = statuses.iter().find(|s| s.optional).unwrap();
+        assert_eq!(draft.id, "lmt-60-0.6b-q4_k_m");
+        assert!(
+            draft.recommended,
+            "8 physical cores recommend the draft model"
         );
+        let small = manager.status_for_cores(&missing, 4).unwrap();
+        assert!(!small.iter().find(|s| s.optional).unwrap().recommended);
+        assert_eq!(manager.default_ids(8).len(), 4);
+        assert_eq!(manager.default_ids(4).len(), 3);
         assert!(!ModelManager::new()
             .unwrap()
             .source_supported(ModelSource::Modelscope));

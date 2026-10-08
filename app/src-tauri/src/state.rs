@@ -2,6 +2,7 @@
 use lt_core::events::{
     EngineKind, EngineState, ListeningStateKind, PipelineEvent, SourceInfo, SourceStateKind,
 };
+use lt_core::types::{EffectiveMode, ModeReason};
 use serde::Serialize;
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize)]
@@ -9,6 +10,7 @@ pub struct EngineMap {
     pub vad: EngineState,
     pub asr: EngineState,
     pub translator: EngineState,
+    pub draft_translator: EngineState,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -20,6 +22,9 @@ pub struct AppState {
     pub models_ready: bool,
     pub overlay_moving: bool,
     pub overlay_visible: bool,
+    /// The caption mode that is running now, and why it differs from the chosen one.
+    pub mode: EffectiveMode,
+    pub mode_reason: Option<ModeReason>,
 }
 
 impl Default for AppState {
@@ -34,10 +39,13 @@ impl Default for AppState {
                 vad: EngineState::Ready,
                 asr: EngineState::Ready,
                 translator: EngineState::Ready,
+                draft_translator: EngineState::Ready,
             },
             models_ready: false,
             overlay_moving: false,
             overlay_visible: true,
+            mode: EffectiveMode::Off,
+            mode_reason: None,
         }
     }
 }
@@ -54,7 +62,12 @@ impl AppState {
                 EngineKind::Vad => self.engines.vad = *state,
                 EngineKind::Asr => self.engines.asr = *state,
                 EngineKind::Translator => self.engines.translator = *state,
+                EngineKind::DraftTranslator => self.engines.draft_translator = *state,
             },
+            PipelineEvent::Stats(stats) => {
+                self.mode = stats.mode;
+                self.mode_reason = stats.mode_reason;
+            }
             _ => {}
         }
         *self != before
@@ -103,5 +116,8 @@ mod tests {
         assert_eq!(json["engines"]["translator"], "ready");
         assert!(json["source"].is_null());
         assert_eq!(json["models_ready"], false);
+        assert_eq!(json["mode"], "off");
+        assert!(json["mode_reason"].is_null());
+        assert_eq!(json["engines"]["draft_translator"], "ready");
     }
 }

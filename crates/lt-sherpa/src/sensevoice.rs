@@ -6,7 +6,7 @@ use crate::runtime::{
 };
 use lt_core::{
     config::AsrConfig,
-    engines::SegmentAsr,
+    engines::{SegmentAsr, TokenTranscript, WindowAsr},
     error::{Error, Result},
     text::{classify_with_lang, clean},
     types::{Segment, StageTiming, TextClass, Transcript},
@@ -100,29 +100,54 @@ impl SenseVoiceAsr {
     }
 }
 
-impl SegmentAsr for SenseVoiceAsr {
-    fn transcribe(&mut self, segment: &Segment) -> Result<Transcript> {
-        if segment.samples.is_empty() {
+impl SenseVoiceAsr {
+    /// One recognizer run over `samples`; keeps the native JSON for diagnostics.
+    fn decode_samples(&mut self, samples: &[f32]) -> Result<RawResult> {
+        if samples.is_empty() {
             return Err(Error::Engine(
                 "SenseVoice received an empty audio segment".into(),
             ));
         }
-        if segment.samples.len() > i32::MAX as usize {
+        if samples.len() > i32::MAX as usize {
             return Err(Error::Engine("SenseVoice segment is too long".into()));
         }
-        if segment.samples.iter().any(|sample| !sample.is_finite()) {
+        if samples.iter().any(|sample| !sample.is_finite()) {
             return Err(Error::Engine(
                 "SenseVoice received nonfinite audio samples".into(),
             ));
         }
-        let started = Instant::now();
         let stream = self.recognizer.stream()?;
-        stream.accept(&segment.samples);
+        stream.accept(samples);
         self.recognizer.decode(&stream);
         let result = stream.result()?;
         let json = result.text()?.to_owned();
         let raw = parse_result(&json)?;
         self.last_result_json = Some(json);
+        Ok(raw)
+    }
+}
+
+impl WindowAsr for SenseVoiceAsr {
+    fn decode_window(&mut self, samples: &[f32]) -> Result<TokenTranscript> {
+        let raw = self.decode_samples(samples)?;
+        Ok(TokenTranscript {
+            text: raw.text,
+            tokens: raw.tokens,
+            timestamps: raw.timestamps,
+            lang_tag: raw.lang,
+            event: raw.event,
+        })
+    }
+}
+
+impl SegmentAsr for SenseVoiceAsr {
+    fn window(&mut self) -> Option<&mut dyn WindowAsr> {
+        Some(self)
+    }
+
+    fn transcribe(&mut self, segment: &Segment) -> Result<Transcript> {
+        let started = Instant::now();
+        let raw = self.decode_samples(&segment.samples)?;
         let clean_text = clean(&raw.text, &[]);
         let class =
             classify_with_lang(&clean_text, raw.lang.as_deref()).unwrap_or(TextClass::Chinese);
@@ -139,6 +164,7 @@ impl SegmentAsr for SenseVoiceAsr {
                 asr_ms: started.elapsed().as_millis().min(u128::from(u32::MAX)) as u32,
             },
             absorbed: Vec::new(),
+            cut: segment.cut_reason,
         })
     }
 }
@@ -235,6 +261,12 @@ struct RawResult {
     lang: Option<String>,
     #[serde(default)]
     event: Option<String>,
+    /// One entry per token; English word starts carry a leading space.
+    #[serde(default)]
+    tokens: Vec<String>,
+    /// Token start times in seconds from the start of the audio.
+    #[serde(default)]
+    timestamps: Vec<f32>,
 }
 
 fn parse_result(json: &str) -> Result<RawResult> {
@@ -283,12 +315,23 @@ mod tests {
                 RawResult {
                     text: text.into(),
                     lang: lang.map(String::from),
-                    event: event.map(String::from)
+                    event: event.map(String::from),
+                    tokens: Vec::new(),
+                    timestamps: Vec::new(),
                 }
             );
         }
         assert!(parse_result("{}").is_err());
         assert!(parse_result("not JSON").is_err());
+    }
+
+    #[test]
+    fn native_json_carries_tokens_with_start_times() {
+        let json = r#"{"text":"这次 school。","lang":"<|zh|>","event":"<|Speech|>","tokens":["这","次"," school","。"],"timestamps":[0.0,0.36,0.72,1.1]}"#;
+        let raw = parse_result(json).unwrap();
+        assert_eq!(raw.tokens, ["这", "次", " school", "。"]);
+        assert_eq!(raw.timestamps, [0.0, 0.36, 0.72, 1.1]);
+        assert_eq!(raw.tokens.concat(), "这次 school。");
     }
 
     #[test]

@@ -19,6 +19,29 @@ pub trait Vad: Send {
 
 pub trait SegmentAsr: Send {
     fn transcribe(&mut self, segment: &Segment) -> Result<Transcript>;
+
+    /// The windowed decode used by the recognizer. Engines without it keep the segment behavior:
+    /// the pipeline falls back to Off mode.
+    fn window(&mut self) -> Option<&mut dyn WindowAsr> {
+        None
+    }
+}
+
+/// One recognizer run over a window of audio, with per-token start times.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct TokenTranscript {
+    /// The recognizer's full text for the window.
+    pub text: String,
+    /// In order; English word starts carry a leading space (" school").
+    pub tokens: Vec<String>,
+    /// Token start times in seconds from the window start.
+    pub timestamps: Vec<f32>,
+    pub lang_tag: Option<String>,
+    pub event: Option<String>,
+}
+
+pub trait WindowAsr: Send {
+    fn decode_window(&mut self, samples: &[f32]) -> Result<TokenTranscript>;
 }
 
 pub trait StreamingAsr: Send {
@@ -32,6 +55,8 @@ pub struct TranslatorCaps {
     pub streaming: bool,
     pub glossary: bool,
     pub context: bool,
+    /// Accepts an answer prefix (`TranslateRequest::prefill`), used for drafts.
+    pub prefill: bool,
     pub max_input_chars: usize,
     pub pairs: Vec<(String, String)>,
 }
@@ -73,6 +98,10 @@ pub struct TranslateRequest<'a> {
     pub tgt: &'a str,
     pub terms: &'a [(String, String)],
     pub context: &'a [(String, String)],
+    /// English the answer must start with; "" for none. Only draft engines honor it.
+    pub prefill: &'a str,
+    /// Overrides the engine's default output budget.
+    pub max_tokens: Option<u32>,
     pub control: TranslationControl,
 }
 
@@ -103,6 +132,7 @@ pub struct EngineRegistry {
     asr: BTreeMap<String, AsrFactory>,
     vad: BTreeMap<String, VadFactory>,
     translators: BTreeMap<String, TranslatorFactory>,
+    draft_translators: BTreeMap<String, TranslatorFactory>,
 }
 
 impl EngineRegistry {
@@ -114,6 +144,9 @@ impl EngineRegistry {
     }
     pub fn register_translator(&mut self, name: &str, factory: TranslatorFactory) {
         self.translators.insert(name.into(), factory);
+    }
+    pub fn register_draft_translator(&mut self, name: &str, factory: TranslatorFactory) {
+        self.draft_translators.insert(name.into(), factory);
     }
     pub fn build_asr(&self, config: &Config) -> Result<Box<dyn SegmentAsr>> {
         self.asr
@@ -137,6 +170,14 @@ impl EngineRegistry {
             .ok_or_else(|| Error::UnknownEngine {
                 kind: "translator",
                 name: config.translate.engine.clone(),
+            })?(config)
+    }
+    pub fn build_draft_translator(&self, config: &Config) -> Result<Box<dyn Translator>> {
+        self.draft_translators
+            .get(&config.latency.draft_engine)
+            .ok_or_else(|| Error::UnknownEngine {
+                kind: "draft translator",
+                name: config.latency.draft_engine.clone(),
             })?(config)
     }
 }

@@ -822,6 +822,9 @@ impl ResourceSampler for FixedSampler {
             cpu_translator_pct: 150.0,
             rss_app_mb: 42,
             rss_translator_mb: 1300,
+            cpu_system_pct: 0.0,
+            cpu_draft_pct: 0.0,
+            rss_draft_mb: 0,
         }
     }
 }

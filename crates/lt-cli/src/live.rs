@@ -134,15 +134,19 @@ fn run_session(
         None
     };
     let mut report = ReplayReport::new(&config.routing);
-    let sampler = ProcessSampler::new(engines.pid.clone())?;
-    let mut pipeline = Pipeline::start_with_bus_and_sampler(
+    let sampler = ProcessSampler::new(engines.pid.clone())?.with_draft(engines.draft_pid.clone());
+    let mut pipeline = Pipeline::start_with_options(
         config,
         source,
         engines.vad,
         engines.asr,
         engines.translator,
         bus.clone(),
-        Some(Box::new(sampler)),
+        lt_core::pipeline::PipelineOptions {
+            sampler: Some(Box::new(sampler)),
+            draft: engines.draft,
+            physical_cores: Some(num_cpus::get_physical()),
+        },
     )?;
     let started = Instant::now();
     while !pipeline.is_finished() {
@@ -194,8 +198,13 @@ fn run_session(
     }
     println!("{}", serde_json::to_string(&summary)?);
     #[cfg(feature = "llm")]
-    if let Some(mut supervisor) = engines.supervisor {
-        supervisor.stop()?;
+    {
+        if let Some(mut supervisor) = engines.supervisor {
+            supervisor.stop()?;
+        }
+        if let Some(mut supervisor) = engines.draft_supervisor {
+            supervisor.stop()?;
+        }
     }
     Ok(())
 }

@@ -6,17 +6,25 @@
 use crate::{
     bus::{EventBus, EventReceiver},
     clock::{Clock, ManualClock},
-    config::{Config, RoutingConfig},
+    config::{Config, LatencyConfig, RoutingConfig},
+    drafts::{
+        DraftOutcome, DraftResult, DraftState, DraftWorker, PublishedDraft, WORKER_FAILED,
+        WORKER_READY,
+    },
     engines::{SegmentAsr, Translator, Vad},
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     join::{JoinResult, Joiner},
     metrics::{canonical_language, Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
+    recognizer::{AsrMessage, CommitCut, Output, Recognizer, RecognizerInput},
     segment::{SegmentBuilder, SegmentUpdate},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
-    text::{classify_with_lang, clean, drop_reason},
-    types::{CutReason, PipelineStats, Segment, StreamTime, TextClass, Transcript, UtteranceId},
+    stepdown::{ModeState, StepDown},
+    types::{
+        CutReason, EffectiveMode, ModeReason, PipelineStats, StreamTime, TextClass, Transcript,
+        UtteranceId,
+    },
 };
 use crossbeam_channel::{bounded, Receiver, Sender, TryRecvError, TrySendError};
 use std::{
@@ -33,6 +41,10 @@ const POLL: Duration = Duration::from_millis(5);
 const AUDIO_CAPACITY: usize = 64;
 const CONTROL_CAPACITY: usize = 16;
 const ASR_CAPACITY: usize = 4;
+/// Commit requests are rare and tiny; a full channel simply skips one.
+const COMMIT_CAPACITY: usize = 4;
+/// The open clause's audio goes to the recognizer at least this often.
+const AUDIO_FORWARD_SAMPLES: u64 = 1_600;
 
 enum Command {
     Pause(Sender<Result<()>>),
@@ -48,21 +60,6 @@ enum FrontendNotice {
     SegmentClosed(UtteranceId, StreamTime),
 }
 
-enum AsrMessage {
-    Transcript(Transcript),
-    Dropped(UtteranceId, DropReason),
-    Failed(UtteranceId, String),
-}
-
-impl AsrMessage {
-    fn id(&self) -> UtteranceId {
-        match self {
-            Self::Transcript(transcript) => transcript.id,
-            Self::Dropped(id, _) | Self::Failed(id, _) => *id,
-        }
-    }
-}
-
 pub struct Pipeline;
 
 /// Aggregate frontend diagnostics for replay reports; this does not change IPC.
@@ -73,16 +70,17 @@ pub struct SegmentCounts {
     pub hard_cut: u64,
     pub discontinuity: u64,
     pub end: u64,
+    pub commit: u64,
 }
 
 impl SegmentCounts {
     pub fn total(self) -> u64 {
-        self.pause + self.soft_cut + self.hard_cut + self.discontinuity + self.end
+        self.pause + self.soft_cut + self.hard_cut + self.discontinuity + self.end + self.commit
     }
 }
 
 #[derive(Default)]
-struct SegmentCounters([AtomicU64; 5]);
+struct SegmentCounters([AtomicU64; 6]);
 
 impl SegmentCounters {
     fn record(&self, reason: CutReason) {
@@ -92,6 +90,7 @@ impl SegmentCounters {
             CutReason::HardCut => 2,
             CutReason::Discontinuity => 3,
             CutReason::End => 4,
+            CutReason::Commit => 5,
         };
         self.0[index].fetch_add(1, Ordering::Relaxed);
     }
@@ -103,6 +102,7 @@ impl SegmentCounters {
             hard_cut: counts[2],
             discontinuity: counts[3],
             end: counts[4],
+            commit: counts[5],
         }
     }
 }
@@ -115,6 +115,42 @@ pub struct PipelineHandle {
     threads: Vec<JoinHandle<Result<()>>>,
     latest_stats: Arc<Mutex<PipelineStats>>,
     segment_counts: Arc<SegmentCounters>,
+    modes: Sender<EffectiveMode>,
+    initial_mode: ModeState,
+}
+
+/// Optional parts of a pipeline.
+#[derive(Default)]
+pub struct PipelineOptions {
+    pub sampler: Option<Box<dyn ResourceSampler>>,
+    /// The draft translator (Continuous mode). Without it the pipeline runs Light at most.
+    pub draft: Option<Box<dyn Translator>>,
+    /// Physical cores, for `latency.mode = "auto"`. Unknown counts half the logical CPUs.
+    pub physical_cores: Option<usize>,
+}
+
+/// How `latency.mode` resolves for this engine set.
+pub fn resolve_mode(
+    config: &LatencyConfig,
+    windowed_asr: bool,
+    draft_available: bool,
+    physical_cores: usize,
+) -> ModeState {
+    let (mode, reason) = if !windowed_asr {
+        (EffectiveMode::Off, None)
+    } else {
+        match config.mode.as_str() {
+            "off" => (EffectiveMode::Off, Some(ModeReason::User)),
+            "light" => (EffectiveMode::Light, Some(ModeReason::User)),
+            "continuous" if draft_available => (EffectiveMode::Continuous, Some(ModeReason::User)),
+            "continuous" => (EffectiveMode::Light, Some(ModeReason::DraftUnavailable)),
+            _ if draft_available && physical_cores >= config.auto_min_cores as usize => {
+                (EffectiveMode::Continuous, Some(ModeReason::Auto))
+            }
+            _ => (EffectiveMode::Light, Some(ModeReason::Auto)),
+        }
+    };
+    ModeState { mode, reason }
 }
 
 impl Pipeline {
@@ -141,7 +177,7 @@ impl Pipeline {
     }
 
     pub fn start_with_bus_and_sampler(
-        mut config: Config,
+        config: Config,
         source: Box<dyn AudioSource>,
         vad: Box<dyn Vad>,
         asr: Box<dyn SegmentAsr>,
@@ -149,6 +185,34 @@ impl Pipeline {
         bus: EventBus,
         sampler: Option<Box<dyn ResourceSampler>>,
     ) -> Result<PipelineHandle> {
+        Self::start_with_options(
+            config,
+            source,
+            vad,
+            asr,
+            translator,
+            bus,
+            PipelineOptions {
+                sampler,
+                ..PipelineOptions::default()
+            },
+        )
+    }
+
+    pub fn start_with_options(
+        mut config: Config,
+        source: Box<dyn AudioSource>,
+        vad: Box<dyn Vad>,
+        mut asr: Box<dyn SegmentAsr>,
+        translator: Box<dyn Translator>,
+        bus: EventBus,
+        options: PipelineOptions,
+    ) -> Result<PipelineHandle> {
+        let PipelineOptions {
+            sampler,
+            draft,
+            physical_cores,
+        } = options;
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
         }
@@ -162,7 +226,19 @@ impl Pipeline {
         let (segment_tx, segment_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
         let (asr_tx, asr_rx) = bounded(ASR_CAPACITY);
+        let (commit_tx, commit_rx) = bounded(COMMIT_CAPACITY);
+        let (mode_tx, mode_rx) = bounded(CONTROL_CAPACITY);
         let (ready_tx, ready_rx) = bounded(1);
+        // An engine without a windowed decode cannot run the recognizer: that case runs in Off mode.
+        let cores = physical_cores
+            .unwrap_or_else(|| thread::available_parallelism().map_or(1, |n| (n.get() / 2).max(1)));
+        let initial_mode = resolve_mode(
+            &config.latency,
+            asr.window().is_some(),
+            draft.is_some(),
+            cores,
+        );
+        let recognizer_active = initial_mode.mode != EffectiveMode::Off;
         let mut handle = PipelineHandle {
             commands: command_tx,
             cancelled: cancelled.clone(),
@@ -171,7 +247,13 @@ impl Pipeline {
             threads: Vec::with_capacity(3),
             latest_stats: latest_stats.clone(),
             segment_counts: segment_counts.clone(),
+            modes: mode_tx,
+            initial_mode,
         };
+        if let Ok(mut stats) = latest_stats.lock() {
+            stats.mode = initial_mode.mode;
+            stats.mode_reason = initial_mode.reason;
+        }
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
         });
@@ -184,7 +266,7 @@ impl Pipeline {
             .name("lt-asr".into())
             .spawn(move || {
                 asr_loop(
-                    asr, asr_config, segment_rx, asr_tx, asr_clock, asr_bus, asr_cancel,
+                    asr, asr_config, segment_rx, commit_tx, asr_tx, asr_clock, asr_bus, asr_cancel,
                 )
             })?;
         handle.threads.push(asr_thread);
@@ -211,6 +293,9 @@ impl Pipeline {
                         scheduler_listening,
                         scheduler_latest,
                         sampler,
+                        draft,
+                        initial_mode,
+                        mode_rx,
                     )
                 })?;
         handle.threads.push(scheduler_thread);
@@ -227,6 +312,8 @@ impl Pipeline {
                         config,
                         command_rx,
                         segment_tx,
+                        commit_rx,
+                        recognizer_active,
                         front_tx,
                         clock,
                         front_bus,
@@ -270,6 +357,24 @@ impl PipelineHandle {
 
     pub fn segment_counts(&self) -> SegmentCounts {
         self.segment_counts.snapshot()
+    }
+
+    /// The mode the pipeline started in and why.
+    pub fn initial_mode(&self) -> ModeState {
+        self.initial_mode
+    }
+
+    /// Switch between Continuous and Light while running. Off needs a restart: the recognizer
+    /// is not fed audio in Off mode.
+    pub fn set_mode(&self, mode: EffectiveMode) -> Result<()> {
+        if mode == EffectiveMode::Off || self.initial_mode.mode == EffectiveMode::Off {
+            return Err(Error::Engine(
+                "Switching to or from Off restarts the pipeline".into(),
+            ));
+        }
+        self.modes
+            .try_send(mode)
+            .map_err(|_| Error::Engine("Mode change not accepted".into()))
     }
 
     pub fn pause(&self) -> Result<()> {
@@ -373,10 +478,15 @@ struct Frontend {
     builder: SegmentBuilder,
     input: Option<AudioReceiver>,
     source_cancel: Arc<AtomicBool>,
-    segments: VecDeque<Segment>,
+    inputs: VecDeque<RecognizerInput>,
     notices: VecDeque<FrontendNotice>,
     clock: Arc<SessionClock>,
     bus: EventBus,
+    /// Forward the open clause's audio to the recognizer (Continuous and Light); Off sends
+    /// only `Closed`, exactly like the segment path.
+    recognizer: bool,
+    /// The clause whose audio the recognizer holds, and the stream sample sent so far.
+    forwarded: Option<(UtteranceId, u64)>,
     ending: bool,
     started_once: bool,
     listening: Arc<AtomicBool>,
@@ -433,22 +543,99 @@ impl Frontend {
     fn cut(&mut self, at: StreamTime) {
         let update = self.builder.discontinuity(at);
         self.notices.push_back(FrontendNotice::Discontinuity(at));
-        self.stage(update);
+        self.stage(update, false);
         self.vad.reset();
     }
 
-    fn stage(&mut self, update: SegmentUpdate) {
+    /// Queue an input for the recognizer, merging consecutive audio of the same clause.
+    fn push_input(&mut self, input: RecognizerInput) {
+        if let (
+            RecognizerInput::Audio { id, samples },
+            Some(RecognizerInput::Audio {
+                id: last_id,
+                samples: last,
+            }),
+        ) = (&input, self.inputs.back_mut())
+        {
+            if id == last_id {
+                last.extend_from_slice(samples);
+                return;
+            }
+        }
+        self.inputs.push_back(input);
+    }
+
+    /// Send the open clause's audio that the recognizer does not hold yet.
+    fn sync_audio(&mut self, force: bool) {
+        let Some((id, sent)) = self.forwarded else {
+            return;
+        };
+        let current = self.builder.current_time().0;
+        if !force && current.saturating_sub(sent) < AUDIO_FORWARD_SAMPLES {
+            return;
+        }
+        if let Some((open, samples)) = self.builder.open_audio(sent) {
+            if open == id && !samples.is_empty() {
+                self.forwarded = Some((id, current));
+                self.push_input(RecognizerInput::Audio { id, samples });
+            }
+        }
+    }
+
+    /// A clause closed: the recognizer receives the audio it is missing, then the segment.
+    fn close_forwarding(&mut self, segment: &crate::types::Segment) {
+        if let Some((id, sent)) = self.forwarded.filter(|(id, _)| *id == segment.id) {
+            if sent < segment.end.0 {
+                let from = sent.max(segment.start.0);
+                let offset = (from - segment.start.0) as usize;
+                if let Some(rest) = segment.samples.get(offset..).filter(|r| !r.is_empty()) {
+                    self.push_input(RecognizerInput::Audio {
+                        id,
+                        samples: rest.to_vec(),
+                    });
+                }
+            }
+            self.forwarded = None;
+        }
+    }
+
+    fn stage(&mut self, update: SegmentUpdate, after_commit: bool) {
+        let started = update.started;
         self.notices.extend(
-            update
-                .started
-                .into_iter()
-                .map(|(id, at)| FrontendNotice::Started(id, at)),
+            started
+                .iter()
+                .map(|(id, at)| FrontendNotice::Started(*id, *at)),
         );
         for segment in update.segments {
             self.segment_counts.record(segment.cut_reason);
             self.notices
                 .push_back(FrontendNotice::SegmentClosed(segment.id, segment.end));
-            self.segments.push_back(segment);
+            if self.recognizer {
+                self.close_forwarding(&segment);
+            }
+            self.push_input(RecognizerInput::Closed(segment));
+        }
+        if self.recognizer {
+            for (id, _) in started {
+                // Only the clause that is still open can receive audio.
+                if let Some((open, start)) = self.builder.open_clause().filter(|(o, _)| *o == id) {
+                    self.push_input(RecognizerInput::Open {
+                        id: open,
+                        start,
+                        after_commit,
+                    });
+                    self.forwarded = Some((open, start.0));
+                    self.sync_audio(true);
+                }
+            }
+        }
+    }
+
+    /// The recognizer committed a clause: cut the open clause where it asked.
+    fn commit(&mut self, cut: CommitCut) {
+        let update = self.builder.commit_cut(cut.id, cut.at);
+        if !update.segments.is_empty() {
+            self.stage(update, true);
         }
     }
 
@@ -498,7 +685,10 @@ impl Frontend {
         }
         let probability = self.vad.speech_prob(&frame.samples);
         let update = self.builder.push(&frame.samples, probability, frame.flags);
-        self.stage(update);
+        self.stage(update, false);
+        if self.recognizer {
+            self.sync_audio(false);
+        }
         let at = self.builder.current_time();
         self.clock.advance_to(at);
         self.notices.push_back(FrontendNotice::Progress(at));
@@ -517,7 +707,9 @@ fn frontend_loop(
     vad: Box<dyn Vad>,
     config: Config,
     commands: Receiver<Command>,
-    segments: Sender<Segment>,
+    segments: Sender<RecognizerInput>,
+    commits: Receiver<CommitCut>,
+    recognizer: bool,
     notices: Sender<FrontendNotice>,
     clock: Arc<SessionClock>,
     bus: EventBus,
@@ -533,10 +725,12 @@ fn frontend_loop(
         builder: SegmentBuilder::new(config.vad),
         input: None,
         source_cancel: Arc::new(AtomicBool::new(false)),
-        segments: VecDeque::new(),
+        inputs: VecDeque::new(),
         notices: VecDeque::new(),
         clock,
         bus,
+        recognizer,
+        forwarded: None,
         ending: false,
         started_once: false,
         listening,
@@ -559,6 +753,9 @@ fn frontend_loop(
         for command in commands.try_iter().take(CONTROL_CAPACITY) {
             frontend.command(command);
         }
+        for cut in commits.try_iter().take(COMMIT_CAPACITY) {
+            frontend.commit(cut);
+        }
         while let Some(notice) = frontend.notices.pop_front() {
             match notices.try_send(notice) {
                 Ok(()) => {
@@ -577,18 +774,18 @@ fn frontend_loop(
             }
         }
         if frontend.notices.is_empty() {
-            while let Some(segment) = frontend.segments.pop_front() {
-                match segments.try_send(segment) {
+            while let Some(input) = frontend.inputs.pop_front() {
+                match segments.try_send(input) {
                     Ok(()) => {}
-                    Err(TrySendError::Full(segment)) => {
-                        frontend.segments.push_front(segment);
+                    Err(TrySendError::Full(input)) => {
+                        frontend.inputs.push_front(input);
                         break;
                     }
                     Err(TrySendError::Disconnected(_)) => return Err(Error::Stopped),
                 }
             }
         }
-        if frontend.ending && frontend.notices.is_empty() && frontend.segments.is_empty() {
+        if frontend.ending && frontend.notices.is_empty() && frontend.inputs.is_empty() {
             break;
         }
         if let Some(notice) = frontend.notices.front().copied() {
@@ -605,13 +802,14 @@ fn frontend_loop(
             }
             continue;
         }
-        if let Some(segment) = frontend.segments.front().cloned() {
+        if let Some(input) = frontend.inputs.front().cloned() {
             crossbeam_channel::select! {
-                send(segments, segment) -> result => {
+                send(segments, input) -> result => {
                     result.map_err(|_| Error::Stopped)?;
-                    frontend.segments.pop_front();
+                    frontend.inputs.pop_front();
                 },
                 recv(commands) -> command => match command { Ok(command) => frontend.command(command), Err(_) => break },
+                recv(commits) -> cut => if let Ok(cut) = cut { frontend.commit(cut) },
                 default(POLL) => {}
             }
             continue;
@@ -622,12 +820,13 @@ fn frontend_loop(
             .unwrap_or_else(crossbeam_channel::never);
         crossbeam_channel::select! {
             recv(commands) -> command => match command { Ok(command) => frontend.command(command), Err(_) => break },
+            recv(commits) -> cut => if let Ok(cut) = cut { frontend.commit(cut) },
             recv(input) -> frame => match frame {
                 Ok(frame) => frontend.frame(frame),
                 Err(_) => {
                     frontend.stop_source();
                     let update = frontend.builder.finish();
-                    frontend.stage(update);
+                    frontend.stage(update, false);
                     frontend.ending = true;
                 }
             },
@@ -641,7 +840,8 @@ fn frontend_loop(
 fn asr_loop(
     mut asr: Box<dyn SegmentAsr>,
     config: Config,
-    segments: Receiver<Segment>,
+    inputs: Receiver<RecognizerInput>,
+    commits: Sender<CommitCut>,
     output: Sender<AsrMessage>,
     clock: Arc<SessionClock>,
     bus: EventBus,
@@ -652,51 +852,36 @@ fn asr_loop(
         state: EngineState::Ready,
         message: None,
     });
+    let mut recognizer = Recognizer::new(&config);
+    let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
-        let segment = match segments.recv_timeout(POLL) {
-            Ok(segment) => segment,
+        let input = match inputs.recv_timeout(POLL) {
+            Ok(input) => input,
             Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
             Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
         };
-        let started = Instant::now();
-        let span = tracing::info_span!("asr", id = segment.id.0);
+        let id = match &input {
+            RecognizerInput::Open { id, .. } | RecognizerInput::Audio { id, .. } => *id,
+            RecognizerInput::Closed(segment) => segment.id,
+        };
+        let span = tracing::info_span!("asr", id = id.0);
         let _utterance = span.enter();
-        let message = match asr.transcribe(&segment) {
-            Ok(mut transcript) => {
-                transcript.id = segment.id;
-                transcript.timing.start = segment.start;
-                transcript.timing.end = segment.end;
-                transcript.timing.asr_ms =
-                    started.elapsed().as_millis().min(u128::from(u32::MAX)) as u32;
-                transcript.timing.asr_done_ms = clock.now().millis();
-                transcript.text = clean(&transcript.text, &config.filter.fillers);
-                transcript.lang_tag = normalized_language(transcript.lang_tag.as_deref());
-                let class = classify_with_lang(&transcript.text, transcript.lang_tag.as_deref());
-                if let Some(class) = class {
-                    transcript.class = class;
-                    if class == TextClass::Other && transcript.lang_tag.is_none() {
-                        transcript.lang_tag = inferred_other_language(&transcript.text);
-                    }
-                    match drop_reason(
-                        &transcript,
-                        segment.end.saturating_sub(segment.start).seconds(),
-                        &config.filter,
-                    ) {
-                        Some(reason) => AsrMessage::Dropped(segment.id, reason),
-                        None => AsrMessage::Transcript(transcript),
-                    }
-                } else {
-                    AsrMessage::Dropped(segment.id, DropReason::Empty)
+        produced.clear();
+        recognizer.handle(asr.as_mut(), input, clock.now(), &mut produced);
+        for item in produced.drain(..) {
+            match item {
+                Output::Message(message) => send_cooperative(&output, message, &cancelled)?,
+                Output::Cut(cut) => {
+                    // A full channel means the frontend is behind; the next decode asks again.
+                    let _ = commits.try_send(cut);
                 }
             }
-            Err(error) => AsrMessage::Failed(segment.id, error.to_string()),
-        };
-        send_cooperative(&output, message, &cancelled)?;
+        }
     }
     Ok(())
 }
 
-fn normalized_language(tag: Option<&str>) -> Option<String> {
+pub(crate) fn normalized_language(tag: Option<&str>) -> Option<String> {
     let tag = tag?.trim();
     let tag = tag
         .strip_prefix("<|")
@@ -715,7 +900,7 @@ fn normalized_language(tag: Option<&str>) -> Option<String> {
     (!language.is_empty()).then(|| language.to_owned())
 }
 
-fn inferred_other_language(text: &str) -> Option<String> {
+pub(crate) fn inferred_other_language(text: &str) -> Option<String> {
     let kana = text
         .chars()
         .filter(|character| matches!(character, '\u{3040}'..='\u{30ff}'))
@@ -776,12 +961,78 @@ struct Scheduler {
     metrics: Metrics,
     latest_stats: Arc<Mutex<PipelineStats>>,
     asr_failed: bool,
+    clock: Arc<SessionClock>,
+    mode: ModeState,
+    stepdown: StepDown,
+    drafts: DraftState,
+    /// The draft worker's warm-up result; drafts run only while it is ready.
+    draft_ready: bool,
+    /// A draft request is out (counts as the single request in flight).
+    draft_in_flight: bool,
 }
 
 impl Scheduler {
     fn publish(&mut self, event: PipelineEvent) {
-        self.metrics.record(&event);
+        self.metrics.record_at(&event, self.clock.now().millis());
         self.bus.publish(event);
+    }
+
+    /// Apply a new effective mode: leaving Continuous drops the waiting draft.
+    fn apply_mode(&mut self, state: ModeState) {
+        if state == self.mode {
+            return;
+        }
+        tracing::info!(mode = ?state.mode, reason = ?state.reason, "caption mode changed");
+        self.mode = state;
+        if state.mode != EffectiveMode::Continuous {
+            self.drafts.clear_slot();
+        }
+    }
+
+    fn drafts_on(&self) -> bool {
+        self.mode.mode == EffectiveMode::Continuous && self.draft_ready
+    }
+
+    fn partial(&mut self, id: UtteranceId, text: String, class: TextClass, end: StreamTime) {
+        let end_ms = end.millis();
+        if self.drafts_on() && matches!(class, TextClass::Chinese | TextClass::Mixed) {
+            self.drafts.partial(id, &text, "zh", end_ms);
+        }
+        self.publish(PipelineEvent::AsrPartial {
+            id,
+            text,
+            class,
+            end_ms,
+        });
+    }
+
+    fn draft_completed(&mut self, outcome: DraftOutcome) {
+        self.draft_in_flight = false;
+        self.in_flight = false;
+        match &outcome.result {
+            DraftResult::Failed(_) => {
+                if let Some(state) = self.stepdown.draft_failed() {
+                    self.apply_mode(state);
+                }
+                self.metrics.draft_failed();
+            }
+            DraftResult::Text(_) => self.stepdown.draft_succeeded(),
+            DraftResult::Rejected => {}
+        }
+        if let Some(PublishedDraft {
+            id,
+            rev,
+            text,
+            end_ms,
+        }) = self.drafts.completed(outcome)
+        {
+            self.publish(PipelineEvent::TranslationDraft {
+                id,
+                rev,
+                text,
+                end_ms,
+            });
+        }
     }
 
     fn refresh_stats(&mut self, live: StreamTime) {
@@ -790,9 +1041,13 @@ impl Scheduler {
             .len()
             .saturating_add(self.ready.len())
             .min(u32::MAX as usize) as u32;
-        let snapshot = self
+        let mut snapshot = self
             .metrics
             .snapshot(live, waiting, self.joiner.held_count());
+        snapshot.mode = self.mode.mode;
+        snapshot.mode_reason = self.mode.reason;
+        snapshot.drafts_total = self.drafts.published_total();
+        snapshot.drafts_failed = self.drafts.failed_total();
         if let Ok(mut latest) = self.latest_stats.lock() {
             *latest = snapshot;
         }
@@ -804,6 +1059,7 @@ impl Scheduler {
                 for id in absorbed {
                     self.observed.remove(id);
                     self.translating.remove(id);
+                    self.drafts.terminal(*id);
                 }
             }
             self.publish(event);
@@ -841,6 +1097,19 @@ impl Scheduler {
     }
 
     fn transcript(&mut self, message: AsrMessage) {
+        if let AsrMessage::Partial {
+            id,
+            text,
+            class,
+            end,
+        } = message
+        {
+            // No partial after the id's AsrFinal or Dropped.
+            if self.handled_through.is_none_or(|handled| id > handled) {
+                self.partial(id, text, class, end);
+            }
+            return;
+        }
         let id = message.id();
         self.handled_through = Some(self.handled_through.map_or(id, |previous| previous.max(id)));
         if self.asr_failed && !matches!(&message, AsrMessage::Failed(_, _)) {
@@ -862,7 +1131,9 @@ impl Scheduler {
                     start_ms: transcript.timing.start.millis(),
                     end_ms: transcript.timing.end.millis(),
                     asr_ms: transcript.timing.asr_ms,
+                    cut: transcript.cut,
                 });
+                self.drafts.final_arrived(transcript.id);
                 if translates(&transcript, &self.config.routing) {
                     self.translating.insert(transcript.id);
                 } else {
@@ -873,14 +1144,17 @@ impl Scheduler {
             }
             AsrMessage::Dropped(id, reason) => {
                 self.observed.remove(&id);
+                self.drafts.terminal(id);
                 self.publish(PipelineEvent::Dropped { id, reason });
                 let result = self.joiner.dropped(id);
                 self.joined(result);
             }
+            AsrMessage::Partial { .. } => {}
             AsrMessage::Failed(id, message) => {
                 // There is no ASR-failure line type in the wire contract; the
                 // engine error is explicit and no nonexistent ASR text is sent.
                 self.observed.remove(&id);
+                self.drafts.terminal(id);
                 self.asr_failed = true;
                 self.publish(PipelineEvent::EngineStatus {
                     engine: EngineKind::Asr,
@@ -903,6 +1177,7 @@ impl Scheduler {
         {
             self.observed.remove(id);
             self.translating.remove(id);
+            self.drafts.terminal(*id);
         }
         self.publish(event);
         self.in_flight = false;
@@ -940,6 +1215,9 @@ fn scheduler_loop(
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
+    draft: Option<Box<dyn Translator>>,
+    initial_mode: ModeState,
+    modes: Receiver<EffectiveMode>,
 ) -> Result<()> {
     // This clock advances only after ordered frontend notices are consumed.
     // Fast replay must not expire a hold using future frames whose speech start
@@ -970,7 +1248,25 @@ fn scheduler_loop(
         metrics,
         latest_stats,
         asr_failed: false,
+        clock: clock.clone(),
+        mode: initial_mode,
+        stepdown: StepDown::new(&config.latency, initial_mode.mode, initial_mode.reason),
+        drafts: DraftState::new(&config.latency),
+        draft_ready: false,
+        draft_in_flight: false,
     };
+    let mut draft_worker = match draft {
+        Some(translator) if initial_mode.mode != EffectiveMode::Off => Some(DraftWorker::start(
+            translator,
+            config.latency.clone(),
+            bus.clone(),
+            cancelled.clone(),
+        )?),
+        _ => None,
+    };
+    let session_start = Instant::now();
+    let mut last_step = Instant::now();
+    let mut draft_known = None;
     let mut worker = TranslatorWorker::start(
         translator,
         config.translate,
@@ -1009,6 +1305,36 @@ fn scheduler_loop(
             progressed = true;
             scheduler.completed(event);
         }
+        if let Some(draft_worker) = draft_worker.as_ref() {
+            for outcome in draft_worker.completed.try_iter() {
+                progressed = true;
+                scheduler.draft_completed(outcome);
+            }
+            let state = draft_worker.state.load(Ordering::Acquire);
+            if draft_known != Some(state) {
+                draft_known = Some(state);
+                scheduler.draft_ready = state == WORKER_READY;
+                if state == WORKER_READY || state == WORKER_FAILED {
+                    if let Some(next) = scheduler.stepdown.draft_server(state == WORKER_READY) {
+                        scheduler.apply_mode(next);
+                    }
+                }
+            }
+        }
+        for mode in modes.try_iter() {
+            if let Some(next) = scheduler
+                .stepdown
+                .choose(mode, session_start.elapsed().as_secs_f64())
+            {
+                scheduler.apply_mode(next);
+            }
+            // Choosing Continuous without a ready draft server falls back to Light.
+            if mode == EffectiveMode::Continuous {
+                if let Some(next) = scheduler.stepdown.draft_server(scheduler.draft_ready) {
+                    scheduler.apply_mode(next);
+                }
+            }
+        }
         while scheduler.queue.len() < TranslationQueue::CAPACITY {
             let Some(transcript) = scheduler.ready.pop_front() else {
                 break;
@@ -1039,14 +1365,15 @@ fn scheduler_loop(
                 // The control and transcript channels have independent senders.
                 // A finite control burst must still consume this segment's own
                 // start notice before routing its transcript or timing its hold.
-                if front_done
-                    || scheduler
-                        .started_through
-                        .is_some_and(|id| id >= message.id())
-                        && scheduler
-                            .closed_through
-                            .is_some_and(|id| id >= message.id())
-                {
+                // A partial only needs its start notice: the clause is still open.
+                let started = scheduler
+                    .started_through
+                    .is_some_and(|id| id >= message.id());
+                let closed = scheduler
+                    .closed_through
+                    .is_some_and(|id| id >= message.id());
+                let is_partial = matches!(message, AsrMessage::Partial { .. });
+                if front_done || (started && (closed || is_partial)) {
                     scheduler.transcript(message);
                     progressed = true;
                 } else {
@@ -1069,6 +1396,21 @@ fn scheduler_loop(
             scheduler.joined(result);
             holds_finished = true;
             progressed = true;
+        }
+        if !scheduler.in_flight
+            && scheduler.queue.is_empty()
+            && scheduler.drafts_on()
+            && scheduler.drafts.has_job()
+        {
+            // Finals first (the branch below); a draft only takes an idle translator slot.
+            if let (Some(draft_worker), Some(request)) =
+                (draft_worker.as_ref(), scheduler.drafts.take_request())
+            {
+                send_cooperative(&draft_worker.input, request, &cancelled)?;
+                scheduler.in_flight = true;
+                scheduler.draft_in_flight = true;
+                progressed = true;
+            }
         }
         if !scheduler.in_flight && !scheduler.queue.is_empty() {
             let batch = scheduler.queue.take(clock.now());
@@ -1108,6 +1450,18 @@ fn scheduler_loop(
             was_listening = is_listening;
             last_stats = Instant::now();
         }
+        if is_listening && last_step.elapsed() >= Duration::from_secs(1) {
+            last_step = Instant::now();
+            let lag_s = scheduler.metrics.lag_ms(clock.now()) as f64 / 1_000.0;
+            let cpu = scheduler.metrics.system_cpu_pct();
+            if let Some(next) =
+                scheduler
+                    .stepdown
+                    .sample(session_start.elapsed().as_secs_f64(), cpu, lag_s)
+            {
+                scheduler.apply_mode(next);
+            }
+        }
         if is_listening && last_stats.elapsed() >= Duration::from_secs(1) {
             // Frontend clears listening under this lock before acknowledging
             // pause. A timer cannot publish a stale Stats after that boundary.
@@ -1125,6 +1479,9 @@ fn scheduler_loop(
         }
     }
     worker.stop()?;
+    if let Some(draft_worker) = draft_worker.as_mut() {
+        draft_worker.stop()?;
+    }
     // Wait for producers to close before publishing shutdown terminals. This
     // prevents a racing SpeechStarted or delta from appearing after a terminal.
     while !front_done || !asr_done {
@@ -1154,6 +1511,7 @@ fn scheduler_loop(
     for event in worker.completed.try_iter() {
         scheduler.completed(event);
     }
+    scheduler.drafts.clear_slot();
     let unfinished: Vec<_> = scheduler.observed.iter().copied().collect();
     for id in unfinished {
         scheduler.publish(if scheduler.translating.contains(&id) {

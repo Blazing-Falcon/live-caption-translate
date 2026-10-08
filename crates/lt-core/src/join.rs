@@ -3,7 +3,7 @@ use crate::clock::Clock;
 use crate::config::JoinConfig;
 use crate::events::{JoinKind, PipelineEvent};
 use crate::text::chinese_chars;
-use crate::types::{StreamTime, TextClass, Transcript, UtteranceId};
+use crate::types::{CutReason, StreamTime, TextClass, Transcript, UtteranceId};
 use std::collections::VecDeque;
 use std::sync::Arc;
 
@@ -195,6 +195,9 @@ impl Joiner {
     fn should_hold(&self, held: &Held) -> bool {
         let count = chinese_chars(&held.transcript.text);
         self.config.hold_max_chars != 0
+            // A clause produced by an early commit is never held; the recognizer
+            // already saw that the speaker kept talking.
+            && held.transcript.cut != CutReason::Commit
             && joinable(held.transcript.class)
             && count <= self.config.hold_max_chars as usize
             && count < self.config.max_chars as usize
@@ -296,6 +299,8 @@ fn merge_transcript(leader: &mut Transcript, incoming: Transcript) -> Vec<Uttera
     if incoming.class == TextClass::Mixed {
         leader.class = TextClass::Mixed;
     }
+    // The phrase now ends where the successor ended.
+    leader.cut = incoming.cut;
     let newly_absorbed = if incoming.id != leader.id && !leader.absorbed.contains(&incoming.id) {
         vec![incoming.id]
     } else {
@@ -333,6 +338,7 @@ mod tests {
                 asr_ms: 300,
             },
             absorbed: Vec::new(),
+            cut: crate::types::CutReason::Pause,
         }
     }
 

@@ -507,6 +507,7 @@ mod tests {
             start_ms,
             end_ms,
             asr_ms: 100,
+            cut: crate::types::CutReason::Pause,
         }
     }
 

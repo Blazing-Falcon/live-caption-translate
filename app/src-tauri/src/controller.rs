@@ -14,7 +14,7 @@ use lt_audio::{
 use lt_core::{
     config::Config,
     events::{EngineKind, EngineState, ListeningStateKind, PipelineEvent, SourceStateKind},
-    pipeline::{Pipeline, PipelineHandle},
+    pipeline::{Pipeline, PipelineHandle, PipelineOptions},
     source::AudioSource,
     transcript::{
         SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber, TranscriptWriter,
@@ -58,6 +58,8 @@ pub struct Controller {
     shared: Arc<Shared>,
     session: Option<Session>,
     supervisor: Option<Supervisor>,
+    /// The draft model's server; running only while Continuous mode is wanted.
+    draft_supervisor: Option<Supervisor>,
     cancelled: Arc<AtomicBool>,
 }
 
@@ -69,6 +71,7 @@ pub fn spawn(shared: Arc<Shared>, commands: Receiver<Cmd>) -> std::io::Result<Jo
                 shared,
                 session: None,
                 supervisor: None,
+                draft_supervisor: None,
                 cancelled: Arc::new(AtomicBool::new(false)),
             }
             .run(commands)
@@ -117,6 +120,7 @@ impl Controller {
                     self.cancelled.store(true, Ordering::Release);
                     self.stop_session();
                     self.stop_supervisor();
+                    self.stop_draft_supervisor();
                     let _ = reply.send(Ok(()));
                     return;
                 }
@@ -124,6 +128,7 @@ impl Controller {
         }
         self.stop_session();
         self.stop_supervisor();
+        self.stop_draft_supervisor();
     }
 
     fn start(&mut self) -> Result<(), String> {
@@ -172,17 +177,24 @@ impl Controller {
             }
         }
         let (translator, pid) = engines::translator(&config, self.supervisor.as_ref())?;
+        let (draft, draft_pid) = self.draft_engine(&config, &models, &bus);
         let (source, mode, label) = make_source(&config)?;
         let transcript = self.start_transcript(&config, mode, &label)?;
-        let sampler = ProcessSampler::new(pid).map_err(|e| e.to_string())?;
-        let pipeline = Pipeline::start_with_bus_and_sampler(
+        let sampler = ProcessSampler::new(pid)
+            .map_err(|e| e.to_string())?
+            .with_draft(draft_pid);
+        let pipeline = Pipeline::start_with_options(
             config.clone(),
             source,
             vad,
             asr,
             translator,
             bus.clone(),
-            Some(Box::new(sampler)),
+            PipelineOptions {
+                sampler: Some(Box::new(sampler)),
+                draft,
+                physical_cores: Some(num_cpus::get_physical()),
+            },
         );
         match pipeline {
             Ok(pipeline) => {
@@ -203,6 +215,53 @@ impl Controller {
                     let _ = transcript.finish();
                 }
                 Err(format!("Listening could not start: {error}"))
+            }
+        }
+    }
+
+    /// The draft translator when Continuous mode is wanted and its model is on disk. Any
+    /// failure runs Light instead of blocking captions.
+    fn draft_engine(
+        &mut self,
+        config: &Config,
+        models: &std::path::Path,
+        bus: &lt_core::bus::EventBus,
+    ) -> (
+        Option<Box<dyn lt_core::engines::Translator>>,
+        Arc<std::sync::atomic::AtomicU32>,
+    ) {
+        let none = || Arc::new(std::sync::atomic::AtomicU32::new(0));
+        if !engines::wants_drafts(config) {
+            self.stop_draft_supervisor();
+            return (None, none());
+        }
+        if config.latency.draft_server_url.is_empty() {
+            if !models.join(engines::DRAFT_MODEL).is_file() {
+                self.stop_draft_supervisor();
+                return (None, none());
+            }
+            if self.draft_supervisor.is_none() {
+                match engines::start_draft_supervisor(
+                    config,
+                    models,
+                    &crate::paths::llama_server(),
+                    bus,
+                    &self.cancelled,
+                ) {
+                    Ok(supervisor) => self.draft_supervisor = Some(supervisor),
+                    Err(message) => {
+                        tracing::warn!(message, "Draft translator unavailable; running Light");
+                        engines::fail(bus, EngineKind::DraftTranslator, &message);
+                        return (None, none());
+                    }
+                }
+            }
+        }
+        match engines::draft_translator(config, self.draft_supervisor.as_ref()) {
+            Ok((translator, pid)) => (Some(translator), pid),
+            Err(message) => {
+                tracing::warn!(message, "Draft translator client failed; running Light");
+                (None, none())
             }
         }
     }
@@ -281,10 +340,19 @@ impl Controller {
         }
     }
 
+    fn stop_draft_supervisor(&mut self) {
+        if let Some(mut supervisor) = self.draft_supervisor.take() {
+            if let Err(error) = supervisor.stop() {
+                tracing::warn!(%error, "Draft translator did not stop cleanly");
+            }
+        }
+    }
+
     fn apply(&mut self, old: &Config, new: &Config) -> Result<(), String> {
         let Some(session) = &self.session else {
             if applies::server_changed(old, new) {
                 self.stop_supervisor();
+                self.stop_draft_supervisor();
             }
             return Ok(());
         };
@@ -301,6 +369,7 @@ impl Controller {
                 self.stop_session();
                 if applies::server_changed(old, new) {
                     self.stop_supervisor();
+                    self.stop_draft_supervisor();
                 }
                 self.start()?;
                 if !was_listening {

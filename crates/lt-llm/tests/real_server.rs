@@ -69,6 +69,8 @@ fn frozen_translation_sentences_against_configured_llama_server() {
             tgt: "en",
             terms: &[],
             context: &[],
+            prefill: "",
+            max_tokens: None,
             control: TranslationControl {
                 deadline: Instant::now() + Duration::from_secs(10),
                 cancelled: Arc::new(AtomicBool::new(false)),

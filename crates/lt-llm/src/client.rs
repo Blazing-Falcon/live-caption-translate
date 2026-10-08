@@ -33,13 +33,18 @@ const MAX_OUTPUT_BYTES: usize = 64 * 1024;
 const HTTP_BUFFER_BYTES: usize = 16 * 1024;
 
 #[derive(Clone, Debug)]
-struct Endpoint {
-    address: SocketAddr,
-    completions: String,
+pub(crate) struct Endpoint {
+    pub(crate) address: SocketAddr,
+    pub(crate) completions: String,
 }
 
 impl Endpoint {
-    fn new(base_url: &str) -> Result<Self> {
+    /// llama-server's raw completion endpoint (draft prefill).
+    pub(crate) fn completion_url(&self) -> String {
+        format!("http://{}/completion", self.address)
+    }
+
+    pub(crate) fn new(base_url: &str) -> Result<Self> {
         if base_url.contains('#') {
             return Err(Error::Config(
                 "Translation server base URL cannot have a fragment".into(),
@@ -264,6 +269,7 @@ impl Translator for OpenAiCompatTranslator {
             streaming: true,
             glossary: false,
             context: false,
+            prefill: false,
             max_input_chars: 300,
             pairs: ["zh", "yue", "ja", "ko"]
                 .map(|source| (source.into(), "en".into()))
@@ -279,6 +285,8 @@ impl Translator for OpenAiCompatTranslator {
             tgt: "en",
             terms: &[],
             context: &[],
+            prefill: "",
+            max_tokens: None,
             control: control.clone(),
         };
         self.translate_inner(&request, &mut |_| {})?;
@@ -315,7 +323,7 @@ fn graceful_abort(control: &TranslationControl, output: &TranslationOut) -> bool
         && !output.text.is_empty()
 }
 
-fn translation_error(message: impl Into<String>) -> Error {
+pub(crate) fn translation_error(message: impl Into<String>) -> Error {
     Error::Translation {
         reason: FailReason::Error,
         message: message.into(),
@@ -329,7 +337,7 @@ fn server_unavailable(message: impl Into<String>) -> Error {
     }
 }
 
-fn map_http_error(error: ureq::Error, control: &TranslationControl) -> Error {
+pub(crate) fn map_http_error(error: ureq::Error, control: &TranslationControl) -> Error {
     if control.cancelled.load(Ordering::Relaxed) || control.abort.load(Ordering::Relaxed) {
         return control
             .check()
@@ -684,7 +692,7 @@ fn poll_budget(
     Ok(remaining.min(POLL))
 }
 
-fn local_agent(address: SocketAddr, control: TranslationControl) -> Result<Agent> {
+pub(crate) fn local_agent(address: SocketAddr, control: TranslationControl) -> Result<Agent> {
     control.check()?;
     let remaining = control.deadline.saturating_duration_since(Instant::now());
     let config = Agent::config_builder()

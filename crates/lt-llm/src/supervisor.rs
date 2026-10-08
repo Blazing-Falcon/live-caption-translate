@@ -1,7 +1,7 @@
 //! Owns the local translator process and its crash-recovery budget.
 use lt_core::{
     bus::EventBus,
-    config::TranslateConfig,
+    config::{LatencyConfig, TranslateConfig},
     engines::{TranslationControl, Translator},
     error::{Error, Result},
     events::{EngineKind, EngineState, PipelineEvent},
@@ -20,40 +20,93 @@ use std::{
     time::{Duration, Instant},
 };
 
+/// Which model a llama-server child runs.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ServerRole {
+    /// Hy-MT2: the accurate translator whose text is never rewritten.
+    Final,
+    /// LMT-60: quick drafts that the final replaces.
+    Draft,
+}
+
+impl ServerRole {
+    pub fn engine(self) -> EngineKind {
+        match self {
+            Self::Final => EngineKind::Translator,
+            Self::Draft => EngineKind::DraftTranslator,
+        }
+    }
+
+    /// Model-specific arguments; `models/manifest.json` lists the same ones (tested).
+    pub fn model_args(self) -> &'static [&'static str] {
+        match self {
+            Self::Final => &["--override-kv", "tokenizer.ggml.eos_token_id=int:120020"],
+            Self::Draft => &[],
+        }
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct ServerOptions {
+    pub role: ServerRole,
     pub binary: PathBuf,
     pub model: PathBuf,
     pub threads: u32,
     pub context: u32,
     pub translate: TranslateConfig,
     pub load_timeout: Duration,
+    /// Run the child at below-normal priority (`latency.low_priority`).
+    pub below_normal: bool,
     #[cfg(test)]
     mock_directory: Option<PathBuf>,
 }
 
 impl ServerOptions {
+    /// A Hy-MT2 server. `_physical_cores` is unused: automatic threads mean 2 for
+    /// each server.
     pub fn new(
         binary: PathBuf,
         model: PathBuf,
         config: &TranslateConfig,
-        physical_cores: usize,
+        _physical_cores: usize,
     ) -> Self {
-        let threads = if config.threads == 0 {
-            physical_cores.saturating_sub(1).clamp(1, 4) as u32
-        } else {
-            config.threads.clamp(1, 4)
-        };
         Self {
+            role: ServerRole::Final,
             binary,
             model,
-            threads,
+            threads: config.server_threads(),
             context: config.ctx,
             translate: config.clone(),
             load_timeout: Duration::from_secs(60),
+            below_normal: false,
             #[cfg(test)]
             mock_directory: None,
         }
+    }
+
+    pub fn with_role(mut self, role: ServerRole) -> Self {
+        self.role = role;
+        self
+    }
+
+    pub fn with_below_normal(mut self, below_normal: bool) -> Self {
+        self.below_normal = below_normal;
+        self
+    }
+
+    /// Every argument after the binary, in order (used by `command` and the tests).
+    pub fn arguments(&self, port: u16) -> Vec<String> {
+        let mut args: Vec<String> = ["-m"].map(String::from).to_vec();
+        args.push(self.model.display().to_string());
+        args.extend(["--host", "127.0.0.1", "--port"].map(String::from));
+        args.push(port.to_string());
+        args.extend(["--jinja", "-np", "1", "-c"].map(String::from));
+        args.push(self.context.to_string());
+        args.extend(["-t".into(), self.threads.to_string()]);
+        args.extend(["-tb".into(), self.threads.to_string()]);
+        args.extend(self.role.model_args().iter().map(|arg| (*arg).to_owned()));
+        args.push("--no-webui".into());
+        args
     }
 
     fn command(&self, port: u16) -> Command {
@@ -73,22 +126,7 @@ impl ServerOptions {
                 .current_dir(directory);
             return command;
         }
-        command
-            .arg("-m")
-            .arg(&self.model)
-            .args(["--host", "127.0.0.1", "--port"])
-            .arg(port.to_string())
-            .args(["--jinja", "-np", "1", "-c"])
-            .arg(self.context.to_string())
-            .arg("-t")
-            .arg(self.threads.to_string())
-            .arg("-tb")
-            .arg(self.threads.to_string())
-            .args([
-                "--override-kv",
-                "tokenizer.ggml.eos_token_id=int:120020",
-                "--no-webui",
-            ]);
+        command.args(self.arguments(port));
         command
     }
 }
@@ -106,12 +144,22 @@ impl Supervisor {
     pub fn start(options: ServerOptions, bus: EventBus) -> Result<Self> {
         if !options.binary.is_file() {
             let message = format!("Translator binary is missing: {}", options.binary.display());
-            status(&bus, EngineState::Failed, Some(message.clone()));
+            status(
+                &bus,
+                options.role.engine(),
+                EngineState::Failed,
+                Some(message.clone()),
+            );
             return Err(Error::Engine(message));
         }
         if !options.model.is_file() {
             let message = format!("Translation model is missing: {}", options.model.display());
-            status(&bus, EngineState::Failed, Some(message.clone()));
+            status(
+                &bus,
+                options.role.engine(),
+                EngineState::Failed,
+                Some(message.clone()),
+            );
             return Err(Error::Engine(message));
         }
         let port = TcpListener::bind(("127.0.0.1", 0))?.local_addr()?.port();
@@ -120,6 +168,7 @@ impl Supervisor {
         let ready = Arc::new(AtomicBool::new(false));
         let cancelled = Arc::new(AtomicBool::new(false));
         let state = WorkerState {
+            engine: options.role.engine(),
             url: url.clone(),
             pid: pid.clone(),
             ready: ready.clone(),
@@ -194,6 +243,7 @@ impl Drop for Supervisor {
 }
 
 struct WorkerState {
+    engine: EngineKind,
     url: String,
     pid: Arc<AtomicU32>,
     ready: Arc<AtomicBool>,
@@ -201,9 +251,9 @@ struct WorkerState {
     bus: EventBus,
 }
 
-fn status(bus: &EventBus, state: EngineState, message: Option<String>) {
+fn status(bus: &EventBus, engine: EngineKind, state: EngineState, message: Option<String>) {
     bus.publish(PipelineEvent::EngineStatus {
-        engine: EngineKind::Translator,
+        engine,
         state,
         message,
     });
@@ -240,6 +290,7 @@ fn run(options: ServerOptions, port: u16, state: WorkerState) -> Result<()> {
         }
         status(
             &state.bus,
+            state.engine,
             if restarts == 0 {
                 EngineState::Loading
             } else {
@@ -258,10 +309,20 @@ fn run(options: ServerOptions, port: u16, state: WorkerState) -> Result<()> {
             Err(error) => error.to_string(),
         };
         if restarts == 3 {
-            status(&state.bus, EngineState::Failed, Some(message.clone()));
+            status(
+                &state.bus,
+                state.engine,
+                EngineState::Failed,
+                Some(message.clone()),
+            );
             return Err(Error::Engine(message));
         }
-        status(&state.bus, EngineState::Restarting, Some(message));
+        status(
+            &state.bus,
+            state.engine,
+            EngineState::Restarting,
+            Some(message),
+        );
         if !sleep_checked(&state.cancelled, Duration::from_secs(1 << restarts)) {
             return Ok(());
         }
@@ -270,7 +331,7 @@ fn run(options: ServerOptions, port: u16, state: WorkerState) -> Result<()> {
 }
 
 fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<()> {
-    let mut owned = OwnedChild::spawn(options.command(port))?;
+    let mut owned = OwnedChild::spawn(options.command(port), options.below_normal)?;
     state.pid.store(owned.child.id(), Ordering::Release);
     let deadline = Instant::now() + options.load_timeout;
     loop {
@@ -300,14 +361,22 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         }
         sleep_checked(&state.cancelled, Duration::from_millis(100));
     }
-    let mut translator =
-        crate::client::OpenAiCompatTranslator::new(&state.url, options.translate.clone())?;
-    translator.warm_up(&control(
+    let warm_up_control = control(
         &state.cancelled,
         Duration::from_secs_f64(f64::from(options.translate.timeout_s)),
-    ))?;
+    );
+    match options.role {
+        ServerRole::Final => {
+            crate::client::OpenAiCompatTranslator::new(&state.url, options.translate.clone())?
+                .warm_up(&warm_up_control)?;
+        }
+        ServerRole::Draft => {
+            crate::draft::LmtDraftTranslator::new(&state.url, &LatencyConfig::default())?
+                .warm_up(&warm_up_control)?;
+        }
+    }
     state.ready.store(true, Ordering::Release);
-    status(&state.bus, EngineState::Ready, None);
+    status(&state.bus, state.engine, EngineState::Ready, None);
     let mut unhealthy = 0;
     loop {
         if !sleep_checked(&state.cancelled, Duration::from_millis(100)) {
@@ -346,8 +415,8 @@ struct OwnedChild {
 }
 
 impl OwnedChild {
-    fn spawn(mut command: Command) -> Result<Self> {
-        configure_process(&mut command);
+    fn spawn(mut command: Command, below_normal: bool) -> Result<Self> {
+        configure_process(&mut command, below_normal);
         command
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
@@ -355,6 +424,9 @@ impl OwnedChild {
         let mut child = command
             .spawn()
             .map_err(|error| Error::Engine(format!("Could not start translator: {error}")))?;
+        if below_normal {
+            lower_priority(&child);
+        }
         let containment = match Containment::attach(&child) {
             Ok(containment) => containment,
             Err(error) => {
@@ -442,19 +514,36 @@ impl Drop for OwnedChild {
 }
 
 #[cfg(windows)]
-fn configure_process(command: &mut Command) {
+fn configure_process(command: &mut Command, below_normal: bool) {
     use std::os::windows::process::CommandExt;
-    command.creation_flags(windows_sys::Win32::System::Threading::CREATE_NO_WINDOW);
+    use windows_sys::Win32::System::Threading::{BELOW_NORMAL_PRIORITY_CLASS, CREATE_NO_WINDOW};
+    let mut flags = CREATE_NO_WINDOW;
+    if below_normal {
+        flags |= BELOW_NORMAL_PRIORITY_CLASS;
+    }
+    command.creation_flags(flags);
 }
 
 #[cfg(unix)]
-fn configure_process(command: &mut Command) {
+fn configure_process(command: &mut Command, _below_normal: bool) {
     use std::os::unix::process::CommandExt;
     command.process_group(0);
 }
 
 #[cfg(not(any(windows, unix)))]
-fn configure_process(_: &mut Command) {}
+fn configure_process(_: &mut Command, _below_normal: bool) {}
+
+/// Linux (development only): best effort, after the child exists.
+#[cfg(unix)]
+fn lower_priority(child: &Child) {
+    // SAFETY: plain syscall on our own child's pid; failure is ignored.
+    unsafe {
+        libc::setpriority(libc::PRIO_PROCESS, child.id(), 10);
+    }
+}
+
+#[cfg(not(unix))]
+fn lower_priority(_: &Child) {}
 
 #[cfg(windows)]
 struct Containment(windows_sys::Win32::Foundation::HANDLE);
@@ -677,6 +766,8 @@ mod tests {
             tgt: "en",
             terms: &[],
             context: &[],
+            prefill: "",
+            max_tokens: None,
             control: control(&Arc::new(AtomicBool::new(false)), Duration::from_secs(2)),
         };
         assert_eq!(

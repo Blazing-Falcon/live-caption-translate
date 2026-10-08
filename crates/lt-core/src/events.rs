@@ -2,7 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
-pub use crate::types::{CaptureMode, PipelineStats, SourceInfo, TextClass, Timing, UtteranceId};
+pub use crate::types::{
+    CaptureMode, CutReason, PipelineStats, SourceInfo, TextClass, Timing, UtteranceId,
+};
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -41,6 +43,7 @@ pub enum EngineKind {
     Vad,
     Asr,
     Translator,
+    DraftTranslator,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -78,10 +81,13 @@ pub enum PipelineEvent {
         id: UtteranceId,
         at_ms: u64,
     },
-    /// Reserved for a future streaming recognizer; v1 never emits it.
+    /// The cleaned text recognized so far for the open clause.
     AsrPartial {
         id: UtteranceId,
         text: String,
+        class: TextClass,
+        /// Stream time of the end of the decoded audio.
+        end_ms: u64,
     },
     AsrFinal {
         id: UtteranceId,
@@ -91,6 +97,7 @@ pub enum PipelineEvent {
         start_ms: u64,
         end_ms: u64,
         asr_ms: u32,
+        cut: CutReason,
     },
     Joined {
         id: UtteranceId,
@@ -101,6 +108,14 @@ pub enum PipelineEvent {
     TranslationDelta {
         id: UtteranceId,
         text_so_far: String,
+    },
+    /// A quick provisional translation of the open clause. `rev` counts from 1 per id.
+    TranslationDraft {
+        id: UtteranceId,
+        rev: u32,
+        text: String,
+        /// `end_ms` of the partial this draft translated.
+        end_ms: u64,
     },
     TranslationFinal {
         id: UtteranceId,
@@ -142,6 +157,7 @@ pub enum PipelineEvent {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::types::{EffectiveMode, ModeReason};
 
     fn every_event_variant() -> Vec<PipelineEvent> {
         vec![
@@ -152,6 +168,8 @@ mod tests {
             PipelineEvent::AsrPartial {
                 id: UtteranceId(12),
                 text: "我也想".into(),
+                class: TextClass::Chinese,
+                end_ms: 45_900,
             },
             PipelineEvent::AsrFinal {
                 id: UtteranceId(12),
@@ -161,6 +179,7 @@ mod tests {
                 start_ms: 45_210,
                 end_ms: 46_300,
                 asr_ms: 330,
+                cut: CutReason::Pause,
             },
             PipelineEvent::Joined {
                 id: UtteranceId(12),
@@ -171,6 +190,12 @@ mod tests {
             PipelineEvent::TranslationDelta {
                 id: UtteranceId(12),
                 text_so_far: "I also want to run".into(),
+            },
+            PipelineEvent::TranslationDraft {
+                id: UtteranceId(12),
+                rev: 2,
+                text: "I also want to run".into(),
+                end_ms: 45_900,
             },
             PipelineEvent::TranslationFinal {
                 id: UtteranceId(12),
@@ -233,6 +258,15 @@ mod tests {
                 cpu_translator_pct: 150.0,
                 rss_app_mb: 520,
                 rss_translator_mb: 1_380,
+                mode: EffectiveMode::Continuous,
+                mode_reason: Some(ModeReason::Cpu),
+                cpu_system_pct: 41.5,
+                cpu_draft_pct: 55.0,
+                rss_draft_mb: 610,
+                word_first_p50_ms: Some(1_040),
+                word_final_p50_ms: None,
+                drafts_total: 48,
+                drafts_failed: 1,
             }),
         ]
     }
@@ -246,13 +280,27 @@ mod tests {
         ))
         .unwrap();
         let events = every_event_variant();
-        assert_eq!(events.len(), 14);
+        assert_eq!(events.len(), 15);
         assert_eq!(serde_json::to_value(&events).unwrap(), rust_fixture);
         assert_eq!(rust_fixture, frontend_fixture);
         assert_eq!(
             serde_json::from_value::<Vec<PipelineEvent>>(rust_fixture).unwrap(),
             events
         );
+    }
+
+    #[test]
+    fn new_v2_enum_values_use_the_documented_wire_names() {
+        assert_eq!(
+            serde_json::to_value(EngineKind::DraftTranslator).unwrap(),
+            "draft_translator"
+        );
+        assert_eq!(serde_json::to_value(CutReason::Commit).unwrap(), "commit");
+        assert_eq!(
+            serde_json::to_value(ModeReason::DraftUnavailable).unwrap(),
+            "draft_unavailable"
+        );
+        assert_eq!(serde_json::to_value(EffectiveMode::Off).unwrap(), "off");
     }
 
     #[test]

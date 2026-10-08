@@ -529,6 +529,7 @@ mod tests {
             event: event.map(String::from),
             timing: StageTiming::default(),
             absorbed: Vec::new(),
+            cut: crate::types::CutReason::Pause,
         }
     }
 }

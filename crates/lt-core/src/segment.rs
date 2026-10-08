@@ -63,6 +63,9 @@ struct Speech {
     id: UtteranceId,
     /// First actual speech sample, or the preceding cut boundary for a continuation.
     start: u64,
+    /// Where the current uninterrupted run of speech began. Commit cuts move `start` but not
+    /// this, so soft and hard cuts keep firing where they would without commits.
+    run_start: u64,
     last_speech: u64,
     silence: u64,
     pre_roll: bool,
@@ -176,6 +179,7 @@ impl SegmentBuilder {
                     let speech = Speech {
                         id: self.allocate_id(),
                         start,
+                        run_start: start,
                         last_speech: frame_start,
                         silence: 0,
                         pre_roll: true,
@@ -191,7 +195,7 @@ impl SegmentBuilder {
                 } else {
                     speech.silence = speech.silence.saturating_add(1);
                 }
-                let duration = self.current.saturating_sub(speech.start);
+                let duration = self.current.saturating_sub(speech.run_start);
                 if speech.silence >= self.min_silence_frames {
                     let end = speech
                         .last_speech
@@ -207,6 +211,7 @@ impl SegmentBuilder {
                     self.emit(&speech, self.current, CutReason::SoftCut, &mut update);
                     speech.id = self.allocate_id();
                     speech.start = self.current;
+                    speech.run_start = self.current;
                     speech.pre_roll = false;
                     // Reference arithmetic keeps the preceding breath's silence count.
                     speech.last_speech = frame_start;
@@ -217,6 +222,7 @@ impl SegmentBuilder {
                     self.emit(&speech, cut, CutReason::HardCut, &mut update);
                     speech.id = self.allocate_id();
                     speech.start = cut;
+                    speech.run_start = cut;
                     speech.pre_roll = false;
                     speech.last_speech = speech.last_speech.max(cut);
                     update.started.push((speech.id, StreamTime(cut)));
@@ -227,6 +233,53 @@ impl SegmentBuilder {
             }
         }
         self.trim_history();
+        update
+    }
+
+    /// The open clause and where its `Segment` would start (pre-roll included).
+    pub fn open_clause(&self) -> Option<(UtteranceId, StreamTime)> {
+        self.speech
+            .as_ref()
+            .map(|speech| (speech.id, StreamTime(self.start_sample(speech))))
+    }
+
+    /// Audio of the open clause from stream sample `from` (or its start, if later) to now.
+    pub fn open_audio(&self, from: u64) -> Option<(UtteranceId, Vec<f32>)> {
+        let speech = self.speech.as_ref()?;
+        let start = self.start_sample(speech).max(from);
+        let end = self.current;
+        let mut pcm = Vec::with_capacity(end.saturating_sub(start) as usize);
+        for frame in &self.history {
+            let frame_end = frame.start.saturating_add(FRAME_SAMPLES as u64);
+            if frame_end <= start || frame.start >= end {
+                continue;
+            }
+            let first = start.saturating_sub(frame.start) as usize;
+            let last = (end.min(frame_end) - frame.start) as usize;
+            pcm.extend_from_slice(&frame.samples[first..last]);
+        }
+        Some((speech.id, pcm))
+    }
+
+    /// Cut the open clause `id` at `at` because the recognizer committed a clause there.
+    /// Returns an empty update if `id` is not the open clause or `at` is not strictly inside it.
+    /// Soft and hard cut clocks are not reset (they follow `run_start`).
+    pub fn commit_cut(&mut self, id: UtteranceId, at: StreamTime) -> SegmentUpdate {
+        let mut update = SegmentUpdate::default();
+        let valid = self.speech.as_ref().is_some_and(|speech| {
+            speech.id == id && self.start_sample(speech) < at.0 && at.0 < self.current
+        });
+        if !valid {
+            return update;
+        }
+        if let Some(mut speech) = self.speech.take() {
+            self.emit(&speech, at.0, CutReason::Commit, &mut update);
+            speech.id = self.allocate_id();
+            speech.start = at.0;
+            speech.pre_roll = false;
+            update.started.push((speech.id, at));
+            self.speech = Some(speech);
+        }
         update
     }
 
@@ -568,6 +621,167 @@ mod tests {
         for _ in 0..3_600 {
             builder.push(&[0.0; FRAME_SAMPLES], 0.0, FrameFlags::EMPTY);
             assert!(builder.history.len() <= 18);
+        }
+    }
+
+    fn frame_with(index: usize) -> [f32; FRAME_SAMPLES] {
+        [(index as f32 + 1.0) * 0.001; FRAME_SAMPLES]
+    }
+
+    fn feed(
+        builder: &mut SegmentBuilder,
+        output: &mut SegmentUpdate,
+        range: std::ops::Range<usize>,
+        probability: f32,
+    ) {
+        for index in range {
+            append(
+                output,
+                builder.push(&frame_with(index), probability, FrameFlags::EMPTY),
+            );
+        }
+    }
+
+    #[test]
+    fn commit_cut_emits_the_left_part_with_exact_samples_and_opens_a_new_clause() {
+        let mut builder = SegmentBuilder::new(VadConfig::default());
+        let mut output = SegmentUpdate::default();
+        feed(&mut builder, &mut output, 0..60, 0.9);
+        assert_eq!(output.started, vec![(UtteranceId(0), StreamTime(0))]);
+        let at = StreamTime(30 * 512 + 100);
+        let cut = builder.commit_cut(UtteranceId(0), at);
+        assert_eq!(cut.segments.len(), 1);
+        let left = &cut.segments[0];
+        assert_eq!(left.id, UtteranceId(0));
+        assert_eq!(left.start, StreamTime(0));
+        assert_eq!(left.end, at);
+        assert_eq!(left.cut_reason, CutReason::Commit);
+        assert_eq!(left.samples.len() as u64, at.0);
+        for (position, sample) in left.samples.iter().enumerate() {
+            assert_eq!(*sample, frame_with(position / FRAME_SAMPLES)[0]);
+        }
+        assert_eq!(cut.started, vec![(UtteranceId(1), at)]);
+        feed(&mut builder, &mut output, 60..80, 0.9);
+        let tail = builder.finish();
+        assert_eq!(tail.segments[0].id, UtteranceId(1));
+        assert_eq!(tail.segments[0].start, at);
+        assert_eq!(tail.segments[0].end, StreamTime(80 * 512));
+        assert_eq!(tail.segments[0].samples.len() as u64, 80 * 512 - at.0);
+        assert_eq!(tail.segments[0].samples[0], frame_with(30)[0]);
+    }
+
+    #[test]
+    fn invalid_commit_cuts_are_ignored() {
+        let mut builder = SegmentBuilder::new(VadConfig::default());
+        let mut output = SegmentUpdate::default();
+        assert!(builder
+            .commit_cut(UtteranceId(0), StreamTime(512))
+            .segments
+            .is_empty());
+        feed(&mut builder, &mut output, 0..60, 0.9);
+        let now = builder.current_time();
+        for (id, at) in [
+            (UtteranceId(7), StreamTime(1_000)),
+            (UtteranceId(0), StreamTime(0)),
+            (UtteranceId(0), now),
+            (UtteranceId(0), StreamTime(now.0 + 512)),
+        ] {
+            let update = builder.commit_cut(id, at);
+            assert!(update.segments.is_empty() && update.started.is_empty());
+        }
+        assert_eq!(builder.finish().segments[0].id, UtteranceId(0));
+        // Nothing is open any more.
+        assert!(builder
+            .commit_cut(UtteranceId(0), StreamTime(512))
+            .segments
+            .is_empty());
+    }
+
+    #[test]
+    fn pending_segments_are_never_cut() {
+        let config = VadConfig {
+            min_silence_s: 0.16,
+            post_roll_s: 0.5,
+            ..VadConfig::default()
+        };
+        let mut builder = SegmentBuilder::new(config);
+        let mut output = SegmentUpdate::default();
+        feed(&mut builder, &mut output, 0..30, 0.9);
+        feed(&mut builder, &mut output, 30..35, 0.0);
+        assert!(output.segments.is_empty(), "post-roll still pending");
+        assert!(builder
+            .commit_cut(UtteranceId(0), StreamTime(20 * 512))
+            .segments
+            .is_empty());
+        feed(&mut builder, &mut output, 35..60, 0.0);
+        assert_eq!(output.segments.len(), 1);
+        assert_eq!(output.segments[0].cut_reason, CutReason::Pause);
+    }
+
+    #[test]
+    fn forced_cuts_fire_at_the_same_positions_with_and_without_commit_cuts() {
+        fn run(commits: bool) -> Vec<(CutReason, u64)> {
+            let mut builder = SegmentBuilder::new(VadConfig::default());
+            let mut output = SegmentUpdate::default();
+            let mut open = UtteranceId(0);
+            for index in 0..1_500 {
+                // Dips below the soft threshold every 400 frames (12.8 s) to exercise both cuts.
+                let probability = if index % 400 == 399 { 0.3 } else { 0.9 };
+                let update = builder.push(&frame_with(index % 50), probability, FrameFlags::EMPTY);
+                if let Some((id, _)) = update.started.last() {
+                    open = *id;
+                }
+                append(&mut output, update);
+                if commits && index % 90 == 89 {
+                    let at = StreamTime(builder.current_time().0 - 20 * 512);
+                    let update = builder.commit_cut(open, at);
+                    if let Some((id, _)) = update.started.last() {
+                        open = *id;
+                    }
+                    append(&mut output, update);
+                }
+            }
+            append(&mut output, builder.finish());
+            output
+                .segments
+                .iter()
+                .filter(|s| matches!(s.cut_reason, CutReason::SoftCut | CutReason::HardCut))
+                .map(|s| (s.cut_reason, s.end.0))
+                .collect()
+        }
+        let plain = run(false);
+        let with_commits = run(true);
+        assert!(plain.len() >= 2, "{plain:?}");
+        assert_eq!(plain.len(), with_commits.len());
+        for (a, b) in plain.iter().zip(&with_commits) {
+            assert_eq!(a.0, b.0, "cut kind");
+            // Hard cuts search for the quietest frame inside the clause, so only the kind and
+            // the stream second must agree.
+            assert!(a.1.abs_diff(b.1) <= 32 * 512, "{a:?} vs {b:?}");
+        }
+    }
+
+    #[test]
+    fn commit_cuts_keep_ids_increasing_and_history_bounded() {
+        let mut builder = SegmentBuilder::new(VadConfig::default());
+        let mut open = UtteranceId(0);
+        let mut last_id = None;
+        for index in 0..3_600 {
+            let update = builder.push(&frame_with(index % 50), 0.9, FrameFlags::EMPTY);
+            for (id, _) in &update.started {
+                assert!(last_id.is_none_or(|previous| *id > previous));
+                last_id = Some(*id);
+                open = *id;
+            }
+            if index % 40 == 39 {
+                let at = StreamTime(builder.current_time().0 - 10 * 512);
+                for (id, _) in builder.commit_cut(open, at).started {
+                    assert!(last_id.is_none_or(|previous| id > previous));
+                    last_id = Some(id);
+                    open = id;
+                }
+            }
+            assert!(builder.history.len() <= 324, "{}", builder.history.len());
         }
     }
 

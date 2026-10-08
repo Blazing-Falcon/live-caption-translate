@@ -36,6 +36,7 @@ fn transcript(id: u64, text: &str, end: f64) -> Transcript {
             asr_ms: 1,
         },
         absorbed: Vec::new(),
+        cut: lt_core::types::CutReason::Pause,
     }
 }
 
@@ -304,6 +305,7 @@ impl Translator for ScriptedTranslator {
             streaming: true,
             glossary: false,
             context: false,
+            prefill: false,
             max_input_chars: 300,
             pairs: vec![("zh".into(), "en".into())],
         }
@@ -589,6 +591,8 @@ fn timeout_fake_preserves_pipeline_cancellation() {
         tgt: "en",
         terms: &[],
         context: &[],
+        prefill: "",
+        max_tokens: None,
         control: TranslationControl {
             deadline: Instant::now() + Duration::from_secs(1),
             cancelled,

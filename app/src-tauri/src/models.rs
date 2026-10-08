@@ -11,9 +11,15 @@ use std::{
 };
 use tauri::Emitter;
 
+/// Every model needed to listen is on disk and verified (the draft model is optional).
 pub fn all_ready(dir: &Path) -> bool {
     lt_llm::models::status(dir)
-        .map(|models| models.iter().all(|m| m.state == ModelState::Ready))
+        .map(|models| {
+            models
+                .iter()
+                .filter(|m| !m.optional)
+                .all(|m| m.state == ModelState::Ready)
+        })
         .unwrap_or(false)
 }
 
@@ -45,13 +51,18 @@ fn merge(disk: Vec<ModelStatus>, live: &[ModelStatus]) -> Vec<ModelStatus> {
 impl Models {
     pub fn status(&self, shared: &Shared) -> Result<Vec<ModelStatus>, String> {
         let dir = shared.paths.models(&shared.config());
-        let disk = lt_llm::models::status(dir).map_err(|e| e.to_string())?;
+        let disk = ModelManager::new()
+            .and_then(|manager| manager.status_for_cores(dir, num_cpus::get_physical()))
+            .map_err(|e| e.to_string())?;
         Ok(merge(disk, &lock(&self.live)))
     }
 
     fn publish(&self, shared: &Shared) {
         if let Ok(statuses) = self.status(shared) {
-            let ready = statuses.iter().all(|m| m.state == ModelState::Ready);
+            let ready = statuses
+                .iter()
+                .filter(|m| !m.optional)
+                .all(|m| m.state == ModelState::Ready);
             lock(&shared.state).models_ready = ready;
             let _ = shared
                 .handle
@@ -83,8 +94,15 @@ impl Models {
         self.publish(shared);
     }
 
-    /// Starts or resumes all missing models on a worker thread.
-    pub fn download(&self, shared: &Arc<Shared>, source: &str) -> Result<(), String> {
+    /// Starts or resumes missing models on a worker thread. Without `ids` that is every required
+    /// model plus the optional ones recommended for this PC (first run); with `ids`, exactly
+    /// those (the Performance page's draft-model button).
+    pub fn download(
+        &self,
+        shared: &Arc<Shared>,
+        source: &str,
+        ids: Option<Vec<String>>,
+    ) -> Result<(), String> {
         let source = match source {
             "huggingface" => ModelSource::Huggingface,
             "modelscope" => ModelSource::Modelscope,
@@ -103,8 +121,10 @@ impl Models {
                     .map_err(|e| e.to_string())
                     .and_then(|manager| {
                         let dir = shared.paths.models(&shared.config());
+                        let ids =
+                            ids.unwrap_or_else(|| manager.default_ids(num_cpus::get_physical()));
                         manager
-                            .fetch(source, dir, &models.cancel, &mut |status| {
+                            .fetch_ids(source, dir, &ids, &models.cancel, &mut |status| {
                                 models.record(&shared, status);
                             })
                             .map_err(|e| e.to_string())
@@ -172,6 +192,8 @@ mod tests {
             bytes_total: 10,
             bytes_done: 5,
             state,
+            optional: false,
+            recommended: true,
         }
     }
 
@@ -188,6 +210,23 @@ mod tests {
         let merged = merge(disk, &live);
         assert_eq!(merged[0].state, ModelState::Downloading);
         assert_eq!(merged[1].state, ModelState::Ready);
+    }
+
+    #[test]
+    fn the_optional_draft_model_does_not_block_listening() {
+        // all_ready consults the real manifest: with nothing on disk it is false, and an
+        // optional model alone never decides the answer.
+        assert!(!all_ready(Path::new("definitely/not/here")));
+        let optional = ModelStatus {
+            optional: true,
+            ..status("draft", ModelState::Missing)
+        };
+        let required = status("asr", ModelState::Ready);
+        let ready = [required, optional]
+            .iter()
+            .filter(|m| !m.optional)
+            .all(|m| m.state == ModelState::Ready);
+        assert!(ready);
     }
 
     #[test]

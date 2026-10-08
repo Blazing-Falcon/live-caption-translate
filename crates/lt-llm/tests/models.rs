@@ -180,6 +180,7 @@ fn manifest(url: String, data: &[u8]) -> Manifest {
             id: "test-model".into(),
             name: "Test model".into(),
             optional: false,
+            recommended_min_physical_cores: None,
             files: vec![file("model.bin", url, data)],
         }],
     }
@@ -485,6 +486,7 @@ fn downloads_are_globally_smallest_first_and_missing_mirrors_are_disabled() {
                 id: "asr".into(),
                 name: "ASR".into(),
                 optional: false,
+                recommended_min_physical_cores: None,
                 files: vec![
                     file("large.bin", format!("{}/large", server.url), &[11; 11]),
                     file("tiny.bin", format!("{}/tiny", server.url), &[3; 3]),
@@ -494,12 +496,14 @@ fn downloads_are_globally_smallest_first_and_missing_mirrors_are_disabled() {
                 id: "vad".into(),
                 name: "VAD".into(),
                 optional: false,
+                recommended_min_physical_cores: None,
                 files: vec![file("small.bin", format!("{}/small", server.url), &[5; 5])],
             },
             ModelEntry {
                 id: "mt".into(),
                 name: "MT".into(),
                 optional: false,
+                recommended_min_physical_cores: None,
                 files: vec![file(
                     "largest.bin",
                     format!("{}/largest", server.url),

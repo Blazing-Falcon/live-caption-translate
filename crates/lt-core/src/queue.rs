@@ -249,6 +249,8 @@ pub fn translate_one(
         tgt: &config.target,
         terms: &[],
         context: &[],
+        prefill: "",
+        max_tokens: None,
         control: control.clone(),
     };
     let mut first_token_ms = None;

@@ -47,6 +47,28 @@ pub struct ReplayArgs {
     /// Use fake engines for terminal-only pipeline diagnostics.
     #[arg(long)]
     pub fake: bool,
+    /// Caption speed for this run (overrides `latency.mode`).
+    #[arg(long, value_enum)]
+    pub mode: Option<ModeArg>,
+}
+
+#[derive(Clone, Copy, ValueEnum)]
+pub enum ModeArg {
+    Auto,
+    Continuous,
+    Light,
+    Off,
+}
+
+impl ModeArg {
+    pub fn config_name(self) -> &'static str {
+        match self {
+            Self::Auto => "auto",
+            Self::Continuous => "continuous",
+            Self::Light => "light",
+            Self::Off => "off",
+        }
+    }
 }
 
 #[derive(Clone, Copy, ValueEnum)]

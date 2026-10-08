@@ -33,7 +33,7 @@ fn exact_defaults_round_trip_toml_and_json() {
     assert_eq!(reloaded, config);
     assert!(messages.is_empty(), "{messages:?}");
     let json_value = serde_json::to_value(&config).unwrap();
-    assert_eq!(json_value.as_object().unwrap().len(), 14);
+    assert_eq!(json_value.as_object().unwrap().len(), 15);
     assert_eq!(json_value["config_version"], 1);
     assert_eq!(
         json_value["capture"],
@@ -370,4 +370,157 @@ fn failed_atomic_replace_preserves_existing_destination() {
     assert!(Config::default().save(&temp.0).is_err());
     assert_eq!(fs::read_to_string(temp.0.join("marker")).unwrap(), "keep");
     assert!(!temp.0.with_file_name("config.toml.tmp").exists());
+}
+
+#[test]
+fn latency_defaults_match_the_v2_spec() {
+    let latency = Config::default().latency;
+    assert_eq!(latency.mode, "auto");
+    assert_eq!(latency.decode_interval_s, 0.5);
+    assert_eq!(latency.min_open_s, 1.0);
+    assert_eq!(latency.comma_min_tokens, 8);
+    assert!(latency.stability && latency.split_long && latency.low_priority && latency.step_down);
+    assert_eq!(latency.cap_tokens, 20);
+    assert_eq!(latency.draft_context_s, 1.5);
+    assert_eq!(latency.final_context_s, 10.0);
+    assert_eq!(
+        (
+            latency.draft_min_chars,
+            latency.draft_grow_chars,
+            latency.draft_keep_back_words
+        ),
+        (3, 3, 2)
+    );
+    assert_eq!(latency.draft_timeout_s, 3.0);
+    assert_eq!(latency.draft_engine, "lmt60");
+    assert_eq!(latency.draft_server_url, "");
+    assert_eq!(
+        (
+            latency.step_down_cpu_pct,
+            latency.step_up_cpu_pct,
+            latency.step_down_lag_s
+        ),
+        (80.0, 65.0, 3.0)
+    );
+    assert_eq!(latency.auto_min_cores, 6);
+    let overlay = Config::default().overlay;
+    assert!(overlay.live_source);
+    assert_eq!(overlay.draft_display, "hold2");
+}
+
+#[test]
+fn latency_values_clamp_and_invalid_enums_fall_back() {
+    let (config, messages) = Config::from_toml(
+        r#"
+[latency]
+mode = "turbo"
+decode_interval_s = 0.01
+min_open_s = 99
+comma_min_tokens = 1
+cap_tokens = 5
+draft_context_s = -1
+final_context_s = 100
+draft_min_chars = 0
+draft_grow_chars = 99
+draft_keep_back_words = 9
+draft_timeout_s = 50
+step_down_cpu_pct = 20
+step_up_cpu_pct = 99
+step_down_lag_s = 0.1
+auto_min_cores = 1000
+draft_engine = ""
+[overlay]
+draft_display = "sparkle"
+"#,
+    )
+    .unwrap();
+    let latency = &config.latency;
+    assert_eq!(latency.mode, "auto");
+    assert_eq!(latency.decode_interval_s, 0.3);
+    assert_eq!(latency.min_open_s, 3.0);
+    assert_eq!(latency.comma_min_tokens, 2);
+    assert_eq!(latency.cap_tokens, 10);
+    assert_eq!(latency.draft_context_s, 0.0);
+    assert_eq!(latency.final_context_s, 20.0);
+    assert_eq!(latency.draft_min_chars, 1);
+    assert_eq!(latency.draft_grow_chars, 20);
+    assert_eq!(latency.draft_keep_back_words, 5);
+    assert_eq!(latency.draft_timeout_s, 10.0);
+    assert_eq!(latency.step_down_cpu_pct, 50.0);
+    assert_eq!(latency.step_up_cpu_pct, 50.0, "step-up follows step-down");
+    assert_eq!(latency.step_down_lag_s, 1.0);
+    assert_eq!(latency.auto_min_cores, 64);
+    assert_eq!(latency.draft_engine, "lmt60");
+    assert_eq!(config.overlay.draft_display, "hold2");
+    assert!(messages.iter().any(|m| m.contains("latency.mode")));
+    assert!(messages.iter().any(|m| m.contains("overlay.draft_display")));
+}
+
+#[test]
+fn cap_tokens_zero_stays_zero_and_valid_values_pass() {
+    for (input, expected) in [(0, 0), (10, 10), (60, 60), (61, 60), (9, 10)] {
+        let (config, _) = Config::from_toml(&format!("[latency]\ncap_tokens = {input}")).unwrap();
+        assert_eq!(config.latency.cap_tokens, expected, "input {input}");
+    }
+}
+
+#[test]
+fn a_v1_config_file_loads_unchanged_with_v2_defaults() {
+    let v1 = r#"
+config_version = 1
+[capture]
+mode = "apps"
+[translate]
+threads = 3
+[overlay]
+font_px = 30
+show_source = false
+"#;
+    let (config, messages) = Config::from_toml(v1).unwrap();
+    assert!(messages.is_empty(), "{messages:?}");
+    assert_eq!(config.capture.mode, "apps");
+    assert_eq!(config.translate.threads, 3);
+    assert_eq!(config.overlay.font_px, 30);
+    assert!(!config.overlay.show_source);
+    assert_eq!(config.latency, Config::default().latency);
+    assert!(config.overlay.live_source);
+}
+
+#[test]
+fn translate_threads_zero_resolves_to_two_for_each_server() {
+    let mut config = Config::default();
+    assert_eq!(config.translate.server_threads(), 2);
+    config.translate.threads = 3;
+    assert_eq!(config.translate.server_threads(), 3);
+    config.translate.threads = 16;
+    assert_eq!(config.translate.server_threads(), 4);
+}
+
+#[test]
+fn latency_json_patches_round_trip_and_keep_unknown_keys() {
+    let (mut config, _) =
+        Config::from_toml("[latency]\nfuture_latency = \"keep\"\nmode = \"light\"").unwrap();
+    assert_eq!(config.latency.mode, "light");
+    let messages = config
+        .merge_patch(
+            json!({"latency": {"mode": "continuous", "split_long": false, "cap_tokens": 30},
+                            "overlay": {"live_source": false, "draft_display": "settled"}}),
+        )
+        .unwrap();
+    assert!(
+        messages.iter().all(|m| m.contains("unknown key preserved")),
+        "{messages:?}"
+    );
+    assert_eq!(config.latency.mode, "continuous");
+    assert!(!config.latency.split_long);
+    assert_eq!(config.latency.cap_tokens, 30);
+    assert!(!config.overlay.live_source);
+    assert_eq!(config.overlay.draft_display, "settled");
+    let toml = config.to_toml().unwrap();
+    assert!(toml.contains("future_latency"));
+    let (reloaded, _) = Config::from_toml(&toml).unwrap();
+    assert_eq!(reloaded, config);
+    let json_value = serde_json::to_value(&config).unwrap();
+    let (from_json, _) = Config::from_json(json_value).unwrap();
+    assert_eq!(from_json, config);
 }

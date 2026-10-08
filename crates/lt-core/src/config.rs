@@ -39,6 +39,7 @@ config_table!(Config {
     join: JoinConfig = JoinConfig::default(),
     translate: TranslateConfig = TranslateConfig::default(),
     overlay: OverlayConfig = OverlayConfig::default(),
+    latency: LatencyConfig = LatencyConfig::default(),
     hotkeys: HotkeysConfig = HotkeysConfig::default(),
     transcript: TranscriptConfig = TranscriptConfig::default(),
     logging: LoggingConfig = LoggingConfig::default(),
@@ -116,10 +117,35 @@ config_table!(OverlayConfig {
     expire_s: f32 = 8.0,
     panel_edge: String = "right".into(),
     panel_lines: u32 = 5,
+    live_source: bool = true,
+    draft_display: String = "hold2".into(),
     #[serde(skip_serializing_if = "Option::is_none")]
     bar_rect: Option<OverlayRect> = None,
     #[serde(skip_serializing_if = "Option::is_none")]
     panel_rect: Option<OverlayRect> = None,
+});
+config_table!(LatencyConfig {
+    mode: String = "auto".into(),
+    decode_interval_s: f32 = 0.5,
+    min_open_s: f32 = 1.0,
+    comma_min_tokens: u32 = 8,
+    stability: bool = true,
+    split_long: bool = true,
+    cap_tokens: u32 = 20,
+    draft_context_s: f32 = 1.5,
+    final_context_s: f32 = 10.0,
+    draft_min_chars: u32 = 3,
+    draft_grow_chars: u32 = 3,
+    draft_keep_back_words: u32 = 2,
+    draft_timeout_s: f32 = 3.0,
+    draft_engine: String = "lmt60".into(),
+    draft_server_url: String = String::new(),
+    low_priority: bool = true,
+    step_down: bool = true,
+    step_down_cpu_pct: f32 = 80.0,
+    step_up_cpu_pct: f32 = 65.0,
+    step_down_lag_s: f32 = 3.0,
+    auto_min_cores: u32 = 6,
 });
 config_table!(OverlayRect {
     monitor: String = String::new(),
@@ -145,6 +171,17 @@ config_table!(ModelsConfig {
     source: String = "huggingface".into(),
     dir: String = String::new(),
 });
+
+impl TranslateConfig {
+    /// Threads for each llama-server: the user value clamped to 1 to 4, or 2 when automatic.
+    pub fn server_threads(&self) -> u32 {
+        if self.threads == 0 {
+            2
+        } else {
+            self.threads.clamp(1, 4)
+        }
+    }
+}
 
 impl Config {
     /// A missing file is a first run and returns built-in defaults.
@@ -309,6 +346,29 @@ impl Config {
         number!(overlay, background, 0.0, 1.0);
         number!(overlay, expire_s, 3.0, 60.0);
         number!(overlay, panel_lines, 4, 6);
+        number!(latency, decode_interval_s, 0.3, 2.0);
+        number!(latency, min_open_s, 0.5, 3.0);
+        number!(latency, comma_min_tokens, 2, 20);
+        number!(latency, cap_tokens, 0, 60);
+        if (1..10).contains(&self.latency.cap_tokens) {
+            self.latency.cap_tokens = 10;
+            messages.push(
+                "latency.cap_tokens: values 1 to 9 raised to 10 (0 turns the cap off)".into(),
+            );
+        }
+        number!(latency, draft_context_s, 0.0, 5.0);
+        number!(latency, final_context_s, 0.0, 20.0);
+        number!(latency, draft_min_chars, 1, 10);
+        number!(latency, draft_grow_chars, 1, 20);
+        number!(latency, draft_keep_back_words, 0, 5);
+        number!(latency, draft_timeout_s, 1.0, 10.0);
+        number!(latency, step_down_cpu_pct, 50.0, 100.0);
+        let step_down_cpu = self.latency.step_down_cpu_pct;
+        number!(latency, step_up_cpu_pct, 30.0, step_down_cpu);
+        number!(latency, step_down_lag_s, 1.0, 10.0);
+        number!(latency, auto_min_cores, 2, 64);
+        choice!(latency, mode, &["auto", "continuous", "light", "off"]);
+        choice!(overlay, draft_display, &["hold2", "settled", "all"]);
         choice!(overlay, style, &["bar", "panel"]);
         choice!(overlay, panel_edge, &["left", "right"]);
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
@@ -320,6 +380,11 @@ impl Config {
                 "translate.engine",
                 &mut self.translate.engine,
                 &defaults.translate.engine,
+            ),
+            (
+                "latency.draft_engine",
+                &mut self.latency.draft_engine,
+                &defaults.latency.draft_engine,
             ),
         ] {
             if engine.trim().is_empty() {
@@ -379,7 +444,7 @@ impl Config {
             ($($name:ident),* $(,)?) => { $(unknown_fields(&self.$name.extra, stringify!($name), messages);)* };
         }
         table!(
-            capture, audio, vad, asr, filter, routing, join, translate, overlay, hotkeys,
+            capture, audio, vad, asr, filter, routing, join, translate, overlay, latency, hotkeys,
             transcript, logging, models
         );
         for (index, app) in self.capture.apps.iter().enumerate() {
@@ -403,7 +468,7 @@ impl Config {
             )* };
         }
         table!(
-            capture, audio, vad, asr, filter, routing, join, translate, overlay, hotkeys,
+            capture, audio, vad, asr, filter, routing, join, translate, overlay, latency, hotkeys,
             transcript, logging, models
         );
         if let Some(apps) = value
@@ -562,6 +627,14 @@ fn normalize_float(
         "vad.soft_cut_after_s" => (3.0, 20.0),
         "vad.soft_cut_prob" => (0.05, 0.9),
         "join.hold_window_s" => (0.2, 2.0),
+        "latency.decode_interval_s" => (0.3, 2.0),
+        "latency.min_open_s" => (0.5, 3.0),
+        "latency.draft_context_s" => (0.0, 5.0),
+        "latency.final_context_s" => (0.0, 20.0),
+        "latency.draft_timeout_s" => (1.0, 10.0),
+        "latency.step_down_cpu_pct" => (50.0, 100.0),
+        "latency.step_up_cpu_pct" => (30.0, 100.0),
+        "latency.step_down_lag_s" => (1.0, 10.0),
         "translate.temperature" | "overlay.background" => (0.0, 1.0),
         "translate.repeat_penalty" => (1.0, 1.3),
         "translate.timeout_s" => (2.0, 60.0),
@@ -591,6 +664,12 @@ fn integer_range(path: &str) -> (i64, i64) {
         "translate.queue_join_max_chars" => (20, 300),
         "overlay.font_px" => (18, 40),
         "overlay.panel_lines" => (4, 6),
+        "latency.comma_min_tokens" => (2, 20),
+        "latency.cap_tokens" => (0, 60),
+        "latency.draft_min_chars" => (1, 10),
+        "latency.draft_grow_chars" => (1, 20),
+        "latency.draft_keep_back_words" => (0, 5),
+        "latency.auto_min_cores" => (2, 64),
         _ => (0, i64::from(u32::MAX)),
     }
 }
