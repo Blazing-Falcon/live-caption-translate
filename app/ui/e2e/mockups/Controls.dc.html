@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Control window</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#8A5A12}a:hover{color:#6B4409}
+</style>
+</helmet>
+<div style="width: 900px; height: 620px; box-sizing: border-box; display: flex; flex-direction: column; background: #F7F7F5; font-family: 'IBM Plex Sans', 'Noto Sans SC', sans-serif; color: #1B1C1E; border: 1px solid #D9D9D4; border-radius: 8px; overflow: hidden">
+
+<div style="height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; border-bottom: 1px solid #E3E3DE; font-size: 13px; color: #55585D">
+<span>Live Translation</span>
+<span style="font-size: 12px; color: #8C8F94">[window controls]</span>
+</div>
+
+<div style="flex: 1; display: flex; min-height: 0">
+<nav style="width: 196px; flex-shrink: 0; box-sizing: border-box; padding: 16px 10px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid #E3E3DE">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button type="button" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+</sc-for>
+</nav>
+
+<main style="flex: 1; min-width: 0; box-sizing: border-box; padding: 24px 28px; display: flex; flex-direction: column; gap: 22px; overflow: auto">
+
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="{{dotStyle}}"></span>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; font-weight: 500">{{runTitle}}</span>
+<span style="font-size: 13px; color: #6B6E73">{{runSub}}</span>
+</div>
+</div>
+<button type="button" onClick="{{toggleRun}}" style="{{runBtnStyle}}">{{runBtn}}</button>
+</div>
+
+<sc-if value="{{isCapture}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: #6B6E73">LISTEN TO</h2>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{sources}}" as="s" hint-placeholder-count="2">
+<label style="{{s.style}}">
+<input type="radio" name="source" checked="{{s.on}}" onChange="{{s.pick}}" style="margin: 3px 0 0; accent-color: #B27318; width: 16px; height: 16px">
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 14px; font-weight: 500">{{s.label}}</span>
+<span style="font-size: 13px; color: #6B6E73">{{s.desc}}</span>
+</span>
+</label>
+</sc-for>
+</div>
+
+<sc-if value="{{isSystem}}" hint-placeholder-val="{{ true }}">
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #44474C">
+<span>Output device</span>
+<select style="font: inherit; font-size: 14px; height: 36px; padding: 0 10px; border: 1px solid #CFCFCA; border-radius: 6px; background: #FFFFFF; color: #1B1C1E; max-width: 360px">
+<option>Follow Windows default (Speakers, Realtek)</option>
+<option>Headphones (USB Audio)</option>
+</select>
+</label>
+</sc-if>
+
+<sc-if value="{{isApps}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; border: 1px solid #E3E3DE; border-radius: 8px; background: #FFFFFF; overflow: hidden">
+<div style="padding: 10px 14px; font-size: 12px; color: #6B6E73; border-bottom: 1px solid #EDEDE9">Apps playing sound now</div>
+<sc-for list="{{apps}}" as="a" hint-placeholder-count="4">
+<label style="display: flex; align-items: center; gap: 12px; padding: 0 14px; min-height: 44px; border-bottom: 1px solid #F0F0EC; font-size: 14px; cursor: pointer">
+<input type="checkbox" checked="{{a.on}}" onChange="{{a.toggle}}" style="accent-color: #B27318; width: 16px; height: 16px; margin: 0">
+<span style="flex: 1">{{a.name}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8C8F94">{{a.level}}</span>
+</label>
+</sc-for>
+<div style="padding: 10px 14px; font-size: 12px; color: #6B6E73">Picked apps are remembered and reconnect when they restart. Needs Windows 11.</div>
+</div>
+</sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{isOverlay}}" hint-placeholder-val="{{ false }}">
+<section style="display: flex; flex-direction: column; gap: 18px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: #6B6E73">OVERLAY</h2>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #44474C">
+<span>Style</span>
+<div style="display: flex; gap: 0; width: fit-content; border: 1px solid #CFCFCA; border-radius: 6px; overflow: hidden">
+<button type="button" style="font: inherit; font-size: 14px; padding: 0 14px; height: 36px; border: 0; background: #1B1C1E; color: #F7F7F5">Subtitle bar</button>
+<button type="button" style="font: inherit; font-size: 14px; padding: 0 14px; height: 36px; border: 0; border-left: 1px solid #CFCFCA; background: #FFFFFF; color: #1B1C1E">Caption panel</button>
+</div>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #44474C; max-width: 360px">
+<span>English text size · 26 px</span>
+<input type="range" min="18" max="40" value="26" style="accent-color: #B27318">
+</label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #44474C; max-width: 360px">
+<span>Background · 82%</span>
+<input type="range" min="0" max="100" value="82" style="accent-color: #B27318">
+</label>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 32px">
+<input type="checkbox" checked="{{ true }}" style="accent-color: #B27318; width: 16px; height: 16px; margin: 0">
+<span>Show the Chinese line above the English</span>
+</label>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; max-width: 520px; font-size: 13px">
+<span style="color: #44474C">Move or lock overlay</span><span style="font-family: 'IBM Plex Mono', monospace; color: #1B1C1E">Ctrl Shift L</span>
+<span style="color: #44474C">Show or hide overlay</span><span style="font-family: 'IBM Plex Mono', monospace; color: #1B1C1E">Ctrl Shift H</span>
+<span style="color: #44474C">Pause listening</span><span style="font-family: 'IBM Plex Mono', monospace; color: #1B1C1E">Ctrl Shift P</span>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isLang}}" hint-placeholder-val="{{ false }}">
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: #6B6E73">LANGUAGES</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; max-width: 520px; font-size: 14px">
+<span style="color: #44474C">Speech language</span><span>Chinese (Mandarin, Cantonese)</span>
+<span style="color: #44474C">Translate into</span><span>English</span>
+<span style="color: #44474C">English speech</span><span>Shown as heard</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #44474C">Also translate</span>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 36px"><input type="checkbox" style="accent-color: #B27318; width: 16px; height: 16px; margin: 0"><span>Japanese</span></label>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 36px"><input type="checkbox" style="accent-color: #B27318; width: 16px; height: 16px; margin: 0"><span>Korean</span></label>
+<span style="font-size: 13px; color: #6B6E73; max-width: 520px; line-height: 1.5">Off by default: misheard Chinese sometimes looks like these languages, and translating it gives confident nonsense.</span>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isPerf}}" hint-placeholder-val="{{ false }}">
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: #6B6E73">PERFORMANCE</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px"><span style="font-size: 12px; color: #6B6E73">Speech end to English</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px">1.8 s</span><span style="font-size: 12px; color: #6B6E73">median, last 5 min</span></div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px"><span style="font-size: 12px; color: #6B6E73">Waiting to translate</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px">0</span><span style="font-size: 12px; color: #6B6E73">skipped today: 3</span></div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px"><span style="font-size: 12px; color: #6B6E73">Memory</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px">2.6 GB</span><span style="font-size: 12px; color: #6B6E73">models loaded</span></div>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #44474C; max-width: 360px">
+<span>Translator threads</span>
+<select style="font: inherit; font-size: 14px; height: 36px; padding: 0 10px; border: 1px solid #CFCFCA; border-radius: 6px; background: #FFFFFF; color: #1B1C1E"><option>Automatic (3 of 4 cores)</option><option>2</option><option>4</option></select>
+</label>
+</section>
+</sc-if>
+
+</main>
+</div>
+
+<footer style="height: 34px; flex-shrink: 0; display: flex; align-items: center; gap: 18px; padding: 0 16px; border-top: 1px solid #E3E3DE; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6B6E73">
+<span>{{footer}}</span>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":900,"height":620}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { tab: 'capture', source: 'system', running: true, apps: { chrome: true, vlc: true, discord: false, spotify: false } };
+}
+renderVals() {
+const s = this.state;
+const tabBase = 'font: inherit; font-size: 14px; text-align: left; padding: 0 12px; height: 36px; border: 0; border-radius: 6px; cursor: pointer; ';
+const tabs = [['capture', 'Capture'], ['overlay', 'Overlay'], ['lang', 'Languages'], ['perf', 'Performance']].map(([id, label]) => ({
+label,
+pick: () => this.setState({ tab: id }),
+style: tabBase + (s.tab === id ? 'background: #E9E9E4; color: #1B1C1E; font-weight: 500' : 'background: transparent; color: #44474C')
+}));
+const srcBase = 'display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 8px; cursor: pointer; ';
+const sources = [
+['system', 'Whole system', 'Everything playing on one output device'],
+['apps', 'Selected apps', 'Only the apps you tick, mixed together']
+].map(([id, label, desc]) => ({
+label, desc, on: s.source === id,
+pick: () => this.setState({ source: id }),
+style: srcBase + (s.source === id ? 'background: #FFFFFF; border: 1px solid #B27318' : 'background: #FFFFFF; border: 1px solid #E3E3DE')
+}));
+const names = { chrome: ['Google Chrome', '-18 dB'], vlc: ['VLC media player', '-24 dB'], discord: ['Discord', '-40 dB'], spotify: ['Spotify', 'silent'] };
+const apps = Object.keys(names).map((k) => ({
+name: names[k][0], level: names[k][1], on: s.apps[k],
+toggle: () => this.setState({ apps: { ...s.apps, [k]: !s.apps[k] } })
+}));
+const picked = Object.keys(names).filter((k) => s.apps[k]).map((k) => names[k][0].split(' ')[0]);
+const where = s.source === 'system' ? 'Speakers (Realtek)' : (picked.length ? picked.join(', ') : 'no apps picked');
+return {
+tabs, sources, apps,
+isCapture: s.tab === 'capture', isOverlay: s.tab === 'overlay', isLang: s.tab === 'lang', isPerf: s.tab === 'perf',
+isSystem: s.source === 'system', isApps: s.source === 'apps',
+runTitle: s.running ? 'Listening' : 'Paused',
+runSub: s.running ? 'Chinese to English · ' + where : 'Captions are off. Models stay loaded.',
+runBtn: s.running ? 'Pause' : 'Start',
+toggleRun: () => this.setState({ running: !s.running }),
+dotStyle: 'width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; ' + (s.running ? 'background: #B27318' : 'background: transparent; border: 1.5px solid #8C8F94; box-sizing: border-box'),
+runBtnStyle: 'font: inherit; font-size: 14px; font-weight: 500; min-width: 88px; height: 36px; padding: 0 16px; border-radius: 6px; cursor: pointer; ' + (s.running ? 'background: #FFFFFF; color: #1B1C1E; border: 1px solid #CFCFCA' : 'background: #1B1C1E; color: #F7F7F5; border: 1px solid #1B1C1E'),
+footer: s.running ? 'speech→English 1.8 s median · queue 0 · CPU 41%' : 'paused'
+};
+}
+}
+</script>
+</body>
+</html>
