@@ -288,6 +288,26 @@ export function transcriptPatch(enabled: boolean): ConfigPatch {
   return { transcript: { enabled } };
 }
 
+export function latencyPatch(values: DeepPartial<Config["latency"]>): ConfigPatch {
+  return { latency: values };
+}
+
+export const CAPTION_SPEEDS: readonly { value: Config["latency"]["mode"]; label: string; help: string }[] = [
+  { value: "auto", label: "Automatic (recommended)", help: "Uses Continuous on PCs with 6 or more cores, Light on smaller PCs." },
+  { value: "continuous", label: "Continuous", help: "English follows the speaker within about a second. Uses the most CPU." },
+  { value: "light", label: "Light", help: "Translates each phrase as soon as it ends. Less CPU, no draft text." },
+  { value: "off", label: "Wait for full sentences", help: "Translates after the speaker pauses, like version 1." },
+];
+
+export const DRAFT_DISPLAYS: readonly { value: Config["overlay"]["draft_display"]; label: string }[] = [
+  { value: "hold2", label: "Hold back the newest words" },
+  { value: "settled", label: "Show only settled words" },
+  { value: "all", label: "Show everything" },
+];
+
+export const DRAFT_DISPLAY_HELP =
+  "Drafts are quick translations shown in a dimmer color until the final translation replaces them.";
+
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
   return { models: { source } };
 }

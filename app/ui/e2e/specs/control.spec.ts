@@ -3,9 +3,9 @@ import { calls, emitNamed, open } from "./support";
 
 const MB = 1024 * 1024;
 const MISSING = [
-  { id: "vad", name: "Voice detection", bytes_total: 2 * MB, bytes_done: 2 * MB, state: "ready" },
-  { id: "asr", name: "Speech recognition", bytes_total: 239 * MB, bytes_done: 0, state: "missing" },
-  { id: "mt", name: "Translation", bytes_total: 1105 * MB, bytes_done: 0, state: "missing" },
+  { id: "vad", name: "Voice detection", bytes_total: 2 * MB, bytes_done: 2 * MB, optional: false, recommended: false, state: "ready" },
+  { id: "asr", name: "Speech recognition", bytes_total: 239 * MB, bytes_done: 0, optional: false, recommended: false, state: "missing" },
+  { id: "mt", name: "Translation", bytes_total: 1105 * MB, bytes_done: 0, optional: false, recommended: false, state: "missing" },
 ] as const;
 
 const expectPatch = (page: Page, patch: unknown): Promise<void> =>
@@ -132,7 +132,7 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await flip(page.getByRole("checkbox", { name: "Japanese" }), true);
     await expectPatch(page, { routing: { translate_other: ["yue", "ja"] } });
     await page.getByRole("tab", { name: "Performance" }).click();
-    await expect(page.getByTestId("stat-median")).toHaveText("1.8 s");
+    await expect(page.getByTestId("stat-first")).toHaveText("—");
     await page.getByRole("combobox", { name: "Translator threads" }).selectOption("3");
     await expectPatch(page, { translate: { threads: 3 } });
     await flip(page.getByRole("checkbox", { name: /Save a transcript/ }), false);

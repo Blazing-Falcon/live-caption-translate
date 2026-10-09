@@ -36,6 +36,7 @@ describe("command wrappers", () => {
     await api.pauseListening();
     await api.modelsStatus();
     await api.modelsDownload("modelscope");
+    await api.modelsDownload("huggingface", [api.DRAFT_MODEL_ID]);
     await api.modelsPause();
     await api.modelsUseExisting("D:\\models");
     await api.listAudioApps();
@@ -55,6 +56,7 @@ describe("command wrappers", () => {
       { cmd: "pause_listening", args: {} },
       { cmd: "models_status", args: {} },
       { cmd: "models_download", args: { source: "modelscope" } },
+      { cmd: "models_download", args: { source: "huggingface", ids: ["lmt-60-0.6b-q4_k_m"] } },
       { cmd: "models_pause", args: {} },
       { cmd: "models_use_existing", args: { folder: "D:\\models" } },
       { cmd: "list_audio_apps", args: {} },

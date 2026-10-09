@@ -211,9 +211,9 @@ test.describe("screenshots (browser simulation)", () => {
       await open(page, "control", {
         state: { models_ready: false, listening: "paused" },
         models: [
-          { id: "vad", name: "Voice detection", bytes_total: 2 * MB, bytes_done: 2 * MB, state: "ready" },
-          { id: "asr", name: "Speech recognition", bytes_total: 239 * MB, bytes_done: 152 * MB, state: "downloading" },
-          { id: "mt", name: "Translation", bytes_total: 1106 * MB, bytes_done: 0, state: "missing" },
+          { id: "vad", name: "Voice detection", bytes_total: 2 * MB, bytes_done: 2 * MB, optional: false, recommended: false, state: "ready" },
+          { id: "asr", name: "Speech recognition", bytes_total: 239 * MB, bytes_done: 152 * MB, optional: false, recommended: false, state: "downloading" },
+          { id: "mt", name: "Translation", bytes_total: 1106 * MB, bytes_done: 0, optional: false, recommended: false, state: "missing" },
         ],
       });
       await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "64");

@@ -5,8 +5,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import { createSession, EVENTS, type Session } from "../src/lib/events";
 import ControlApp from "../src/control/ControlApp.svelte";
 import { FakeBackend, MISSING_MODELS, READY_MODELS } from "./backend";
-import { byRole, cleanup, q, render, setValue, settle, text } from "./dom";
-import { FakeClock, testState } from "./helpers";
+import { accessibleName, byRole, cleanup, q, render, setValue, settle, text } from "./dom";
+import { FakeClock, STATS, testState } from "./helpers";
 
 const sessions: Session[] = [];
 
@@ -282,7 +282,7 @@ describe("Overlay page", () => {
   it("shows panel options only for the panel style", async () => {
     const { root, backend } = await open();
     await go(root, "Overlay");
-    expect(root.querySelector("select")).toBeNull();
+    expect([...root.querySelectorAll("select")].map(accessibleName)).toEqual(["Draft text"]);
     byRole(root, "radio", "Caption panel").click();
     await settle();
     setValue(byRole(root, "combobox", "Lines kept in the panel") as HTMLSelectElement, "6", ["change"]);
@@ -363,11 +363,13 @@ describe("Languages page", () => {
 });
 
 describe("Performance page", () => {
-  it("shows real stats with the 07 labels", async () => {
-    const { root } = await open();
+  it("shows real stats with the v2 labels", async () => {
+    const { root } = await open((b) => {
+      b.stats = { ...STATS, word_first_p50_ms: 1800, word_final_p50_ms: 1800 };
+    });
     await go(root, "Performance");
     expect(text(q(root, ".stat-grid"))).toBe(
-      "Speech end to English 1.8 s median, last 50 lines Waiting to translate 1 skipped this session: 3 Memory 1.9 GB CPU 41%, app and translator",
+      "Word to first English 1.8 s median, last minute Word to final English 1.8 s median, last minute Waiting to translate 1 skipped this session: 3 Memory 1.9 GB CPU 41%, app and translator",
     );
   });
 
@@ -376,7 +378,7 @@ describe("Performance page", () => {
       b.failures.set("get_stats", "No stats yet.");
     });
     await go(root, "Performance");
-    expect(text(q(root, '[data-testid="stat-median"]'))).toBe("—");
+    expect(text(q(root, '[data-testid="stat-first"]'))).toBe("—");
     expect(text(q(root, '[data-testid="footer"]'))).toBe("speech→English — median · queue — · CPU —");
   });
 
@@ -432,9 +434,9 @@ describe("First run", () => {
 
     const mb = 1024 * 1024;
     const progress = (state: "downloading" | "paused" | "corrupt" | "verifying" | "ready", done = 152 * mb) => [
-      { id: "vad", name: "Voice detection", bytes_total: 2 * mb, bytes_done: 2 * mb, state: "ready" as const },
-      { id: "asr", name: "Speech recognition", bytes_total: 239 * mb, bytes_done: done, state },
-      { id: "mt", name: "Translation", bytes_total: 1105 * mb, bytes_done: 0, state: "missing" as const },
+      { id: "vad", name: "Voice detection", bytes_total: 2 * mb, bytes_done: 2 * mb, optional: false, recommended: false, state: "ready" as const },
+      { id: "asr", name: "Speech recognition", bytes_total: 239 * mb, bytes_done: done, optional: false, recommended: false, state },
+      { id: "mt", name: "Translation", bytes_total: 1105 * mb, bytes_done: 0, optional: false, recommended: false, state: "missing" as const },
     ];
     await emit(EVENTS.modelsProgress, progress("downloading"));
     await settle();
@@ -456,9 +458,9 @@ describe("First run", () => {
     const { root, backend } = await open(firstRun);
     const mb = 1024 * 1024;
     await emit(EVENTS.modelsProgress, [
-      { id: "vad", name: "Voice detection", bytes_total: 2 * mb, bytes_done: 2 * mb, state: "ready" },
-      { id: "asr", name: "Speech recognition", bytes_total: 239 * mb, bytes_done: 239 * mb, state: "verifying" },
-      { id: "mt", name: "Translation", bytes_total: 1105 * mb, bytes_done: 1105 * mb, state: "corrupt" },
+      { id: "vad", name: "Voice detection", bytes_total: 2 * mb, bytes_done: 2 * mb, optional: false, recommended: false, state: "ready" },
+      { id: "asr", name: "Speech recognition", bytes_total: 239 * mb, bytes_done: 239 * mb, optional: false, recommended: false, state: "verifying" },
+      { id: "mt", name: "Translation", bytes_total: 1105 * mb, bytes_done: 1105 * mb, optional: false, recommended: false, state: "corrupt" },
     ]);
     await settle();
     const rows = [...root.querySelectorAll(".model")].map((row) => text(row));
@@ -473,9 +475,9 @@ describe("First run", () => {
     const { root, backend } = await open(firstRun);
     const mb = 1024 * 1024;
     const ready = [
-      { id: "vad", name: "Voice detection", bytes_total: 2 * mb, bytes_done: 2 * mb, state: "ready" as const },
-      { id: "asr", name: "Speech recognition", bytes_total: 239 * mb, bytes_done: 239 * mb, state: "ready" as const },
-      { id: "mt", name: "Translation", bytes_total: 1105 * mb, bytes_done: 1105 * mb, state: "ready" as const },
+      { id: "vad", name: "Voice detection", bytes_total: 2 * mb, bytes_done: 2 * mb, optional: false, recommended: false, state: "ready" as const },
+      { id: "asr", name: "Speech recognition", bytes_total: 239 * mb, bytes_done: 239 * mb, optional: false, recommended: false, state: "ready" as const },
+      { id: "mt", name: "Translation", bytes_total: 1105 * mb, bytes_done: 1105 * mb, optional: false, recommended: false, state: "ready" as const },
     ];
     await emit(EVENTS.modelsProgress, ready);
     await settle();

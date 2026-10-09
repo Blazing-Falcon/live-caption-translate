@@ -9,8 +9,8 @@ import type { ModelStatus } from "../src/lib/types";
 import { FakeClock, STATS, asrFinal, final, testConfig, testState } from "./helpers";
 
 const MODELS: ModelStatus[] = [
-  { id: "vad", name: "Voice detection", bytes_total: 2_000_000, bytes_done: 2_000_000, state: "ready" },
-  { id: "asr", name: "Speech recognition", bytes_total: 239_000_000, bytes_done: 0, state: "missing" },
+  { id: "vad", name: "Voice detection", bytes_total: 2_000_000, bytes_done: 2_000_000, optional: false, recommended: false, state: "ready" },
+  { id: "asr", name: "Speech recognition", bytes_total: 239_000_000, bytes_done: 0, optional: false, recommended: false, state: "missing" },
 ];
 
 interface Backend {

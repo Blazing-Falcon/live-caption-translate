@@ -5,6 +5,8 @@ import {
   formatMemory,
   formatSeconds,
   levelText,
+  modeStatusText,
+  modelTitle,
   modelsAllReady,
   modelsPercent,
   totalCpu,
@@ -37,10 +39,40 @@ describe("format", () => {
     expect(levelText({ peak: 0.5, active: false })).toBe("not playing");
   });
 
-  it("sums CPU and memory across app and translator", () => {
+  it("sums CPU and memory across app, translator and the draft server", () => {
     expect(totalCpu(STATS)).toBe(41);
-    expect(totalCpu({ cpu_app_pct: 80, cpu_translator_pct: 150 })).toBe(230);
+    expect(totalCpu({ cpu_app_pct: 80, cpu_translator_pct: 150, cpu_draft_pct: 0 })).toBe(230);
+    expect(totalCpu({ cpu_app_pct: 2.5, cpu_translator_pct: 38.4, cpu_draft_pct: 55 })).toBe(96);
     expect(totalMemoryMb(STATS)).toBe(1900);
+    expect(totalMemoryMb({ ...STATS, rss_draft_mb: 610 })).toBe(2510);
+  });
+
+  it("words the Performance status line for every mode and reason", () => {
+    expect(modeStatusText("continuous", null)).toBe("Now: Continuous");
+    expect(modeStatusText("continuous", "auto")).toBe("Now: Continuous");
+    expect(modeStatusText("continuous", "user")).toBe("Now: Continuous");
+    expect(modeStatusText("light", null)).toBe("Now: Light");
+    expect(modeStatusText("light", "auto")).toBe("Now: Light");
+    expect(modeStatusText("light", "user")).toBe("Now: Light");
+    expect(modeStatusText("light", "cpu")).toBe("Now: Light, because the PC is busy");
+    expect(modeStatusText("light", "lag")).toBe("Now: Light, because translation fell behind");
+    expect(modeStatusText("light", "draft_unavailable")).toBe("Now: Light, because the draft model is not downloaded");
+    expect(modeStatusText("off", null)).toBe("Now: Off");
+    expect(modeStatusText("off", "user")).toBe("Now: Off");
+  });
+
+  it("names the draft model for the first-run list and ignores optional models when deciding readiness", () => {
+    expect(modelTitle({ id: "lmt-60-0.6b-q4_k_m", name: "Faster captions (LMT-60 0.6B, Q4_K_M)" })).toBe(
+      "Faster captions (LMT-60 0.6B, 480 MB)",
+    );
+    expect(modelTitle({ id: "vad", name: "Voice detection" })).toBe("Voice detection");
+    const model = (id: string, state: "ready" | "missing", optional: boolean) => ({
+      id, name: id, bytes_total: 1, bytes_done: 1, state, optional, recommended: optional,
+    });
+    expect(modelsAllReady([model("a", "ready", false), model("draft", "missing", true)])).toBe(true);
+    expect(modelsAllReady([model("a", "missing", false), model("draft", "ready", true)])).toBe(false);
+    expect(modelsAllReady([model("draft", "ready", true)])).toBe(false);
+    expect(modelsAllReady(null)).toBe(false);
   });
 
   it("builds the one-line footer", () => {
@@ -54,7 +86,7 @@ describe("format", () => {
     expect(modelsPercent({ bytes_done: 152, bytes_total: 239 })).toBe(64);
     expect(modelsPercent({ bytes_done: 5, bytes_total: 0 })).toBe(0);
     expect(modelsPercent({ bytes_done: 500, bytes_total: 100 })).toBe(100);
-    const row = { id: "a", name: "A", bytes_total: 1, bytes_done: 1, state: "ready" as const };
+    const row = { id: "a", name: "A", bytes_total: 1, bytes_done: 1, state: "ready" as const, optional: false, recommended: false };
     expect(modelsAllReady([row])).toBe(true);
     expect(modelsAllReady([row, { ...row, state: "corrupt" }])).toBe(false);
     expect(modelsAllReady([])).toBe(false);

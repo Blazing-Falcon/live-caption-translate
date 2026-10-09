@@ -5,6 +5,8 @@
   import { reconcileChecked, reconcileRadios } from "../../lib/reconcile";
   import {
     HOTKEY_ACTIONS,
+    DRAFT_DISPLAYS,
+    DRAFT_DISPLAY_HELP,
     LOW_BACKGROUND_WARNING,
     OVERLAY_LIMITS,
     hotkeyPatch,
@@ -69,6 +71,23 @@
     const input = event.currentTarget as HTMLInputElement;
     await session.save("overlay.show_source", overlayPatch({ show_source: input.checked }));
     reconcileChecked(input, get(liveConfig)?.overlay.show_source ?? overlay.show_source);
+  }
+
+  async function toggleLiveSource(event: Event): Promise<void> {
+    const input = event.currentTarget as HTMLInputElement;
+    await session.save("overlay.live_source", overlayPatch({ live_source: input.checked }));
+    reconcileChecked(input, get(liveConfig)?.overlay.live_source ?? overlay.live_source);
+  }
+
+  async function chooseDraftDisplay(event: Event): Promise<void> {
+    const select = event.currentTarget as HTMLSelectElement;
+    const chosen = DRAFT_DISPLAYS.find((option) => option.value === select.value);
+    if (!chosen) {
+      select.value = overlay.draft_display;
+      return;
+    }
+    const saved = await session.save("overlay.draft_display", overlayPatch({ draft_display: chosen.value }));
+    if (!saved) select.value = overlay.draft_display;
   }
 
   async function toggleVisible(event: Event): Promise<void> {
@@ -155,6 +174,23 @@
     <input type="checkbox" checked={overlay.show_source} onchange={toggleSource} />
     <span>Show the Chinese line above the English</span>
   </label>
+
+  <label class="check-row">
+    <input type="checkbox" checked={overlay.live_source} onchange={toggleLiveSource} />
+    <span>Show Chinese while someone is speaking</span>
+  </label>
+
+  <div class="stack">
+    <label class="field">
+      <span>Draft text</span>
+      <select class="select" value={overlay.draft_display} aria-describedby="draft-display-help" onchange={chooseDraftDisplay}>
+        {#each DRAFT_DISPLAYS as option (option.value)}
+          <option value={option.value}>{option.label}</option>
+        {/each}
+      </select>
+    </label>
+    <p id="draft-display-help" class="help small">{DRAFT_DISPLAY_HELP}</p>
+  </div>
 
   <label class="field">
     <span>Clear captions after {expireS} s without speech</span>

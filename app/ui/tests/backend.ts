@@ -12,10 +12,21 @@ const PNG_PIXEL =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 export const READY_MODELS: ModelStatus[] = [
-  { id: "vad", name: "Voice detection", bytes_total: 2 * 1024 ** 2, bytes_done: 2 * 1024 ** 2, state: "ready" },
-  { id: "asr", name: "Speech recognition", bytes_total: 239 * 1024 ** 2, bytes_done: 239 * 1024 ** 2, state: "ready" },
-  { id: "mt", name: "Translation", bytes_total: 1.08 * 1024 ** 3, bytes_done: 1.08 * 1024 ** 3, state: "ready" },
+  { id: "vad", name: "Voice detection", bytes_total: 2 * 1024 ** 2, bytes_done: 2 * 1024 ** 2, optional: false, recommended: false, state: "ready" },
+  { id: "asr", name: "Speech recognition", bytes_total: 239 * 1024 ** 2, bytes_done: 239 * 1024 ** 2, optional: false, recommended: false, state: "ready" },
+  { id: "mt", name: "Translation", bytes_total: 1.08 * 1024 ** 3, bytes_done: 1.08 * 1024 ** 3, optional: false, recommended: false, state: "ready" },
 ];
+
+/** The optional draft model as models_status reports it before it is downloaded. */
+export const DRAFT_MODEL: ModelStatus = {
+  id: "lmt-60-0.6b-q4_k_m",
+  name: "Faster captions (LMT-60 0.6B, Q4_K_M)",
+  bytes_total: 484_220_000,
+  bytes_done: 0,
+  state: "missing",
+  optional: true,
+  recommended: false,
+};
 
 export const MISSING_MODELS: ModelStatus[] = READY_MODELS.map((model, index) => ({
   ...model,

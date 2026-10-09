@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { test, type Page } from "@playwright/test";
 import type { PipelineEvent } from "../../src/lib/types";
-import { NOW, emitAll, emitEvent, open, placeBar, placePanel } from "./support";
+import { DRAFT, NOW, READY, STATS_V2, emitAll, emitEvent, open, placeBar, placePanel } from "./support";
 
 /**
  * Look for the owner: the bar and the panel with a live line, drafts and finals.
@@ -87,6 +87,42 @@ test.describe("v2 screenshots (browser simulation)", () => {
     }
   }
 
+  const CONTROL = { width: 900, height: 780 };
+  const CONTROL_SHOTS = [
+    ["performance-light", "light", "Performance page, Continuous, light theme"],
+    ["performance-dark", "dark", "Performance page, Continuous, dark theme"],
+    ["performance-draft-unavailable-light", "light", "Performance page, Light because the draft model is not downloaded"],
+    ["overlay-page-light", "light", "Overlay page with Show Chinese while someone is speaking and Draft text"],
+    ["first-run-optional-light", "light", "First run on a smaller PC: the draft model is optional"],
+  ] as const;
+
+  for (const [name, scheme] of CONTROL_SHOTS) {
+    test(`control window: ${name}`, async ({ browser }) => {
+      const ctx = await browser.newContext({ viewport: CONTROL, deviceScaleFactor: 1, reducedMotion: "reduce", colorScheme: scheme, locale: "en-US" });
+      const page = await ctx.newPage();
+      if (name === "first-run-optional-light") {
+        const missing = READY.map((model, index) => (index === 0 ? model : { ...model, bytes_done: 0, state: "missing" as const }));
+        await open(page, "control", { models: [...missing, DRAFT], state: { models_ready: false, listening: "paused" } });
+        await page.waitForSelector(".model");
+      } else if (name === "overlay-page-light") {
+        await open(page, "control", { config: { capture: { mode: "system" } }, stats: STATS_V2 });
+        await page.getByRole("tab", { name: "Overlay" }).click();
+        await page.waitForSelector("#draft-display-help");
+      } else {
+        const unavailable = name === "performance-draft-unavailable-light";
+        await open(page, "control", {
+          config: { capture: { mode: "system" } },
+          stats: unavailable ? { ...STATS_V2, mode: "light", mode_reason: "draft_unavailable", cpu_draft_pct: 0, rss_draft_mb: 0, word_first_p50_ms: null } : STATS_V2,
+          models: unavailable ? [...READY, DRAFT] : [...READY, { ...DRAFT, state: "ready", bytes_done: DRAFT.bytes_total }],
+        });
+        await page.getByRole("tab", { name: "Performance" }).click();
+        await page.waitForSelector('[data-testid="mode-status"]');
+      }
+      await page.screenshot({ path: join(OUT, `${name}.png`), animations: "disabled" });
+      await ctx.close();
+    });
+  }
+
   test("writes an index of the v2 screenshots", async () => {
     writeFileSync(
       join(OUT, "README.txt"),
@@ -97,6 +133,7 @@ test.describe("v2 screenshots (browser simulation)", () => {
         "Regenerate: npm --prefix app/ui run e2e -- screenshots-v2.spec.ts",
         "",
         ...["bar", "panel"].flatMap((style) => SCENES.map((item) => `${style}-${item.name}.png: ${item.title}`)),
+        ...CONTROL_SHOTS.map(([name, , title]) => `${name}.png: ${title}`),
         "",
       ].join("\n"),
     );

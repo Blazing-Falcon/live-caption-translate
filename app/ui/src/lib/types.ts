@@ -137,6 +137,10 @@ export interface ModelStatus {
   bytes_total: number;
   bytes_done: number;
   state: ModelState;
+  /** Not needed to listen (the draft model). */
+  optional: boolean;
+  /** Optional and recommended for this PC: included in the first-run download. */
+  recommended: boolean;
 }
 
 /** Payload of `models://progress`: the same rows as models_status. */
