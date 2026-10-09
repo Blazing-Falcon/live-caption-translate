@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { Page } from "@playwright/test";
 import type { Boot } from "../harness/boot";
-import type { PipelineEvent } from "../../src/lib/types";
+import type { CutReason, PipelineEvent } from "../../src/lib/types";
 
 export const SCREENSHOTS = fileURLToPath(new URL("../../test-results/screenshots/", import.meta.url));
 export const MOCKUPS = fileURLToPath(new URL("../mockups/", import.meta.url));
@@ -71,9 +71,14 @@ export async function placePanel(page: Page): Promise<void> {
 }
 
 export const NOW = {
-  asr: (id: number, text: string, cls: "chinese" | "mixed" | "english" | "other" = "chinese", lang: string | null = "zh"): PipelineEvent => ({
-    type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300, cut: "pause",
+  asr: (id: number, text: string, cls: "chinese" | "mixed" | "english" | "other" = "chinese", lang: string | null = "zh", cut: CutReason = "pause"): PipelineEvent => ({
+    type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300, cut,
   }),
+  partial: (id: number, text: string, cls: "chinese" | "mixed" | "english" | "other" = "chinese"): PipelineEvent => ({
+    type: "asr_partial", id, text, class: cls, end_ms: 1000,
+  }),
+  draft: (id: number, text: string, rev = 1): PipelineEvent => ({ type: "translation_draft", id, rev, text, end_ms: 1000 }),
+  skipped: (id: number): PipelineEvent => ({ type: "skipped", id, reason: "catch_up" }),
   delta: (id: number, text_so_far: string): PipelineEvent => ({ type: "translation_delta", id, text_so_far }),
   final: (id: number, text: string): PipelineEvent => ({
     type: "translation_final", id, text,

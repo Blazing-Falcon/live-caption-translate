@@ -32,6 +32,7 @@
   --focus-width: 2px;
 
   --slide-ms: 120ms;
+  --recolor-ms: 120ms;
   --fade-ms: 200ms;
   --caret-ms: 1000ms;
 
@@ -43,6 +44,7 @@
   --ov-text-secondary: #c9cbcf;
   --ov-meta: #9a9da3;
   --ov-chip-text: #b4b7bc;
+  --ov-draft: #b4b7bc;
   --ov-pending: #6f7278;
   --ov-accent: #e3a33b;
   --ov-warning: #e8b866;

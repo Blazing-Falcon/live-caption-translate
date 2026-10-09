@@ -8,6 +8,7 @@
     fadingIds?: ReadonlySet<number>;
     status?: StatusLine | null;
     showSource?: boolean;
+    liveSource?: boolean;
     panelLines?: number;
     headerText?: string;
     listening?: boolean;
@@ -21,6 +22,7 @@
     fadingIds = new Set<number>(),
     status = null,
     showSource = true,
+    liveSource = true,
     panelLines = 5,
     headerText = "",
     listening = true,
@@ -29,7 +31,7 @@
     onsettings,
   }: Props = $props();
 
-  const shown = $derived(visibleLines(lines, "panel", panelLines));
+  const shown = $derived(visibleLines(lines, "panel", panelLines, liveSource));
 </script>
 
 <section class="panel" class:reveal aria-label="Live captions" data-testid="caption-panel">
@@ -60,6 +62,7 @@
         <CaptionLine
           {line}
           {showSource}
+          {liveSource}
           variant="panel"
           age={shown.length - 1 - index}
           fading={fadingIds.has(line.id)}

@@ -52,6 +52,7 @@
         fadingIds={$captions.fadingIds}
         status={$captions.status}
         showSource={$config.overlay.show_source}
+        liveSource={$config.overlay.live_source}
         panelLines={$config.overlay.panel_lines}
         {headerText}
         {listening}
@@ -66,6 +67,7 @@
           fadingIds={$captions.fadingIds}
           status={$captions.status}
           showSource={$config.overlay.show_source}
+          liveSource={$config.overlay.live_source}
         />
       </div>
     {/if}

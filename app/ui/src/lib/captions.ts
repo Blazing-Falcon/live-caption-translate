@@ -210,9 +210,19 @@ export function ageOpacity(style: OverlayStyle, age: number): number {
   return steps[Math.min(Math.max(age, 0), steps.length - 1)] ?? 1;
 }
 
-export function visibleLines(lines: readonly CaptionLine[], style: OverlayStyle, panelLines: number): CaptionLine[] {
+/** A live line with nothing to show yet (Chinese hidden, no draft) takes no place and no space. */
+export function isHiddenLive(line: CaptionLine, liveSource: boolean): boolean {
+  return line.state === "live" && !liveSource && line.shown === "";
+}
+
+export function visibleLines(
+  lines: readonly CaptionLine[],
+  style: OverlayStyle,
+  panelLines: number,
+  liveSource = true,
+): CaptionLine[] {
   const count = style === "bar" ? 2 : Math.min(6, Math.max(4, Math.round(panelLines)));
-  return lines.slice(-count);
+  return lines.filter((line) => !isHiddenLive(line, liveSource)).slice(-count);
 }
 
 interface AppSlice {

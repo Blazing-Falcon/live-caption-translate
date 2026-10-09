@@ -8,11 +8,12 @@
     fadingIds?: ReadonlySet<number>;
     status?: StatusLine | null;
     showSource?: boolean;
+    liveSource?: boolean;
   }
 
-  let { lines, fadingIds = new Set<number>(), status = null, showSource = true }: Props = $props();
+  let { lines, fadingIds = new Set<number>(), status = null, showSource = true, liveSource = true }: Props = $props();
 
-  const shown = $derived(visibleLines(lines, "bar", 2));
+  const shown = $derived(visibleLines(lines, "bar", 2, liveSource));
 </script>
 
 {#if status || shown.length > 0}
@@ -24,6 +25,7 @@
         <CaptionLine
           {line}
           {showSource}
+          {liveSource}
           variant="bar"
           age={shown.length - 1 - index}
           fading={fadingIds.has(line.id)}
