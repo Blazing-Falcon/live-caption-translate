@@ -231,3 +231,139 @@ fn draft_sentences_against_configured_llama_server() {
     );
     assert_eq!(prefix_kept, 40);
 }
+
+/// Acceptance at the process level: the app keeps the final server running and starts the
+/// draft server only while Continuous mode is wanted. Ten mode switches leave exactly the
+/// expected `llama-server` processes, all below normal priority, and none after the stop.
+#[cfg(windows)]
+#[test]
+fn mode_switches_leave_exactly_the_expected_servers() {
+    use lt_llm::supervisor::ServerRole;
+    use std::sync::atomic::Ordering;
+    use windows_sys::Win32::{
+        Foundation::CloseHandle,
+        System::Threading::{
+            GetExitCodeProcess, GetPriorityClass, OpenProcess, BELOW_NORMAL_PRIORITY_CLASS,
+            PROCESS_QUERY_LIMITED_INFORMATION,
+        },
+    };
+    const STILL_ACTIVE: u32 = 259;
+
+    fn priority_if_alive(pid: u32) -> Option<u32> {
+        if pid == 0 {
+            return None;
+        }
+        // SAFETY: plain Win32 queries on a handle opened and closed here.
+        unsafe {
+            let handle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid);
+            if handle.is_null() {
+                return None;
+            }
+            let mut code = 0_u32;
+            let alive = GetExitCodeProcess(handle, &mut code) != 0 && code == STILL_ACTIVE;
+            let class = GetPriorityClass(handle);
+            CloseHandle(handle);
+            alive.then_some(class)
+        }
+    }
+
+    let (Some(binary), Some(draft_model)) = (
+        std::env::var_os("LT_LLAMA_SERVER"),
+        std::env::var_os("LT_DRAFT_MODEL"),
+    ) else {
+        eprintln!("Skipping mode switches: LT_LLAMA_SERVER or LT_DRAFT_MODEL is unset");
+        return;
+    };
+    let workspace = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let final_model = workspace.join("models/hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf");
+    let config = TranslateConfig::default();
+    let options = |role, model: PathBuf| {
+        ServerOptions::new(PathBuf::from(&binary), model, &config, 8)
+            .with_role(role)
+            .with_below_normal(true)
+    };
+    let mut final_server =
+        Supervisor::start(options(ServerRole::Final, final_model), EventBus::default()).unwrap();
+    final_server.wait_ready(Duration::from_secs(70)).unwrap();
+    let final_pid = final_server.child_pid();
+    let mut draft: Option<(Supervisor, Arc<std::sync::atomic::AtomicU32>)> = None;
+    let mut seen_draft_pids = Vec::new();
+    let modes = [
+        "continuous",
+        "light",
+        "off",
+        "continuous",
+        "continuous",
+        "light",
+        "continuous",
+        "off",
+        "light",
+        "continuous",
+    ];
+    for mode in modes {
+        let wants_draft = mode == "continuous";
+        match (wants_draft, draft.is_some()) {
+            (true, false) => {
+                let server = Supervisor::start(
+                    options(ServerRole::Draft, PathBuf::from(&draft_model)),
+                    EventBus::default(),
+                )
+                .unwrap();
+                server.wait_ready(Duration::from_secs(70)).unwrap();
+                let pid = server.child_pid();
+                seen_draft_pids.push(pid.load(Ordering::Acquire));
+                draft = Some((server, pid));
+            }
+            (false, true) => {
+                let (mut server, _) = draft.take().unwrap();
+                server.stop().unwrap();
+            }
+            _ => {}
+        }
+        let final_class = priority_if_alive(final_pid.load(Ordering::Acquire));
+        assert_eq!(
+            final_class,
+            Some(BELOW_NORMAL_PRIORITY_CLASS),
+            "{mode}: final server"
+        );
+        let draft_class = draft
+            .as_ref()
+            .and_then(|(_, pid)| priority_if_alive(pid.load(Ordering::Acquire)));
+        assert_eq!(
+            draft_class.is_some(),
+            wants_draft,
+            "{mode}: draft server running"
+        );
+        if wants_draft {
+            assert_eq!(
+                draft_class,
+                Some(BELOW_NORMAL_PRIORITY_CLASS),
+                "{mode}: draft priority"
+            );
+        }
+        for old in &seen_draft_pids {
+            let current = draft.as_ref().map(|(_, pid)| pid.load(Ordering::Acquire));
+            if Some(*old) != current {
+                assert!(
+                    priority_if_alive(*old).is_none(),
+                    "{mode}: old draft server {old} still runs"
+                );
+            }
+        }
+    }
+    let last_final = final_pid.load(Ordering::Acquire);
+    if let Some((mut server, _)) = draft.take() {
+        server.stop().unwrap();
+    }
+    final_server.stop().unwrap();
+    assert!(priority_if_alive(last_final).is_none());
+    for pid in seen_draft_pids {
+        assert!(
+            priority_if_alive(pid).is_none(),
+            "draft server {pid} left behind"
+        );
+    }
+}
