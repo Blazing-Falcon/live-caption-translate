@@ -955,6 +955,8 @@ struct Scheduler {
     observed: BTreeSet<UtteranceId>,
     translating: BTreeSet<UtteranceId>,
     in_flight: bool,
+    /// Speech end of the final translation now in flight (the step-down's lag input).
+    final_end: Option<StreamTime>,
     started_through: Option<UtteranceId>,
     handled_through: Option<UtteranceId>,
     closed_through: Option<UtteranceId>,
@@ -1181,6 +1183,22 @@ impl Scheduler {
         }
         self.publish(event);
         self.in_flight = false;
+        self.final_end = None;
+    }
+
+    /// How far the translation backlog trails the stream: the oldest final that is queued,
+    /// ready or in flight. Phrases the joiner holds do not count; waiting for the next phrase
+    /// is not the translator falling behind (the step-down must not react to it).
+    fn translation_lag_ms(&self, live: StreamTime) -> u64 {
+        [
+            self.final_end,
+            self.queue.oldest_end(),
+            self.ready.front().map(|t| t.timing.end),
+        ]
+        .into_iter()
+        .flatten()
+        .min()
+        .map_or(0, |end| live.millis().saturating_sub(end.millis()))
     }
 }
 
@@ -1242,6 +1260,7 @@ fn scheduler_loop(
         observed: BTreeSet::new(),
         translating: BTreeSet::new(),
         in_flight: false,
+        final_end: None,
         started_through: None,
         handled_through: None,
         closed_through: None,
@@ -1431,6 +1450,7 @@ fn scheduler_loop(
                 scheduler.publish(event);
             }
             if let Some(item) = batch.item {
+                scheduler.final_end = Some(item.transcript.timing.end);
                 send_cooperative(&worker.input, item, &cancelled)?;
                 scheduler.in_flight = true;
                 progressed = true;
@@ -1452,7 +1472,7 @@ fn scheduler_loop(
         }
         if is_listening && last_step.elapsed() >= Duration::from_secs(1) {
             last_step = Instant::now();
-            let lag_s = scheduler.metrics.lag_ms(clock.now()) as f64 / 1_000.0;
+            let lag_s = scheduler.translation_lag_ms(clock.now()) as f64 / 1_000.0;
             let cpu = scheduler.metrics.system_cpu_pct();
             if let Some(next) =
                 scheduler
