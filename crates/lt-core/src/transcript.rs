@@ -4,7 +4,7 @@ use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::events::{FailReason, PipelineEvent};
 use crate::metrics::{canonical_language, OtherRouting};
-use crate::types::{CaptureMode, TextClass, Timing, UtteranceId};
+use crate::types::{CaptureMode, CutReason, TextClass, Timing, UtteranceId};
 use crossbeam_channel::{RecvTimeoutError, TryRecvError};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -27,6 +27,30 @@ pub struct SessionConfig {
     pub min_silence_s: f64,
     pub hold_max_chars: u32,
     pub skip_lag_s: f64,
+    // Later fields (older transcripts lack these)
+    /// The caption speed setting at the start of the session.
+    #[serde(default)]
+    pub mode: String,
+    #[serde(default)]
+    pub comma_min_tokens: u32,
+    #[serde(default)]
+    pub cap_tokens: u32,
+    #[serde(default)]
+    pub decode_interval_s: f64,
+    /// The draft model in use, or `null` when the session runs without drafts.
+    #[serde(default)]
+    pub draft_model: Option<String>,
+}
+
+/// Manifest id of the draft model, recorded in the session header when drafts run.
+pub const DRAFT_MODEL_ID: &str = "lmt-60-0.6b-q4_k_m";
+
+impl SessionConfig {
+    /// Record whether a draft translator is running in this session.
+    pub fn with_draft(mut self, running: bool) -> Self {
+        self.draft_model = running.then(|| DRAFT_MODEL_ID.to_owned());
+        self
+    }
 }
 
 impl From<&Config> for SessionConfig {
@@ -35,6 +59,15 @@ impl From<&Config> for SessionConfig {
             min_silence_s: readable_f32(config.vad.min_silence_s),
             hold_max_chars: config.join.hold_max_chars,
             skip_lag_s: readable_f32(config.translate.skip_lag_s),
+            mode: config.latency.mode.clone(),
+            comma_min_tokens: config.latency.comma_min_tokens,
+            cap_tokens: if config.latency.split_long {
+                config.latency.cap_tokens
+            } else {
+                0
+            },
+            decode_interval_s: readable_f32(config.latency.decode_interval_s),
+            draft_model: None,
         }
     }
 }
@@ -74,6 +107,7 @@ struct Pending {
     class: TextClass,
     lang: Option<String>,
     source: String,
+    cut: CutReason,
 }
 
 #[derive(Serialize)]
@@ -84,6 +118,7 @@ struct UtteranceRecord<'a> {
     joined: &'a [UtteranceId],
     start_ms: u64,
     end_ms: u64,
+    cut: CutReason,
     wall: &'a str,
     class: TextClass,
     lang: Option<&'a str>,
@@ -106,6 +141,7 @@ impl Pending {
             joined: &self.joined,
             start_ms: self.start_ms,
             end_ms: self.end_ms,
+            cut: self.cut,
             wall,
             class: self.class,
             lang: self.lang.as_deref(),
@@ -171,6 +207,7 @@ impl<W: Write> TranscriptWriter<W> {
                 lang,
                 start_ms,
                 end_ms,
+                cut,
                 ..
             } => {
                 let pending_translation = matches!(class, TextClass::Chinese | TextClass::Mixed)
@@ -189,6 +226,7 @@ impl<W: Write> TranscriptWriter<W> {
                     class: *class,
                     lang: lang.as_deref().map(canonical_language),
                     source: text.clone(),
+                    cut: *cut,
                 };
                 match class {
                     TextClass::Chinese | TextClass::Mixed => {
@@ -466,11 +504,11 @@ mod tests {
 
     const WALL: &str = "2026-10-07T21:14:51+07:00";
     const GOLDEN: &str = concat!(
-        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"min_silence_s\":0.4,\"hold_max_chars\":8,\"skip_lag_s\":6.0}}\n",
-        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\"}\n",
-        "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\"}\n",
-        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\"}\n",
-        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9}}\n",
+        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"min_silence_s\":0.4,\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5,\"draft_model\":null}}\n",
+        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\"}\n",
+        "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\"}\n",
+        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\"}\n",
+        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9}}\n",
     );
 
     fn header() -> SessionHeader {
@@ -487,6 +525,11 @@ mod tests {
                 min_silence_s: 0.4,
                 hold_max_chars: 8,
                 skip_lag_s: 6.0,
+                mode: "auto".into(),
+                comma_min_tokens: 8,
+                cap_tokens: 20,
+                decode_interval_s: 0.5,
+                draft_model: None,
             },
         }
     }
@@ -560,6 +603,66 @@ mod tests {
                 },
             },
         ]
+    }
+
+    #[test]
+    fn partials_and_drafts_are_never_written_and_commit_clauses_record_their_cut() {
+        let mut writer = TranscriptWriter::new(Vec::new(), header()).unwrap();
+        let id = UtteranceId(5);
+        writer
+            .on_event(
+                &PipelineEvent::AsrPartial {
+                    id,
+                    text: "这次华为".into(),
+                    class: TextClass::Chinese,
+                    end_ms: 1_000,
+                },
+                WALL,
+            )
+            .unwrap();
+        writer
+            .on_event(
+                &PipelineEvent::TranslationDraft {
+                    id,
+                    rev: 1,
+                    text: "This time Huawei".into(),
+                    end_ms: 1_000,
+                },
+                WALL,
+            )
+            .unwrap();
+        writer
+            .on_event(
+                &PipelineEvent::AsrFinal {
+                    id,
+                    text: "这次华为发布。".into(),
+                    class: TextClass::Chinese,
+                    lang: Some("zh".into()),
+                    start_ms: 0,
+                    end_ms: 1_500,
+                    asr_ms: 100,
+                    cut: CutReason::Commit,
+                },
+                WALL,
+            )
+            .unwrap();
+        writer
+            .on_event(
+                &PipelineEvent::Skipped {
+                    id,
+                    reason: SkipReason::CatchUp,
+                },
+                WALL,
+            )
+            .unwrap();
+        let output = String::from_utf8(writer.finish().unwrap()).unwrap();
+        let records: Vec<serde_json::Value> = output
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        assert_eq!(records.len(), 2, "header and one utterance: {output}");
+        assert_eq!(records[1]["cut"], "commit");
+        assert!(!output.contains("Huawei") && !output.contains("这次华为\""));
     }
 
     #[test]
@@ -928,7 +1031,7 @@ mod tests {
         assert_eq!(subset.skip_lag_s, 6.0);
         assert_eq!(
             serde_json::to_string(&subset).unwrap(),
-            "{\"min_silence_s\":0.4,\"hold_max_chars\":8,\"skip_lag_s\":6.0}"
+            "{\"min_silence_s\":0.4,\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5,\"draft_model\":null}"
         );
     }
 

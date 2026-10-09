@@ -179,7 +179,7 @@ impl Controller {
         let (translator, pid) = engines::translator(&config, self.supervisor.as_ref())?;
         let (draft, draft_pid) = self.draft_engine(&config, &models, &bus);
         let (source, mode, label) = make_source(&config)?;
-        let transcript = self.start_transcript(&config, mode, &label)?;
+        let transcript = self.start_transcript(&config, mode, &label, draft.is_some())?;
         let sampler = ProcessSampler::new(pid)
             .map_err(|e| e.to_string())?
             .with_draft(draft_pid);
@@ -271,6 +271,7 @@ impl Controller {
         config: &Config,
         mode: CaptureMode,
         label: &str,
+        drafts: bool,
     ) -> Result<Option<Transcript>, String> {
         if !config.transcript.enabled {
             return Ok(None);
@@ -288,7 +289,7 @@ impl Controller {
             },
             asr: config.asr.engine.clone(),
             translator: config.translate.engine.clone(),
-            config: SessionConfig::from(config),
+            config: SessionConfig::from(config).with_draft(drafts),
         };
         let writer = TranscriptWriter::with_routing(
             BufWriter::new(file),

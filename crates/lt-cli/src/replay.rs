@@ -96,7 +96,7 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
             "hy-mt2-1.8b-q4_0"
         }
         .into(),
-        config: SessionConfig::from(&config),
+        config: SessionConfig::from(&config).with_draft(engines.draft.is_some()),
     };
     let writer = TranscriptWriter::with_routing(output, header, &config.routing.translate_other)?;
     let subscriber =

@@ -116,7 +116,7 @@ fn run_session(
             },
             asr: config.asr.engine.clone(),
             translator: config.translate.engine.clone(),
-            config: SessionConfig::from(&config),
+            config: SessionConfig::from(&config).with_draft(engines.draft.is_some()),
         };
         let writer = TranscriptWriter::with_routing(
             BufWriter::new(
