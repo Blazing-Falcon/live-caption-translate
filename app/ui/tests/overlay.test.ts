@@ -17,6 +17,11 @@ import { FakeClock, asrFinal, delta, final, testState } from "./helpers";
 const line = (patch: Partial<Line> & Pick<Line, "id" | "state">): Line => ({
   source: "你别误会，我不是那个意思。",
   english: "",
+  draft: "",
+  drafts: [],
+  shown: "",
+  heldOnce: false,
+  committed: false,
   lang: "zh",
   reason: null,
   updatedAt: 0,

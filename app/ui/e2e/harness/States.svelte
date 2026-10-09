@@ -2,7 +2,7 @@
   import CaptionLine from "../../src/overlay/CaptionLine.svelte";
   import type { CaptionLine as Line } from "../../src/lib/types";
 
-  const base = { english: "", lang: "zh", reason: null, updatedAt: 0 };
+  const base = { english: "", draft: "", drafts: [], shown: "", heldOnce: false, committed: false, lang: "zh", reason: null, updatedAt: 0 };
   const zh = "你别误会，我不是那个意思。";
 
   const cells: { title: string; line?: Line; status?: { kind: "no_device"; text: string }; dim?: boolean }[] = [

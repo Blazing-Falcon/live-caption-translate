@@ -86,8 +86,33 @@ export interface Config extends ExtraFields {
     expire_s: number;
     panel_edge: "left" | "right";
     panel_lines: number;
+    live_source: boolean;
+    draft_display: "hold2" | "settled" | "all";
     bar_rect?: OverlayRect;
     panel_rect?: OverlayRect;
+  };
+  latency: ExtraFields & {
+    mode: "auto" | "continuous" | "light" | "off";
+    decode_interval_s: number;
+    min_open_s: number;
+    comma_min_tokens: number;
+    stability: boolean;
+    split_long: boolean;
+    cap_tokens: number;
+    draft_context_s: number;
+    final_context_s: number;
+    draft_min_chars: number;
+    draft_grow_chars: number;
+    draft_keep_back_words: number;
+    draft_timeout_s: number;
+    draft_engine: string;
+    draft_server_url: string;
+    low_priority: boolean;
+    step_down: boolean;
+    step_down_cpu_pct: number;
+    step_up_cpu_pct: number;
+    step_down_lag_s: number;
+    auto_min_cores: number;
   };
   hotkeys: ExtraFields & {
     move_lock: string;
@@ -147,7 +172,7 @@ export function cloneConfig(config: Config): Config {
 
 const CONFIG_TABLES = [
   "capture", "audio", "vad", "asr", "filter", "routing", "join", "translate",
-  "overlay", "hotkeys", "transcript", "logging", "models",
+  "overlay", "latency", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -342,7 +367,32 @@ export const DEFAULT_CONFIG: Config = {
     "show_source": true,
     "expire_s": 8.0,
     "panel_edge": "right",
-    "panel_lines": 5
+    "panel_lines": 5,
+    "live_source": true,
+    "draft_display": "hold2"
+  },
+  "latency": {
+    "mode": "auto",
+    "decode_interval_s": 0.5,
+    "min_open_s": 1.0,
+    "comma_min_tokens": 8,
+    "stability": true,
+    "split_long": true,
+    "cap_tokens": 20,
+    "draft_context_s": 1.5,
+    "final_context_s": 10.0,
+    "draft_min_chars": 3,
+    "draft_grow_chars": 3,
+    "draft_keep_back_words": 2,
+    "draft_timeout_s": 3.0,
+    "draft_engine": "lmt60",
+    "draft_server_url": "",
+    "low_priority": true,
+    "step_down": true,
+    "step_down_cpu_pct": 80.0,
+    "step_up_cpu_pct": 65.0,
+    "step_down_lag_s": 3.0,
+    "auto_min_cores": 6
   },
   "hotkeys": {
     "move_lock": "Ctrl+Shift+L",

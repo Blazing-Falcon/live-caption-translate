@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG, cloneConfig, type Config } from "../src/lib/settings";
 import type { Clock } from "../src/lib/captions";
 import type {
   AppState,
+  CutReason,
   FailReason,
   PipelineEvent,
   PipelineStats,
@@ -64,9 +65,31 @@ export const TIMING: Timing = {
   generated_tokens: 8,
 };
 
-export function asrFinal(id: number, text: string, cls: TextClass = "chinese", lang: string | null = "zh"): PipelineEvent {
-  return { type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300 };
+export function asrFinal(
+  id: number,
+  text: string,
+  cls: TextClass = "chinese",
+  lang: string | null = "zh",
+  cut: CutReason = "pause",
+): PipelineEvent {
+  return { type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300, cut };
 }
+
+export const partial = (id: number, text: string, cls: TextClass = "chinese", end_ms = 1000): PipelineEvent => ({
+  type: "asr_partial",
+  id,
+  text,
+  class: cls,
+  end_ms,
+});
+export const draft = (id: number, text: string, rev = 1, end_ms = 1000): PipelineEvent => ({
+  type: "translation_draft",
+  id,
+  rev,
+  text,
+  end_ms,
+});
+export const dropped = (id: number): PipelineEvent => ({ type: "dropped", id, reason: "music" });
 
 export const delta = (id: number, text: string): PipelineEvent => ({ type: "translation_delta", id, text_so_far: text });
 export const final = (id: number, text: string): PipelineEvent => ({
@@ -101,10 +124,12 @@ export function testState(patch: Partial<AppState> = {}): AppState {
     listening: "listening",
     source: { mode: "system", label: "Speakers (Realtek)", sample_rate: 48000, channels: 2 },
     source_state: "playing",
-    engines: { vad: "ready", asr: "ready", translator: "ready" },
+    engines: { vad: "ready", asr: "ready", translator: "ready", draft_translator: "ready" },
     models_ready: true,
     overlay_moving: false,
     overlay_visible: true,
+    mode: "off",
+    mode_reason: null,
     ...patch,
   };
 }
@@ -122,4 +147,13 @@ export const STATS: PipelineStats = {
   cpu_translator_pct: 38.4,
   rss_app_mb: 520,
   rss_translator_mb: 1380,
+  mode: "off",
+  mode_reason: null,
+  cpu_system_pct: 20,
+  cpu_draft_pct: 0,
+  rss_draft_mb: 0,
+  word_first_p50_ms: null,
+  word_final_p50_ms: null,
+  drafts_total: 0,
+  drafts_failed: 0,
 };

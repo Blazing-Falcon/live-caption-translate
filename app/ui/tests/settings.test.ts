@@ -62,9 +62,9 @@ describe("DEFAULT_CONFIG", () => {
     expect(source.split("export const DEFAULT_CONFIG").length).toBe(2);
   });
 
-  it("mirrors all 13 tables", () => {
+  it("mirrors all 14 tables", () => {
     const tables = Object.keys(DEFAULT_CONFIG).filter((key) => key !== "config_version");
-    expect(tables).toHaveLength(13);
+    expect(tables).toHaveLength(14);
   });
 });
 

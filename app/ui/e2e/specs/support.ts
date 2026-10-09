@@ -72,7 +72,7 @@ export async function placePanel(page: Page): Promise<void> {
 
 export const NOW = {
   asr: (id: number, text: string, cls: "chinese" | "mixed" | "english" | "other" = "chinese", lang: string | null = "zh"): PipelineEvent => ({
-    type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300,
+    type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300, cut: "pause",
   }),
   delta: (id: number, text_so_far: string): PipelineEvent => ({ type: "translation_delta", id, text_so_far }),
   final: (id: number, text: string): PipelineEvent => ({

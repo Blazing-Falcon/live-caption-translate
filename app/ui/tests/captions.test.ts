@@ -135,7 +135,7 @@ describe("caption reducer", () => {
     const before = view();
     run(
       { type: "speech_started", id: 41, at_ms: 5 },
-      { type: "asr_partial", id: 40, text: "你" },
+      { type: "asr_partial", id: 40, text: "你", class: "chinese", end_ms: 100 },
       { type: "dropped", id: 42, reason: "empty" },
       { type: "stats", ...STATS },
     );

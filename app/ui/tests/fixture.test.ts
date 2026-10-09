@@ -9,12 +9,12 @@ import { FakeClock, asrFinal, delta, final, joined, testConfig } from "./helpers
 const events = fixture as unknown as PipelineEvent[];
 
 const EXPECTED_TYPES: PipelineEvent["type"][] = [
-  "speech_started", "asr_partial", "asr_final", "joined", "translation_delta", "translation_final", "skipped",
-  "translation_failed", "dropped", "source_changed", "source_state", "listening_state", "engine_status", "stats",
+  "speech_started", "asr_partial", "asr_final", "joined", "translation_delta", "translation_draft",
+  "translation_final", "skipped", "translation_failed", "dropped", "source_changed", "source_state", "listening_state", "engine_status", "stats",
 ];
 
 describe("wire fixture", () => {
-  it("contains every one of the 14 event variants exactly once", () => {
+  it("contains every one of the 15 event variants exactly once", () => {
     expect(events.map((event) => event.type)).toEqual(EXPECTED_TYPES);
   });
 

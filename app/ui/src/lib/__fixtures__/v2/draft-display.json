@@ -1,0 +1,2399 @@
+[
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 0,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "I didn't see it.",
+    "visible": "I didn't",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch this movie.",
+    "visible": "I didn't watch",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch the movie, so I'm not going to say anything.",
+    "visible": "I didn't watch the movie, so I'm not going to",
+    "held": false
+   },
+   {
+    "draft": "Oh, I just wanted to say that I haven't seen the movie.",
+    "visible": "Oh, I just wanted to say that I haven't seen",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+    "visible": "I didn't watch the movie, so I'll just tell you. Well,",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 0,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "I didn't see it.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch this movie.",
+    "visible": "I didn't",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch the movie, so I'm not going to say anything.",
+    "visible": "I didn't watch",
+    "held": false
+   },
+   {
+    "draft": "Oh, I just wanted to say that I haven't seen the movie.",
+    "visible": "I didn't watch",
+    "held": true
+   },
+   {
+    "draft": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 0,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "I didn't see it.",
+    "visible": "I didn't see it.",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch this movie.",
+    "visible": "I didn't watch this movie.",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch the movie, so I'm not going to say anything.",
+    "visible": "I didn't watch the movie, so I'm not going to say anything.",
+    "held": false
+   },
+   {
+    "draft": "Oh, I just wanted to say that I haven't seen the movie.",
+    "visible": "Oh, I just wanted to say that I haven't seen the movie.",
+    "held": false
+   },
+   {
+    "draft": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+    "visible": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "I didn't watch the movie, so I'll just tell you. Well, you see.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 1,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "You know, you don't have to listen to it.",
+    "visible": "You know, you don't have to listen",
+    "held": false
+   },
+   {
+    "draft": "You know, you don't have to listen and then you don't have to sleep.",
+    "visible": "You know, you don't have to listen and then you don't have",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "You know, you don't have to listen and then you don't have to sleep.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 1,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "You know, you don't have to listen to it.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "You know, you don't have to listen and then you don't have to sleep.",
+    "visible": "You know, you don't have to listen",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "You know, you don't have to listen and then you don't have to sleep.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 1,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "You know, you don't have to listen to it.",
+    "visible": "You know, you don't have to listen to it.",
+    "held": false
+   },
+   {
+    "draft": "You know, you don't have to listen and then you don't have to sleep.",
+    "visible": "You know, you don't have to listen and then you don't have to sleep.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "You know, you don't have to listen and then you don't have to sleep.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 3,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "That's it.",
+    "visible": "That's it.",
+    "held": false
+   },
+   {
+    "draft": "That's what I am.",
+    "visible": "That's what",
+    "held": false
+   },
+   {
+    "draft": "That's what I'm doing in this store.",
+    "visible": "That's what I'm doing in",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "That's what I'm doing in this store.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 3,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "That's it.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "That's what I am.",
+    "visible": "That's",
+    "held": false
+   },
+   {
+    "draft": "That's what I'm doing in this store.",
+    "visible": "That's what",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "That's what I'm doing in this store.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 3,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "That's it.",
+    "visible": "That's it.",
+    "held": false
+   },
+   {
+    "draft": "That's what I am.",
+    "visible": "That's what I am.",
+    "held": false
+   },
+   {
+    "draft": "That's what I'm doing in this store.",
+    "visible": "That's what I'm doing in this store.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "That's what I'm doing in this store.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 4,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "He's got it.",
+    "visible": "He's got",
+    "held": false
+   },
+   {
+    "draft": "He's the one with Yang and the one with the deer.",
+    "visible": "He's the one with Yang and the one with",
+    "held": false
+   },
+   {
+    "draft": "He's the one with Yang and the one with Lu Han.",
+    "visible": "He's the one with Yang and the one with",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He's the one with Yang and the one with Lu Han.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 4,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "He's got it.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "He's the one with Yang and the one with the deer.",
+    "visible": "He's",
+    "held": false
+   },
+   {
+    "draft": "He's the one with Yang and the one with Lu Han.",
+    "visible": "He's the one with Yang and the one with",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He's the one with Yang and the one with Lu Han.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 4,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "He's got it.",
+    "visible": "He's got it.",
+    "held": false
+   },
+   {
+    "draft": "He's the one with Yang and the one with the deer.",
+    "visible": "He's the one with Yang and the one with the deer.",
+    "held": false
+   },
+   {
+    "draft": "He's the one with Yang and the one with Lu Han.",
+    "visible": "He's the one with Yang and the one with Lu Han.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He's the one with Yang and the one with Lu Han.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 5,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And then.",
+    "visible": "And then.",
+    "held": false
+   },
+   {
+    "draft": "And then it's about what's going on.",
+    "visible": "And then it's about what's",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then it's about what's going on.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 5,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And then.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And then it's about what's going on.",
+    "visible": "And",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then it's about what's going on.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 5,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And then.",
+    "visible": "And then.",
+    "held": false
+   },
+   {
+    "draft": "And then it's about what's going on.",
+    "visible": "And then it's about what's going on.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then it's about what's going on.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 7,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "Well, at first.",
+    "visible": "Well, at",
+    "held": false
+   },
+   {
+    "draft": "Well, at first.",
+    "visible": "Well, at",
+    "held": false
+   },
+   {
+    "draft": "Well, the first one was Yang Mi.",
+    "visible": "Well, the first one was",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Well, the first one was Yang Mi.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 7,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "Well, at first.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "Well, at first.",
+    "visible": "Well, at first.",
+    "held": false
+   },
+   {
+    "draft": "Well, the first one was Yang Mi.",
+    "visible": "Well, at first.",
+    "held": true
+   },
+   {
+    "committed": true,
+    "visible": "Well, the first one was Yang Mi.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 7,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "Well, at first.",
+    "visible": "Well, at first.",
+    "held": false
+   },
+   {
+    "draft": "Well, at first.",
+    "visible": "Well, at first.",
+    "held": false
+   },
+   {
+    "draft": "Well, the first one was Yang Mi.",
+    "visible": "Well, the first one was Yang Mi.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Well, the first one was Yang Mi.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 8,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "I don't know him.",
+    "visible": "I don't",
+    "held": false
+   },
+   {
+    "draft": "I don't know anything about him.",
+    "visible": "I don't know anything",
+    "held": false
+   },
+   {
+    "draft": "I don't know what he was calling inside.",
+    "visible": "I don't know what he was",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "I don't know what he was calling inside.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 8,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "I don't know him.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "I don't know anything about him.",
+    "visible": "I don't know",
+    "held": false
+   },
+   {
+    "draft": "I don't know what he was calling inside.",
+    "visible": "I don't know",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "I don't know what he was calling inside.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 8,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "I don't know him.",
+    "visible": "I don't know him.",
+    "held": false
+   },
+   {
+    "draft": "I don't know anything about him.",
+    "visible": "I don't know anything about him.",
+    "held": false
+   },
+   {
+    "draft": "I don't know what he was calling inside.",
+    "visible": "I don't know what he was calling inside.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "I don't know what he was calling inside.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 9,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "It's called.",
+    "visible": "It's called.",
+    "held": false
+   },
+   {
+    "draft": "It's called Yimie.",
+    "visible": "It's called",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "It's called Yimie.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 9,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "It's called.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "It's called Yimie.",
+    "visible": "It's",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "It's called Yimie.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 9,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "It's called.",
+    "visible": "It's called.",
+    "held": false
+   },
+   {
+    "draft": "It's called Yimie.",
+    "visible": "It's called Yimie.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "It's called Yimie.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 10,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "Then he.",
+    "visible": "Then he.",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother.",
+    "visible": "Then he, uh,",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother was special.",
+    "visible": "Then he, uh, his brother",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother loved English.",
+    "visible": "Then he, uh, his brother",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Then he, uh, his brother loved English.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 10,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "Then he.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother.",
+    "visible": "Then",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother was special.",
+    "visible": "Then he, uh, his",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother loved English.",
+    "visible": "Then he, uh, his brother",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Then he, uh, his brother loved English.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 10,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "Then he.",
+    "visible": "Then he.",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother.",
+    "visible": "Then he, uh, his brother.",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother was special.",
+    "visible": "Then he, uh, his brother was special.",
+    "held": false
+   },
+   {
+    "draft": "Then he, uh, his brother loved English.",
+    "visible": "Then he, uh, his brother loved English.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Then he, uh, his brother loved English.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 11,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "But.",
+    "visible": "But.",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But, but, he didn't want his brother to get involved in the music industry.",
+    "visible": "But, but, he didn't want his brother to get involved in the",
+    "held": false
+   },
+   {
+    "draft": "But but he didn't want his brother to be in the music industry.",
+    "visible": "But but he didn't want his brother to be in the",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "But but he didn't want his brother to be in the music industry.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 11,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "But.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But, but, he didn't want his brother to get involved in the music industry.",
+    "visible": "But",
+    "held": true
+   },
+   {
+    "draft": "But but he didn't want his brother to be in the music industry.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "But but he didn't want his brother to be in the music industry.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 11,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "But.",
+    "visible": "But.",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But",
+    "visible": "But",
+    "held": false
+   },
+   {
+    "draft": "But, but, he didn't want his brother to get involved in the music industry.",
+    "visible": "But, but, he didn't want his brother to get involved in the music industry.",
+    "held": false
+   },
+   {
+    "draft": "But but he didn't want his brother to be in the music industry.",
+    "visible": "But but he didn't want his brother to be in the music industry.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "But but he didn't want his brother to be in the music industry.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 13,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And then he.",
+    "visible": "And then",
+    "held": false
+   },
+   {
+    "draft": "And he didn't want to do it.",
+    "visible": "And he didn't want to",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And he didn't want to do it.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 13,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And then he.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And he didn't want to do it.",
+    "visible": "And",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And he didn't want to do it.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 13,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And then he.",
+    "visible": "And then he.",
+    "held": false
+   },
+   {
+    "draft": "And he didn't want to do it.",
+    "visible": "And he didn't want to do it.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And he didn't want to do it.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 14,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "He sang about his brother.",
+    "visible": "He sang about",
+    "held": false
+   },
+   {
+    "draft": "He sang about his brother's concert.",
+    "visible": "He sang about his",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He sang about his brother's concert.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 14,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "He sang about his brother.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "He sang about his brother's concert.",
+    "visible": "He sang about his",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He sang about his brother's concert.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 14,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "He sang about his brother.",
+    "visible": "He sang about his brother.",
+    "held": false
+   },
+   {
+    "draft": "He sang about his brother's concert.",
+    "visible": "He sang about his brother's concert.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He sang about his brother's concert.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 15,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And then he.",
+    "visible": "And then",
+    "held": false
+   },
+   {
+    "draft": "And he went in.",
+    "visible": "And he",
+    "held": false
+   },
+   {
+    "draft": "And he he went in, and then.",
+    "visible": "And he he went in,",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And he he went in, and then.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 15,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And then he.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And he went in.",
+    "visible": "And",
+    "held": false
+   },
+   {
+    "draft": "And he he went in, and then.",
+    "visible": "And he",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And he he went in, and then.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 15,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And then he.",
+    "visible": "And then he.",
+    "held": false
+   },
+   {
+    "draft": "And he went in.",
+    "visible": "And he went in.",
+    "held": false
+   },
+   {
+    "draft": "And he he went in, and then.",
+    "visible": "And he he went in, and then.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And he he went in, and then.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 16,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And then it got messed up.",
+    "visible": "And then it got",
+    "held": false
+   },
+   {
+    "draft": "And then it got iced.",
+    "visible": "And then it",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then it got iced.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 16,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And then it got messed up.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And then it got iced.",
+    "visible": "And then it got",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then it got iced.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 16,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And then it got messed up.",
+    "visible": "And then it got messed up.",
+    "held": false
+   },
+   {
+    "draft": "And then it got iced.",
+    "visible": "And then it got iced.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then it got iced.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 17,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "Then he left.",
+    "visible": "Then he",
+    "held": false
+   },
+   {
+    "draft": "Then he left, and then he left.",
+    "visible": "Then he left, and then",
+    "held": false
+   },
+   {
+    "draft": "Then his brother left, and then he um, he left his brother.",
+    "visible": "Then his brother left, and then he um, he left",
+    "held": false
+   },
+   {
+    "draft": "When his brother left, he hung his brother in the car.",
+    "visible": "When his brother left, he hung his brother in",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "When his brother left, he hung his brother in the car.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 17,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "Then he left.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "Then he left, and then he left.",
+    "visible": "Then he",
+    "held": false
+   },
+   {
+    "draft": "Then his brother left, and then he um, he left his brother.",
+    "visible": "Then",
+    "held": false
+   },
+   {
+    "draft": "When his brother left, he hung his brother in the car.",
+    "visible": "Then",
+    "held": true
+   },
+   {
+    "committed": true,
+    "visible": "When his brother left, he hung his brother in the car.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 17,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "Then he left.",
+    "visible": "Then he left.",
+    "held": false
+   },
+   {
+    "draft": "Then he left, and then he left.",
+    "visible": "Then he left, and then he left.",
+    "held": false
+   },
+   {
+    "draft": "Then his brother left, and then he um, he left his brother.",
+    "visible": "Then his brother left, and then he um, he left his brother.",
+    "held": false
+   },
+   {
+    "draft": "When his brother left, he hung his brother in the car.",
+    "visible": "When his brother left, he hung his brother in the car.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "When his brother left, he hung his brother in the car.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 18,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And then nothing.",
+    "visible": "And then",
+    "held": false
+   },
+   {
+    "draft": "And then he started driving.",
+    "visible": "And then he",
+    "held": false
+   },
+   {
+    "draft": "And then, he just drove away.",
+    "visible": "And then, he just",
+    "held": false
+   },
+   {
+    "draft": "And then, he just drove away, and then he left",
+    "visible": "And then, he just drove away, and then",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then, he just drove away, and then he left",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 18,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And then nothing.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And then he started driving.",
+    "visible": "And then",
+    "held": false
+   },
+   {
+    "draft": "And then, he just drove away.",
+    "visible": "And",
+    "held": false
+   },
+   {
+    "draft": "And then, he just drove away, and then he left",
+    "visible": "And then, he just drove",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then, he just drove away, and then he left",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 18,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And then nothing.",
+    "visible": "And then nothing.",
+    "held": false
+   },
+   {
+    "draft": "And then he started driving.",
+    "visible": "And then he started driving.",
+    "held": false
+   },
+   {
+    "draft": "And then, he just drove away.",
+    "visible": "And then, he just drove away.",
+    "held": false
+   },
+   {
+    "draft": "And then, he just drove away, and then he left",
+    "visible": "And then, he just drove away, and then he left",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then, he just drove away, and then he left",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 19,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "As I walked,",
+    "visible": "As I",
+    "held": false
+   },
+   {
+    "draft": "As he walked along with his brother.",
+    "visible": "As he walked along with",
+    "held": false
+   },
+   {
+    "draft": "As he walked along with his brother, he had his brother.",
+    "visible": "As he walked along with his brother, he had",
+    "held": false
+   },
+   {
+    "draft": "As he walked, he and his brother had a fight.",
+    "visible": "As he walked, he and his brother had",
+    "held": false
+   },
+   {
+    "draft": "As he walked, he and his brother had a fight, and then.",
+    "visible": "As he walked, he and his brother had a fight,",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "As he walked, he and his brother had a fight, and then.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 19,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "As I walked,",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "As he walked along with his brother.",
+    "visible": "As",
+    "held": false
+   },
+   {
+    "draft": "As he walked along with his brother, he had his brother.",
+    "visible": "As he walked along with his",
+    "held": false
+   },
+   {
+    "draft": "As he walked, he and his brother had a fight.",
+    "visible": "As he walked along with his",
+    "held": true
+   },
+   {
+    "draft": "As he walked, he and his brother had a fight, and then.",
+    "visible": "As he walked, he and his brother had a",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "As he walked, he and his brother had a fight, and then.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 19,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "As I walked,",
+    "visible": "As I walked,",
+    "held": false
+   },
+   {
+    "draft": "As he walked along with his brother.",
+    "visible": "As he walked along with his brother.",
+    "held": false
+   },
+   {
+    "draft": "As he walked along with his brother, he had his brother.",
+    "visible": "As he walked along with his brother, he had his brother.",
+    "held": false
+   },
+   {
+    "draft": "As he walked, he and his brother had a fight.",
+    "visible": "As he walked, he and his brother had a fight.",
+    "held": false
+   },
+   {
+    "draft": "As he walked, he and his brother had a fight, and then.",
+    "visible": "As he walked, he and his brother had a fight, and then.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "As he walked, he and his brother had a fight, and then.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 21,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And finally.",
+    "visible": "And finally.",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to one.",
+    "visible": "And then I walked over",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to the bridge.",
+    "visible": "And then I walked over to",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to the bridge and he walked over to me.",
+    "visible": "And then I walked over to the bridge and he walked over",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then I walked over to the bridge and he walked over to me.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 21,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And finally.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to one.",
+    "visible": "And",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to the bridge.",
+    "visible": "And then I walked over to",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to the bridge and he walked over to me.",
+    "visible": "And then I walked over to the",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then I walked over to the bridge and he walked over to me.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 21,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And finally.",
+    "visible": "And finally.",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to one.",
+    "visible": "And then I walked over to one.",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to the bridge.",
+    "visible": "And then I walked over to the bridge.",
+    "held": false
+   },
+   {
+    "draft": "And then I walked over to the bridge and he walked over to me.",
+    "visible": "And then I walked over to the bridge and he walked over to me.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then I walked over to the bridge and he walked over to me.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 22,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "They had an affair.",
+    "visible": "They had",
+    "held": false
+   },
+   {
+    "draft": "He got angry and then he left.",
+    "visible": "He got angry and then",
+    "held": false
+   },
+   {
+    "draft": "He got into a fight with her, and then he got into a fight with his brother.",
+    "visible": "He got into a fight with her, and then he got into a fight with",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He got into a fight with her, and then he got into a fight with his brother.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 22,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "They had an affair.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "He got angry and then he left.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "He got into a fight with her, and then he got into a fight with his brother.",
+    "visible": "He got",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He got into a fight with her, and then he got into a fight with his brother.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 22,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "They had an affair.",
+    "visible": "They had an affair.",
+    "held": false
+   },
+   {
+    "draft": "He got angry and then he left.",
+    "visible": "He got angry and then he left.",
+    "held": false
+   },
+   {
+    "draft": "He got into a fight with her, and then he got into a fight with his brother.",
+    "visible": "He got into a fight with her, and then he got into a fight with his brother.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "He got into a fight with her, and then he got into a fight with his brother.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 23,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And then he said to his brother.",
+    "visible": "And then he said to",
+    "held": false
+   },
+   {
+    "draft": "And then he said to his brother.",
+    "visible": "And then he said to",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then he said to his brother.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 23,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And then he said to his brother.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And then he said to his brother.",
+    "visible": "And then he said to his brother.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then he said to his brother.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 23,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And then he said to his brother.",
+    "visible": "And then he said to his brother.",
+    "held": false
+   },
+   {
+    "draft": "And then he said to his brother.",
+    "visible": "And then he said to his brother.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then he said to his brother.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 25,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "And then I went out.",
+    "visible": "And then I",
+    "held": false
+   },
+   {
+    "draft": "And then I um I got into an accident.",
+    "visible": "And then I um I got into",
+    "held": false
+   },
+   {
+    "draft": "And then, um, the accident, and then he.",
+    "visible": "And then, um, the accident, and",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then, um, the accident, and then he.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 25,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "And then I went out.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "And then I um I got into an accident.",
+    "visible": "And then I",
+    "held": false
+   },
+   {
+    "draft": "And then, um, the accident, and then he.",
+    "visible": "And then I",
+    "held": true
+   },
+   {
+    "committed": true,
+    "visible": "And then, um, the accident, and then he.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "CTS-CN-F2F-2019-11-15-1449.wav",
+  "unit": 25,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "And then I went out.",
+    "visible": "And then I went out.",
+    "held": false
+   },
+   {
+    "draft": "And then I um I got into an accident.",
+    "visible": "And then I um I got into an accident.",
+    "held": false
+   },
+   {
+    "draft": "And then, um, the accident, and then he.",
+    "visible": "And then, um, the accident, and then he.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "And then, um, the accident, and then he.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 0,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "Such a great show.",
+    "visible": "Such a",
+    "held": false
+   },
+   {
+    "draft": "Such a big show, right?",
+    "visible": "Such a big",
+    "held": false
+   },
+   {
+    "draft": "Such a big show, we have to get it.",
+    "visible": "Such a big show, we have to",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a thumbs up?",
+    "visible": "This is such a brilliant show, we have to give it a",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a 5 stars?",
+    "visible": "This is such a brilliant show, we have to give it a",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a 5 stars.",
+    "visible": "This is such a brilliant show, we have to give it a",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "This is such a brilliant show, we have to give it a 5 stars.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 0,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "Such a great show.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "Such a big show, right?",
+    "visible": "Such a",
+    "held": false
+   },
+   {
+    "draft": "Such a big show, we have to get it.",
+    "visible": "Such a big show,",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a thumbs up?",
+    "visible": "Such a big show,",
+    "held": true
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a 5 stars?",
+    "visible": "This is such a brilliant show, we have to give it a",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a 5 stars.",
+    "visible": "This is such a brilliant show, we have to give it a 5",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "This is such a brilliant show, we have to give it a 5 stars.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 0,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "Such a great show.",
+    "visible": "Such a great show.",
+    "held": false
+   },
+   {
+    "draft": "Such a big show, right?",
+    "visible": "Such a big show, right?",
+    "held": false
+   },
+   {
+    "draft": "Such a big show, we have to get it.",
+    "visible": "Such a big show, we have to get it.",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a thumbs up?",
+    "visible": "This is such a brilliant show, we have to give it a thumbs up?",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a 5 stars?",
+    "visible": "This is such a brilliant show, we have to give it a 5 stars?",
+    "held": false
+   },
+   {
+    "draft": "This is such a brilliant show, we have to give it a 5 stars.",
+    "visible": "This is such a brilliant show, we have to give it a 5 stars.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "This is such a brilliant show, we have to give it a 5 stars.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 2,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "This time.",
+    "visible": "This time.",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released.",
+    "visible": "This time",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released the whole.",
+    "visible": "This time Huawei released",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released whole mate907.",
+    "visible": "This time Huawei released",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released the whole mate90 family.",
+    "visible": "This time Huawei released the whole",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "This time Huawei released the whole mate90 family.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 2,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "This time.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released.",
+    "visible": "This",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released the whole.",
+    "visible": "This time Huawei",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released whole mate907.",
+    "visible": "This time Huawei released",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released the whole mate90 family.",
+    "visible": "This time Huawei released",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "This time Huawei released the whole mate90 family.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 2,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "This time.",
+    "visible": "This time.",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released.",
+    "visible": "This time Huawei released.",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released the whole.",
+    "visible": "This time Huawei released the whole.",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released whole mate907.",
+    "visible": "This time Huawei released whole mate907.",
+    "held": false
+   },
+   {
+    "draft": "This time Huawei released the whole mate90 family.",
+    "visible": "This time Huawei released the whole mate90 family.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "This time Huawei released the whole mate90 family.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 3,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "including 9.",
+    "visible": "including 9.",
+    "held": false
+   },
+   {
+    "draft": "including the 9030.",
+    "visible": "including the",
+    "held": false
+   },
+   {
+    "draft": "including 9030 mate.",
+    "visible": "including 9030",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "including 9030 mate.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 3,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "including 9.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "including the 9030.",
+    "visible": "including",
+    "held": false
+   },
+   {
+    "draft": "including 9030 mate.",
+    "visible": "including",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "including 9030 mate.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 3,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "including 9.",
+    "visible": "including 9.",
+    "held": false
+   },
+   {
+    "draft": "including the 9030.",
+    "visible": "including the 9030.",
+    "held": false
+   },
+   {
+    "draft": "including 9030 mate.",
+    "visible": "including 9030 mate.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "including 9030 mate.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 4,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "It is equipped with the Kirin 90.",
+    "visible": "It is equipped with the",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the Kirin 9035.",
+    "visible": "It is equipped with the",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the 9035 Kirin chip.",
+    "visible": "It is equipped with the 9035",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the 9035",
+    "visible": "It is equipped with",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9035 Pro.",
+    "visible": "It is equipped with 9035 and",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9.",
+    "visible": "It is equipped with 9035",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9050 pro.",
+    "visible": "It is equipped with 9035 and",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "It is equipped with 9035 and 9050 pro.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 4,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "It is equipped with the Kirin 90.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the Kirin 9035.",
+    "visible": "It is equipped with the Kirin",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the 9035 Kirin chip.",
+    "visible": "It is equipped with the",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the 9035",
+    "visible": "It is equipped with the 9035",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9035 Pro.",
+    "visible": "It is equipped with",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9.",
+    "visible": "It is equipped with 9035 and",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9050 pro.",
+    "visible": "It is equipped with 9035 and",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "It is equipped with 9035 and 9050 pro.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 4,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "It is equipped with the Kirin 90.",
+    "visible": "It is equipped with the Kirin 90.",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the Kirin 9035.",
+    "visible": "It is equipped with the Kirin 9035.",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the 9035 Kirin chip.",
+    "visible": "It is equipped with the 9035 Kirin chip.",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with the 9035",
+    "visible": "It is equipped with the 9035",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9035 Pro.",
+    "visible": "It is equipped with 9035 and 9035 Pro.",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9.",
+    "visible": "It is equipped with 9035 and 9.",
+    "held": false
+   },
+   {
+    "draft": "It is equipped with 9035 and 9050 pro.",
+    "visible": "It is equipped with 9035 and 9050 pro.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "It is equipped with 9035 and 9050 pro.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 6,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "Although today is mainly about.",
+    "visible": "Although today is",
+    "held": false
+   },
+   {
+    "draft": "Although today is 9050.",
+    "visible": "Although today",
+    "held": false
+   },
+   {
+    "draft": "Although today 9050pro is the main topic.",
+    "visible": "Although today 9050pro is the",
+    "held": false
+   },
+   {
+    "draft": "Although today 9050pro is the main topic, I.",
+    "visible": "Although today 9050pro is the main",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Although today 9050pro is the main topic, I.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 6,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "Although today is mainly about.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "Although today is 9050.",
+    "visible": "Although today is",
+    "held": false
+   },
+   {
+    "draft": "Although today 9050pro is the main topic.",
+    "visible": "Although today",
+    "held": false
+   },
+   {
+    "draft": "Although today 9050pro is the main topic, I.",
+    "visible": "Although today 9050pro is the main",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Although today 9050pro is the main topic, I.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 6,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "Although today is mainly about.",
+    "visible": "Although today is mainly about.",
+    "held": false
+   },
+   {
+    "draft": "Although today is 9050.",
+    "visible": "Although today is 9050.",
+    "held": false
+   },
+   {
+    "draft": "Although today 9050pro is the main topic.",
+    "visible": "Although today 9050pro is the main topic.",
+    "held": false
+   },
+   {
+    "draft": "Although today 9050pro is the main topic, I.",
+    "visible": "Although today 9050pro is the main topic, I.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "Although today 9050pro is the main topic, I.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 7,
+  "policy": "hold2",
+  "steps": [
+   {
+    "draft": "But I still.",
+    "visible": "But I",
+    "held": false
+   },
+   {
+    "draft": "But I just talked.",
+    "visible": "But I",
+    "held": false
+   },
+   {
+    "draft": "But I would like to talk about two other things.",
+    "visible": "But I would like to talk about two",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "But I would like to talk about two other things.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 7,
+  "policy": "settled",
+  "steps": [
+   {
+    "draft": "But I still.",
+    "visible": "",
+    "held": false
+   },
+   {
+    "draft": "But I just talked.",
+    "visible": "But I",
+    "held": false
+   },
+   {
+    "draft": "But I would like to talk about two other things.",
+    "visible": "But I",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "But I would like to talk about two other things.",
+    "held": false
+   }
+  ]
+ },
+ {
+  "clip": "juan-clip-16k.wav",
+  "unit": 7,
+  "policy": "all",
+  "steps": [
+   {
+    "draft": "But I still.",
+    "visible": "But I still.",
+    "held": false
+   },
+   {
+    "draft": "But I just talked.",
+    "visible": "But I just talked.",
+    "held": false
+   },
+   {
+    "draft": "But I would like to talk about two other things.",
+    "visible": "But I would like to talk about two other things.",
+    "held": false
+   },
+   {
+    "committed": true,
+    "visible": "But I would like to talk about two other things.",
+    "held": false
+   }
+  ]
+ }
+]

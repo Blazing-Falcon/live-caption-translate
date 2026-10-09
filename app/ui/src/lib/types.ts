@@ -7,7 +7,7 @@ export type JoinKind = "hold" | "queue";
 export type SkipReason = "catch_up";
 export type FailReason = "timeout" | "server_unavailable" | "echo" | "runaway" | "error";
 export type DropReason = "empty" | "music" | "single_char";
-export type EngineKind = "vad" | "asr" | "translator";
+export type EngineKind = "vad" | "asr" | "translator" | "draft_translator";
 export type EngineState = "loading" | "ready" | "restarting" | "failed";
 export type SourceStateKind =
   | "playing"
@@ -51,11 +51,24 @@ export interface PipelineStats {
   cpu_translator_pct: number;
   rss_app_mb: number;
   rss_translator_mb: number;
+  mode: EffectiveMode;
+  mode_reason: ModeReason | null;
+  cpu_system_pct: number;
+  cpu_draft_pct: number;
+  rss_draft_mb: number;
+  word_first_p50_ms: number | null;
+  word_final_p50_ms: number | null;
+  drafts_total: number;
+  drafts_failed: number;
 }
+
+export type EffectiveMode = "continuous" | "light" | "off";
+export type ModeReason = "user" | "auto" | "cpu" | "lag" | "draft_unavailable";
+export type CutReason = "pause" | "soft_cut" | "hard_cut" | "discontinuity" | "end" | "commit";
 
 export type PipelineEvent =
   | { type: "speech_started"; id: UtteranceId; at_ms: number }
-  | { type: "asr_partial"; id: UtteranceId; text: string }
+  | { type: "asr_partial"; id: UtteranceId; text: string; class: TextClass; end_ms: number }
   | {
       type: "asr_final";
       id: UtteranceId;
@@ -65,9 +78,11 @@ export type PipelineEvent =
       start_ms: number;
       end_ms: number;
       asr_ms: number;
+      cut: CutReason;
     }
   | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string; kind: JoinKind }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }
+  | { type: "translation_draft"; id: UtteranceId; rev: number; text: string; end_ms: number }
   | { type: "translation_final"; id: UtteranceId; text: string; timing: Timing }
   | { type: "skipped"; id: UtteranceId; reason: SkipReason }
   | { type: "translation_failed"; id: UtteranceId; reason: FailReason; message: string }
@@ -86,6 +101,8 @@ export interface AppState {
   models_ready: boolean;
   overlay_moving: boolean;
   overlay_visible: boolean;
+  mode: EffectiveMode;
+  mode_reason: ModeReason | null;
 }
 
 export interface AudioDevice {
@@ -139,13 +156,25 @@ export interface OverlayVisiblePayload {
   visible: boolean;
 }
 
-export type LineState = "pending" | "streaming" | "final" | "english" | "other" | "skipped" | "failed";
+export type LineState = "live" | "pending" | "streaming" | "final" | "english" | "other" | "skipped" | "failed";
 
 export interface CaptionLine {
   id: UtteranceId;
   state: LineState;
+  /** Chinese so far (live), then the committed Chinese. */
   source: string;
+  /** Final translation text, or streamed deltas in Light/Off mode. */
   english: string;
+  /** Newest cleaned draft ("" if none). */
+  draft: string;
+  /** The last two drafts, for the "settled" policy. */
+  drafts: string[];
+  /** Draft text currently displayed, after the display policy. */
+  shown: string;
+  /** The previous draft update was held back by the shrink rule. */
+  heldOnce: boolean;
+  /** AsrFinal received. */
+  committed: boolean;
   lang: string | null;
   reason: string | null;
   updatedAt: number;
