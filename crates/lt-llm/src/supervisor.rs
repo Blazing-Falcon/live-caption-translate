@@ -679,6 +679,96 @@ mod tests {
         }
     }
 
+    fn options_for(role: ServerRole, threads: u32) -> ServerOptions {
+        let config = TranslateConfig {
+            threads,
+            ..TranslateConfig::default()
+        };
+        ServerOptions::new(
+            PathBuf::from("llama-server"),
+            PathBuf::from("model.gguf"),
+            &config,
+            8,
+        )
+        .with_role(role)
+    }
+
+    #[test]
+    fn both_roles_build_the_expected_argument_lists() {
+        let final_args = options_for(ServerRole::Final, 0).arguments(8081);
+        assert_eq!(
+            final_args.join(" "),
+            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 2 -tb 2 --override-kv tokenizer.ggml.eos_token_id=int:120020 --no-webui"
+        );
+        let draft_args = options_for(ServerRole::Draft, 0).arguments(8082);
+        assert_eq!(
+            draft_args.join(" "),
+            "-m model.gguf --host 127.0.0.1 --port 8082 --jinja -np 1 -c 1024 -t 2 -tb 2 --no-webui"
+        );
+    }
+
+    #[test]
+    fn automatic_threads_are_two_per_server_and_explicit_values_apply_to_both() {
+        for role in [ServerRole::Final, ServerRole::Draft] {
+            assert!(options_for(role, 0)
+                .arguments(1)
+                .join(" ")
+                .contains("-t 2 -tb 2"));
+            assert!(options_for(role, 3)
+                .arguments(1)
+                .join(" ")
+                .contains("-t 3 -tb 3"));
+            // a value above the server cap is clamped like the config says
+            assert!(options_for(role, 16)
+                .arguments(1)
+                .join(" ")
+                .contains("-t 4 -tb 4"));
+        }
+    }
+
+    #[test]
+    fn the_manifest_lists_the_arguments_each_role_uses() {
+        let manifest: serde_json::Value =
+            serde_json::from_str(include_str!("../../../models/manifest.json")).unwrap();
+        let args_of = |role: &str| -> Vec<String> {
+            manifest["models"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|model| model["role"] == role)
+                .unwrap_or_else(|| panic!("no {role} entry"))["runtime"]["server_args"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|arg| arg.as_str().unwrap().to_owned())
+                .collect()
+        };
+        for (role, name) in [
+            (ServerRole::Final, "translator"),
+            (ServerRole::Draft, "draft_translator"),
+        ] {
+            // What the supervisor adds around the manifest's arguments.
+            let used = options_for(role, 0).arguments(1);
+            let mut expected = args_of(name);
+            let mut remaining: Vec<String> = Vec::new();
+            let mut skip = 0;
+            for (index, arg) in used.iter().enumerate() {
+                if skip > 0 {
+                    skip -= 1;
+                    continue;
+                }
+                match arg.as_str() {
+                    "-m" | "--host" | "--port" | "-t" | "-tb" => skip = 1,
+                    "--no-webui" => {}
+                    _ => remaining.push(used[index].clone()),
+                }
+            }
+            remaining.sort();
+            expected.sort();
+            assert_eq!(remaining, expected, "{name}");
+        }
+    }
+
     #[test]
     fn missing_binary_and_model_report_failed_without_spawning() {
         let temp = TempDirectory::new();

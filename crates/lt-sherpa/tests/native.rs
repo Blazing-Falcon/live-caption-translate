@@ -161,3 +161,138 @@ fn shared_runtime_preserves_native_metadata_and_matches_asr_references() {
         "SenseVoice matched fewer than 19/20 frozen reference outputs"
     );
 }
+
+/// The windowed decode returns the same text as the segment decode, tokens that add up
+/// to it, and timestamps close enough to reproduce the recorded commit traces.
+#[test]
+fn windowed_decode_matches_the_segment_decode_and_juans_recorded_windows() {
+    use lt_core::{commit::is_word_token, engines::WindowAsr};
+    let Some(models) = std::env::var_os("LT_MODELS_DIR") else {
+        eprintln!("Real model test skipped: set LT_MODELS_DIR to verified model directory");
+        return;
+    };
+    let models = PathBuf::from(models);
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let mut asr = SenseVoiceAsr::new(
+        models.join("sensevoice-2024-07-17-int8/model.int8.onnx"),
+        models.join("sensevoice-2024-07-17-int8/tokens.txt"),
+        &AsrConfig::default(),
+    )
+    .unwrap();
+    let audio = std::env::var_os("LT_REFERENCE_AUDIO")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| root.join("testdata/fetched"));
+    let directory = audio.join("ascend");
+    let clips: Vec<Clip> =
+        serde_json::from_slice(&std::fs::read(directory.join("clips.json")).unwrap()).unwrap();
+    let mut same_text = 0;
+    for (index, clip) in clips.iter().enumerate() {
+        let samples = wav(&directory.join(&clip.file));
+        let segment = Segment {
+            id: UtteranceId(index as u64),
+            start: StreamTime::ZERO,
+            end: StreamTime(samples.len() as u64),
+            samples: Arc::from(samples.clone()),
+            cut_reason: CutReason::End,
+        };
+        let whole = asr.transcribe(&segment).unwrap();
+        let window = asr.decode_window(&samples).unwrap();
+        assert_eq!(window.text, whole.text, "{}", clip.file);
+        assert_eq!(
+            window.tokens.len(),
+            window.timestamps.len(),
+            "{}",
+            clip.file
+        );
+        assert!(
+            window.timestamps.windows(2).all(|pair| pair[0] <= pair[1]),
+            "timestamps rise in {}",
+            clip.file
+        );
+        if lt_core::commit::join_tokens(&window.tokens).trim() == window.text.trim() {
+            same_text += 1;
+        } else {
+            eprintln!(
+                "token_text_mismatch file={} tokens={:?} text={:?}",
+                clip.file, window.tokens, window.text
+            );
+        }
+    }
+    eprintln!(
+        "windowed_text_parity tokens_join_to_text={same_text}/{}",
+        clips.len()
+    );
+    assert_eq!(same_text, clips.len());
+
+    // Juan's clip: re-decode every window recorded in the trace.
+    let clip = std::env::var_os("LT_JUAN_CLIP")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| root.join("testdata/fetched/juan-clip-16k.wav"));
+    if !clip.is_file() {
+        eprintln!("Juan trace replay skipped: {} is missing", clip.display());
+        return;
+    }
+    let samples = wav(&clip);
+    let trace: serde_json::Value = serde_json::from_str(include_str!(
+        "../../lt-core/tests/fixtures/v2/commit-trace-juan.json"
+    ))
+    .unwrap();
+    let mut decodes = 0;
+    let mut identical = 0;
+    let mut largest_shift = 0.0_f64;
+    for piece in trace["pieces"].as_array().unwrap() {
+        for decode in piece["decodes"].as_array().unwrap() {
+            let audio_end = decode["audio_end"].as_f64().unwrap();
+            let context = decode["context_s"].as_f64().unwrap();
+            let clause_start = decode["clause_start"].as_f64().unwrap();
+            let from = (((clause_start - context) * 16_000.0).round() as usize).min(samples.len());
+            let to = ((audio_end * 16_000.0).round() as usize).min(samples.len());
+            let result = asr.decode_window(&samples[from..to]).unwrap();
+            let mut tokens = Vec::new();
+            let mut times = Vec::new();
+            for (token, time) in result.tokens.iter().zip(&result.timestamps) {
+                let relative = f64::from(*time) - context;
+                if context > 0.0 && relative < -0.03 {
+                    continue;
+                }
+                tokens.push(token.clone());
+                times.push(relative);
+            }
+            if context > 0.0 {
+                let lead = tokens.iter().take_while(|t| !is_word_token(t)).count();
+                tokens.drain(..lead);
+                times.drain(..lead);
+            }
+            let recorded: Vec<&str> = decode["tokens"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap())
+                .collect();
+            decodes += 1;
+            if tokens
+                .iter()
+                .map(String::as_str)
+                .eq(recorded.iter().copied())
+            {
+                identical += 1;
+                for (time, want) in times.iter().zip(decode["timestamps"].as_array().unwrap()) {
+                    largest_shift = largest_shift.max((time - want.as_f64().unwrap()).abs());
+                }
+            } else {
+                eprintln!(
+                    "juan_token_difference audio_end={audio_end} got={:?} recorded={:?}",
+                    tokens, recorded
+                );
+            }
+        }
+    }
+    eprintln!(
+        "juan_windows decodes={decodes} identical_tokens={identical} largest_timestamp_shift_s={largest_shift:.3}"
+    );
+    assert!(
+        identical * 10 >= decodes * 9,
+        "{identical}/{decodes} windows reproduce the recorded tokens"
+    );
+    assert!(largest_shift <= 0.0601, "timestamp shift {largest_shift}");
+}
