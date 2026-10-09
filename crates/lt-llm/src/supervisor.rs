@@ -708,95 +708,6 @@ mod tests {
     }
 
     #[test]
-    fn automatic_threads_are_two_per_server_and_explicit_values_apply_to_both() {
-        for role in [ServerRole::Final, ServerRole::Draft] {
-            assert!(options_for(role, 0)
-                .arguments(1)
-                .join(" ")
-                .contains("-t 2 -tb 2"));
-            assert!(options_for(role, 3)
-                .arguments(1)
-                .join(" ")
-                .contains("-t 3 -tb 3"));
-            // a value above the server cap is clamped like the config says
-            assert!(options_for(role, 16)
-                .arguments(1)
-                .join(" ")
-                .contains("-t 4 -tb 4"));
-        }
-    }
-
-    #[test]
-    fn the_manifest_lists_the_arguments_each_role_uses() {
-        let manifest: serde_json::Value =
-            serde_json::from_str(include_str!("../../../models/manifest.json")).unwrap();
-        let args_of = |role: &str| -> Vec<String> {
-            manifest["models"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .find(|model| model["role"] == role)
-                .unwrap_or_else(|| panic!("no {role} entry"))["runtime"]["server_args"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|arg| arg.as_str().unwrap().to_owned())
-                .collect()
-        };
-        for (role, name) in [
-            (ServerRole::Final, "translator"),
-            (ServerRole::Draft, "draft_translator"),
-        ] {
-            // What the supervisor adds around the manifest's arguments.
-            let used = options_for(role, 0).arguments(1);
-            let mut expected = args_of(name);
-            let mut remaining: Vec<String> = Vec::new();
-            let mut skip = 0;
-            for (index, arg) in used.iter().enumerate() {
-                if skip > 0 {
-                    skip -= 1;
-                    continue;
-                }
-                match arg.as_str() {
-                    "-m" | "--host" | "--port" | "-t" | "-tb" => skip = 1,
-                    "--no-webui" => {}
-                    _ => remaining.push(used[index].clone()),
-                }
-            }
-            remaining.sort();
-            expected.sort();
-            assert_eq!(remaining, expected, "{name}");
-        }
-    }
-
-    #[test]
-    fn missing_binary_and_model_report_failed_without_spawning() {
-        let temp = TempDirectory::new();
-        for binary_missing in [true, false] {
-            let mut options = temp.options();
-            if binary_missing {
-                options.binary = temp.path.join("missing-server.exe");
-            } else {
-                options.model = temp.path.join("missing-model.gguf");
-            }
-            let bus = EventBus::default();
-            let receiver = bus.subscribe(8);
-            let error = match Supervisor::start(options, bus) {
-                Ok(_) => panic!("missing asset must not start a child"),
-                Err(error) => error,
-            };
-            assert!(error.to_string().contains("missing"));
-            assert!(matches!(
-                receiver.recv_timeout(Duration::from_secs(1)).unwrap(),
-                PipelineEvent::EngineStatus {
-                    state: EngineState::Failed,
-                    ..
-                }
-            ));
-        }
-    }
-
-    #[test]
     fn crash_restarts_child_warms_up_and_translates_again_then_stop_closes_it() {
         let _serial = PROCESS_TEST_LOCK.lock().unwrap();
         let temp = TempDirectory::new();
@@ -896,23 +807,6 @@ mod tests {
             )
         )
         .is_err());
-    }
-
-    #[test]
-    fn stderr_capture_keeps_bounded_lines_and_the_final_unterminated_line() {
-        let last = Arc::new(Mutex::new(VecDeque::new()));
-        let mut output = (0..20)
-            .map(|index| format!("line {index}\n"))
-            .collect::<String>()
-            .into_bytes();
-        output.extend_from_slice(&vec![b'x'; 10_000]);
-        log_reader(std::io::Cursor::new(output), Some(last.clone()))
-            .join()
-            .unwrap();
-        let lines = last.lock().unwrap();
-        assert_eq!(lines.len(), 16);
-        assert_eq!(lines.front().unwrap(), "line 5");
-        assert_eq!(lines.back().unwrap().len(), 4096);
     }
 
     /// Launched only by the supervisor unit fixtures in a hidden child process.

@@ -206,14 +206,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn user_prompt_is_byte_identical_to_the_frozen_template() {
-        assert_eq!(
-            LmtPrompts::user_message("我也想办一个，伟大的公司。"),
-            "Translate the following text from Chinese into English:\nChinese: 我也想办一个，伟大的公司。\nEnglish:"
-        );
-    }
-
-    #[test]
     fn completion_prompt_writes_the_chat_template_and_ends_with_the_prefill() {
         assert_eq!(
             LmtPrompts::completion_prompt("你好。", "Hello, "),

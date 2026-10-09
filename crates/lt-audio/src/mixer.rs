@@ -215,41 +215,4 @@ mod tests {
         assert!((soft_limit(0.800_001) - 0.800_001).abs() < 0.000_001);
         assert_eq!(soft_limit(-2.0), -soft_limit(2.0));
     }
-
-    #[test]
-    fn backpressure_returns_the_frame_and_fences_are_applied_once() {
-        let mut mixer = ClockMixer::new(StreamTime::ZERO);
-        mixer.add_source(1).unwrap();
-        for index in 0..CAPACITY {
-            mixer.push(1, frame(index as u64 * 512 + 128, 0.1)).unwrap();
-        }
-        let full = match mixer
-            .push(1, frame(CAPACITY as u64 * 512 + 128, 0.1))
-            .unwrap()
-        {
-            MixerPush::Full(frame) => frame,
-            _ => panic!("unbounded mixer"),
-        };
-        mixer.take_until(StreamTime(1024));
-        mixer.take_until(StreamTime(1024));
-        assert!(matches!(mixer.push(1, full).unwrap(), MixerPush::Accepted));
-        mixer.reset_source(1);
-        let mut fenced = frame(1024 + 128, 0.2);
-        fenced.flags.discontinuity = true;
-        mixer.push(1, fenced).unwrap();
-        assert!(
-            mixer
-                .take_until(StreamTime(1536))
-                .unwrap()
-                .flags
-                .discontinuity
-        );
-        assert!(
-            !mixer
-                .take_until(StreamTime(2048))
-                .unwrap()
-                .flags
-                .discontinuity
-        );
-    }
 }

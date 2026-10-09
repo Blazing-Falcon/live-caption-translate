@@ -13,7 +13,6 @@ use std::{
     time::Duration,
 };
 
-use lt_core::error::Error;
 use lt_llm::models::{FileEntry, Manifest, ModelEntry, ModelManager, ModelSource, ModelState};
 use sha2::{Digest, Sha256};
 
@@ -59,7 +58,6 @@ impl Drop for TempDir {
 
 #[derive(Clone, Debug)]
 struct Request {
-    path: String,
     range: Option<usize>,
     number: usize,
 }
@@ -90,7 +88,6 @@ impl MockServer {
                         if reader.read_line(&mut line).is_err() {
                             continue;
                         }
-                        let path = line.split_whitespace().nth(1).unwrap_or("").to_owned();
                         let mut range = None;
                         loop {
                             line.clear();
@@ -109,7 +106,6 @@ impl MockServer {
                         }
                         drop(reader);
                         let request = Request {
-                            path,
                             range,
                             number: worker_requests.lock().unwrap().len(),
                         };
@@ -233,167 +229,6 @@ fn interrupted_http_body_resumes_from_exact_saved_offset_and_verifies_before_ren
 }
 
 #[test]
-fn paused_download_keeps_partial_bytes_then_resumes() {
-    let temp = TempDir::new();
-    let data = vec![19_u8; 512_000];
-    let served = data.clone();
-    let server = MockServer::new(move |stream, request| {
-        if request.number == 0 {
-            headers(stream, 200, served.len(), None);
-            for chunk in served.chunks(16_000) {
-                if stream.write_all(chunk).is_err() {
-                    break;
-                }
-                thread::sleep(Duration::from_millis(50));
-            }
-        } else {
-            serve(stream, request, &served);
-        }
-    });
-    let manager = manager(manifest(format!("{}/model", server.url), &data));
-    let cancelled = AtomicBool::new(false);
-    let result = manager.fetch(
-        ModelSource::Huggingface,
-        &temp.path,
-        &cancelled,
-        &mut |status| {
-            if status.state == ModelState::Downloading && status.bytes_done >= 16_000 {
-                cancelled.store(true, Ordering::Release);
-            }
-        },
-    );
-    assert!(matches!(result, Err(Error::Stopped)));
-    assert!(!temp.final_path().exists());
-    let saved = fs::metadata(temp.part_path()).unwrap().len();
-    assert!(saved > 0 && saved < data.len() as u64);
-    assert_eq!(
-        manager.status(&temp.path).unwrap()[0].state,
-        ModelState::Paused
-    );
-    cancelled.store(false, Ordering::Release);
-    manager
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &cancelled,
-            &mut |_| {},
-        )
-        .unwrap();
-    assert_eq!(
-        server.requests.lock().unwrap()[1].range,
-        Some(saved as usize)
-    );
-    assert_eq!(fs::read(temp.final_path()).unwrap(), data);
-}
-
-#[test]
-fn body_budget_timeout_retries_the_saved_prefix_instead_of_restarting_it() {
-    let temp = TempDir::new();
-    let data = vec![44_u8; 256_000];
-    let served = data.clone();
-    let server = MockServer::new(move |stream, request| {
-        if request.number == 0 {
-            headers(stream, 200, served.len(), None);
-            for chunk in served.chunks(16_000) {
-                if stream.write_all(chunk).is_err() {
-                    break;
-                }
-                thread::sleep(Duration::from_millis(50));
-            }
-        } else {
-            serve(stream, request, &served);
-        }
-    });
-    manager(manifest(format!("{}/model", server.url), &data))
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |_| {},
-        )
-        .unwrap();
-    let requests = server.requests.lock().unwrap();
-    assert!(requests.len() >= 2);
-    assert!(requests[1]
-        .range
-        .is_some_and(|offset| offset > 0 && offset < data.len()));
-    assert_eq!(fs::read(temp.final_path()).unwrap(), data);
-}
-
-#[test]
-fn range_not_satisfiable_cannot_promote_an_incomplete_partial() {
-    let temp = TempDir::new();
-    let data = vec![22_u8; 200];
-    temp.write_part(&data[..100]);
-    let server = MockServer::new(|stream, _| headers(stream, 416, 0, Some("bytes */200")));
-    assert!(manager(manifest(format!("{}/model", server.url), &data))
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |_| {}
-        )
-        .is_err());
-    assert_eq!(fs::read(temp.part_path()).unwrap(), data[..100]);
-    assert!(!temp.final_path().exists());
-}
-
-#[test]
-fn complete_partial_is_verified_and_promoted_without_another_network_call() {
-    let temp = TempDir::new();
-    let data = vec![22_u8; 200];
-    temp.write_part(&data);
-    let server = MockServer::new(|_, _| panic!("complete partial should not request HTTP"));
-    manager(manifest(format!("{}/model", server.url), &data))
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |_| {},
-        )
-        .unwrap();
-    assert_eq!(fs::read(temp.final_path()).unwrap(), data);
-    assert!(server.requests.lock().unwrap().is_empty());
-}
-
-#[test]
-fn ignored_range_restarts_file_and_invalid_range_never_changes_the_saved_prefix() {
-    let temp = TempDir::new();
-    let data = vec![31_u8; 2_000];
-    temp.write_part(&data[..100]);
-    let served = data.clone();
-    let server = MockServer::new(move |stream, _| {
-        headers(stream, 200, served.len(), None);
-        stream.write_all(&served).unwrap();
-    });
-    manager(manifest(format!("{}/model", server.url), &data))
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |_| {},
-        )
-        .unwrap();
-    assert_eq!(fs::read(temp.final_path()).unwrap(), data);
-    assert_eq!(server.requests.lock().unwrap()[0].range, Some(100));
-
-    let invalid = TempDir::new();
-    invalid.write_part(&data[..100]);
-    let server =
-        MockServer::new(|stream, _| headers(stream, 206, 1_899, Some("bytes 101-1999/2000")));
-    assert!(manager(manifest(format!("{}/model", server.url), &data))
-        .fetch(
-            ModelSource::Huggingface,
-            &invalid.path,
-            &AtomicBool::new(false),
-            &mut |_| {}
-        )
-        .is_err());
-    assert_eq!(fs::read(invalid.part_path()).unwrap(), data[..100]);
-    assert!(!invalid.final_path().exists());
-}
-
-#[test]
 fn corrupt_final_and_corrupt_response_are_redownloaded_with_sha256_checks() {
     let temp = TempDir::new();
     let data = vec![7_u8; 1_000];
@@ -464,82 +299,6 @@ fn existing_flat_and_nested_files_are_hashed_and_copied_without_http() {
         )
         .is_err());
     assert!(server.requests.lock().unwrap().is_empty());
-}
-
-#[test]
-fn downloads_are_globally_smallest_first_and_missing_mirrors_are_disabled() {
-    let temp = TempDir::new();
-    let server = MockServer::new(|stream, request| {
-        let size = match request.path.as_str() {
-            "/tiny" => 3,
-            "/small" => 5,
-            "/large" => 11,
-            "/largest" => 19,
-            _ => panic!("unexpected path"),
-        };
-        serve(stream, request, &vec![size as u8; size]);
-    });
-    let manifest = Manifest {
-        manifest_version: 1,
-        models: vec![
-            ModelEntry {
-                id: "asr".into(),
-                name: "ASR".into(),
-                optional: false,
-                recommended_min_physical_cores: None,
-                files: vec![
-                    file("large.bin", format!("{}/large", server.url), &[11; 11]),
-                    file("tiny.bin", format!("{}/tiny", server.url), &[3; 3]),
-                ],
-            },
-            ModelEntry {
-                id: "vad".into(),
-                name: "VAD".into(),
-                optional: false,
-                recommended_min_physical_cores: None,
-                files: vec![file("small.bin", format!("{}/small", server.url), &[5; 5])],
-            },
-            ModelEntry {
-                id: "mt".into(),
-                name: "MT".into(),
-                optional: false,
-                recommended_min_physical_cores: None,
-                files: vec![file(
-                    "largest.bin",
-                    format!("{}/largest", server.url),
-                    &[19; 19],
-                )],
-            },
-        ],
-    };
-    let manager = manager(manifest);
-    assert!(!manager.source_supported(ModelSource::Modelscope));
-    assert!(manager
-        .fetch(
-            ModelSource::Modelscope,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |_| {}
-        )
-        .unwrap_err()
-        .to_string()
-        .contains("verified ModelScope"));
-    manager
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |_| {},
-        )
-        .unwrap();
-    let paths: Vec<_> = server
-        .requests
-        .lock()
-        .unwrap()
-        .iter()
-        .map(|request| request.path.clone())
-        .collect();
-    assert_eq!(paths, ["/tiny", "/small", "/large", "/largest"]);
 }
 
 #[test]

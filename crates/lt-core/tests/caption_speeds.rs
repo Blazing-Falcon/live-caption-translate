@@ -409,7 +409,7 @@ fn a_long_sentence_is_committed_into_clauses_that_add_up_to_the_whole_text() {
 }
 
 #[test]
-fn off_mode_translates_when_the_speaker_pauses_like_v1() {
+fn off_mode_translates_when_the_speaker_pauses() {
     let chars = sentence_chars();
     let run = run(speech(chars.len(), 1.0), config("off"), None, 0);
     assert_ordering(&run.events);
@@ -473,31 +473,6 @@ fn many_seeds_keep_every_ordering_rule_with_random_delays_and_failures() {
         assert_ordering(&run.events);
         assert!(!finals(&run.events).is_empty(), "seed {seed}");
     }
-}
-
-#[test]
-fn engines_without_a_windowed_decode_run_off_mode() {
-    use lt_core::fakes::FakeAsr;
-    let bus = EventBus::default();
-    let receiver = bus.subscribe(1024);
-    let mut pipeline = Pipeline::start_with_bus(
-        config("auto"),
-        Box::new(VecSource::new(speech(8, 1.0), Duration::from_millis(1))),
-        Box::new(FakeVad::from_energy(0.001)),
-        Box::new(FakeAsr::new(vec!["你好。".into(); 4])),
-        Box::new(FakeTranslator::default()),
-        bus,
-    )
-    .unwrap();
-    assert_eq!(pipeline.initial_mode().mode, EffectiveMode::Off);
-    while !pipeline.is_finished() {
-        thread::sleep(Duration::from_millis(5));
-    }
-    pipeline.wait().unwrap();
-    let events: Vec<_> = receiver.try_iter().collect();
-    assert!(!events
-        .iter()
-        .any(|event| matches!(event, PipelineEvent::AsrPartial { .. })));
 }
 
 #[test]

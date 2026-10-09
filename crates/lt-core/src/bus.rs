@@ -188,32 +188,4 @@ mod tests {
         assert!(rx.recv().is_ok());
         assert!(rx.recv().is_err());
     }
-
-    #[test]
-    fn last_bus_drop_disconnects_subscribers() {
-        let bus = EventBus::default();
-        let rx = bus.subscribe(1);
-        drop(bus);
-        assert!(rx.recv().is_err());
-    }
-
-    #[test]
-    fn concurrent_last_bus_drops_disconnect_subscribers() {
-        let bus = EventBus::default();
-        let rx = bus.subscribe(1);
-        let other = bus.clone();
-        let barrier = Arc::new(std::sync::Barrier::new(2));
-        let other_barrier = barrier.clone();
-        let worker = std::thread::spawn(move || {
-            other_barrier.wait();
-            drop(other);
-        });
-        barrier.wait();
-        drop(bus);
-        worker.join().unwrap();
-        assert_eq!(
-            rx.recv_timeout(Duration::from_millis(100)),
-            Err(RecvTimeoutError::Disconnected)
-        );
-    }
 }

@@ -65,7 +65,7 @@ Single steps:
 npm --prefix app/ui run check
 npm --prefix app/ui run lint:tokens
 npm --prefix app/ui test
-npm --prefix app/ui run e2e        # screenshots go to app/ui/test-results/
+npm --prefix app/ui run e2e
 cargo test --workspace --all-features
 ```
 

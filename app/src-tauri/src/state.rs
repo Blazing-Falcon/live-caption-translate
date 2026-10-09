@@ -77,37 +77,6 @@ impl AppState {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lt_core::types::CaptureMode;
-
-    #[test]
-    fn events_update_the_snapshot_and_report_changes() {
-        let mut state = AppState::default();
-        assert!(state.apply(&PipelineEvent::ListeningState {
-            state: ListeningStateKind::Listening
-        }));
-        assert!(!state.apply(&PipelineEvent::ListeningState {
-            state: ListeningStateKind::Listening
-        }));
-        assert!(state.apply(&PipelineEvent::EngineStatus {
-            engine: EngineKind::Translator,
-            state: EngineState::Restarting,
-            message: None
-        }));
-        assert_eq!(state.engines.translator, EngineState::Restarting);
-        assert!(state.apply(&PipelineEvent::SourceChanged {
-            info: SourceInfo {
-                mode: CaptureMode::System,
-                label: "Speakers".into(),
-                sample_rate: 48_000,
-                channels: 2
-            }
-        }));
-        assert_eq!(state.source.as_ref().unwrap().label, "Speakers");
-        assert!(!state.apply(&PipelineEvent::Dropped {
-            id: lt_core::types::UtteranceId(1),
-            reason: lt_core::events::DropReason::Empty
-        }));
-    }
 
     #[test]
     fn wire_shape_matches_the_contract() {

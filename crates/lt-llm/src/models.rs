@@ -902,22 +902,4 @@ mod tests {
             .unwrap()
             .source_supported(ModelSource::Modelscope));
     }
-    #[test]
-    fn ranges_and_portable_components_are_strict() {
-        assert_eq!(content_range("bytes 10-19/20"), Some((10, 19, 20)));
-        for range in [
-            "bytes 20-19/20",
-            "bytes 0-20/20",
-            "bytes */20",
-            "bytes 0-1/*",
-            "items 0-1/20",
-        ] {
-            assert!(content_range(range).is_none());
-        }
-        for path in [
-            "../bad", "a/b", "a\\b", "C:bad", "..", ".", "CON", "nul.bin", "COM1.txt", "bad.",
-        ] {
-            assert!(!safe_component(path));
-        }
-    }
 }

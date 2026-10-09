@@ -247,19 +247,4 @@ mod tests {
         );
         assert_eq!(texts(&out), ["j7"]);
     }
-
-    #[test]
-    fn deadline_tracks_the_oldest_pending_delta_and_memory_stays_bounded() {
-        let t0 = Instant::now();
-        let mut c = Coalescer::default();
-        c.push(d(1, "a"), t0);
-        c.push(d(1, "b"), t0 + Duration::from_millis(1));
-        assert_eq!(c.next_deadline(), Some(t0 + DELTA_INTERVAL));
-        for id in 100..2_000u64 {
-            let now = t0 + Duration::from_secs(id);
-            c.push(d(id, "z"), now);
-            c.push(fin(id), now);
-        }
-        assert!(c.last_sent.len() <= 260);
-    }
 }

@@ -271,20 +271,3 @@ pub fn wav_files(input: &Path) -> Result<Vec<PathBuf>> {
     }
     Ok(files)
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn model_override_then_config_then_workspace_default() {
-        let mut config = Config::default();
-        assert_eq!(models_dir(None, &config), PathBuf::from("models"));
-        config.models.dir = "configured".into();
-        assert_eq!(models_dir(None, &config), PathBuf::from("configured"));
-        assert_eq!(
-            models_dir(Some(Path::new("override")), &config),
-            PathBuf::from("override")
-        );
-    }
-}

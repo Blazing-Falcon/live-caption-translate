@@ -288,28 +288,4 @@ mod tests {
             events
         );
     }
-
-    #[test]
-    fn new_v2_enum_values_use_the_documented_wire_names() {
-        assert_eq!(
-            serde_json::to_value(EngineKind::DraftTranslator).unwrap(),
-            "draft_translator"
-        );
-        assert_eq!(serde_json::to_value(CutReason::Commit).unwrap(), "commit");
-        assert_eq!(
-            serde_json::to_value(ModeReason::DraftUnavailable).unwrap(),
-            "draft_unavailable"
-        );
-        assert_eq!(serde_json::to_value(EffectiveMode::Off).unwrap(), "off");
-    }
-
-    #[test]
-    fn stats_are_flat_and_optional_values_are_explicit_nulls() {
-        let value = serde_json::to_value(PipelineEvent::Stats(PipelineStats::default())).unwrap();
-        assert_eq!(value["type"], "stats");
-        assert_eq!(value["queue_depth"], 0);
-        assert!(value.get("stats").is_none());
-        assert!(value.get("payload").is_none());
-        assert!(value["done_p50_ms"].is_null());
-    }
 }

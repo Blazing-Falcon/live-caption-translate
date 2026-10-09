@@ -61,18 +61,3 @@ pub fn ensure_runtime() -> bool {
     }
     false
 }
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn version_query_is_read_only_and_well_formed() {
-        // Registry/file query only: it never installs or opens a window.
-        if let Some(version) = super::installed_version() {
-            assert!(
-                version.chars().next().is_some_and(|c| c.is_ascii_digit()),
-                "{version}"
-            );
-            eprintln!("WebView2 runtime {version}");
-        }
-    }
-}

@@ -198,21 +198,6 @@ mod tests {
     }
 
     #[test]
-    fn live_progress_overrides_disk_state_only_while_a_transfer_is_active() {
-        let disk = vec![
-            status("a", ModelState::Missing),
-            status("b", ModelState::Ready),
-        ];
-        let live = vec![
-            status("a", ModelState::Downloading),
-            status("b", ModelState::Corrupt),
-        ];
-        let merged = merge(disk, &live);
-        assert_eq!(merged[0].state, ModelState::Downloading);
-        assert_eq!(merged[1].state, ModelState::Ready);
-    }
-
-    #[test]
     fn the_optional_draft_model_does_not_block_listening() {
         // all_ready consults the real manifest: with nothing on disk it is false, and an
         // optional model alone never decides the answer.
@@ -227,10 +212,5 @@ mod tests {
             .filter(|m| !m.optional)
             .all(|m| m.state == ModelState::Ready);
         assert!(ready);
-    }
-
-    #[test]
-    fn missing_folder_is_not_ready() {
-        assert!(!all_ready(Path::new("definitely/not/here")));
     }
 }

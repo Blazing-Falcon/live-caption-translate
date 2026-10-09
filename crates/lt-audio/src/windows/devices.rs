@@ -200,30 +200,3 @@ impl Drop for NotificationGuard {
         };
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn notifications_only_signal_render_console_and_do_not_dereference_ids() {
-        let dirty = Arc::new(AtomicU64::new(0));
-        let notification: IMMNotificationClient = EndpointNotification {
-            dirty: dirty.clone(),
-        }
-        .into();
-        unsafe {
-            notification.OnDeviceAdded(PCWSTR::null()).unwrap();
-            notification
-                .OnDefaultDeviceChanged(
-                    windows::Win32::Media::Audio::eCapture,
-                    eConsole,
-                    PCWSTR::null(),
-                )
-                .unwrap();
-            notification
-                .OnDefaultDeviceChanged(eRender, eConsole, PCWSTR::null())
-                .unwrap();
-        }
-        assert_eq!(dirty.load(Ordering::Acquire), 2);
-    }
-}

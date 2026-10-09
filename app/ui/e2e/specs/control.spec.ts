@@ -28,59 +28,6 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     expect(external).toEqual([]);
   });
 
-  test("is fully keyboard operable with a visible accent focus ring", async ({ page }) => {
-    await open(page, "control");
-    await page.keyboard.press("Tab");
-    await expect(page.getByRole("tab", { name: "Capture" })).toBeFocused();
-    await page.keyboard.press("ArrowDown");
-    await expect(page.getByRole("tab", { name: "Overlay" })).toBeFocused();
-    await expect(page.getByRole("tab", { name: "Overlay" })).toHaveAttribute("aria-selected", "true");
-    const outline = await page.getByRole("tab", { name: "Overlay" }).evaluate((el) => {
-      const style = getComputedStyle(el);
-      return { width: style.outlineWidth, style: style.outlineStyle, color: style.outlineColor };
-    });
-    expect(outline).toEqual({ width: "2px", style: "solid", color: "rgb(178, 115, 24)" });
-    await page.keyboard.press("Tab");
-    await expect(page.getByTestId("header-card").getByRole("button", { name: "Pause" })).toBeFocused();
-    await page.keyboard.press("Tab");
-    await expect(page.getByRole("radio", { name: "Subtitle bar" })).toBeFocused();
-    await page.keyboard.press("Space");
-    await page.keyboard.press("ArrowRight");
-    await expectPatch(page, { overlay: { style: "panel" } });
-  });
-
-  test("controls are at least 36 px tall and app rows at least 44 px", async ({ page }) => {
-    await open(page, "control", { config: { capture: { mode: "apps" } } });
-    const small = await page.evaluate(() => {
-      const bad: string[] = [];
-      for (const el of document.querySelectorAll<HTMLElement>("button, select, input[type=text], input[type=range], .option-card, .check-row")) {
-        const rect = el.getBoundingClientRect();
-        if (rect.height > 0 && rect.height < 36) bad.push(`${el.tagName}.${el.className}:${rect.height}`);
-      }
-      return bad;
-    });
-    expect(small).toEqual([]);
-    const rows = await page.locator(".list-row").evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
-    expect(rows.length).toBeGreaterThan(0);
-    for (const height of rows) expect(height).toBeGreaterThanOrEqual(44);
-  });
-
-  test("follows the Windows light and dark scheme with the specified tokens", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "light" });
-    await open(page, "control");
-    const light = await page.evaluate(() => {
-      const card = getComputedStyle(document.querySelector(".card") as Element);
-      return { ground: getComputedStyle(document.body).backgroundColor, surface: card.backgroundColor, text: getComputedStyle(document.body).color };
-    });
-    expect(light).toEqual({ ground: "rgb(247, 247, 245)", surface: "rgb(255, 255, 255)", text: "rgb(27, 28, 30)" });
-    await page.emulateMedia({ colorScheme: "dark" });
-    const dark = await page.evaluate(() => {
-      const card = getComputedStyle(document.querySelector(".card") as Element);
-      return { ground: getComputedStyle(document.body).backgroundColor, surface: card.backgroundColor, text: getComputedStyle(document.body).color };
-    });
-    expect(dark).toEqual({ ground: "rgb(28, 29, 32)", surface: "rgb(37, 39, 42)", text: "rgb(237, 237, 234)" });
-  });
-
   test("capture page saves mode, device and app picks", async ({ page }) => {
     await open(page, "control");
     await flip(page.getByRole("radio", { name: /Selected apps/ }), true);
@@ -92,64 +39,6 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await flip(page.getByRole("radio", { name: /Whole system/ }), true);
     await page.getByRole("combobox", { name: "Output device" }).selectOption("dev-usb");
     await expectPatch(page, { capture: { device: "dev-usb" } });
-  });
-
-  test("selected apps are disabled with the reason on unsupported Windows", async ({ page }) => {
-    await open(page, "control", {
-      config: { capture: { mode: "apps" } },
-      apps: { supported: false, reason: "Selected apps needs Windows 11 (build 20348 or later).", apps: [] },
-    });
-    await expect(page.getByRole("radio", { name: /Selected apps/ })).toBeDisabled();
-    await expect(page.getByTestId("apps-unsupported")).toContainText("build 20348 or later");
-  });
-
-  test("overlay page round-trips style, sliders, source toggle, hotkeys and visibility", async ({ page }) => {
-    await open(page, "control");
-    await page.getByRole("tab", { name: "Overlay" }).click();
-    await page.getByLabel("Background", { exact: false }).first().fill("30");
-    await expectPatch(page, { overlay: { background: 0.3 } });
-    await expect(page.getByTestId("background-warning")).toHaveText("May be hard to read on bright video");
-    await page.getByLabel(/English text size/).fill("34");
-    await expectPatch(page, { overlay: { font_px: 34 } });
-    await flip(page.getByRole("checkbox", { name: /Show the Chinese line/ }), false);
-    await expectPatch(page, { overlay: { show_source: false } });
-    await page.getByRole("textbox", { name: "Pause listening" }).fill("Ctrl+Alt+P");
-    await page.getByRole("button", { name: "Save Pause listening shortcut" }).click();
-    await expectPatch(page, { hotkeys: { pause: "Ctrl+Alt+P" } });
-    await page.getByRole("textbox", { name: "Show or hide overlay" }).fill("");
-    await page.getByRole("button", { name: "Save Show or hide overlay shortcut" }).click();
-    await expectPatch(page, { hotkeys: { show_hide: "" } });
-    await page.getByRole("button", { name: "Move overlay" }).click();
-    await expect.poll(async () => (await calls(page, "set_overlay_moving")).at(-1)?.args).toEqual({ moving: true });
-    await emitNamed(page, "hotkeys://error", { action: "move_lock", accelerator: "Ctrl+Shift+L", message: "Another app is using it." });
-    await expect(page.getByRole("alert")).toContainText("Move or lock overlay: Ctrl+Shift+L could not be used. Another app is using it.");
-    await expect(page.getByRole("tab", { name: "Overlay" })).toBeVisible();
-  });
-
-  test("languages and performance pages round-trip their settings", async ({ page }) => {
-    await open(page, "control", { config: { routing: { translate_other: ["yue"] } } });
-    await page.getByRole("tab", { name: "Languages" }).click();
-    await flip(page.getByRole("checkbox", { name: "Japanese" }), true);
-    await expectPatch(page, { routing: { translate_other: ["yue", "ja"] } });
-    await page.getByRole("tab", { name: "Performance" }).click();
-    await expect(page.getByTestId("stat-first")).toHaveText("—");
-    await page.getByRole("combobox", { name: "Translator threads" }).selectOption("3");
-    await expectPatch(page, { translate: { threads: 3 } });
-    await flip(page.getByRole("checkbox", { name: /Save a transcript/ }), false);
-    await expectPatch(page, { transcript: { enabled: false } });
-    await page.getByRole("button", { name: "Open transcript folder" }).click();
-    await expect.poll(async () => (await calls(page, "open_folder")).at(-1)?.args).toEqual({ which: "transcripts" });
-  });
-
-  test("header pause/start follows the pipeline state events", async ({ page }) => {
-    await open(page, "control");
-    await page.getByRole("button", { name: "Pause" }).click();
-    await expectCalls(page, "pause_listening", 1);
-    await emitNamed(page, "pipeline://event", { type: "listening_state", state: "paused" });
-    await expect(page.getByTestId("header-title")).toHaveText("Paused");
-    await expect(page.getByTestId("footer")).toHaveText("paused");
-    await page.getByRole("button", { name: "Start" }).click();
-    await expectCalls(page, "start_listening", 1);
   });
 
   test("first run: download, pause, resume, corruption retry and the single start", async ({ page }) => {

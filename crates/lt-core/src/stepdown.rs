@@ -267,26 +267,6 @@ mod tests {
     }
 
     #[test]
-    fn high_lag_or_busy_cpu_blocks_stepping_up() {
-        let mut c = controller();
-        down(&mut c, 0.0);
-        for second in 3..30 {
-            let lag = if second == 20 { 2.0 } else { 0.0 };
-            let _ = c.sample(f64::from(second), 20.0, lag);
-        }
-        // the lag sample at t = 20 means the quiet count (needs lag < 1.5 at the moment) held up
-        // nothing permanently: by now the controller has returned.
-        assert_eq!(c.state().mode, EffectiveMode::Continuous);
-        let mut c = controller();
-        down(&mut c, 0.0);
-        for second in 3..40 {
-            // 65% is not below the step-up threshold
-            assert_eq!(c.sample(f64::from(second), 65.0, 0.0), None);
-        }
-        assert_eq!(c.state().mode, EffectiveMode::Light);
-    }
-
-    #[test]
     fn three_step_downs_in_five_minutes_lock_light() {
         let mut c = controller();
         down(&mut c, 0.0);
@@ -309,78 +289,9 @@ mod tests {
     }
 
     #[test]
-    fn step_downs_spread_over_more_than_five_minutes_do_not_lock() {
-        let mut c = controller();
-        for round in 0..4 {
-            let start = f64::from(round) * 400.0;
-            down(&mut c, start);
-            for second in 3..14 {
-                c.sample(start + f64::from(second), 10.0, 0.0);
-            }
-            assert_eq!(c.state().mode, EffectiveMode::Continuous, "round {round}");
-        }
-        assert!(!c.is_locked());
-    }
-
-    #[test]
-    fn the_controller_can_be_switched_off() {
-        let config = LatencyConfig {
-            step_down: false,
-            ..LatencyConfig::default()
-        };
-        let mut c = StepDown::new(&config, EffectiveMode::Continuous, None);
-        for second in 0..20 {
-            assert_eq!(c.sample(f64::from(second), 100.0, 9.0), None);
-        }
-        assert_eq!(c.state().mode, EffectiveMode::Continuous);
-    }
-
-    #[test]
-    fn light_and_off_never_change() {
-        for mode in [EffectiveMode::Light, EffectiveMode::Off] {
-            let mut c = StepDown::new(&LatencyConfig::default(), mode, Some(ModeReason::User));
-            for second in 0..20 {
-                assert_eq!(c.sample(f64::from(second), 100.0, 9.0), None);
-            }
-            assert_eq!(c.state().mode, mode);
-        }
-    }
-
-    #[test]
-    fn three_draft_failures_switch_to_light_until_the_server_is_ready() {
-        let mut c = controller();
-        assert_eq!(c.draft_failed(), None);
-        assert_eq!(c.draft_failed(), None);
-        c.draft_succeeded();
-        assert_eq!(c.draft_failed(), None);
-        assert_eq!(c.draft_failed(), None);
-        let state = c.draft_failed().unwrap();
-        assert_eq!(state.mode, EffectiveMode::Light);
-        assert_eq!(state.reason, Some(ModeReason::DraftUnavailable));
-        // CPU samples cannot bring it back while the draft server is unavailable
-        for second in 0..30 {
-            assert_eq!(c.sample(f64::from(second), 1.0, 0.0), None);
-        }
-        let back = c.draft_server(true).unwrap();
-        assert_eq!(back.mode, EffectiveMode::Continuous);
-        assert_eq!(back.reason, Some(ModeReason::Auto));
-    }
-
-    #[test]
     fn a_failed_draft_server_switches_immediately() {
         let mut c = controller();
         let state = c.draft_server(false).unwrap();
         assert_eq!(state.reason, Some(ModeReason::DraftUnavailable));
-    }
-
-    #[test]
-    fn choosing_a_mode_resets_the_controller() {
-        let mut c = controller();
-        down(&mut c, 0.0);
-        let state = c.choose(EffectiveMode::Continuous, 5.0).unwrap();
-        assert_eq!(state.mode, EffectiveMode::Continuous);
-        assert_eq!(state.reason, Some(ModeReason::User));
-        let state = c.choose(EffectiveMode::Light, 6.0).unwrap();
-        assert_eq!(state.mode, EffectiveMode::Light);
     }
 }

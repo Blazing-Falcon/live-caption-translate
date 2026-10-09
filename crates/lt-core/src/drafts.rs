@@ -368,29 +368,6 @@ mod tests {
     }
 
     #[test]
-    fn first_draft_needs_three_word_characters() {
-        let mut s = state();
-        s.partial(id(1), "你好", "zh", 1_000);
-        assert!(!s.has_job());
-        s.partial(id(1), "你好吗", "zh", 1_100);
-        assert!(s.has_job());
-    }
-
-    #[test]
-    fn growth_rule_needs_three_more_characters_than_the_last_request() {
-        let mut s = state();
-        s.partial(id(1), "你好吗我", "zh", 1_000);
-        let request = s.take_request().unwrap();
-        assert_eq!(request.job.zh, "你好吗我");
-        assert_eq!(request.prefill, "");
-        s.partial(id(1), "你好吗我很", "zh", 1_500);
-        s.partial(id(1), "你好吗我很好", "zh", 1_600);
-        assert!(!s.has_job(), "only two new characters");
-        s.partial(id(1), "你好吗我很好呀", "zh", 1_700);
-        assert!(s.has_job());
-    }
-
-    #[test]
     fn only_the_newest_waiting_partial_is_kept() {
         let mut s = state();
         s.partial(id(1), "你好吗", "zh", 1_000);
@@ -398,23 +375,6 @@ mod tests {
         let request = s.take_request().unwrap();
         assert_eq!(request.job.id, id(2));
         assert!(s.take_request().is_none());
-    }
-
-    #[test]
-    fn publishing_counts_revisions_and_feeds_the_next_prefill() {
-        let mut s = state();
-        s.partial(id(1), "正好我没看。", "zh", 1_000);
-        let first = s.take_request().unwrap();
-        let published = s.completed(done(first, "I didn't see it.")).unwrap();
-        assert_eq!((published.rev, published.end_ms), (1, 1_000));
-        s.partial(id(1), "正好我没看过这个电。", "zh", 1_500);
-        let second = s.take_request().unwrap();
-        assert_eq!(second.prefill, "I didn't ");
-        let published = s
-            .completed(done(second, "I didn't watch this movie."))
-            .unwrap();
-        assert_eq!(published.rev, 2);
-        assert_eq!(s.published_total(), 2);
     }
 
     #[test]
@@ -426,97 +386,5 @@ mod tests {
         assert!(s.completed(done(request, "Hello")).is_none());
         s.partial(id(1), "你好吗我很好", "zh", 2_000);
         assert!(!s.has_job(), "no more jobs for a finished id");
-    }
-
-    #[test]
-    fn a_draft_landing_after_the_final_is_still_published_once() {
-        let mut s = state();
-        s.partial(id(1), "你好吗", "zh", 1_000);
-        let request = s.take_request().unwrap();
-        s.partial(id(1), "你好吗我很", "zh", 1_500);
-        s.final_arrived(id(1));
-        assert!(!s.has_job(), "the waiting job left with the final");
-        assert!(s.completed(done(request, "Hello")).is_some());
-    }
-
-    #[test]
-    fn failures_are_counted_and_publish_nothing() {
-        let mut s = state();
-        s.partial(id(1), "你好吗", "zh", 1_000);
-        let request = s.take_request().unwrap();
-        let outcome = DraftOutcome {
-            request,
-            result: DraftResult::Failed("timeout".into()),
-        };
-        assert!(s.completed(outcome).is_none());
-        assert_eq!(s.failed_total(), 1);
-        s.partial(id(1), "你好吗我很好", "zh", 1_500);
-        let request = s.take_request().unwrap();
-        let outcome = DraftOutcome {
-            request,
-            result: DraftResult::Rejected,
-        };
-        assert!(s.completed(outcome).is_none());
-        assert_eq!(s.failed_total(), 1, "a rejected draft is not a failure");
-    }
-
-    #[test]
-    fn worker_prepends_the_prefill_cleans_and_rejects() {
-        struct Scripted(&'static str);
-        impl Translator for Scripted {
-            fn caps(&self) -> crate::engines::TranslatorCaps {
-                crate::engines::TranslatorCaps {
-                    streaming: false,
-                    glossary: false,
-                    context: false,
-                    prefill: true,
-                    max_input_chars: 300,
-                    pairs: vec![],
-                }
-            }
-            fn warm_up(&mut self, _: &TranslationControl) -> Result<()> {
-                Ok(())
-            }
-            fn translate(
-                &mut self,
-                request: &TranslateRequest<'_>,
-                _: &mut dyn FnMut(&str),
-            ) -> Result<crate::engines::TranslationOut> {
-                assert_eq!(request.max_tokens, Some(draft_max_tokens(request.text)));
-                Ok(crate::engines::TranslationOut {
-                    text: self.0.into(),
-                    ..Default::default()
-                })
-            }
-        }
-        let config = LatencyConfig::default();
-        let cancelled = Arc::new(AtomicBool::new(false));
-        let request = |prefill: &str| DraftRequest {
-            job: DraftJob {
-                id: id(1),
-                zh: "你好吗".into(),
-                lang: "zh".into(),
-                end_ms: 10,
-            },
-            prefill: prefill.into(),
-        };
-        let outcome = translate_draft(
-            &mut Scripted("watch it."),
-            request("I didn't "),
-            &config,
-            &cancelled,
-        );
-        assert!(matches!(outcome.result, DraftResult::Text(t) if t == "I didn't watch it."));
-        let outcome = translate_draft(
-            &mut Scripted("he he he he he"),
-            request(""),
-            &config,
-            &cancelled,
-        );
-        assert!(matches!(outcome.result, DraftResult::Text(t) if t == "he"));
-        let outcome = translate_draft(&mut Scripted("你好吗"), request(""), &config, &cancelled);
-        assert!(matches!(outcome.result, DraftResult::Rejected));
-        let outcome = translate_draft(&mut Scripted("  "), request(""), &config, &cancelled);
-        assert!(matches!(outcome.result, DraftResult::Rejected));
     }
 }

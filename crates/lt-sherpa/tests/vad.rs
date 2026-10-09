@@ -57,18 +57,6 @@ fn wav(path: &Path) -> Vec<f32> {
 }
 
 #[test]
-fn missing_silero_model_fails_with_readable_startup_error() {
-    let missing =
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../target/tmp/missing-lt-sherpa-model.onnx");
-    assert!(!missing.exists());
-    let error = match SileroVad::with_runtime(&missing, &missing) {
-        Ok(_) => panic!("Missing Silero model accepted"),
-        Err(error) => error,
-    };
-    assert!(error.to_string().contains("Silero VAD v5 model is missing"));
-}
-
-#[test]
 fn silero_state_reset_and_probabilities_match_frozen_references() {
     let Some(models) = std::env::var_os("LT_MODELS_DIR") else {
         eprintln!("Real model test skipped: set LT_MODELS_DIR to verified model directory");

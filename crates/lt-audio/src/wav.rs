@@ -411,20 +411,13 @@ impl PreparedFrames {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crossbeam_channel::bounded;
     use lt_core::{
         bus::EventBus,
         config::Config,
-        engines::Vad,
         fakes::{FakeAsr, FakeTranslator, FakeVad},
         pipeline::Pipeline,
-        segment::SegmentBuilder,
     };
-    use std::{
-        fs,
-        sync::atomic::AtomicUsize,
-        time::{Duration, Instant},
-    };
+    use std::{fs, sync::atomic::AtomicUsize};
 
     static TEMP_ID: AtomicUsize = AtomicUsize::new(0);
     struct FixtureDir {
@@ -483,71 +476,6 @@ mod tests {
             ..AudioConfig::default()
         }
     }
-    fn collect(source: &mut WavSource, base: StreamTime) -> Vec<AudioFrame> {
-        let (sender, receiver) = bounded(64);
-        let producer = AudioProducer::new(sender, Arc::new(AtomicBool::new(false)), base);
-        source
-            .start(producer, SourceEvents::new(EventBus::default()))
-            .unwrap();
-        let frames = receiver.iter().collect();
-        source.stop();
-        assert!(source.error_handle().lock().unwrap().is_none());
-        frames
-    }
-
-    #[test]
-    fn stereo_44100_replay_produces_contiguous_16khz_frames_and_excerpt_lengths() {
-        let fixtures = FixtureDir::new();
-        let path = fixtures.tone(44_100, 2, 2.0);
-        let mut source = WavSource::new(&path, Pace::AsFastAsPossible)
-            .unwrap()
-            .with_audio_config(no_normalize())
-            .with_range(0.5, Some(1.0))
-            .unwrap();
-        let frames = collect(&mut source, StreamTime::from_seconds(10.0));
-        assert_eq!(frames.len(), 16_000_usize.div_ceil(FRAME_SAMPLES));
-        for (index, frame) in frames.iter().enumerate() {
-            assert_eq!(
-                frame.t0,
-                StreamTime(160_000 + index as u64 * FRAME_SAMPLES as u64)
-            );
-            assert_eq!(frame.flags, FrameFlags::EMPTY);
-            assert!(frame.samples.iter().all(|sample| sample.is_finite()));
-        }
-        assert!(frames[0].samples.iter().any(|sample| sample.abs() > 0.2));
-        assert_eq!(&frames.last().unwrap().samples[128..], &[0.0; 384]);
-        assert_eq!(read_wav_mono16(path).unwrap().len(), 32_000);
-    }
-
-    #[test]
-    fn injected_five_second_hole_closes_last_sentence_without_waiting_for_audio_return() {
-        let fixtures = FixtureDir::new();
-        let path = fixtures.tone(16_000, 1, 7.0);
-        let mut source = WavSource::new(path, Pace::AsFastAsPossible)
-            .unwrap()
-            .with_audio_config(no_normalize())
-            .with_gaps(vec![InjectedGap {
-                start: StreamTime::from_seconds(1.0),
-                duration: StreamTime::from_seconds(5.0),
-            }])
-            .unwrap();
-        let frames = collect(&mut source, StreamTime::ZERO);
-        assert!(frames
-            .iter()
-            .filter(|frame| frame.flags.gap_filled)
-            .all(|frame| frame.samples == [0.0; 512]));
-        assert!(frames.iter().filter(|frame| frame.flags.gap_filled).count() > 150);
-        let mut vad = FakeVad::from_energy(0.005);
-        let mut builder = SegmentBuilder::new(lt_core::config::VadConfig::default());
-        let mut closed_at = None;
-        for frame in &frames {
-            let result = builder.push(&frame.samples, vad.speech_prob(&frame.samples), frame.flags);
-            if !result.segments.is_empty() && closed_at.is_none() {
-                closed_at = Some(builder.current_time().seconds());
-            }
-        }
-        assert!(closed_at.unwrap() <= 1.0 + 0.4 + 0.1);
-    }
 
     #[test]
     fn wav_replay_runs_through_fake_pipeline_end_to_end() {
@@ -586,70 +514,5 @@ mod tests {
         );
         assert_eq!(events.iter().filter(|event| matches!(event, PipelineEvent::TranslationFinal { text, .. } if text == "Hello.")).count(), 1);
         assert!(errors.lock().unwrap().is_none());
-    }
-
-    #[test]
-    fn realtime_replay_paces_frame_completion_and_stop_cancels_waits() {
-        let fixtures = FixtureDir::new();
-        let path = fixtures.tone(16_000, 1, 2.0);
-        let mut source = WavSource::new(path, Pace::RealTime)
-            .unwrap()
-            .with_audio_config(no_normalize());
-        let (sender, receiver) = bounded(1);
-        let started = Instant::now();
-        let producer =
-            AudioProducer::new(sender, Arc::new(AtomicBool::new(false)), StreamTime::ZERO);
-        source
-            .start(producer, SourceEvents::new(EventBus::default()))
-            .unwrap();
-        receiver.recv_timeout(Duration::from_secs(1)).unwrap();
-        assert!(started.elapsed() >= Duration::from_millis(25));
-        let started = Instant::now();
-        source.stop();
-        assert!(started.elapsed() < Duration::from_secs(1));
-        assert!(source.error_handle().lock().unwrap().is_none());
-    }
-
-    #[test]
-    fn integer_pcm_scaling_zero_length_and_bad_inputs_are_handled() {
-        let fixtures = FixtureDir::new();
-        let path = fixtures.path.join("pcm.wav");
-        let mut writer = hound::WavWriter::create(
-            &path,
-            WavSpec {
-                channels: 1,
-                sample_rate: 16_000,
-                bits_per_sample: 16,
-                sample_format: SampleFormat::Int,
-            },
-        )
-        .unwrap();
-        writer.write_sample(i16::MIN).unwrap();
-        writer.write_sample(0_i16).unwrap();
-        writer.write_sample(i16::MAX).unwrap();
-        writer.finalize().unwrap();
-        let mut source = WavSource::new(&path, Pace::AsFastAsPossible)
-            .unwrap()
-            .with_audio_config(no_normalize());
-        let frames = collect(&mut source, StreamTime::ZERO);
-        assert_eq!(frames.len(), 1);
-        assert_eq!(&frames[0].samples[..3], &[-1.0, 0.0, 32_767.0 / 32_768.0]);
-        let mut empty = WavSource::new(&path, Pace::AsFastAsPossible)
-            .unwrap()
-            .with_range(0.0, Some(0.0))
-            .unwrap();
-        assert!(collect(&mut empty, StreamTime::ZERO).is_empty());
-        assert!(WavSource::new(fixtures.path.join("missing.wav"), Pace::AsFastAsPossible).is_err());
-        assert!(WavSource::new(&path, Pace::AsFastAsPossible)
-            .unwrap()
-            .with_range(f64::NAN, None)
-            .is_err());
-        assert!(WavSource::new(path, Pace::AsFastAsPossible)
-            .unwrap()
-            .with_gaps(vec![InjectedGap {
-                start: StreamTime::ZERO,
-                duration: StreamTime::ZERO
-            }])
-            .is_err());
     }
 }

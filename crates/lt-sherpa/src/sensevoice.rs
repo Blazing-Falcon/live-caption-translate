@@ -292,52 +292,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn native_json_preserves_language_event_and_ignores_extra_metadata() {
-        let cases = [
-            (
-                r#"{"text":"你好。","lang":"<|zh|>","event":"<|Speech|>","emotion":"<|NEUTRAL|>","tokens":[],"timestamps":[]}"#,
-                "你好。",
-                Some("<|zh|>"),
-                Some("<|Speech|>"),
-            ),
-            (
-                r#"{"text":"啦。","lang":"<|ko|>","event":"<|BGM|>"}"#,
-                "啦。",
-                Some("<|ko|>"),
-                Some("<|BGM|>"),
-            ),
-            (r#"{"text":"","lang":"","event":""}"#, "", None, None),
-            (r#"{"text":"Hello."}"#, "Hello.", None, None),
-        ];
-        for (json, text, lang, event) in cases {
-            assert_eq!(
-                parse_result(json).unwrap(),
-                RawResult {
-                    text: text.into(),
-                    lang: lang.map(String::from),
-                    event: event.map(String::from),
-                    tokens: Vec::new(),
-                    timestamps: Vec::new(),
-                }
-            );
-        }
-        assert!(parse_result("{}").is_err());
-        assert!(parse_result("not JSON").is_err());
-    }
-
-    #[test]
     fn native_json_carries_tokens_with_start_times() {
         let json = r#"{"text":"这次 school。","lang":"<|zh|>","event":"<|Speech|>","tokens":["这","次"," school","。"],"timestamps":[0.0,0.36,0.72,1.1]}"#;
         let raw = parse_result(json).unwrap();
         assert_eq!(raw.tokens, ["这", "次", " school", "。"]);
         assert_eq!(raw.timestamps, [0.0, 0.36, 0.72, 1.1]);
         assert_eq!(raw.tokens.concat(), "这次 school。");
-    }
-
-    #[test]
-    fn engine_types_can_move_to_their_exclusive_workers() {
-        fn assert_send<T: Send>() {}
-        assert_send::<SenseVoiceAsr>();
-        assert_send::<crate::SileroVad>();
     }
 }

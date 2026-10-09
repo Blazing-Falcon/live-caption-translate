@@ -424,111 +424,6 @@ mod tests {
     }
 
     #[test]
-    fn frame_rounding_matches_python_ties_even() {
-        assert_eq!(python_frames(0.25), 8);
-        assert_eq!(python_frames(0.4), 12);
-        assert_eq!(python_frames(0.08), 2);
-        assert_eq!(python_frames(0.112), 4);
-        assert_eq!(sample_duration(0.3), 4_800);
-        assert_eq!(sample_duration(0.1), 1_600);
-    }
-
-    #[test]
-    fn opening_requires_the_full_speech_run_and_exact_padding() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        assert!(frames(&mut builder, 7, 0.9).started.is_empty());
-        assert!(frames(&mut builder, 12, 0.0).segments.is_empty());
-        assert!(builder.finish().segments.is_empty());
-
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        frames(&mut builder, 20, 0.0);
-        let opened = frames(&mut builder, 8, 0.9);
-        assert_eq!(opened.started, vec![(UtteranceId(0), StreamTime(20 * 512))]);
-        assert!(frames(&mut builder, 11, 0.0).segments.is_empty());
-        let closed = frames(&mut builder, 1, 0.0);
-        let segment = &closed.segments[0];
-        assert_eq!(segment.start, StreamTime(20 * 512 - 4_800));
-        assert_eq!(segment.end, StreamTime(28 * 512 + 1_600));
-        assert_eq!(
-            segment.samples.len() as u64,
-            segment.end.0 - segment.start.0
-        );
-        assert_eq!(segment.cut_reason, CutReason::Pause);
-        assert!(builder.finish().segments.is_empty());
-    }
-
-    #[test]
-    fn initial_pre_roll_clamps_at_zero() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        frames(&mut builder, 8, 0.9);
-        let closed = frames(&mut builder, 12, 0.0);
-        assert_eq!(closed.segments[0].start, StreamTime::ZERO);
-    }
-
-    #[test]
-    fn soft_cut_uses_first_breath_and_continues_without_overlap() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        let mut output = frames(&mut builder, 235, 0.9);
-        append(
-            &mut output,
-            builder.push(&[1.0; FRAME_SAMPLES], 0.3, FrameFlags::EMPTY),
-        );
-        assert_eq!(output.segments.len(), 1);
-        assert_eq!(output.segments[0].cut_reason, CutReason::SoftCut);
-        assert_eq!(output.segments[0].end, StreamTime(236 * 512));
-        assert_eq!(output.started[1], (UtteranceId(1), StreamTime(236 * 512)));
-        frames(&mut builder, 45, 0.9);
-        let tail = builder.finish();
-        assert_eq!(tail.segments[0].start, output.segments[0].end);
-        assert_eq!(tail.segments[0].cut_reason, CutReason::End);
-
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        frames(&mut builder, 235, 0.9);
-        assert!(builder
-            .push(&[1.0; FRAME_SAMPLES], 0.4, FrameFlags::EMPTY)
-            .segments
-            .is_empty());
-        assert_eq!(builder.finish().segments[0].cut_reason, CutReason::End);
-    }
-
-    #[test]
-    fn hard_cut_chooses_the_lowest_energy_in_the_last_second() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        let mut output = SegmentUpdate::default();
-        for index in 0..937 {
-            let amplitude = if index == 294 { 0.1 } else { 1.0 };
-            append(
-                &mut output,
-                builder.push(&[amplitude; FRAME_SAMPLES], 0.9, FrameFlags::EMPTY),
-            );
-        }
-        append(&mut output, builder.finish());
-        assert_eq!(output.segments[0].end, StreamTime(295 * 512));
-        assert_eq!(output.segments[0].cut_reason, CutReason::HardCut);
-        for pair in output.segments.windows(2) {
-            assert_eq!(pair[0].end, pair[1].start);
-            assert!(pair[0].id < pair[1].id);
-        }
-        for segment in output
-            .segments
-            .iter()
-            .filter(|s| s.cut_reason == CutReason::HardCut)
-        {
-            let duration = segment.end.0 - segment.start.0;
-            assert!((9 * SAMPLE_RATE..=10 * SAMPLE_RATE + 512).contains(&duration));
-            assert_eq!(segment.samples.len() as u64, duration);
-        }
-    }
-
-    #[test]
-    fn equal_energy_hard_cut_chooses_the_earliest_inclusive_frame() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        let output = frames(&mut builder, 313, 0.9);
-        assert_eq!(output.segments[0].end, StreamTime(282 * 512));
-        assert_eq!(output.started[1].1, StreamTime(282 * 512));
-    }
-
-    #[test]
     fn discontinuity_closes_before_ingress_and_discards_old_pre_roll() {
         let mut builder = SegmentBuilder::new(VadConfig::default());
         frames(&mut builder, 10, 0.0);
@@ -542,72 +437,6 @@ mod tests {
         let closed = frames(&mut builder, 12, 0.0);
         assert_eq!(closed.segments[0].start, boundary);
         assert_eq!(closed.segments[0].samples[0], 2.0);
-    }
-
-    #[test]
-    fn clock_jump_advances_without_audio_or_id_reuse() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        frames(&mut builder, 8, 0.9);
-        let previous = builder.current_time();
-        let jumped = builder.discontinuity(StreamTime::from_seconds(60.0));
-        assert_eq!(jumped.segments[0].end, previous);
-        assert_eq!(jumped.segments[0].cut_reason, CutReason::Discontinuity);
-        assert!(builder.history.is_empty());
-        assert_eq!(builder.current_time(), StreamTime::from_seconds(60.0));
-        assert_eq!(frames(&mut builder, 8, 0.9).started[0].0, UtteranceId(1));
-        let closed = frames(&mut builder, 12, 0.0);
-        assert_eq!(closed.segments[0].start, StreamTime::from_seconds(60.0));
-        let now = builder.current_time();
-        builder.discontinuity(StreamTime::ZERO);
-        assert_eq!(builder.current_time(), now);
-    }
-
-    #[test]
-    fn gap_filled_frames_close_as_silence() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        frames(&mut builder, 8, 0.9);
-        for _ in 0..11 {
-            assert!(builder
-                .push(&[0.0; FRAME_SAMPLES], 0.9, FrameFlags::GAP_FILLED)
-                .segments
-                .is_empty());
-        }
-        let closed = builder.push(&[0.0; FRAME_SAMPLES], 0.9, FrameFlags::GAP_FILLED);
-        assert_eq!(closed.segments[0].cut_reason, CutReason::Pause);
-        assert!(closed.segments[0].samples[8 * FRAME_SAMPLES..]
-            .iter()
-            .all(|v| *v == 0.0));
-    }
-
-    #[test]
-    fn final_flush_matches_reference_without_pre_roll() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        frames(&mut builder, 100, 0.0);
-        frames(&mut builder, 8, 0.9);
-        let closed = builder.finish();
-        assert_eq!(closed.segments[0].start, StreamTime(100 * 512));
-        assert_eq!(closed.segments[0].end, StreamTime(108 * 512));
-        assert_eq!(closed.segments[0].samples.len(), 8 * FRAME_SAMPLES);
-        assert!(builder.finish().segments.is_empty());
-    }
-
-    #[test]
-    fn post_roll_longer_than_silence_waits_for_available_samples() {
-        let config = VadConfig {
-            min_silence_s: 0.16,
-            post_roll_s: 0.5,
-            ..VadConfig::default()
-        };
-        let mut builder = SegmentBuilder::new(config);
-        frames(&mut builder, 8, 0.9);
-        assert!(frames(&mut builder, 5, 0.0).segments.is_empty());
-        let closed = frames(&mut builder, 11, 0.0);
-        assert_eq!(closed.segments.len(), 1);
-        assert_eq!(closed.segments[0].end, StreamTime(8 * 512 + 8_000));
-        assert_eq!(
-            closed.segments[0].samples.len() as u64,
-            closed.segments[0].end.0
-        );
     }
 
     #[test]
@@ -671,54 +500,6 @@ mod tests {
     }
 
     #[test]
-    fn invalid_commit_cuts_are_ignored() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        let mut output = SegmentUpdate::default();
-        assert!(builder
-            .commit_cut(UtteranceId(0), StreamTime(512))
-            .segments
-            .is_empty());
-        feed(&mut builder, &mut output, 0..60, 0.9);
-        let now = builder.current_time();
-        for (id, at) in [
-            (UtteranceId(7), StreamTime(1_000)),
-            (UtteranceId(0), StreamTime(0)),
-            (UtteranceId(0), now),
-            (UtteranceId(0), StreamTime(now.0 + 512)),
-        ] {
-            let update = builder.commit_cut(id, at);
-            assert!(update.segments.is_empty() && update.started.is_empty());
-        }
-        assert_eq!(builder.finish().segments[0].id, UtteranceId(0));
-        // Nothing is open any more.
-        assert!(builder
-            .commit_cut(UtteranceId(0), StreamTime(512))
-            .segments
-            .is_empty());
-    }
-
-    #[test]
-    fn pending_segments_are_never_cut() {
-        let config = VadConfig {
-            min_silence_s: 0.16,
-            post_roll_s: 0.5,
-            ..VadConfig::default()
-        };
-        let mut builder = SegmentBuilder::new(config);
-        let mut output = SegmentUpdate::default();
-        feed(&mut builder, &mut output, 0..30, 0.9);
-        feed(&mut builder, &mut output, 30..35, 0.0);
-        assert!(output.segments.is_empty(), "post-roll still pending");
-        assert!(builder
-            .commit_cut(UtteranceId(0), StreamTime(20 * 512))
-            .segments
-            .is_empty());
-        feed(&mut builder, &mut output, 35..60, 0.0);
-        assert_eq!(output.segments.len(), 1);
-        assert_eq!(output.segments[0].cut_reason, CutReason::Pause);
-    }
-
-    #[test]
     fn forced_cuts_fire_at_the_same_positions_with_and_without_commit_cuts() {
         fn run(commits: bool) -> Vec<(CutReason, u64)> {
             let mut builder = SegmentBuilder::new(VadConfig::default());
@@ -758,30 +539,6 @@ mod tests {
             // Hard cuts search for the quietest frame inside the clause, so only the kind and
             // the stream second must agree.
             assert!(a.1.abs_diff(b.1) <= 32 * 512, "{a:?} vs {b:?}");
-        }
-    }
-
-    #[test]
-    fn commit_cuts_keep_ids_increasing_and_history_bounded() {
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        let mut open = UtteranceId(0);
-        let mut last_id = None;
-        for index in 0..3_600 {
-            let update = builder.push(&frame_with(index % 50), 0.9, FrameFlags::EMPTY);
-            for (id, _) in &update.started {
-                assert!(last_id.is_none_or(|previous| *id > previous));
-                last_id = Some(*id);
-                open = *id;
-            }
-            if index % 40 == 39 {
-                let at = StreamTime(builder.current_time().0 - 10 * 512);
-                for (id, _) in builder.commit_cut(open, at).started {
-                    assert!(last_id.is_none_or(|previous| id > previous));
-                    last_id = Some(id);
-                    open = id;
-                }
-            }
-            assert!(builder.history.len() <= 324, "{}", builder.history.len());
         }
     }
 

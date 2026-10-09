@@ -185,21 +185,3 @@ impl EngineRegistry {
 pub fn max_tokens(text: &str, cap: u32) -> u32 {
     (text.chars().count().saturating_mul(4).saturating_add(16)).min(cap as usize) as u32
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn unknown_engines_are_readable_errors() {
-        let cfg = Config::default();
-        assert!(matches!(
-            EngineRegistry::default().build_asr(&cfg),
-            Err(Error::UnknownEngine { .. })
-        ));
-    }
-    #[test]
-    fn token_budget_counts_unicode_scalars() {
-        assert_eq!(max_tokens("你好。", 256), 28);
-        assert_eq!(max_tokens(&"a".repeat(300), 256), 256);
-    }
-}

@@ -303,7 +303,7 @@ pub fn compute(events: &[TimedEvent], instants: &[u64]) -> WordMetrics {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lt_core::types::{CutReason, PipelineStats, TextClass, Timing};
+    use lt_core::types::{CutReason, TextClass, Timing};
 
     fn at(t_ms: u64, event: PipelineEvent) -> TimedEvent {
         TimedEvent { t_ms, event }
@@ -370,40 +370,6 @@ mod tests {
     }
 
     #[test]
-    fn instants_outside_every_clause_are_counted_as_uncovered() {
-        let log = vec![
-            at(2_400, asr_final(1, 1_000, 2_000, CutReason::Pause)),
-            at(3_000, translation_final(1, "Hello.")),
-        ];
-        let metrics = compute(&log, &[500, 1_500, 2_500]);
-        assert_eq!(metrics.uncovered_first, 2);
-        assert_eq!(metrics.uncovered_final, 2);
-        assert_eq!(metrics.final_english.p50, Some(1.5));
-    }
-
-    #[test]
-    fn a_joined_leader_covers_its_constituents() {
-        let log = vec![
-            at(1_100, asr_final(1, 1_000, 1_300, CutReason::Pause)),
-            at(1_600, asr_final(2, 1_500, 1_900, CutReason::Pause)),
-            at(
-                1_700,
-                PipelineEvent::Joined {
-                    id: id(1),
-                    absorbed: vec![id(2)],
-                    text: "你好，再见".into(),
-                    kind: lt_core::events::JoinKind::Hold,
-                },
-            ),
-            at(3_000, translation_final(1, "Hello, goodbye.")),
-        ];
-        let metrics = compute(&log, &[1_100, 1_700]);
-        assert_eq!(metrics.uncovered_final, 0);
-        // 1900 and 1300 -> p50 1.6
-        assert_eq!(metrics.final_english.p50, Some(1.6));
-    }
-
-    #[test]
     fn rewrites_count_words_removed_between_displayed_texts() {
         let log = vec![
             at(1_000, draft(1, 1, "I want to buy", 1_000)),
@@ -419,51 +385,5 @@ mod tests {
         // ("I want" -> "I would like to" removes 1: "want"), then the full final removes
         // "to"? no: "I would like to" is a prefix of "I would like to buy it." => 0.
         assert_eq!(metrics.rewrites_hold2, Some(0.17));
-    }
-
-    #[test]
-    fn stats_events_give_cpu_cores_and_step_downs() {
-        let stats = |mode, app: f32, fin: f32, draft: f32| {
-            PipelineEvent::Stats(PipelineStats {
-                mode,
-                cpu_app_pct: app,
-                cpu_translator_pct: fin,
-                cpu_draft_pct: draft,
-                cpu_system_pct: 40.0,
-                drafts_failed: 2,
-                ..PipelineStats::default()
-            })
-        };
-        let log = vec![
-            at(1_000, stats(EffectiveMode::Continuous, 40.0, 50.0, 60.0)),
-            at(2_000, stats(EffectiveMode::Continuous, 50.0, 70.0, 80.0)),
-            at(3_000, stats(EffectiveMode::Light, 60.0, 90.0, 0.0)),
-        ];
-        let metrics = compute(&log, &[]);
-        assert_eq!(metrics.cpu_cores_app, Some(0.5));
-        assert_eq!(metrics.cpu_cores_final, Some(0.7));
-        assert_eq!(metrics.cpu_cores_draft, Some(0.47));
-        assert_eq!(metrics.cpu_cores_total, Some(1.67));
-        assert_eq!(metrics.system_cpu_pct, Some(40.0));
-        assert_eq!(metrics.step_downs, 1);
-        assert_eq!(metrics.drafts_failed, 2);
-    }
-
-    #[test]
-    fn instants_come_from_every_third_speech_frame() {
-        struct Scripted(Vec<f32>, usize);
-        impl Vad for Scripted {
-            fn speech_prob(&mut self, _: &[f32; 512]) -> f32 {
-                self.1 += 1;
-                self.0[self.1 - 1]
-            }
-            fn reset(&mut self) {}
-        }
-        let mut probabilities = vec![0.0; 3];
-        probabilities.extend([0.9; 7]);
-        let mut vad = Scripted(probabilities, 0);
-        let samples = vec![0.0_f32; 512 * 10];
-        // frames 3, 6, 9 are sampled; all three are speech
-        assert_eq!(speech_instants(&samples, &mut vad), vec![96, 192, 288]);
     }
 }

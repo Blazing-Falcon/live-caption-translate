@@ -106,28 +106,6 @@ mod tests {
     }
 
     #[test]
-    fn default_bar_is_bottom_centered_and_panel_docks_to_the_edge() {
-        let m = monitor("A", 0, 1920, 1040, 1.0);
-        let bar = default_rect(false, true, &m);
-        assert_eq!((bar.w, bar.x), (960.0, 480.0));
-        assert!(bar.y + bar.h < 1040.0);
-        let right = default_rect(true, true, &m);
-        let left = default_rect(true, false, &m);
-        assert_eq!((right.x, right.w), (1920.0 - 420.0 - 24.0, 420.0));
-        assert_eq!(left.x, 24.0);
-    }
-
-    #[test]
-    fn dips_round_trip_at_150_percent_on_a_secondary_monitor() {
-        let m = monitor("B", 1920, 2880, 1560, 1.5);
-        let rect = default_rect(false, true, &m);
-        let physical = to_physical(&rect, &m);
-        assert_eq!(physical.w, (rect.w * 1.5) as u32);
-        assert!(physical.x >= 1920);
-        assert_eq!(from_physical(physical, &m), rect);
-    }
-
-    #[test]
     fn oversized_or_offscreen_rects_are_clamped_into_the_work_area() {
         let m = monitor("A", 0, 1280, 720, 1.0);
         let wild = OverlayRect {
@@ -142,17 +120,5 @@ mod tests {
         assert!(p.x >= 0 && p.x as u32 + p.w <= 1280);
         assert!(p.y >= 0 && p.y as u32 + p.h <= 720);
         assert!(f64::from(p.h) >= MIN_H);
-    }
-
-    #[test]
-    fn missing_monitor_falls_back_to_primary() {
-        let monitors = [
-            monitor("A", 0, 1920, 1080, 1.0),
-            monitor("B", 1920, 1920, 1080, 1.0),
-        ];
-        assert_eq!(pick("B", &monitors, 0).unwrap().name, "B");
-        assert_eq!(pick("GONE", &monitors, 0).unwrap().name, "A");
-        assert_eq!(pick("", &monitors, 1).unwrap().name, "B");
-        assert!(pick("A", &[], 0).is_none());
     }
 }

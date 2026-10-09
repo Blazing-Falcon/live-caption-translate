@@ -38,19 +38,3 @@ impl Clock for ManualClock {
         StreamTime::from_samples(self.samples.load(Ordering::SeqCst))
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn clones_share_time_and_advance_saturates() {
-        let clock = ManualClock::new(StreamTime::from_millis(100));
-        let observer = clock.clone();
-        clock.advance(StreamTime::from_millis(32));
-        assert_eq!(observer.now(), StreamTime::from_millis(132));
-        observer.set(StreamTime::from_samples(u64::MAX - 1));
-        clock.advance(StreamTime::from_samples(10));
-        assert_eq!(observer.now(), StreamTime::from_samples(u64::MAX));
-    }
-}

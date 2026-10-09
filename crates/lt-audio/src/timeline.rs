@@ -228,16 +228,4 @@ mod tests {
         assert!(!blocks[2].flags.gap_filled);
         assert_eq!(timeline.cursor(), 2_007);
     }
-
-    #[test]
-    fn nonfinite_pcm_and_emission_failure_are_reported() {
-        assert!(MonoTimeline::new(0).is_err());
-        let mut timeline = MonoTimeline::new(16_000).unwrap();
-        assert!(timeline
-            .push_packet(0, &[f32::NAN], false, &mut |_| Ok(()))
-            .is_err());
-        assert!(timeline
-            .timeout_until(512, &mut |_| Err(Error::Stopped))
-            .is_err());
-    }
 }

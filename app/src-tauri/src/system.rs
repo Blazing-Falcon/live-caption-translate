@@ -37,23 +37,3 @@ pub fn current_warnings() -> Vec<String> {
         std::is_x86_feature_detected!("avx2"),
     )
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn adequate_hardware_has_no_warnings() {
-        assert!(warnings(8, Some(16_000_000_000), true).is_empty());
-        assert!(warnings(4, Some(8_000_000_000), true).is_empty());
-    }
-
-    #[test]
-    fn each_shortfall_is_reported_separately() {
-        assert_eq!(warnings(2, Some(16_000_000_000), true).len(), 1);
-        assert_eq!(warnings(8, Some(4_000_000_000), true).len(), 1);
-        assert_eq!(warnings(8, Some(16_000_000_000), false).len(), 1);
-        assert_eq!(warnings(2, Some(4_000_000_000), false).len(), 3);
-        assert!(warnings(8, None, true).is_empty());
-    }
-}

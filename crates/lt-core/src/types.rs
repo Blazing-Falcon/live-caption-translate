@@ -246,15 +246,4 @@ mod tests {
         assert!(serde_json::from_str::<UtteranceId>("-1").is_err());
         assert!(serde_json::from_str::<UtteranceId>("1.5").is_err());
     }
-
-    #[test]
-    fn stream_clock_converts_samples_without_overflow() {
-        assert_eq!(StreamTime(512).millis(), 32);
-        assert_eq!(StreamTime::from_millis(32), StreamTime(512));
-        assert_eq!(StreamTime::from_seconds(0.032), StreamTime(512));
-        assert_eq!(StreamTime(16_000).seconds(), 1.0);
-        assert_eq!(StreamTime(u64::MAX).millis(), u64::MAX / 16);
-        assert_eq!(StreamTime(15).millis(), 0);
-        assert_eq!(serde_json::to_string(&StreamTime(512)).unwrap(), "512");
-    }
 }

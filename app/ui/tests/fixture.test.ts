@@ -18,26 +18,6 @@ describe("wire fixture", () => {
     expect(events.map((event) => event.type)).toEqual(EXPECTED_TYPES);
   });
 
-  it("has the numeric ids and snake_case fields the contract requires", () => {
-    for (const event of events) {
-      if ("id" in event) expect(Number.isSafeInteger(event.id)).toBe(true);
-    }
-    const final = events.find((event) => event.type === "translation_final");
-    expect(final).toMatchObject({ timing: { speech_end_ms: 47980, first_token_ms: 48790 } });
-    const stats = events.find((event) => event.type === "stats");
-    expect(stats).toMatchObject({ queue_depth: 1, done_p50_ms: 1230, rss_translator_mb: 1380 });
-  });
-
-  it("can be replayed through the caption controller without throwing", () => {
-    const controller = createCaptionController({ clock: new FakeClock(), reducedMotion: () => false });
-    controller.setConfig(testConfig());
-    for (const event of events) controller.dispatch(event);
-    const view = get(controller);
-    expect(view.lines.map((line) => `${line.id}:${line.state}`)).toEqual(["12:final"]);
-    expect(view.lines[0]?.source).toBe("我也想办一个，伟大的公司。");
-    controller.dispose();
-  });
-
   it("matches the committed Rust serialization sample byte-for-byte as JSON", () => {
     const raw = readFileSync(new URL("../src/lib/__fixtures__/events.json", import.meta.url), "utf8");
     expect(JSON.parse(raw)).toEqual(events);

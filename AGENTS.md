@@ -17,6 +17,7 @@ npm --prefix app/ui test     # fast UI tests
 - `scripts/check.ps1` must pass before a change is complete. Do not disable a lint or a test to make it pass.
 - Fixtures are the reference (`reference/fixtures`, `testdata`, `crates/*/tests/fixtures`, `app/ui/src/lib/__fixtures__`). Do not edit a fixture to make a test pass. Change the code. If a fixture is wrong, stop and tell why.
 - Do not invent numbers. A latency, CPU, memory or accuracy value must come from a run. Give the machine, the command and the date. If you did not measure it, write "not measured".
+- Add a test only if a failure means a real defect that nothing else finds: a contract between parts (wire format, config defaults, event order, prompts), a recorded reference (fixtures), a failure that is otherwise invisible (data loss, leaked processes, deadlocks, unbounded memory), or logic that broke before. Do not test constants, small helpers or UI layout.
 - Real-model tests skip without their variables. A skipped test is not a pass. Tell which tests you ran.
 - If you change a config key, update `docs/configuration.md`. A test compares its default block with `DEFAULT_CONFIG`. If you change an event or a command, update `docs/ipc.md`.
 - Keep OS code in `lt-audio` and the app. Keep engine code in `lt-sherpa` and `lt-llm`. `lt-core` has neither.

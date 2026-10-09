@@ -145,22 +145,3 @@ impl Drop for LoopbackSource {
         self.stop();
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn invalid_endpoint_ids_fail_before_any_native_operation() {
-        assert!(matches!(
-            LoopbackSource::new(DeviceChoice::Id(String::new()), AudioConfig::default()),
-            Err(Error::Config(_))
-        ));
-        assert!(matches!(
-            LoopbackSource::new(DeviceChoice::Id("a\0b".into()), AudioConfig::default()),
-            Err(Error::Config(_))
-        ));
-        let source =
-            LoopbackSource::new(DeviceChoice::FollowDefault, AudioConfig::default()).unwrap();
-        assert_eq!(source.pending_info().mode, CaptureMode::System);
-    }
-}

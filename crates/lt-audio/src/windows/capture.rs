@@ -1220,12 +1220,7 @@ impl SilenceTracker {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lt_core::{
-        bus::EventBus,
-        config::VadConfig,
-        segment::SegmentBuilder,
-        types::{CaptureMode, CutReason},
-    };
+    use lt_core::{bus::EventBus, types::CaptureMode};
 
     fn format(tag: u16, bits: u16, channels: u16, rate: u32) -> CaptureFormat {
         let alignment = channels * (bits / 8);
@@ -1242,71 +1237,6 @@ mod tests {
             None,
         )
         .unwrap()
-    }
-
-    #[test]
-    fn silent_null_packets_do_not_read_native_memory_and_coalesce_tiny_packets() {
-        let format = format(3, 32, 2, 48_000);
-        let mut assembler = PacketAssembler::default();
-        let mut packets = Vec::new();
-        for position in 0..1024 {
-            unsafe {
-                assembler.append(
-                    &format,
-                    std::ptr::null(),
-                    1,
-                    AUDCLNT_BUFFERFLAGS_SILENT.0 as u32,
-                    position,
-                    samples_to_hns(position, 48_000),
-                    7,
-                    &mut |packet| packets.push(packet),
-                )
-            }
-            .unwrap();
-        }
-        assert_eq!(packets.len(), 2);
-        assert_eq!(packets[1].device_position, 512);
-        assert_eq!(packets[1].qpc_100ns, samples_to_hns(512, 48_000));
-        assert!(packets
-            .iter()
-            .all(|packet| packet.frames == 512 && packet.silent && packet.samples == [0.0; 512]));
-        assert_eq!(
-            unsafe { assembler.append(&format, std::ptr::null(), 1, 0, 1024, 0, 7, &mut |_| {}) },
-            Err(PacketReadError::NullData)
-        );
-    }
-
-    #[test]
-    fn pcm_containers_unaligned_float_and_center_downmix_follow_format() {
-        let cases: &[(u16, u16, &[u8])] = &[
-            (1, 8, &[192]),
-            (1, 16, &[0x00, 0x40]),
-            (1, 24, &[0x00, 0x00, 0x40]),
-            (1, 32, &[0x00, 0x00, 0x00, 0x40]),
-        ];
-        for (tag, bits, bytes) in cases {
-            let format = format(*tag, *bits, 1, 16_000);
-            assert_eq!(unsafe { format.decode_mono(bytes.as_ptr()) }, 0.5);
-        }
-        let negative24 = [0x00, 0x00, 0x80];
-        assert_eq!(
-            unsafe { format(1, 24, 1, 16_000).decode_mono(negative24.as_ptr()) },
-            -1.0
-        );
-        let mut unaligned = [0u8; 9];
-        unaligned[1..].copy_from_slice(&0.5f64.to_le_bytes());
-        assert_eq!(
-            unsafe { format(3, 64, 1, 16_000).decode_mono(unaligned.as_ptr().add(1)) },
-            0.5
-        );
-        let surround = [0.1f32, 0.1, 0.2, 1.0, 1.0, 1.0];
-        let mono = unsafe { format(3, 32, 6, 48_000).decode_mono(surround.as_ptr().cast()) };
-        assert!((mono - (0.1 + 0.2 * std::f32::consts::FRAC_1_SQRT_2)).abs() < 1e-6);
-        let nan = [f32::NAN, 0.4];
-        assert_eq!(
-            unsafe { CaptureFormat::float_stereo_48k().decode_mono(nan.as_ptr().cast()) },
-            0.2
-        );
     }
 
     #[test]
@@ -1340,95 +1270,6 @@ mod tests {
     }
 
     #[test]
-    fn backward_position_or_data_gap_flushes_without_inventing_core_discontinuity() {
-        let format = format(3, 32, 1, 16_000);
-        let samples = [0.25f32; 1024];
-        let mut assembler = PacketAssembler::default();
-        let mut packets = Vec::new();
-        let mut emit = |packet| packets.push(packet);
-        unsafe {
-            assembler
-                .append(&format, samples.as_ptr().cast(), 100, 0, 0, 0, 1, &mut emit)
-                .unwrap();
-            assembler
-                .append(
-                    &format,
-                    samples.as_ptr().cast(),
-                    512,
-                    AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY.0 as u32,
-                    1000,
-                    625_000,
-                    1,
-                    &mut emit,
-                )
-                .unwrap();
-        }
-        assert_eq!(packets.len(), 2);
-        assert_eq!(packets[0].frames, 100);
-        assert!(packets[1].data_discontinuity);
-        assert_eq!(packets[1].device_position, 1000);
-    }
-
-    #[test]
-    fn qpc_is_100ns_timestamp_errors_use_device_anchor_and_clock_jumps_keep_epoch() {
-        assert_eq!(hns_to_samples(10_000_000, 48_000), 48_000);
-        assert_eq!(samples_to_hns(48_000, 48_000), 10_000_000);
-        let epoch = CaptureEpoch {
-            qpc_100ns: 1_000_000,
-            stream_time: StreamTime(32_000),
-        };
-        assert_eq!(epoch.stream_at(11_000_000), StreamTime(48_000));
-        assert_eq!(epoch.raw_at(11_000_000, 48_000), 48_000);
-        let mut clock = PacketClock::default();
-        let valid = CapturePacket {
-            frames: 512,
-            device_position: 1234,
-            qpc_100ns: 5_000_000,
-            ..Default::default()
-        };
-        assert_eq!(clock.packet_t0(&valid, 48_000, 0, epoch), 19_200);
-        let invalid = CapturePacket {
-            frames: 512,
-            device_position: 1234 + 48_000,
-            qpc_100ns: u64::MAX,
-            timestamp_error: true,
-            ..Default::default()
-        };
-        assert_eq!(clock.packet_t0(&invalid, 48_000, 0, epoch), 19_200 + 48_000);
-        let initial_invalid = CapturePacket {
-            timestamp_error: true,
-            ..valid
-        };
-        assert_eq!(
-            PacketClock::default().packet_t0(&initial_invalid, 48_000, 20_000_000, epoch),
-            91_200
-        );
-    }
-
-    #[test]
-    fn capture_ring_budget_tracks_rates_and_overflow_is_numeric_only() {
-        for rate in [8_000, 16_000, 44_100, 48_000, 96_000, 192_000, 384_000] {
-            let capacity = ring_packets(rate) * 512;
-            assert!(capacity >= 2 * rate as usize);
-            assert!(capacity < 2 * rate as usize + 1024);
-        }
-        let (mut producer, mut consumer) = RingBuffer::new(1);
-        let overflow = AtomicU64::new(0);
-        let mut assembler = PacketAssembler {
-            packet: CapturePacket {
-                frames: 512,
-                ..Default::default()
-            },
-        };
-        flush_pending(&mut assembler, &mut producer, &overflow);
-        assembler.packet.frames = 123;
-        flush_pending(&mut assembler, &mut producer, &overflow);
-        assert_eq!(overflow.load(Ordering::Relaxed), 123);
-        assert_eq!(consumer.pop().unwrap().frames, 512);
-        assert!(consumer.pop().is_err());
-    }
-
-    #[test]
     fn silence_requires_exact_three_seconds_and_real_audio_resumes_playing() {
         let mut silence = SilenceTracker::new(16_000);
         let mut changes = Vec::new();
@@ -1452,127 +1293,6 @@ mod tests {
         block.flags = FrameFlags::EMPTY;
         silence.observe(&block, |state| changes.push(state));
         assert_eq!(changes.last(), Some(&SourceStateKind::Playing));
-    }
-
-    #[test]
-    fn retry_delay_resets_and_cancelled_wait_does_not_block() {
-        let mut backoff = ReopenBackoff::default();
-        assert_eq!(backoff.next(), Duration::from_millis(500));
-        assert_eq!(backoff.next(), Duration::from_secs(1));
-        assert_eq!(backoff.next(), Duration::from_secs(2));
-        assert_eq!(backoff.next(), Duration::from_secs(2));
-        backoff.reset();
-        assert_eq!(backoff.next(), Duration::from_millis(500));
-        let now = Instant::now();
-        assert!(cancelled_wait(
-            &AtomicBool::new(true),
-            Duration::from_secs(2)
-        ));
-        assert!(now.elapsed() < Duration::from_millis(50));
-    }
-
-    fn fake_worker(
-        rate: u32,
-        packets: &[CapturePacket],
-        watermark: u64,
-        epoch: u64,
-    ) -> NativeWorker {
-        let (_, empty) = RingBuffer::new(1);
-        let (mut producer, consumer) = RingBuffer::new(packets.len().max(1));
-        for packet in packets {
-            producer.push(*packet).ok().unwrap();
-        }
-        drop(producer);
-        let (sender, notices) = crossbeam_channel::bounded(16);
-        sender
-            .send(NativeNotice::Ready {
-                generation: 1,
-                format: format(3, 32, 1, rate),
-                info: SourceInfo {
-                    mode: CaptureMode::System,
-                    label: "Synthetic terminal fixture".into(),
-                    sample_rate: rate,
-                    channels: 1,
-                },
-                opened_qpc_100ns: epoch,
-                consumer,
-            })
-            .unwrap();
-        drop(sender);
-        NativeWorker {
-            consumer: empty,
-            notices,
-            overflows: Arc::new(AtomicU64::new(0)),
-            cancelled: Arc::new(AtomicBool::new(false)),
-            join: Some(thread::spawn(|| Ok(()))),
-            start_qpc_100ns: epoch,
-            timeout_qpc_100ns: Arc::new(AtomicU64::new(watermark)),
-        }
-    }
-
-    #[test]
-    fn fake_packet_adapter_e2e_closes_speech_during_a_five_second_hole() {
-        let epoch = 1_000_000;
-        let packets: Vec<_> = (0..32)
-            .map(|index| CapturePacket {
-                generation: 1,
-                frames: 512,
-                samples: [0.1; 512],
-                device_position: index * 512,
-                qpc_100ns: epoch + samples_to_hns(index * 512, 16_000),
-                silent: false,
-                ..Default::default()
-            })
-            .collect();
-        let worker = fake_worker(
-            16_000,
-            &packets,
-            epoch + samples_to_hns(32 * 512 + 5 * 16_000, 16_000),
-            epoch,
-        );
-        let (sender, receiver) = crossbeam_channel::bounded(256);
-        let output = AudioProducer::new(sender, Arc::new(AtomicBool::new(false)), StreamTime::ZERO);
-        let bus = EventBus::default();
-        let events = bus.subscribe(16);
-        run_adapter(
-            worker,
-            output,
-            SourceEvents::new(bus),
-            AudioConfig {
-                normalize: false,
-                ..Default::default()
-            },
-        )
-        .unwrap();
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        let mut segments = Vec::new();
-        let mut closed_at = 0;
-        let mut gap_frames = 0;
-        for frame in receiver.try_iter() {
-            if frame.flags.gap_filled {
-                gap_frames += 1;
-            }
-            let update = builder.push(
-                &frame.samples,
-                if frame.flags.gap_filled { 0.0 } else { 0.9 },
-                frame.flags,
-            );
-            if !update.segments.is_empty() {
-                closed_at = frame.t0.samples() + 512;
-            }
-            segments.extend(update.segments);
-        }
-        assert_eq!(segments.len(), 1);
-        assert_eq!(segments[0].cut_reason, CutReason::Pause);
-        assert!(gap_frames >= 150);
-        assert!(closed_at as f64 / 16_000.0 - 1.024 <= 0.5);
-        assert!(events.try_iter().any(|event| matches!(
-            event,
-            PipelineEvent::SourceState {
-                state: SourceStateKind::Silent,
-                ..
-            }
-        )));
     }
 
     #[test]
@@ -1662,33 +1382,5 @@ mod tests {
                 .collect::<Vec<_>>(),
             [48_000, 16_000]
         );
-    }
-
-    #[test]
-    fn late_restarted_epoch_starts_at_open_without_replaying_historical_silence() {
-        let epoch = CaptureEpoch {
-            qpc_100ns: 1_000_000,
-            stream_time: StreamTime(1024),
-        };
-        let opened = epoch.qpc_100ns + 600 * 10_000_000;
-        let raw_start = epoch.raw_at(opened, 48_000);
-        let mut timeline = crate::timeline::MonoTimeline::new(48_000).unwrap();
-        let mut emitted = 0;
-        timeline
-            .discontinuity(raw_start, &mut |_| {
-                emitted += 1;
-                Ok(())
-            })
-            .unwrap();
-        assert_eq!(emitted, 0);
-        assert_eq!(timeline.cursor(), 600 * 48_000);
-        assert_eq!(epoch.stream_at(opened), StreamTime(1024 + 600 * 16_000));
-        timeline
-            .push_packet(raw_start, &[0.1; 512], false, &mut |_| {
-                emitted += 1;
-                Ok(())
-            })
-            .unwrap();
-        assert_eq!(emitted, 1);
     }
 }

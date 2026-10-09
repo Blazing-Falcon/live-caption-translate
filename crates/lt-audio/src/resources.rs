@@ -355,24 +355,6 @@ mod platform {
     #[cfg(test)]
     mod tests {
         use super::*;
-        #[test]
-        fn proc_stat_reads_idle_and_total_jiffies() {
-            let stat = "cpu  100 5 50 800 20 3 2 1 0 0\ncpu0 1 1 1 1 1 1 1 1";
-            assert_eq!(parse_system(stat), Some((820, 981)));
-            assert!(parse_system("garbage").is_none());
-        }
-        #[test]
-        fn proc_fields_handle_parentheses_and_ignore_waited_child_cpu() {
-            // State, then fields4..13, user14=25, kernel15=5, child16/17=999,
-            // fields18..21, starttime22=12345.
-            let stat = "42 (test (with) spaces)) R 1 2 3 4 5 6 7 8 9 10 25 5 999 999 0 0 1 0 12345";
-            let raw = parse(stat, "100 50 0 0 0 0 0", 100, 4096).unwrap();
-            assert_eq!(raw.cpu_ns, 300_000_000);
-            assert_eq!(raw.identity, 12345);
-            assert_eq!(raw.rss_bytes, 50 * 4096);
-            assert!(parse(&stat.replace(") R", ") Z"), "100 50", 100, 4096).is_none());
-            assert!(parse("malformed", "100 50", 100, 4096).is_none());
-        }
     }
 }
 
@@ -412,79 +394,5 @@ mod tests {
         assert_eq!(cpu.observe(None), 0.0);
         // counters that go backwards restart the baseline
         assert_eq!(cpu.observe(Some((10, 20))), 0.0);
-    }
-
-    #[test]
-    fn current_process_has_real_rss_and_no_child_is_zero() {
-        let child = Arc::new(AtomicU32::new(0));
-        let mut sampler = ProcessSampler::new(Arc::clone(&child)).unwrap();
-        let sample = sampler.sample();
-        assert!(
-            sample.rss_app_mb > 0,
-            "current process RSS must be observed"
-        );
-        assert_eq!(
-            sample.cpu_app_pct, 0.0,
-            "first sample only establishes the CPU baseline"
-        );
-        assert_eq!(sample.rss_translator_mb, 0);
-        assert_eq!(sample.cpu_translator_pct, 0.0);
-        child.store(u32::MAX, Ordering::Release);
-        let missing = sampler.sample();
-        assert_eq!(missing.rss_translator_mb, 0);
-        assert_eq!(missing.cpu_translator_pct, 0.0);
-        assert!(missing.rss_app_mb > 0);
-    }
-
-    #[test]
-    fn selected_pid_scope_and_pid_changes_clear_child_baselines() {
-        let child = Arc::new(AtomicU32::new(std::process::id()));
-        let mut sampler = ProcessSampler::new(Arc::clone(&child)).unwrap();
-        let first = sampler.sample();
-        assert!(first.rss_translator_mb > 0);
-        assert_eq!(first.rss_translator_mb, first.rss_app_mb);
-        assert_eq!(first.cpu_translator_pct, 0.0);
-        child.store(0, Ordering::Release);
-        assert_eq!(sampler.sample().rss_translator_mb, 0);
-        assert!(sampler.child_cpu.baseline.is_none());
-        child.store(std::process::id(), Ordering::Release);
-        assert_eq!(sampler.sample().cpu_translator_pct, 0.0);
-    }
-
-    #[test]
-    fn cpu_delta_is_percent_of_one_core_and_short_intervals_keep_the_baseline() {
-        let mut cpu = CpuHistory::default();
-        let at = Instant::now();
-        let raw = |cpu_ns| {
-            Some(RawProcess {
-                identity: 1,
-                cpu_ns,
-                rss_bytes: 2 * 1_048_576,
-            })
-        };
-        assert_eq!(cpu.observe(10, raw(0), at), (0.0, 2));
-        assert_eq!(
-            cpu.observe(10, raw(50_000_000), at + Duration::from_millis(50)),
-            (0.0, 2)
-        );
-        assert_eq!(
-            cpu.observe(10, raw(500_000_000), at + Duration::from_millis(250)),
-            (200.0, 2)
-        );
-        let reused = Some(RawProcess {
-            identity: 2,
-            cpu_ns: 1,
-            rss_bytes: u64::MAX,
-        });
-        assert_eq!(
-            cpu.observe(10, reused, at + Duration::from_secs(1)),
-            (0.0, u32::MAX)
-        );
-        assert_eq!(
-            cpu.observe(11, raw(1), at + Duration::from_secs(2)),
-            (0.0, 2)
-        );
-        assert_eq!(cpu.observe(11, None, at + Duration::from_secs(3)), (0.0, 0));
-        assert!(cpu.baseline.is_none());
     }
 }

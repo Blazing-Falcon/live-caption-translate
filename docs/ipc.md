@@ -74,7 +74,7 @@ Notes:
 
 ## Order of events
 
-These rules apply to each id. `crates/lt-core/tests/v2.rs` checks them with random delays and failures.
+These rules apply to each id. `crates/lt-core/tests/caption_speeds.rs` checks them with random delays and failures.
 
 ```
 speech_started? -> (asr_partial | translation_draft)* -> dropped                     (end)

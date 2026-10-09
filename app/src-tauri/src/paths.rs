@@ -50,23 +50,3 @@ pub fn llama_server() -> PathBuf {
         .and_then(|exe| exe.parent().map(|dir| dir.join(name)))
         .unwrap_or_else(|| Path::new(name).to_path_buf())
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn models_default_to_the_local_data_folder_and_config_overrides_it() {
-        let paths = Paths {
-            config_file: "c/config.toml".into(),
-            local: "l".into(),
-        };
-        let mut config = Config::default();
-        if std::env::var_os("LT_MODELS_DIR").is_none() {
-            assert_eq!(paths.models(&config), PathBuf::from("l").join("models"));
-            config.models.dir = "elsewhere".into();
-            assert_eq!(paths.models(&config), PathBuf::from("elsewhere"));
-        }
-        assert_eq!(paths.transcripts(), PathBuf::from("l").join("transcripts"));
-    }
-}

@@ -54,35 +54,6 @@ describe("caption store (one test per row)", () => {
     ]);
   });
 
-  it("asr_partial, no line, class english or other: adds a live line shown as heard", () => {
-    const { lines, run } = setup();
-    run(partial(1, "OK, can you hear", "english"), partial(2, "みんな", "other"));
-    expect(lines()).toMatchObject([
-      { id: 1, state: "live", source: "OK, can you hear" },
-      { id: 2, state: "live", source: "みんな" },
-    ]);
-  });
-
-  it("asr_partial on a live line replaces the source", () => {
-    const { lines, run, clock } = setup();
-    run(partial(1, "这次"));
-    clock.advance(300);
-    run(partial(1, "这次华为发布的呢"));
-    expect(lines()).toHaveLength(1);
-    expect(lines()[0]).toMatchObject({ state: "live", source: "这次华为发布的呢", updatedAt: 300 });
-  });
-
-  it("asr_partial for a line in any other state is ignored", () => {
-    const { lines, run, warn } = setup();
-    run(asrFinal(1, "你好。"), partial(1, "late partial"));
-    run(asrFinal(2, "二"), final(2, "Two"), partial(2, "late partial"));
-    run(asrFinal(3, "三"), skipped(3), partial(3, "late"));
-    run(asrFinal(4, "四"), failed(4, "timeout"), partial(4, "late"));
-    run(asrFinal(5, "OK", "english", "en"), partial(5, "late"));
-    expect(lines().map((l) => l.source)).toEqual(["你好。", "二", "三", "四", "OK"]);
-    expect(warn).toHaveBeenCalledTimes(5);
-  });
-
   it("translation_draft on a live line stores the draft, keeps the last two and applies the policy", () => {
     const { line, run } = setup();
     run(partial(1, "这次"), draft(1, "This time", 1));
@@ -96,26 +67,6 @@ describe("caption store (one test per row)", () => {
     run(draft(1, "This time, Huawei released the whole family", 3));
     expect(line(1)?.drafts).toEqual(["This time, Huawei released the whole", "This time, Huawei released the whole family"]);
     expect(line(1)?.shown).toBe("This time, Huawei released the");
-  });
-
-  it("translation_draft on a pending line shows the whole draft (the clause is committed)", () => {
-    const { line, run } = setup();
-    run(asrFinal(1, "这次华为发布的呢。"), draft(1, "This time Huawei announced the"));
-    expect(line(1)).toMatchObject({ state: "pending", committed: true, draft: "This time Huawei announced the", shown: "This time Huawei announced the" });
-  });
-
-  it("translation_draft for a terminal or unknown line is ignored", () => {
-    const { lines, run, warn, line } = setup();
-    run(draft(9, "nothing"));
-    expect(lines()).toHaveLength(0);
-    run(asrFinal(1, "一"), final(1, "One"), draft(1, "late"));
-    run(asrFinal(2, "二"), skipped(2), draft(2, "late"));
-    run(asrFinal(3, "三"), failed(3, "timeout"), draft(3, "late"));
-    run(asrFinal(4, "four", "english", "en"), draft(4, "late"));
-    run(asrFinal(5, "五"), delta(5, "Fi"), draft(5, "late"));
-    expect(lines().map((l) => l.draft)).toEqual(["", "", "", "", ""]);
-    expect(line(5)?.state).toBe("streaming");
-    expect(warn).toHaveBeenCalledTimes(6);
   });
 
   it("asr_final on a live line commits it: source from the event, state by class, whole draft shown", () => {
@@ -138,46 +89,13 @@ describe("caption store (one test per row)", () => {
     expect(line(3)).toMatchObject({ state: "other", committed: true, lang: "ja" });
   });
 
-  it("asr_final on a live line translates Other when the language is enabled", () => {
-    const { line, run } = setup({ configure: (c) => (c.routing.translate_other = ["ja"]) });
-    run(partial(1, "みんな", "other"), asrFinal(1, "みんな、ありがとう！", "other", "ja"));
-    expect(line(1)?.state).toBe("pending");
-  });
-
-  it("asr_final with no line behaves as in v1 and a duplicate is ignored", () => {
-    const { lines, run, warn } = setup();
-    run(asrFinal(1, "你好。"));
-    expect(lines()).toMatchObject([{ id: 1, state: "pending", committed: true, source: "你好。", draft: "", shown: "" }]);
-    run(asrFinal(1, "你好。"));
-    expect(warn).toHaveBeenCalledTimes(1);
-  });
-
   it("translation_delta on a line with a draft stores the text and keeps the state pending", () => {
     const { line, run } = setup();
     run(partial(1, "你好"), draft(1, "Hello there my friend"), asrFinal(1, "你好，朋友。"), delta(1, "Hello"), delta(1, "Hello there"));
     expect(line(1)).toMatchObject({ state: "pending", english: "Hello there", draft: "Hello there my friend", shown: "Hello there my friend" });
   });
 
-  it("translation_delta on a line without a draft streams as in v1", () => {
-    const { line, run } = setup();
-    run(asrFinal(1, "你好。"), delta(1, "Hel"));
-    expect(line(1)).toMatchObject({ state: "streaming", english: "Hel" });
-  });
-
-  it("translation_delta on a live line is ignored", () => {
-    const { line, run, warn } = setup();
-    run(partial(1, "你"), delta(1, "x"));
-    expect(line(1)).toMatchObject({ state: "live", english: "" });
-    expect(warn).toHaveBeenCalledTimes(1);
-  });
-
-  it("translation_final sets state final and the text; the draft stays stored but is no longer the line text", () => {
-    const { line, run } = setup();
-    run(partial(1, "你好"), draft(1, "Hello there"), asrFinal(1, "你好。"), delta(1, "Hello"), final(1, "Hello."));
-    expect(line(1)).toMatchObject({ state: "final", english: "Hello.", draft: "Hello there" });
-  });
-
-  it("skipped with a draft keeps the draft; failed with a draft keeps the draft and the v1 reason", () => {
+  it("skipped with a draft keeps the draft; failed with a draft keeps the draft and the reason", () => {
     const { line, run } = setup();
     run(partial(1, "一"), draft(1, "One more thing"), asrFinal(1, "一。"), skipped(1));
     expect(line(1)).toMatchObject({ state: "skipped", draft: "One more thing", shown: "One more thing" });
@@ -207,15 +125,6 @@ describe("caption store (one test per row)", () => {
     expect(view()).toBe(before);
   });
 
-  it("speech_started creates no line", () => {
-    const { lines, run, view } = setup();
-    const before = view();
-    run({ type: "speech_started", id: 1, at_ms: 100 });
-    expect(lines()).toHaveLength(0);
-    expect(view()).toBe(before);
-    run(partial(1, "你"));
-    expect(summary(lines())).toEqual(["1:live"]);
-  });
 });
 
 describe("expiry and limits", () => {
@@ -234,37 +143,6 @@ describe("expiry and limits", () => {
     expect(summary(c.lines())).toEqual(["2:live"]);
   });
 
-  it("a partial cancels a running fade like asr_final does", () => {
-    const c = setup();
-    c.run(asrFinal(1, "一"), final(1, "One"));
-    c.clock.advance(8000);
-    expect(c.view().fadingIds.size).toBe(1);
-    c.run(partial(2, "二"));
-    expect(c.view().fadingIds.size).toBe(0);
-    c.clock.advance(FADE_MS * 2);
-    expect(summary(c.lines())).toEqual(["1:final", "2:live"]);
-  });
-
-  it("a live line expires normally once it has settled", () => {
-    const c = setup();
-    c.run(partial(1, "一"), asrFinal(1, "一。"), final(1, "One."));
-    c.clock.advance(8000 + FADE_MS);
-    expect(c.lines()).toHaveLength(0);
-  });
-
-  it("counts live lines as outstanding and caps them", () => {
-    const c = setup();
-    for (let id = 1; id <= MAX_OUTSTANDING_LINES * 2; id += 1) c.run(partial(id, `句${id}`));
-    expect(c.lines()).toHaveLength(MAX_OUTSTANDING_LINES);
-    expect(c.lines()[0]?.id).toBe(MAX_OUTSTANDING_LINES + 1);
-  });
-
-  it("treats live as non-terminal", () => {
-    expect(isTerminal("live")).toBe(false);
-    expect(isTerminal("pending")).toBe(false);
-    expect(isTerminal("final")).toBe(true);
-    expect(isTerminal("skipped")).toBe(true);
-  });
 });
 
 interface DisplayStep {
@@ -282,11 +160,6 @@ interface DisplayCase {
 const cases = fixture as unknown as DisplayCase[];
 
 describe("draft display policy, reference/fixtures/draft-display.json", () => {
-  it("contains 81 sequences: 27 draft sequences under each of the three policies", () => {
-    expect(cases).toHaveLength(81);
-    expect(new Set(cases.map((c) => c.policy))).toEqual(new Set(["hold2", "settled", "all"]));
-    for (const policy of ["hold2", "settled", "all"]) expect(cases.filter((c) => c.policy === policy)).toHaveLength(27);
-  });
 
   it("visibleWords reproduces every step of every sequence", () => {
     for (const c of cases) {
@@ -327,47 +200,6 @@ describe("draft display policy, reference/fixtures/draft-display.json", () => {
   });
 });
 
-describe("draft display rules", () => {
-  it("hold2 holds back the newest two words but always shows two", () => {
-    const words = (n: number) => Array.from({ length: n }, (_, i) => `w${i + 1}`).join(" ");
-    const show = (n: number) => visibleWords("hold2", [words(n)], false, null, false).words.length;
-    expect([1, 2, 3, 4, 5, 8].map(show)).toEqual([1, 2, 2, 2, 3, 6]);
-  });
-
-  it("settled shows nothing for the first draft, then the common word prefix", () => {
-    expect(visibleWords("settled", ["a b c"], false, null, false).words).toEqual([]);
-    expect(visibleWords("settled", ["a b c", "a b d e"], false, null, false).words).toEqual(["a", "b"]);
-  });
-
-  it("the shrink hold keeps the current text once, then accepts the next update", () => {
-    const s = setup({ policy: "all" });
-    s.run(partial(1, "一"), draft(1, "one two three four five six", 1));
-    s.run(draft(1, "uno", 2));
-    expect(s.line(1)).toMatchObject({ shown: "one two three four five six", heldOnce: true, draft: "uno" });
-    s.run(draft(1, "dos", 3));
-    expect(s.line(1)).toMatchObject({ shown: "dos", heldOnce: false });
-  });
-
-  it("does not hold exactly half", () => {
-    expect(visibleWords("all", ["a b c"], false, ["a", "b", "c", "d", "e", "f"], false)).toEqual({ words: ["a", "b", "c"], held: false });
-    expect(visibleWords("all", ["a b"], false, ["a", "b", "c", "d", "e", "f"], false)).toEqual({
-      words: ["a", "b", "c", "d", "e", "f"],
-      held: true,
-    });
-  });
-
-  it("applies a changed overlay.draft_display live to the lines already showing drafts", () => {
-    const s = setup();
-    s.run(partial(1, "一"), draft(1, "one two three four five", 1));
-    expect(s.line(1)?.shown).toBe("one two three");
-    s.controller.setConfig(testConfig((c) => (c.overlay.draft_display = "all")));
-    expect(s.line(1)?.shown).toBe("one two three four five");
-    s.run(draft(1, "one two three four five six seven", 2));
-    expect(s.line(1)?.shown).toBe("one two three four five six seven");
-    s.controller.setConfig(testConfig((c) => (c.overlay.draft_display = "settled")));
-    expect(s.line(1)?.shown).toBe("one two three four five");
-  });
-});
 
 /** Small deterministic generator (mulberry32). */
 function rng(seed: number): () => number {

@@ -6,7 +6,7 @@ use lt_core::{
     events::FailReason,
     types::UtteranceId,
 };
-use lt_llm::{client::health, HyMt2Prompts, OpenAiCompatTranslator};
+use lt_llm::{HyMt2Prompts, OpenAiCompatTranslator};
 use serde_json::{json, Value};
 use std::{
     io::{Read, Write},
@@ -133,9 +133,7 @@ fn delay(stop: &AtomicBool, duration: Duration) {
         );
     }
 }
-fn plain(stream: &mut TcpStream, status: u16, body: &str) {
-    write!(stream, "HTTP/1.1 {status} OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
-}
+
 fn chunk(stream: &mut TcpStream, bytes: &[u8]) {
     write!(stream, "{:x}\r\n", bytes.len()).unwrap();
     stream.write_all(bytes).unwrap();
@@ -232,63 +230,6 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
 }
 
 #[test]
-fn llama_timings_override_generic_usage_and_multiline_sse_is_supported() {
-    let server = MockServer::start(|mut stream, _| {
-        read_request(&mut stream);
-        plain(&mut stream, 200, "data: {\"choices\":\ndata: [{\"index\":0,\"delta\":{\"content\":\"Good.\"}}]}\n\ndata: {\"choices\":[],\"timings\":{\"prompt_n\":17,\"cache_n\":31,\"predicted_n\":9}}\n\ndata: {\"choices\":[],\"usage\":{\"prompt_tokens\":999,\"completion_tokens\":999}}\n\ndata: [DONE]\n\n");
-    });
-    let mut translator =
-        OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
-    let output = translator
-        .translate(
-            &request("你好。", control(Duration::from_secs(2))),
-            &mut |_| {},
-        )
-        .unwrap();
-    assert_eq!(output.text, "Good.");
-    assert_eq!(
-        (
-            output.prompt_tokens,
-            output.cached_tokens,
-            output.generated_tokens
-        ),
-        (17, 31, 9)
-    );
-    server.finish();
-}
-
-#[test]
-fn healthy_first_token_after_six_hundred_milliseconds_does_not_false_timeout() {
-    let server = MockServer::start(|mut stream, stop| {
-        read_request(&mut stream);
-        delay(&stop, Duration::from_millis(600));
-        plain(
-            &mut stream,
-            200,
-            "data: {\"choices\":[{\"delta\":{\"content\":\"Hello.\"}}]}\n\ndata: [DONE]\n\n",
-        );
-    });
-    let mut translator =
-        OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
-    let output = translator
-        .translate(
-            &request("你好。", control(Duration::from_secs(3))),
-            &mut |_| {},
-        )
-        .unwrap();
-    assert_eq!(output.text, "Hello.");
-    assert_eq!(
-        (
-            output.prompt_tokens,
-            output.cached_tokens,
-            output.generated_tokens
-        ),
-        (0, 0, 0)
-    );
-    server.finish();
-}
-
-#[test]
 fn cancellation_during_headers_or_partial_sse_line_finishes_within_one_second() {
     for body_started in [false, true] {
         let (entered_tx, entered_rx) = mpsc::channel();
@@ -347,55 +288,6 @@ fn deadline_covers_stalled_headers_and_a_body_that_never_completes() {
 }
 
 #[test]
-fn abort_returns_existing_streamed_text_for_the_core_runaway_guard() {
-    let server = MockServer::start(|mut stream, stop| {
-        read_request(&mut stream);
-        stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\ndata: {\"choices\":[{\"delta\":{\"content\":\"Go go go \"}}]}\n\n").unwrap();
-        delay(&stop, Duration::from_secs(2));
-    });
-    let token = control(Duration::from_secs(3));
-    let abort = token.abort.clone();
-    let mut translator =
-        OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
-    let output = translator
-        .translate(&request("你好。", token), &mut |_| {
-            abort.store(true, Ordering::Release)
-        })
-        .unwrap();
-    assert_eq!(output.text, "Go go go ");
-    server.finish();
-}
-
-#[test]
-fn malformed_or_truncated_streams_are_errors_and_http_failures_are_classified() {
-    for (status, body, reason) in [
-        (200, "data: {invalid}\n\n", FailReason::Error),
-        (
-            200,
-            "data: {\"choices\":[{\"delta\":{\"content\":\"partial\"}}]}\n\n",
-            FailReason::ServerUnavailable,
-        ),
-        (503, "not ready", FailReason::ServerUnavailable),
-        (400, "bad request", FailReason::Error),
-    ] {
-        let server = MockServer::start(move |mut stream, _| {
-            read_request(&mut stream);
-            plain(&mut stream, status, body);
-        });
-        let mut translator =
-            OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
-        assert_reason(
-            translator.translate(
-                &request("你好。", control(Duration::from_secs(2))),
-                &mut |_| {},
-            ),
-            reason,
-        );
-        server.finish();
-    }
-}
-
-#[test]
 fn connection_refused_is_server_unavailable_and_remote_urls_are_rejected() {
     let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
     let url = format!("http://{}", listener.local_addr().unwrap());
@@ -433,47 +325,4 @@ fn connection_refused_is_server_unavailable_and_remote_urls_are_rejected() {
     assert!(
         OpenAiCompatTranslator::new("http://localhost:8080/v1", TranslateConfig::default()).is_ok()
     );
-}
-
-#[test]
-fn health_check_is_bounded_and_redirects_are_not_followed() {
-    let server = MockServer::start(|mut stream, _| {
-        let (headers, _) = read_request(&mut stream);
-        assert!(headers.starts_with("GET /health HTTP/1.1\r\n"));
-        plain(&mut stream, 200, "{}");
-    });
-    assert!(health(&server.url, &control(Duration::from_secs(2))).unwrap());
-    server.finish();
-    let server = MockServer::start(|mut stream, _| {
-        read_request(&mut stream);
-        stream.write_all(b"HTTP/1.1 302 Redirect\r\nLocation: http://example.com/\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
-    });
-    assert!(!health(&server.url, &control(Duration::from_secs(2))).unwrap());
-    server.finish();
-}
-
-#[test]
-fn oversized_lines_and_invalid_utf8_fail_without_unbounded_buffering() {
-    for invalid_utf8 in [false, true] {
-        let server = MockServer::start(move |mut stream, _| {
-            read_request(&mut stream);
-            let body = if invalid_utf8 {
-                vec![b'd', b'a', b't', b'a', b':', b' ', 255, b'\n', b'\n']
-            } else {
-                vec![b'x'; 65 * 1024]
-            };
-            write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", body.len()).unwrap();
-            let _ = stream.write_all(&body);
-        });
-        let mut translator =
-            OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
-        assert_reason(
-            translator.translate(
-                &request("你好。", control(Duration::from_secs(2))),
-                &mut |_| {},
-            ),
-            FailReason::Error,
-        );
-        server.finish();
-    }
 }

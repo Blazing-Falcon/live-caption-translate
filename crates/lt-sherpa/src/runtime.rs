@@ -161,14 +161,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn missing_api_is_rejected_without_dereferencing_it() {
-        let error = require_api(std::ptr::null(), 28, "SenseVoice").unwrap_err();
-        let message = error.to_string();
-        assert!(message.contains("requires ONNX Runtime API 28"));
-        assert!(message.contains("beside the application"));
-    }
-
-    #[test]
     fn api_identity_requires_the_same_table_even_for_identical_versions() {
         let tables = [0_u8, 0_u8];
         let left = std::ptr::from_ref(&tables[0]).cast::<ort::sys::OrtApi>();

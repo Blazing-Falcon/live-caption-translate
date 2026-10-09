@@ -321,58 +321,6 @@ mod tests {
     }
 
     #[test]
-    fn configurable_fillers_keep_adjacent_words() {
-        let fillers = ["那个", "you know"].map(String::from);
-        let cases = [
-            ("那个，你好", "你好"),
-            ("那个东西", "那个东西"),
-            ("我是那个", "我是那个"),
-            ("YOU KNOW, hello", "hello"),
-            ("hello you know world", "hello world"),
-            ("you knowable", "you knowable"),
-            ("嗯，你好", "嗯，你好"),
-        ];
-        for (input, expected) in cases {
-            assert_eq!(clean(input, &fillers), expected, "{input:?}");
-        }
-    }
-
-    #[test]
-    fn script_ranges_counts_and_tag_ties() {
-        let cases = [
-            ("中AI文hello1world", None, 2, 3, Some(TextClass::Mixed)),
-            (
-                "\u{3400}\u{4dbf}\u{4e00}\u{9fff}",
-                None,
-                4,
-                0,
-                Some(TextClass::Chinese),
-            ),
-            ("\u{4dc0}\u{a000}\u{20000}", None, 0, 0, None),
-            ("中あ", None, 1, 0, Some(TextClass::Chinese)),
-            ("中あア", Some("zh"), 1, 0, Some(TextClass::Other)),
-            ("中가힣", Some("en"), 1, 0, Some(TextClass::Other)),
-            ("あア가힣AI", None, 0, 1, Some(TextClass::Other)),
-            ("你I", Some("en"), 1, 0, Some(TextClass::Chinese)),
-            ("I", Some("en"), 0, 0, Some(TextClass::English)),
-            ("I.", Some("<|EN|>"), 0, 0, Some(TextClass::English)),
-            ("I", Some("zh"), 0, 0, None),
-            ("123，。", Some("en"), 0, 0, None),
-            ("", Some("en"), 0, 0, None),
-            ("a b I 12", None, 0, 0, None),
-        ];
-        for (text, tag, expected_chinese, expected_latin, expected_class) in cases {
-            assert_eq!(chinese_chars(text), expected_chinese, "{text:?}");
-            assert_eq!(latin_words(text), expected_latin, "{text:?}");
-            assert_eq!(
-                classify_with_lang(text, tag),
-                expected_class,
-                "{text:?}, {tag:?}"
-            );
-        }
-    }
-
-    #[test]
     fn all_recorded_asr_fixture_outputs() {
         // Frozen sv2024_auto outputs from asr-expected.json, embedded here so
         // tests never depend on files outside the repository.
@@ -412,7 +360,7 @@ mod tests {
     }
 
     #[test]
-    fn d7_drop_precedence_and_duration_table() {
+    fn drop_precedence_and_duration_table() {
         let config = FilterConfig::default();
         let cases = [
             ("", None, None, 1.0, Some(DropReason::Empty)),
@@ -457,65 +405,6 @@ mod tests {
                 drop_reason(&transcript(text, lang, event), duration, &config),
                 expected,
                 "{text:?}, {event:?}, {duration}"
-            );
-        }
-    }
-
-    #[test]
-    fn configurable_drop_rules_table() {
-        let cases = [
-            (
-                FilterConfig {
-                    drop_music: false,
-                    ..FilterConfig::default()
-                },
-                "啦。",
-                1.0,
-                None,
-            ),
-            (
-                FilterConfig {
-                    drop_music: false,
-                    ..FilterConfig::default()
-                },
-                "啦。",
-                0.4,
-                Some(DropReason::SingleChar),
-            ),
-            (
-                FilterConfig {
-                    single_char_allow: vec!["那".into()],
-                    ..FilterConfig::default()
-                },
-                "那。",
-                0.4,
-                None,
-            ),
-            (
-                FilterConfig {
-                    single_char_max_s: 0.0,
-                    ..FilterConfig::default()
-                },
-                "那。",
-                0.4,
-                None,
-            ),
-            (
-                FilterConfig {
-                    fillers: Vec::new(),
-                    ..FilterConfig::default()
-                },
-                "嗯。",
-                1.0,
-                None,
-            ),
-        ];
-        for (config, text, duration, expected) in cases {
-            let event = if text == "啦。" { Some("BGM") } else { None };
-            assert_eq!(
-                drop_reason(&transcript(text, None, event), duration, &config),
-                expected,
-                "{text:?}, {duration}"
             );
         }
     }

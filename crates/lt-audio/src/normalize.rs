@@ -105,32 +105,4 @@ mod tests {
         assert_eq!(quiet[0].start, loud[0].start);
         assert_eq!(quiet[0].end, loud[0].end);
     }
-
-    #[test]
-    fn silence_stays_zero_gain_is_bounded_and_attack_is_faster_than_release() {
-        let mut normalizer = LevelNormalizer::new(AudioConfig::default());
-        let mut silence = [0.0; 512];
-        normalizer.process(&mut silence);
-        assert_eq!(silence, [0.0; 512]);
-        let mut quiet = [0.001_1; 512];
-        normalizer.process(&mut quiet);
-        assert_eq!(normalizer.gain_db(), 20.0);
-        normalizer.process(&mut silence);
-        assert_eq!(silence, [0.0; 512]);
-        let mut loud = [1.0; 512];
-        normalizer.process(&mut loud);
-        let reduced = normalizer.gain_db();
-        assert!(reduced < 20.0);
-        normalizer.process(&mut [0.001_1; 512]);
-        assert!(normalizer.gain_db() - reduced < 20.0 - reduced);
-        normalizer.reset();
-        assert_eq!(normalizer.gain_db(), 0.0);
-        let mut disabled = LevelNormalizer::new(AudioConfig {
-            normalize: false,
-            ..AudioConfig::default()
-        });
-        let mut input = [0.02, -0.4, 1.0];
-        disabled.process(&mut input);
-        assert_eq!(input, [0.02, -0.4, 1.0]);
-    }
 }

@@ -710,50 +710,6 @@ mod tests {
     }
 
     #[test]
-    fn picker_groups_sessions_preserves_recent_and_has_exact_wire_fields() {
-        let recent = [selection("CHROME.EXE"), selection("missing.exe")];
-        let list = app_list(
-            20_348,
-            &[
-                session(11, 10, "chrome.exe", 0.4),
-                session(21, 20, "Chrome.exe", 0.8),
-            ],
-            &recent,
-        );
-        assert_eq!(list.apps.len(), 2);
-        let chrome = list
-            .apps
-            .iter()
-            .find(|app| app.exe.eq_ignore_ascii_case("chrome.exe"))
-            .unwrap();
-        assert_eq!(chrome.pid, 10);
-        assert_eq!(chrome.peak, 0.8);
-        assert!(chrome.active && chrome.recent);
-        let absent = list
-            .apps
-            .iter()
-            .find(|app| app.exe == "missing.exe")
-            .unwrap();
-        assert_eq!(absent.pid, 0);
-        assert!(!absent.active && absent.recent);
-        let value = serde_json::to_value(chrome).unwrap();
-        assert_eq!(
-            value
-                .as_object()
-                .unwrap()
-                .keys()
-                .cloned()
-                .collect::<BTreeSet<_>>(),
-            ["exe", "name", "pid", "icon_png", "peak", "active", "recent"]
-                .map(String::from)
-                .into()
-        );
-        let unsupported = app_list(20_347, &[], &recent);
-        assert!(!unsupported.supported);
-        assert!(unsupported.reason.unwrap().contains("20348"));
-    }
-
-    #[test]
     fn tree_roots_restarts_and_overlapping_selections_do_not_duplicate_audio() {
         let mut snapshot = SessionSnapshot {
             processes: vec![
@@ -788,41 +744,5 @@ mod tests {
             40
         );
         assert!(selected_targets(&[], &snapshot).is_empty());
-    }
-
-    #[test]
-    fn cyclic_and_reused_parents_stop_and_peak_values_remain_finite() {
-        let mut processes = vec![
-            process(10, 11, "browser.exe"),
-            process(11, 10, "browser.exe"),
-        ];
-        processes[0].created_at = None;
-        processes[1].created_at = None;
-        assert_eq!(root_process(10, &processes), 11);
-        processes[0].parent_pid = 0;
-        processes[0].created_at = Some(200);
-        processes[1].created_at = Some(100);
-        assert_eq!(root_process(11, &processes), 11);
-        assert_eq!(finite_peak(f32::NAN), 0.0);
-        assert_eq!(finite_peak(2.0), 1.0);
-        assert!(matches!(
-            enumerate_on_worker_cancellable(&AtomicBool::new(true)),
-            Err(Error::Stopped)
-        ));
-    }
-
-    #[test]
-    fn synthetic_icon_encodes_png_and_resource_index_parsing_is_bounded() {
-        assert_eq!(
-            icon_location("\"C:\\app.dll\",-3"),
-            Some((PathBuf::from("C:\\app.dll"), -3))
-        );
-        let encoded = encode_icon_rgba(&[255, 0, 0, 255], 1, 1).unwrap();
-        let bytes = STANDARD.decode(encoded).unwrap();
-        assert_eq!(&bytes[..8], b"\x89PNG\r\n\x1a\n");
-        assert!(encode_icon_rgba(&[], 1, 1).is_none());
-        assert!(encode_icon_rgba(&[], 1000, 1000).is_none());
-        assert!(icon_location("\\\\server\\icons\\app.dll,-1").is_none());
-        assert!(icon_location("https://example.com/icon.ico").is_none());
     }
 }

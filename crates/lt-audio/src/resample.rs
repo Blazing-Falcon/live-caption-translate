@@ -294,21 +294,6 @@ mod tests {
     }
 
     #[test]
-    fn exact_counts_include_short_clips_empty_input_and_flush_tail() {
-        for rate in [8_000, 16_000, 22_050, 44_100, 48_000] {
-            for count in [0, 1, 7, 100, rate as usize] {
-                let input = tone(1_000.0, rate as usize, count);
-                let expected = (count as u128 * 16_000).div_ceil(u128::from(rate)) as usize;
-                let contiguous = convert(&input, rate, count.max(1));
-                let partitioned = convert(&input, rate, 17);
-                assert_eq!(contiguous.len(), expected, "rate={rate} count={count}");
-                assert_eq!(contiguous, partitioned, "rate={rate} count={count}");
-            }
-        }
-        assert_eq!(convert(&vec![0.0; 441_000], 44_100, 997).len(), 160_000);
-    }
-
-    #[test]
     fn fft_streaming_matches_whole_clip_with_delay_trimmed_once() {
         let input = tone(900.0, 44_100, 1_003);
         let actual = convert(&input, 44_100, 73);

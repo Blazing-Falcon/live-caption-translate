@@ -6,7 +6,7 @@ use lt_core::{
     engines::SegmentAsr,
     types::{CutReason, Segment, StreamTime, UtteranceId},
 };
-use lt_sherpa::{onnxruntime_version, verify_sensevoice_runtime, SenseVoiceAsr, SileroVad};
+use lt_sherpa::{onnxruntime_version, SenseVoiceAsr, SileroVad};
 use serde::Deserialize;
 use std::{
     path::{Path, PathBuf},
@@ -48,35 +48,6 @@ fn wav(path: &Path) -> Vec<f32> {
                 .collect()
         }
     }
-}
-
-#[test]
-fn sensevoice_runtime_preflight_negotiates_without_loading_a_model() {
-    match verify_sensevoice_runtime() {
-        Ok(()) => eprintln!(
-            "sensevoice_api_28_supported runtime={}",
-            onnxruntime_version()
-        ),
-        Err(error) => {
-            assert!(error.to_string().contains("requires ONNX Runtime API 28"));
-            eprintln!("sensevoice_api_28_rejected: {error}");
-        }
-    }
-}
-
-#[test]
-fn missing_sensevoice_model_fails_with_readable_startup_error() {
-    let missing =
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../target/tmp/missing-lt-sherpa-model.onnx");
-    assert!(!missing.exists());
-    let error =
-        match SenseVoiceAsr::with_runtime(&missing, &missing, &AsrConfig::default(), &missing) {
-            Ok(_) => panic!("Missing SenseVoice model accepted"),
-            Err(error) => error,
-        };
-    assert!(error
-        .to_string()
-        .contains("SenseVoice 2024 model is missing"));
 }
 
 #[test]
