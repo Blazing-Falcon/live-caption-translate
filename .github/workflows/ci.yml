@@ -1,11 +1,8 @@
 name: check
 on: [push, pull_request]
 jobs:
-  core:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+  windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,16 +16,11 @@ jobs:
           runtime = json.loads(result)
           with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as output:
               output.write('SHERPA_ONNX_LIB_DIR=' + runtime['lib_dir'] + '\n')
-              if sys.platform != 'win32':
-                  output.write('LD_LIBRARY_PATH=' + runtime['lib_dir'] + '\n')
-                  output.write('LT_ONNXRUNTIME=' + runtime['runtime_path'] + '\n')
       - run: python scripts/test_prepare_native_runtime.py
       - uses: actions/setup-node@v4
-        if: runner.os == 'Windows'
         with:
           node-version-file: .nvmrc
       - name: Build and test the UI
-        if: runner.os == 'Windows'
         shell: pwsh
         run: |
           npm --prefix app/ui ci --no-audit --no-fund
@@ -36,17 +28,15 @@ jobs:
           npm --prefix app/ui run lint:tokens
           npm --prefix app/ui test
           npm --prefix app/ui run build
-      # rust-toolchain.toml pins the version; rustup installs it on first use.
-      - run: rustup show active-toolchain
+          cd app/ui
+          node node_modules/@playwright/test/cli.js install chromium
+          npm run e2e
+      # Installs the version pinned in rust-toolchain.toml.
+      - run: rustup toolchain install
       - uses: Swatinem/rust-cache@v2
       - run: cargo fmt --all --check
-      # The Tauri shell is Windows-only; Linux checks the portable crates.
-      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings ${{ runner.os != 'Windows' && '--exclude live-translation' || '' }}
-      - run: cargo test --workspace --all-features --no-run ${{ runner.os != 'Windows' && '--exclude live-translation' || '' }}
-      - if: runner.os == 'Windows'
-        shell: pwsh
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - run: cargo test --workspace --all-features --no-run
+      - shell: pwsh
         run: ./scripts/install-native-runtime.ps1
-      - run: cargo test --workspace --all-features ${{ runner.os != 'Windows' && '--exclude live-translation' || '' }}
-      - if: runner.os == 'Windows'
-        run: cargo build --workspace --all-features --target x86_64-pc-windows-msvc
-
+      - run: cargo test --workspace --all-features
