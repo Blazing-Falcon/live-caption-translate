@@ -9,26 +9,44 @@ use std::sync::{atomic::AtomicBool, Arc};
 
 pub fn bench(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
     match args.engine {
-        BenchEngine::Asr => asr(args, config, cancelled),
+        BenchEngine::Asr => asr(args, config, cancelled, false),
+        BenchEngine::SecondPass => asr(args, config, cancelled, true),
         BenchEngine::Vad => vad(args, config, cancelled),
         BenchEngine::Mt => mt(args, config, cancelled),
     }
 }
 
+/// Engines from the registry, configured like the app.
 #[cfg(feature = "sherpa")]
-fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
+fn registry(args: &BenchArgs, config: &Config) -> (lt_core::engines::EngineRegistry, Config) {
+    let mut registry = lt_core::engines::EngineRegistry::default();
+    lt_sherpa::register_engines(&mut registry);
+    let mut config = config.clone();
+    config.models.dir = engines::models_dir(args.models.as_deref(), &config)
+        .to_string_lossy()
+        .into_owned();
+    (registry, config)
+}
+
+#[cfg(feature = "sherpa")]
+fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>, second: bool) -> Result<()> {
     use lt_core::{
-        engines::SegmentAsr,
+        engines::mean_log_prob,
         types::{CutReason, Segment, StreamTime, UtteranceId},
     };
     use std::time::Instant;
     engines::check_cancel(&cancelled)?;
-    let models = engines::models_dir(args.models.as_deref(), &config);
-    let mut asr = lt_sherpa::SenseVoiceAsr::new(
-        models.join("sensevoice-2024-07-17-int8/model.int8.onnx"),
-        models.join("sensevoice-2024-07-17-int8/tokens.txt"),
-        &config.asr,
-    )?;
+    let (registry, config) = registry(&args, &config);
+    let loading = Instant::now();
+    let (mut live, mut second_pass) = if second {
+        let engine = registry
+            .build_second_pass(&config)?
+            .ok_or_else(|| anyhow::anyhow!("Set asr.second_pass in the config"))?;
+        (None, Some(engine))
+    } else {
+        (Some(registry.build_asr(&config)?), None)
+    };
+    eprintln!("load_ms={}", loading.elapsed().as_millis());
     for (id, path) in engines::wav_files(&args.input)?.into_iter().enumerate() {
         engines::check_cancel(&cancelled)?;
         let samples = lt_audio::wav::read_wav_mono16(&path)?;
@@ -41,29 +59,37 @@ fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()
             cut_reason: CutReason::End,
         };
         let started = Instant::now();
-        let output = asr.transcribe(&segment)?;
+        let (text, lang, event, logprob) = match (live.as_mut(), second_pass.as_mut()) {
+            (Some(asr), _) => {
+                let output = asr.transcribe(&segment)?;
+                (output.text, output.lang_tag, output.event, output.logprob)
+            }
+            (None, Some(asr)) => {
+                let output = asr.decode_window(&segment.samples)?;
+                let logprob = mean_log_prob(&output.log_probs);
+                (output.text, output.lang_tag, output.event, logprob)
+            }
+            (None, None) => unreachable!("one engine is built"),
+        };
         println!(
             "{}",
-            serde_json::json!({"file":path,"text":output.text,"lang":output.lang_tag,"event":output.event,"asr_ms":started.elapsed().as_millis(),"audio_s":end.seconds()})
+            serde_json::json!({"file":path,"text":text,"lang":lang,"event":event,"logprob":logprob,"asr_ms":started.elapsed().as_millis(),"audio_s":end.seconds()})
         );
     }
     Ok(())
 }
 #[cfg(not(feature = "sherpa"))]
-fn asr(_: BenchArgs, _: Config, _: Arc<AtomicBool>) -> Result<()> {
+fn asr(_: BenchArgs, _: Config, _: Arc<AtomicBool>, _: bool) -> Result<()> {
     bail!("ASR bench requires --features sherpa");
 }
 
 #[cfg(feature = "sherpa")]
 fn vad(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
-    use lt_core::{
-        engines::Vad,
-        segment::{FrameFlags, SegmentBuilder},
-    };
+    use lt_core::segment::{FrameFlags, SegmentBuilder};
     use std::time::Instant;
     engines::check_cancel(&cancelled)?;
-    let models = engines::models_dir(args.models.as_deref(), &config);
-    let mut vad = lt_sherpa::SileroVad::new(models.join("silero-vad-v5/silero_vad_v5.onnx"))?;
+    let (registry, config) = registry(&args, &config);
+    let mut vad = registry.build_vad(&config)?;
     for path in engines::wav_files(&args.input)? {
         engines::check_cancel(&cancelled)?;
         let samples = lt_audio::wav::read_wav_mono16(&path)?;
@@ -75,7 +101,7 @@ fn vad(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()
             engines::check_cancel(&cancelled)?;
             let mut frame = [0.0; 512];
             frame[..chunk.len()].copy_from_slice(chunk);
-            let probability = vad.try_speech_prob(&frame)?;
+            let probability = vad.speech_prob(&frame);
             segments.extend(
                 builder
                     .push(&frame, probability, FrameFlags::EMPTY)

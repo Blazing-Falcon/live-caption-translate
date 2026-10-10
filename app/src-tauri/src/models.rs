@@ -1,5 +1,6 @@
 //! Model status, downloads and imports for the first-run screen.
 use crate::app::{lock, Shared};
+use lt_core::config::Config;
 use lt_llm::models::{ModelManager, ModelSource, ModelState, ModelStatus};
 use std::{
     path::Path,
@@ -21,6 +22,20 @@ pub fn all_ready(dir: &Path) -> bool {
                 .all(|m| m.state == ModelState::Ready)
         })
         .unwrap_or(false)
+}
+
+/// Names of the models that the chosen voice detection, live model and second pass need
+/// and that are not ready on disk.
+pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
+    let wanted = lt_sherpa::model_ids(config);
+    match lt_llm::models::status(dir) {
+        Ok(models) => models
+            .into_iter()
+            .filter(|m| wanted.contains(&m.id.as_str()) && m.state != ModelState::Ready)
+            .map(|m| m.name)
+            .collect(),
+        Err(_) => wanted.into_iter().map(String::from).collect(),
+    }
 }
 
 #[derive(Default)]

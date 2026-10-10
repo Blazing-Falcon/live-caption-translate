@@ -140,6 +140,13 @@ impl Controller {
         if !crate::models::all_ready(&models) {
             return Err("Models are not downloaded yet. Open settings to download them.".into());
         }
+        let missing = crate::models::missing_for(&models, &config);
+        if !missing.is_empty() {
+            return Err(format!(
+                "Download {} on the Performance page, or choose another model.",
+                missing.join(", ")
+            ));
+        }
         self.cancelled.store(false, Ordering::Release);
         let bus = self.shared.bus.clone();
         for engine in [EngineKind::Vad, EngineKind::Asr] {
@@ -149,7 +156,7 @@ impl Controller {
                 message: None,
             });
         }
-        let (vad, asr) = match engines::speech(&config, &models) {
+        let (vad, asr, second_pass) = match engines::speech(&config, &models) {
             Ok(loaded) => loaded,
             Err(message) => {
                 engines::fail(&bus, EngineKind::Asr, &message);
@@ -194,6 +201,11 @@ impl Controller {
                 sampler: Some(Box::new(sampler)),
                 draft,
                 physical_cores: Some(num_cpus::get_physical()),
+                second_pass,
+                second_pass_setup: config
+                    .latency
+                    .low_priority
+                    .then_some(lt_audio::priority::lower_current_thread_priority as fn()),
             },
         );
         match pipeline {

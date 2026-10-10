@@ -323,6 +323,7 @@ mod tests {
             end_ms,
             asr_ms: 100,
             cut,
+            logprob: None,
         }
     }
 

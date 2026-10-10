@@ -108,8 +108,12 @@ pub struct BenchArgs {
 }
 #[derive(Clone, Copy, ValueEnum)]
 pub enum BenchEngine {
+    /// The live recognizer, `asr.engine`.
     Asr,
+    /// The second-pass recognizer, `asr.second_pass`.
+    SecondPass,
     Mt,
+    /// The voice detection model, `vad.engine`.
     Vad,
 }
 

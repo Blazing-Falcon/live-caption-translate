@@ -85,11 +85,10 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
             label: info.label.clone(),
         },
         asr: if args.fake {
-            "fake"
+            "fake".into()
         } else {
-            "sensevoice-2024-07-17-int8"
-        }
-        .into(),
+            config.asr.engine.clone()
+        },
         translator: if args.fake {
             "fake"
         } else {
@@ -109,6 +108,7 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
         File::create(&events_path)
             .with_context(|| format!("Creating {}", events_path.display()))?,
     );
+    let low_priority = config.latency.low_priority;
     let mut pipeline = Pipeline::start_with_options(
         config.clone(),
         Box::new(source),
@@ -120,6 +120,9 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
             sampler: Some(Box::new(sampler)),
             draft: engines.draft,
             physical_cores: Some(num_cpus::get_physical()),
+            second_pass: engines.second_pass,
+            second_pass_setup: low_priority
+                .then_some(lt_audio::priority::lower_current_thread_priority as fn()),
         },
     )?;
     let session_start = Instant::now();
