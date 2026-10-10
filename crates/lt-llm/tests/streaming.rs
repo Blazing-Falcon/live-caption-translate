@@ -27,6 +27,19 @@ struct MockServer {
 
 impl MockServer {
     fn start(handler: impl FnOnce(TcpStream, Arc<AtomicBool>) + Send + 'static) -> Self {
+        let mut handler = Some(handler);
+        Self::serve(1, move |stream, stop| {
+            if let Some(handler) = handler.take() {
+                handler(stream, stop)
+            }
+        })
+    }
+
+    /// Serves `connections` requests in turn.
+    fn serve(
+        connections: usize,
+        mut handler: impl FnMut(TcpStream, Arc<AtomicBool>) + Send + 'static,
+    ) -> Self {
         let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
         let url = format!("http://{}", listener.local_addr().unwrap());
         listener.set_nonblocking(true).unwrap();
@@ -34,6 +47,7 @@ impl MockServer {
         let worker_stop = stop.clone();
         let thread = thread::spawn(move || {
             let deadline = Instant::now() + Duration::from_secs(3);
+            let mut served = 0;
             while !worker_stop.load(Ordering::Acquire) {
                 match listener.accept() {
                     Ok((stream, _)) => {
@@ -43,8 +57,11 @@ impl MockServer {
                         stream
                             .set_write_timeout(Some(Duration::from_millis(100)))
                             .unwrap();
-                        handler(stream, worker_stop);
-                        return;
+                        handler(stream, worker_stop.clone());
+                        served += 1;
+                        if served == connections {
+                            return;
+                        }
                     }
                     Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                         assert!(
@@ -224,8 +241,76 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
     );
     let caps = translator.caps();
     assert!(caps.streaming);
-    assert!(!caps.glossary && !caps.context);
+    assert!(!caps.glossary && caps.context);
     assert_eq!(caps.max_input_chars, 300);
+    server.finish();
+}
+
+fn respond(stream: &mut TcpStream, pieces: &[&str]) {
+    stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n").unwrap();
+    for piece in pieces {
+        let event = json!({"choices":[{"index":0,"delta":{"content":piece}}]});
+        chunk(stream, format!("data: {event}\n\n").as_bytes());
+    }
+    chunk(stream, b"data: [DONE]\n\n");
+    let _ = stream.write_all(b"0\r\n\r\n");
+}
+
+/// Earlier lines' English must never reach the new line's caption, and an
+/// empty answer must not lose the line.
+#[test]
+fn window_prefills_earlier_english_shows_only_the_new_line_and_falls_back_when_empty() {
+    let prefill = "We're going to the park,<br>";
+    let (sent_tx, sent_rx) = mpsc::channel();
+    let mut replies = vec![
+        vec![prefill, "then", " we'll eat."],
+        vec![prefill],
+        vec!["Then", " we'll eat."],
+    ]
+    .into_iter();
+    let server = MockServer::serve(3, move |mut stream, _| {
+        sent_tx.send(read_request(&mut stream).1).unwrap();
+        respond(&mut stream, &replies.next().unwrap());
+    });
+    let mut translator =
+        OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
+    let earlier = [(
+        "我们去公园，".to_owned(),
+        "We're going to the park,".to_owned(),
+    )];
+    let window = json!({
+        "messages":[
+            {"role":"user","content":HyMt2Prompts::window_message(&HyMt2Prompts::window_source(&earlier, "然后吃饭。"))},
+            {"role":"assistant","content":prefill},
+        ],
+        "stream":true,"temperature":0.0,"repeat_penalty":1.05,"max_tokens":36,"cache_prompt":true,
+        "stream_options":{"include_usage":true},"stop":["<br>"],
+    });
+    for expected in [
+        vec!["then", "then we'll eat."],
+        vec!["Then", "Then we'll eat."],
+    ] {
+        let request = TranslateRequest {
+            context: &earlier,
+            ..request("然后吃饭。", control(Duration::from_secs(3)))
+        };
+        let mut deltas = Vec::new();
+        let output = translator
+            .translate(&request, &mut |text| deltas.push(text.to_owned()))
+            .unwrap();
+        assert_eq!(deltas, expected);
+        assert_eq!(output.text, *expected.last().unwrap());
+        assert_eq!(
+            sent_rx.recv_timeout(Duration::from_secs(1)).unwrap(),
+            window
+        );
+    }
+    let alone = sent_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+    assert_eq!(
+        alone["messages"],
+        json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}])
+    );
+    assert!(alone.get("stop").is_none());
     server.finish();
 }
 

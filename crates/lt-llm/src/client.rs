@@ -172,6 +172,59 @@ impl OpenAiCompatTranslator {
                 "Translation input exceeds the 300 character limit",
             ));
         }
+        if request.context.is_empty() {
+            let prompt = HyMt2Prompts::user_message(request.text);
+            return self.stream(prompt, None, request, on_delta);
+        }
+        // The answer starts with the earlier lines' English as shown, so the
+        // model writes only the new line and stops at the next separator.
+        let source = HyMt2Prompts::window_source(request.context, request.text);
+        let prefill = HyMt2Prompts::window_prefill(request.context);
+        let new_part = |english: &str| -> String {
+            // llama-server repeats the prefill in its first delta.
+            let english = english.strip_prefix(prefill.as_str()).unwrap_or(english);
+            english
+                .split(HyMt2Prompts::SEPARATOR)
+                .next()
+                .unwrap_or_default()
+                .trim_start()
+                .to_owned()
+        };
+        let mut window = self.stream(
+            HyMt2Prompts::window_message(&source),
+            Some(&prefill),
+            request,
+            &mut |english| {
+                let part = new_part(english);
+                if !part.is_empty() {
+                    on_delta(&part);
+                }
+            },
+        )?;
+        window.text = new_part(&window.text).trim_end().to_owned();
+        if !window.text.is_empty() {
+            return Ok(window);
+        }
+        tracing::debug!(
+            id = request.id.0,
+            "Window translation was empty; translating the line alone"
+        );
+        let prompt = HyMt2Prompts::user_message(request.text);
+        let mut alone = self.stream(prompt, None, request, on_delta)?;
+        alone.prompt_tokens += window.prompt_tokens;
+        alone.cached_tokens += window.cached_tokens;
+        alone.generated_tokens += window.generated_tokens;
+        Ok(alone)
+    }
+
+    /// One streamed request. `prefill` is the start of the answer.
+    fn stream(
+        &self,
+        prompt: String,
+        prefill: Option<&str>,
+        request: &TranslateRequest<'_>,
+        on_delta: &mut dyn FnMut(&str),
+    ) -> Result<TranslationOut> {
         request.control.check()?;
         let control = TranslationControl {
             deadline: request
@@ -180,8 +233,12 @@ impl OpenAiCompatTranslator {
                 .min(Instant::now() + Duration::from_secs_f32(self.config.timeout_s)),
             ..request.control.clone()
         };
-        let body = json!({
-            "messages": [{"role":"user", "content":HyMt2Prompts::user_message(request.text)}],
+        let mut messages = vec![json!({"role":"user", "content":prompt})];
+        if let Some(prefill) = prefill {
+            messages.push(json!({"role":"assistant", "content":prefill}));
+        }
+        let mut body = json!({
+            "messages": messages,
             "stream":true,
             "temperature":readable_float(self.config.temperature),
             "repeat_penalty":readable_float(self.config.repeat_penalty),
@@ -189,6 +246,9 @@ impl OpenAiCompatTranslator {
             "cache_prompt":true,
             "stream_options":{"include_usage":true},
         });
+        if prefill.is_some() {
+            body["stop"] = json!([HyMt2Prompts::SEPARATOR]);
+        }
         let agent = local_agent(self.endpoint.address, control.clone())?;
         let mut response = agent
             .post(&self.endpoint.completions)
@@ -268,7 +328,7 @@ impl Translator for OpenAiCompatTranslator {
         TranslatorCaps {
             streaming: true,
             glossary: false,
-            context: false,
+            context: true,
             prefill: false,
             max_input_chars: 300,
             pairs: ["zh", "yue", "ja", "ko"]
