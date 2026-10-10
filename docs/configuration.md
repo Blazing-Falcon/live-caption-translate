@@ -41,7 +41,7 @@ norm_max_gain_db = 20.0
 norm_gate_dbfs = -60.0
 
 [vad]
-engine = "silero"
+engine = "silero"              # "silero" (v5) | "silero_v6" | "ten"
 threshold = 0.5
 min_speech_s = 0.25
 min_silence_s = 0.4
@@ -52,10 +52,15 @@ soft_cut_prob = 0.35
 hard_cut_s = 10.0
 
 [asr]
-engine = "sensevoice"
+engine = "xasr_stream"          # live recognizer: "xasr_stream" | "sensevoice" | "xasr"
 language = "auto"               # keep "auto": "zh" gives worse English
 use_itn = true
 threads = 1
+second_pass = "off"             # "off" | "xasr" | "funasr_nano" | "qwen3_asr"
+second_pass_threads = 2
+second_pass_timeout_s = 2.0     # plus half the clause length
+stream_chunk_ms = 480           # xasr_stream: 480 | 960
+stream_pause_s = 0.8            # xasr_stream: silence that ends a line
 
 [filter]
 drop_music = true
@@ -169,7 +174,7 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `engine` | engine name | pipeline | VAD engine |
+| `engine` | `silero`, `silero_v6`, `ten` | pipeline | Voice detection model: Silero v5, Silero v6 or TEN VAD. All three give a speech probability, so the other `vad` keys apply to each. |
 | `threshold` | 0.2–0.9 | pipeline | Speech probability that counts as speech |
 | `min_speech_s` | 0.05–1.0 | pipeline | Speech necessary to open a segment |
 | `min_silence_s` | 0.15–1.5 | pipeline | Pause that closes a segment. This is the main latency setting. |
@@ -183,10 +188,15 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `engine` | engine name | pipeline | ASR engine |
-| `language` | `auto`, `zh`, `en`, `ja`, `ko`, `yue` | pipeline | Language hint. Keep `auto`: `zh` gives worse English. |
-| `use_itn` | bool | pipeline | Punctuation and number normalization |
-| `threads` | 1–4 | pipeline | ONNX Runtime threads for ASR |
+| `engine` | `xasr_stream`, `sensevoice`, `xasr` | pipeline | Live recognizer. It gives the live Chinese line, the commits and the drafts. `xasr_stream` is a streaming model: it hears all audio, and the `vad` keys do not apply. The other two decode each speech segment that the VAD finds again every `latency.decode_interval_s`. X-ASR has no language tag: the share of Latin letters and Chinese characters sets the language. |
+| `language` | `auto`, `zh`, `en`, `ja`, `ko`, `yue` | pipeline | SenseVoice language hint. Keep `auto`: `zh` gives worse English. |
+| `use_itn` | bool | pipeline | SenseVoice punctuation and number normalization |
+| `threads` | 1–4 | pipeline | ONNX Runtime threads for the live recognizer |
+| `second_pass` | `off`, `xasr`, `funasr_nano`, `qwen3_asr` | pipeline | Recognize each final line again with this model. Its text replaces the live Chinese and goes to the translator. It cannot be the live recognizer: that value becomes `off`. |
+| `second_pass_threads` | 1–4 | pipeline | ONNX Runtime threads for the second pass. With `latency.low_priority`, its thread runs at below-normal priority. |
+| `stream_chunk_ms` | `480`, `960` | pipeline | `xasr_stream` model. 480: words appear sooner and fewer errors. 960: less CPU. |
+| `stream_pause_s` | 0.3–3.0 | pipeline | `xasr_stream`: silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
+| `second_pass_timeout_s` | 0.5–30 | pipeline | Time limit for one line, plus half the line's length. After it, the line keeps the live text. |
 
 ### filter
 

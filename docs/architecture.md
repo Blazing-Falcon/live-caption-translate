@@ -1,6 +1,6 @@
 # Architecture
 
-Live Translation captures the audio that a Windows PC plays. It recognizes Chinese speech with SenseVoice and translates it with two local llama.cpp models. It shows the result in an overlay that lets mouse clicks pass through. All processing is on the PC. The only network use is the model download.
+Live Translation captures the audio that a Windows PC plays. It recognizes Chinese speech with a streaming X-ASR model (SenseVoice and offline X-ASR are options) and translates it with two local llama.cpp models. It shows the result in an overlay that lets mouse clicks pass through. All processing is on the PC. The only network use is the model download.
 
 ## Repository
 
@@ -8,7 +8,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 |---|---|
 | `crates/lt-core` | Pipeline, types, config, event bus, metrics, transcripts. No OS code and no engine code. |
 | `crates/lt-audio` | WASAPI capture (system mix or selected apps), WAV replay, resampling, normalization |
-| `crates/lt-sherpa` | Silero VAD and SenseVoice ASR |
+| `crates/lt-sherpa` | Voice detection (Silero v5 and v6, TEN VAD) and speech recognition (SenseVoice, X-ASR, Fun-ASR-Nano, Qwen3-ASR) |
 | `crates/lt-llm` | llama-server clients, the server supervisor, model downloads |
 | `crates/lt-cli` | Headless runner: `replay`, `live`, `bench`, `models fetch` |
 | `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge |
@@ -40,14 +40,15 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 ## Data flow
 
 1. **Capture.** The audio callback copies samples into a lock-free ring buffer.
-2. **VAD.** The frontend thread resamples to 16 kHz mono and runs Silero VAD on 32 ms frames.
+2. **VAD.** The frontend thread resamples to 16 kHz mono and runs Silero VAD on 32 ms frames. A streaming engine (`xasr_stream`, the default) skips steps 2 and 3: the frontend sends it all audio in 100 ms pieces.
 3. **Segments.** The segment builder cuts speech at a 0.4 s pause, at a breath after 7 s, and at 10 s. Each segment has its own `UtteranceId`.
-4. **Recognizer.** It decodes the open segment again after each 0.5 s of new audio. The latest text is the live Chinese line.
-5. **Commit.** If a sentence mark is stable for two decodes and speech continues, the recognizer cuts the clause there. A comma can also end a clause after 8 word tokens. With no punctuation for 20 word tokens, it cuts at the widest gap.
-6. **Filter and joiner.** The filter removes tags and fillers, classifies the text, and drops empty text, music and one-character noise. The joiner holds short pause-closed phrases (8 Chinese characters or fewer) for up to 1 s and joins them to the next phrase. It does not hold committed clauses.
-7. **Translation.** Finals and drafts share one slot: one request at a time, finals first, and only the newest draft waits. If the oldest final is more than 6 s behind, the translator skips older items. English speech is shown as heard.
-8. **Drafts.** In Continuous mode, LMT-60 translates each longer Chinese prefix into a dimmed draft. The final translation replaces the draft.
-9. **Events.** Each stage sends events to the bus. The bridge sends them to the windows. The transcript writer and the metrics read the same events. See [ipc.md](ipc.md).
+4. **Recognizer.** It decodes the open segment again after each 0.5 s of new audio. The latest text is the live Chinese line. A streaming engine instead keeps its state and decodes each piece of audio once; its emitted words never change. A clause opens at its first word and gets its `UtteranceId` there.
+5. **Commit.** If a sentence mark is stable for two decodes and speech continues, the recognizer cuts the clause there. A comma can also end a clause after 8 word tokens. With no punctuation for 20 word tokens, it cuts at the widest gap. A streaming engine uses the same rule without the stability check, and does not restart at a cut. Its clause also ends at a pause of `asr.stream_pause_s` (the engine's own rule) or when the audio stops.
+6. **Second pass.** With `asr.second_pass` on, each final line that will be translated goes to a second recognizer on its own thread. Its text replaces the live Chinese and goes to the translator. Lines wait in utterance order. A line keeps its live text when the second pass is busy (one clause already waits, or the pipeline stepped down for CPU or lag), takes too long (2 s plus half the line's length), fails or returns no text. Drafts use the live text.
+7. **Filter and joiner.** The filter removes tags and fillers, classifies the text, and drops empty text, music and one-character noise. The joiner holds short pause-closed phrases (8 Chinese characters or fewer) for up to 1 s and joins them to the next phrase. It does not hold committed clauses.
+8. **Translation.** Finals and drafts share one slot: one request at a time, finals first, and only the newest draft waits. If the oldest final is more than 6 s behind, the translator skips older items. English speech is shown as heard.
+9. **Drafts.** In Continuous mode, LMT-60 translates each longer Chinese prefix into a dimmed draft. The final translation replaces the draft.
+10. **Events.** Each stage sends events to the bus. The bridge sends them to the windows. The transcript writer and the metrics read the same events. See [ipc.md](ipc.md).
 
 ## Threads
 
@@ -55,7 +56,8 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 |---|---|
 | `lt-wasapi-capture` and adapters | Capture |
 | `lt-frontend` | Resample, VAD, segment builder |
-| `lt-asr` | Recognizer and commit rule |
+| `lt-asr` | Recognizer and commit rule; with a streaming engine also the clause start and end notices |
+| `lt-asr2` | Second-pass recognizer |
 | `lt-scheduler` | Filter, joiner, queue, drafts, step-down, stats |
 | `lt-translator`, `lt-draft` | HTTP requests to the two servers |
 | `lt-transcript` | Transcript writer |
