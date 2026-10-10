@@ -10,7 +10,7 @@ use std::{
 static INITIALIZED: Mutex<Option<PathBuf>> = Mutex::new(None);
 // sherpa-onnx 1.13.8's Windows shared C++ library requests this API even though
 // its published archive mistakenly contains an ONNX Runtime 1.17.1 DLL.
-const SENSEVOICE_RUNTIME_API: u32 = 28;
+const SHERPA_RUNTIME_API: u32 = 28;
 
 pub fn default_runtime_path() -> Result<PathBuf> {
     if let Some(path) = std::env::var_os("LT_ONNXRUNTIME") {
@@ -86,14 +86,18 @@ pub fn initialize_shared_runtime(path: impl AsRef<Path>) -> Result<()> {
 /// Check the linked native runtime before sherpa's C++ constructor can request
 /// an unsupported API and dereference its null result. This loads no model.
 pub fn verify_sensevoice_runtime() -> Result<()> {
+    verify_sherpa_runtime("SenseVoice")
+}
+
+pub(crate) fn verify_sherpa_runtime(engine: &str) -> Result<()> {
     let base = linked_api_base()?;
     // SAFETY: GetApi is a version negotiation entry point; unsupported versions
     // return null. We never dereference the returned API 28 table here.
-    let api = unsafe { (base.GetApi)(SENSEVOICE_RUNTIME_API) };
+    let api = unsafe { (base.GetApi)(SHERPA_RUNTIME_API) };
     require_api(
         api,
-        SENSEVOICE_RUNTIME_API,
-        "SenseVoice (sherpa-onnx 1.13.8)",
+        SHERPA_RUNTIME_API,
+        &format!("{engine} (sherpa-onnx 1.13.8)"),
     )
 }
 

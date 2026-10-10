@@ -1,4 +1,5 @@
-//! Silero v5's real per-frame probability, with the Python reference's state.
+//! Silero v5 and v6 per-frame probability, with the Python reference's state. Both versions
+//! have the same inputs, outputs and 64-sample context.
 
 use crate::runtime::{default_runtime_path, engine_error, initialize_shared_runtime, require_file};
 use lt_core::{
@@ -27,7 +28,7 @@ impl SileroVad {
 
     pub fn with_runtime(model: impl AsRef<Path>, runtime: impl AsRef<Path>) -> Result<Self> {
         let model = model.as_ref();
-        require_file(model, "Silero VAD v5 model")?;
+        require_file(model, "Silero VAD model")?;
         initialize_shared_runtime(runtime)?;
         let session = Session::builder()
             .and_then(|builder| builder.with_intra_threads(1).map_err(Into::into))
@@ -44,7 +45,7 @@ impl SileroVad {
                     .map_err(Into::into)
             })
             .and_then(|mut builder| builder.commit_from_file(model))
-            .map_err(|error| engine_error("Cannot open the Silero VAD v5 model", error))?;
+            .map_err(|error| engine_error("Cannot open the Silero VAD model", error))?;
         for expected in ["input", "state", "sr"] {
             if !session
                 .inputs()
@@ -58,7 +59,7 @@ impl SileroVad {
         }
         if session.outputs().len() != 2 {
             return Err(Error::Engine(
-                "Silero VAD v5 must return probability and recurrent state".into(),
+                "Silero VAD must return probability and recurrent state".into(),
             ));
         }
         Ok(Self {
