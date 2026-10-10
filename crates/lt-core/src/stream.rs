@@ -26,8 +26,15 @@ const LAST_WORD_S: f64 = 0.6;
 /// Audio kept while no clause is open: a token can appear up to a chunk plus the encoder's
 /// look-ahead after it was spoken.
 const IDLE_KEEP_S: f64 = 3.0;
-/// The longest clause audio kept for the second pass.
-const MAX_CLAUSE_S: f64 = 30.0;
+/// In sentence mode a clause this long may also end at a comma. Casual speech
+/// often runs on with commas for half a minute without a sentence end.
+const SENTENCE_COMMA_S: f64 = 6.0;
+/// In sentence mode a clause that runs this long is cut by the normal rules,
+/// so translation input and clause audio stay bounded.
+const SENTENCE_MAX_S: f64 = 30.0;
+/// The longest clause audio kept for the second pass, above `SENTENCE_MAX_S`
+/// because a cut needs a few more words after that.
+const MAX_CLAUSE_S: f64 = 40.0;
 
 /// What the frontend sends in streaming mode.
 #[derive(Clone, Debug)]
@@ -54,7 +61,8 @@ struct Clause {
 pub struct StreamRecognizer {
     config: Config,
     commit: CommitSettings,
-    partials: bool,
+    /// Rules for sentence mode; `None` in the other modes.
+    sentence: Option<CommitSettings>,
     next_id: u64,
     /// Stream time of engine time 0; `None` until audio arrives after a break.
     origin: Option<StreamTime>,
@@ -67,16 +75,21 @@ pub struct StreamRecognizer {
 }
 
 impl StreamRecognizer {
-    /// `partials`: publish the open clause's text (not in Off mode).
-    pub fn new(config: &Config, partials: bool) -> Self {
+    /// `sentences`: cut at sentence ends and pauses; commas only after `SENTENCE_COMMA_S`.
+    pub fn new(config: &Config, sentences: bool) -> Self {
+        // Streaming tokens never change, so a commit needs no second look.
+        let commit = CommitSettings {
+            stability: false,
+            ..CommitSettings::from(&config.latency)
+        };
         Self {
-            commit: CommitSettings {
-                // Streaming tokens never change, so a commit needs no second look.
-                stability: false,
-                ..CommitSettings::from(&config.latency)
-            },
+            sentence: sentences.then_some(CommitSettings {
+                comma_min_tokens: usize::MAX,
+                split_long: false,
+                ..commit
+            }),
+            commit,
             config: config.clone(),
-            partials,
             next_id: 0,
             origin: None,
             audio: VecDeque::new(),
@@ -171,7 +184,16 @@ impl StreamRecognizer {
             .seconds();
             let words: Vec<String> = tokens.tokens[rest.clone()].to_vec();
             let times: Vec<f64> = rest.clone().map(|i| at(i) - clause_start).collect();
-            match decide(&words, &times, None, &self.commit) {
+            let age = times.last().copied().unwrap_or_default();
+            let settings = match self.sentence {
+                Some(sentence) if age < SENTENCE_COMMA_S => sentence,
+                Some(_) if age < SENTENCE_MAX_S => CommitSettings {
+                    split_long: false,
+                    ..self.commit
+                },
+                _ => self.commit,
+            };
+            match decide(&words, &times, None, &settings) {
                 Decision::Commit { k } | Decision::Cap { k } => {
                     let cut = StreamTime::from_seconds(cut_at(
                         clause_start,
@@ -201,7 +223,7 @@ impl StreamRecognizer {
                 self.close(tokens, range, last, reason, asr_ms, out);
             }
             self.consumed = count;
-        } else if self.partials {
+        } else {
             self.partial(tokens, count, audio_end, out);
         }
     }
@@ -396,11 +418,12 @@ mod tests {
         }
     }
 
-    #[test]
-    fn clauses_end_at_marks_and_pauses_without_losing_text_and_carry_their_own_audio() {
+    type Final = (String, CutReason, StreamTime, StreamTime);
+
+    /// Two sentences, a 2 s pause, and a last sentence that the end of the audio closes.
+    fn run(sentences: bool) -> (Vec<Final>, Vec<u64>, usize) {
         let mut config = Config::default();
         config.latency.comma_min_tokens = 3;
-        // Two sentences, a 2 s pause, and a last sentence that the end of the audio closes.
         let mut script = Vec::new();
         let mut at = 0.3;
         for token in [
@@ -421,7 +444,7 @@ mod tests {
             part_start_s: 0.0,
             part_first: 0,
         };
-        let mut recognizer = StreamRecognizer::new(&config, true);
+        let mut recognizer = StreamRecognizer::new(&config, sentences);
         let mut out = Vec::new();
         let base = StreamTime::from_seconds(10.0);
         let total = (at * 16_000.0) as usize;
@@ -444,6 +467,7 @@ mod tests {
 
         let mut started = Vec::new();
         let mut finals = Vec::new();
+        let mut partials = 0;
         for item in &out {
             match item {
                 StreamOutput::Started(id, at) => started.push((*id, *at)),
@@ -460,10 +484,17 @@ mod tests {
                     assert!((base.0 + first).abs_diff(t.timing.start.0) <= 1);
                     finals.push((t.text.clone(), t.cut, t.timing.start, t.timing.end));
                 }
-                StreamOutput::Message(AsrMessage::Partial { .. }) => {}
+                StreamOutput::Message(AsrMessage::Partial { .. }) => partials += 1,
                 StreamOutput::Message(other) => panic!("unexpected {other:?}"),
             }
         }
+        let ids = started.iter().map(|(id, _)| id.0).collect();
+        (finals, ids, partials)
+    }
+
+    #[test]
+    fn clauses_end_at_marks_and_pauses_without_losing_text_and_carry_their_own_audio() {
+        let (finals, ids, partials) = run(false);
         let texts: Vec<_> = finals.iter().map(|(text, ..)| text.as_str()).collect();
         assert_eq!(
             texts,
@@ -483,7 +514,22 @@ mod tests {
         assert_eq!(finals[1].2, finals[0].3);
         assert_eq!(finals[2].2, finals[1].3);
         assert!(finals[3].2 >= finals[2].3);
-        let ids: Vec<_> = started.iter().map(|(id, _)| id.0).collect();
         assert_eq!(ids, [0, 1, 2, 3]);
+        assert!(partials > 0);
+    }
+
+    /// "Wait for full sentences" must not cut at a comma, and must still show the live text.
+    #[test]
+    fn sentence_mode_cuts_only_at_sentence_ends_and_still_shows_live_text() {
+        let (finals, ids, partials) = run(true);
+        let texts: Vec<_> = finals.iter().map(|(text, ..)| text.as_str()).collect();
+        assert_eq!(
+            texts,
+            ["今天天气很好。", "我们去公园，然后吃饭。", "好的没问题"]
+        );
+        let cuts: Vec<_> = finals.iter().map(|(_, cut, ..)| *cut).collect();
+        assert_eq!(cuts, [CutReason::Commit, CutReason::Pause, CutReason::End]);
+        assert_eq!(ids, [0, 1, 2]);
+        assert!(partials > 0);
     }
 }

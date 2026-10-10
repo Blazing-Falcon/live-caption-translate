@@ -284,7 +284,7 @@ impl Pipeline {
         let asr_notices = AsrNotices {
             notices: front_tx.clone(),
             segment_counts: segment_counts.clone(),
-            partials: initial_mode.mode != EffectiveMode::Off,
+            sentences: initial_mode.mode == EffectiveMode::Off,
         };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())
@@ -944,7 +944,8 @@ fn frontend_loop(
 struct AsrNotices {
     notices: Sender<FrontendNotice>,
     segment_counts: Arc<SegmentCounters>,
-    partials: bool,
+    /// Off mode: clauses end only at sentence ends and pauses.
+    sentences: bool,
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -1007,7 +1008,7 @@ fn stream_loop(
     cancelled: &AtomicBool,
     stream: AsrNotices,
 ) -> Result<()> {
-    let mut recognizer = StreamRecognizer::new(config, stream.partials);
+    let mut recognizer = StreamRecognizer::new(config, stream.sentences);
     let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {

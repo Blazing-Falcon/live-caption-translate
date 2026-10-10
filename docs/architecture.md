@@ -75,11 +75,12 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 |---|---|---|
 | Continuous | Live Chinese, early commits, drafts, finals | 2 |
 | Light | Live Chinese, early commits, finals | 1 |
-| Off | Translate when the speaker pauses | 1 |
+| Off | Translate when the speaker pauses. With a streaming engine: live Chinese, and a clause ends at 。？！, a pause, or after 6 s at a comma | 1 |
 
 - `auto` selects Continuous if the PC has 6 or more physical cores and the draft model is present. Otherwise it selects Light.
 - `continuous` without the draft model runs Light, with the reason `draft_unavailable`.
 - An ASR engine without a windowed decode always runs Off.
+- In Off with a streaming engine, a clause still open after 30 s is also cut by the word-cap rule.
 - A change to a `latency` key restarts the pipeline.
 
 ## Step-down
