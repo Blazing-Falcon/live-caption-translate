@@ -137,6 +137,8 @@ pub struct TranslateRequest<'a> {
     pub src: &'a str,
     pub tgt: &'a str,
     pub terms: &'a [(String, String)],
+    /// Earlier lines as (source, English shown), oldest first. Engines
+    /// without `caps().context` get none.
     pub context: &'a [(String, String)],
     /// English the answer must start with; "" for none. Only draft engines honor it.
     pub prefill: &'a str,

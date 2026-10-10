@@ -111,6 +111,7 @@ config_table!(TranslateConfig {
     timeout_s: f32 = 10.0,
     queue_join_max_chars: u32 = 120,
     skip_lag_s: f32 = 6.0,
+    window_chars: u32 = 0,
     target: String = "en".into(),
 });
 config_table!(OverlayConfig {
@@ -370,6 +371,7 @@ impl Config {
         number!(translate, timeout_s, 2.0, 60.0);
         number!(translate, queue_join_max_chars, 20, 300);
         number!(translate, skip_lag_s, 2.0, 30.0);
+        number!(translate, window_chars, 0, 60);
         choice!(translate, target, &["en"]);
         number!(overlay, font_px, 18, 40);
         number!(overlay, background, 0.0, 1.0);
@@ -691,6 +693,7 @@ fn integer_range(path: &str) -> (i64, i64) {
         "translate.ctx" => (512, 4096),
         "translate.max_tokens_cap" => (32, 1024),
         "translate.queue_join_max_chars" => (20, 300),
+        "translate.window_chars" => (0, 60),
         "overlay.font_px" => (18, 40),
         "overlay.panel_lines" => (4, 6),
         "latency.comma_min_tokens" => (2, 20),

@@ -80,6 +80,7 @@ export interface Config extends ExtraFields {
     timeout_s: number;
     queue_join_max_chars: number;
     skip_lag_s: number;
+    window_chars: number;
     target: "en";
   };
   overlay: ExtraFields & {
@@ -289,6 +290,13 @@ export function translateThreadsPatch(threads: number): ConfigPatch {
   return { translate: { threads: clamp(Math.round(threads), 0, TRANSLATE_THREADS_MAX) } };
 }
 
+/** Characters of earlier lines translated with each new line when the switch is on. */
+export const WINDOW_CHARS = 30;
+
+export function translateWindowPatch(enabled: boolean): ConfigPatch {
+  return { translate: { window_chars: enabled ? WINDOW_CHARS : 0 } };
+}
+
 export function transcriptPatch(enabled: boolean): ConfigPatch {
   return { transcript: { enabled } };
 }
@@ -428,6 +436,7 @@ export const DEFAULT_CONFIG: Config = {
     "timeout_s": 10.0,
     "queue_join_max_chars": 120,
     "skip_lag_s": 6.0,
+    "window_chars": 0,
     "target": "en"
   },
   "overlay": {

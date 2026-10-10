@@ -89,6 +89,7 @@ max_tokens_cap = 256
 timeout_s = 10.0
 queue_join_max_chars = 120
 skip_lag_s = 6.0
+window_chars = 0                # 0 = translate each line alone
 target = "en"
 
 [overlay]
@@ -237,6 +238,7 @@ The default values are in the file above.
 | `timeout_s` | 2–60 | pipeline | Time limit for one request |
 | `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items |
 | `skip_lag_s` | 2–30 | pipeline | Lag at which the translator skips older items |
+| `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters. Their English is given as the start of the answer, so only the new line is translated. Whole lines only. `0`: off. |
 | `target` | `en` | pipeline | Target language |
 
 ### overlay

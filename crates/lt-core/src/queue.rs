@@ -9,7 +9,7 @@ use crate::{
     events::{EngineKind, EngineState, FailReason, JoinKind, PipelineEvent, SkipReason, Timing},
     join::join_text,
     text::chinese_chars,
-    types::{StreamTime, Transcript},
+    types::{StreamTime, Transcript, UtteranceId},
 };
 use crossbeam_channel::{bounded, Receiver, Sender};
 use std::{
@@ -22,10 +22,19 @@ use std::{
     time::{Duration, Instant},
 };
 
+/// After a silence this long the talk has likely moved on, and earlier lines
+/// would steer the translation the wrong way.
+const WINDOW_GAP_S: f64 = 10.0;
+/// Recent English kept for windows; a window holds at most `window_chars` (60) lines.
+const SHOWN_CAPACITY: usize = 64;
+
 #[derive(Clone, Debug)]
 pub struct QueuedTranscript {
     pub transcript: Transcript,
     pub queued_ms: u64,
+    /// Earlier lines (id, source) to translate with this one, oldest first.
+    /// The translator thread adds the English it gave them.
+    pub window: Vec<(UtteranceId, String)>,
 }
 
 #[derive(Default)]
@@ -38,6 +47,9 @@ pub struct QueueBatch {
 pub struct TranslationQueue {
     config: TranslateConfig,
     waiting: VecDeque<QueuedTranscript>,
+    /// Queued lines with their end times, newest last.
+    earlier: VecDeque<(StreamTime, UtteranceId, String)>,
+    break_at: Option<StreamTime>,
 }
 
 impl TranslationQueue {
@@ -46,17 +58,63 @@ impl TranslationQueue {
         Self {
             config,
             waiting: VecDeque::new(),
+            earlier: VecDeque::new(),
+            break_at: None,
         }
     }
     pub fn push(&mut self, transcript: Transcript, queued_ms: u64) -> Result<()> {
         if self.waiting.len() == Self::CAPACITY {
             return Err(Error::Engine("Translation queue is full".into()));
         }
+        let window = self.window(&transcript);
         self.waiting.push_back(QueuedTranscript {
             transcript,
             queued_ms,
+            window,
         });
         Ok(())
+    }
+
+    /// Lines before a discontinuity are not context for lines after it. Lines
+    /// reach the queue after their notice, so the break is kept by time.
+    pub fn discontinuity(&mut self, at: StreamTime) {
+        self.break_at = Some(at);
+    }
+
+    /// The newest earlier lines that fit in `window_chars` together, whole lines only.
+    fn window(&mut self, transcript: &Transcript) -> Vec<(UtteranceId, String)> {
+        let limit = self.config.window_chars as usize;
+        if limit == 0 {
+            return Vec::new();
+        }
+        let start = transcript.timing.start;
+        let stale = self.earlier.back().is_some_and(|(end, _, _)| {
+            start.saturating_sub(*end).seconds() > WINDOW_GAP_S
+                || self.break_at.is_some_and(|at| *end <= at && at <= start)
+        });
+        if stale {
+            self.earlier.clear();
+        }
+        let mut window = Vec::new();
+        let mut chars = 0;
+        for (_, id, line) in self.earlier.iter().rev() {
+            chars += line.chars().count();
+            if chars > limit {
+                break;
+            }
+            window.push((*id, line.clone()));
+        }
+        window.reverse();
+        self.earlier.push_back((
+            transcript.timing.end,
+            transcript.id,
+            transcript.text.clone(),
+        ));
+        // Every line has at least one character, so older lines can never fit.
+        while self.earlier.len() > limit {
+            self.earlier.pop_front();
+        }
+        window
     }
     pub fn len(&self) -> usize {
         self.waiting.len()
@@ -224,9 +282,27 @@ fn stop_runaway_streaming(text: &str) -> Option<String> {
     stop_runaway(&text[..boundary])
 }
 
+/// The window's lines with the English shown for them. A line without English
+/// (skipped, failed or joined into another) ends the window there.
+fn window_context(
+    window: &[(UtteranceId, String)],
+    shown: &VecDeque<(UtteranceId, String)>,
+) -> Vec<(String, String)> {
+    let mut context = Vec::new();
+    for (id, source) in window.iter().rev() {
+        let Some((_, english)) = shown.iter().rev().find(|(shown_id, _)| shown_id == id) else {
+            break;
+        };
+        context.push((source.clone(), english.clone()));
+    }
+    context.reverse();
+    context
+}
+
 pub fn translate_one(
     translator: &mut dyn Translator,
     item: &QueuedTranscript,
+    context: &[(String, String)],
     config: &TranslateConfig,
     clock: &dyn Clock,
     bus: &EventBus,
@@ -248,7 +324,11 @@ pub fn translate_one(
         src: &source_language,
         tgt: &config.target,
         terms: &[],
-        context: &[],
+        context: if translator.caps().context {
+            context
+        } else {
+            &[]
+        },
         prefill: "",
         max_tokens: None,
         control: control.clone(),
@@ -411,20 +491,29 @@ impl TranslatorWorker {
                     },
                     message: warmup.err().map(|error| error.to_string()),
                 });
+                let mut shown: VecDeque<(UtteranceId, String)> = VecDeque::new();
                 while !worker_cancelled.load(Ordering::Relaxed) {
                     let item = match work.recv_timeout(Duration::from_millis(20)) {
                         Ok(item) => item,
                         Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
                         Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
                     };
+                    let context = window_context(&item.window, &shown);
                     let event = translate_one(
                         translator.as_mut(),
                         &item,
+                        &context,
                         &config,
                         clock.as_ref(),
                         &bus,
                         worker_cancelled.clone(),
                     );
+                    if let PipelineEvent::TranslationFinal { id, text, .. } = &event {
+                        if shown.len() == SHOWN_CAPACITY {
+                            shown.pop_front();
+                        }
+                        shown.push_back((*id, text.clone()));
+                    }
                     // Cooperative channel send: shutdown must not wait for scheduler.
                     let mut pending = event;
                     loop {

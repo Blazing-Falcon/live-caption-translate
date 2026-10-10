@@ -17,7 +17,7 @@ use lt_core::{
 use std::{
     sync::{
         atomic::{AtomicBool, Ordering},
-        Arc,
+        Arc, Mutex,
     },
     time::{Duration, Instant},
 };
@@ -75,6 +75,39 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
     );
 }
 
+/// A wrong window only makes translations worse: lines from before a break,
+/// or one line too many, would pass every other check.
+#[test]
+fn window_holds_whole_earlier_lines_and_restarts_after_a_gap_or_a_break() {
+    let mut config = Config::default().translate;
+    config.window_chars = 10;
+    let mut queue = TranslationQueue::new(config);
+    let next = |queue: &mut TranslationQueue, id: u64, text: &str, end: f64| {
+        queue.push(transcript(id, text, end), 0).unwrap();
+        queue
+            .take(StreamTime::from_seconds(end))
+            .item
+            .unwrap()
+            .window
+            .into_iter()
+            .map(|(_, line)| line)
+            .collect::<Vec<_>>()
+    };
+    assert!(next(&mut queue, 1, "我们今天去公园，", 1.0).is_empty());
+    assert_eq!(next(&mut queue, 2, "好的。", 2.0), ["我们今天去公园，"]);
+    assert_eq!(next(&mut queue, 3, "然后吃饭。", 3.0), ["好的。"]);
+    assert_eq!(next(&mut queue, 4, "嗯。", 4.0), ["好的。", "然后吃饭。"]);
+    // Starts 15 s after the previous line ended.
+    assert!(next(&mut queue, 5, "走吧。", 20.0).is_empty());
+    queue.discontinuity(StreamTime::from_seconds(20.5));
+    assert!(next(&mut queue, 6, "到了。", 22.0).is_empty());
+    assert_eq!(next(&mut queue, 7, "进去吧。", 23.0), ["到了。"]);
+
+    let mut off = TranslationQueue::new(Config::default().translate);
+    next(&mut off, 1, "好的。", 1.0);
+    assert!(next(&mut off, 2, "然后吃饭。", 2.0).is_empty());
+}
+
 #[test]
 fn skip_at_more_than_six_seconds_only_and_keep_newest() {
     let mut queue = TranslationQueue::new(Config::default().translate);
@@ -120,6 +153,7 @@ fn wrappers_runaway_echo_and_leaked_chinese_are_checked() {
     let item = QueuedTranscript {
         transcript: transcript(1, "你好。", 1.0),
         queued_ms: 1500,
+        window: Vec::new(),
     };
     let mut fake = FakeTranslator::default();
     for (response, expected) in [
@@ -132,6 +166,7 @@ fn wrappers_runaway_echo_and_leaked_chinese_are_checked() {
         let event = translate_one(
             &mut fake,
             &item,
+            &[],
             &Config::default().translate,
             &clock,
             &bus,
@@ -149,6 +184,92 @@ fn wrappers_runaway_echo_and_leaked_chinese_are_checked() {
             ));
         }
     }
+}
+
+type Context = Vec<(String, String)>;
+
+/// Answers "EN <source>" and records the earlier lines it was given.
+struct ContextRecorder {
+    seen: Arc<Mutex<Vec<Context>>>,
+}
+
+impl Translator for ContextRecorder {
+    fn caps(&self) -> TranslatorCaps {
+        TranslatorCaps {
+            streaming: false,
+            glossary: false,
+            context: true,
+            prefill: false,
+            max_input_chars: 300,
+            pairs: vec![("zh".into(), "en".into())],
+        }
+    }
+
+    fn warm_up(&mut self, control: &TranslationControl) -> Result<()> {
+        control.check()
+    }
+
+    fn translate(
+        &mut self,
+        request: &TranslateRequest<'_>,
+        _on_delta: &mut dyn FnMut(&str),
+    ) -> Result<TranslationOut> {
+        self.seen.lock().unwrap().push(request.context.to_vec());
+        Ok(TranslationOut {
+            text: format!("EN {}", request.text),
+            ..TranslationOut::default()
+        })
+    }
+}
+
+/// The English in a window must be the English shown for that same line; a
+/// mix-up would only show as worse translations.
+#[test]
+fn worker_pairs_window_lines_with_their_own_english_and_stops_at_a_line_without_one() {
+    let seen = Arc::new(Mutex::new(Vec::new()));
+    let clock: Arc<dyn Clock> = Arc::new(ManualClock::default());
+    let stop = Arc::new(AtomicBool::new(false));
+    let mut worker = TranslatorWorker::start(
+        Box::new(ContextRecorder { seen: seen.clone() }),
+        Config::default().translate,
+        clock,
+        EventBus::default(),
+        stop,
+    )
+    .unwrap();
+    let items = [
+        (1, "好的。", vec![]),
+        (2, "然后吃饭。", vec![(1, "好的。")]),
+        // Line 9 never reached the translator, as when it is skipped.
+        (
+            3,
+            "走吧。",
+            vec![(1, "好的。"), (9, "跳过。"), (2, "然后吃饭。")],
+        ),
+    ];
+    for (id, text, window) in items {
+        worker
+            .input
+            .send(QueuedTranscript {
+                transcript: transcript(id, text, id as f64),
+                queued_ms: 0,
+                window: window
+                    .into_iter()
+                    .map(|(id, line)| (UtteranceId(id), line.to_owned()))
+                    .collect(),
+            })
+            .unwrap();
+        worker
+            .completed
+            .recv_timeout(Duration::from_secs(1))
+            .unwrap();
+    }
+    let pair = |source: &str| (source.to_owned(), format!("EN {source}"));
+    assert_eq!(
+        *seen.lock().unwrap(),
+        [vec![], vec![pair("好的。")], vec![pair("然后吃饭。")]]
+    );
+    worker.stop().unwrap();
 }
 
 #[test]
@@ -173,6 +294,7 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
         .send(QueuedTranscript {
             transcript: transcript(1, "超时。", 1.0),
             queued_ms: 1000,
+            window: Vec::new(),
         })
         .unwrap();
     assert!(matches!(
@@ -190,6 +312,7 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
         .send(QueuedTranscript {
             transcript: transcript(2, "你好。", 2.0),
             queued_ms: 2000,
+            window: Vec::new(),
         })
         .unwrap();
     assert!(matches!(
@@ -316,11 +439,20 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     let item = QueuedTranscript {
         transcript: transcript(1, "你好。", 1.0),
         queued_ms: 1200,
+        window: Vec::new(),
     };
     let bus = EventBus::default();
     let deltas = bus.subscribe(8);
     let start = Instant::now();
-    let event = translate_one(&mut fake, &item, &config, &clock, &bus, cancelled.clone());
+    let event = translate_one(
+        &mut fake,
+        &item,
+        &[],
+        &config,
+        &clock,
+        &bus,
+        cancelled.clone(),
+    );
     assert!(start.elapsed() < Duration::from_secs(1));
     assert!(!reached_end.load(Ordering::SeqCst));
     assert!(!cancelled.load(Ordering::SeqCst));
@@ -334,7 +466,7 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     // An abort belongs to one request; the same pipeline cancellation flag can
     // be reused for the next request without suppressing it.
     let mut next = ScriptedTranslator::new(clock.clone(), &["Goodbye."], "Goodbye.");
-    let next_event = translate_one(&mut next, &item, &config, &clock, &bus, cancelled);
+    let next_event = translate_one(&mut next, &item, &[], &config, &clock, &bus, cancelled);
     assert!(
         matches!(next_event, PipelineEvent::TranslationFinal { text, .. } if text == "Goodbye.")
     );

@@ -1296,6 +1296,7 @@ impl Scheduler {
                 self.joined(result);
             }
             FrontendNotice::Discontinuity(at) => {
+                self.queue.discontinuity(at);
                 let result = self.joiner.discontinuity_at(at);
                 self.joined(result);
             }
