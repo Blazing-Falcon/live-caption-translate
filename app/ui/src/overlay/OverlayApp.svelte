@@ -3,6 +3,7 @@
   import type { Session } from "../lib/events";
   import { formatAccelerator } from "../lib/settings";
   import CaptionPanel from "./CaptionPanel.svelte";
+  import FlowText from "./FlowText.svelte";
   import MoveFrame from "./MoveFrame.svelte";
   import StatusChip from "./StatusChip.svelte";
   import SubtitleBar from "./SubtitleBar.svelte";
@@ -60,6 +61,16 @@
         onpause={togglePause}
         onsettings={openSettings}
       />
+    {:else if $config.overlay.style === "flow"}
+      <div class="bar-slot">
+        <FlowText
+          lines={$captions.lines}
+          status={$captions.status}
+          showSource={$config.overlay.show_source}
+          liveSource={$config.overlay.live_source}
+          flowLines={$config.overlay.flow_lines}
+        />
+      </div>
     {:else}
       <div class="bar-slot">
         <SubtitleBar

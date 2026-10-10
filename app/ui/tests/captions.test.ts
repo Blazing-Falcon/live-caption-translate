@@ -8,6 +8,7 @@ import {
   ageOpacity,
   createCaptionController,
   failReasonText,
+  flowText,
   visibleLines,
   type CaptionController,
 } from "../src/lib/captions";
@@ -20,6 +21,7 @@ import {
   failed,
   final,
   joined,
+  partial,
   skipped,
   testConfig,
   testState,
@@ -104,6 +106,34 @@ describe("caption reducer", () => {
     expect(failReasonText(reason, message)).toBe(expected);
   });
 
+});
+
+describe("running text", () => {
+  // A line that drops out or swaps places here would show wrong English with no error anywhere.
+  it("keeps each line in order, with live Chinese and pending English at the end", () => {
+    const { lines, run } = setup();
+    run(asrFinal(1, "你好。"), final(1, "Hello."));
+    run(asrFinal(2, "Okay.", "english", "en"));
+    run(asrFinal(3, "然后吃饭。"), delta(3, "Then"));
+    run(asrFinal(4, "好的。"));
+    run(partial(5, "我们"));
+    const flow = flowText(lines(), true, true);
+    expect(flow.source.map((piece) => [piece.text, piece.kind])).toEqual([
+      ["你好。", "final"],
+      ["然后吃饭。", "final"],
+      ["好的。", "final"],
+      ["我们", "live"],
+    ]);
+    expect(flow.english.map((piece) => [piece.text, piece.kind])).toEqual([
+      ["Hello.", "final"],
+      ["Okay.", "final"],
+      ["Then", "streaming"],
+      ["···", "pending"],
+    ]);
+    const hidden = flowText(lines(), false, false);
+    expect(hidden.source).toEqual([]);
+    expect(hidden.english).toEqual(flow.english);
+  });
 });
 
 describe("expiry", () => {

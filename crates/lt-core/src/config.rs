@@ -123,12 +123,15 @@ config_table!(OverlayConfig {
     expire_s: f32 = 8.0,
     panel_edge: String = "right".into(),
     panel_lines: u32 = 5,
+    flow_lines: u32 = 3,
     live_source: bool = true,
     draft_display: String = "hold2".into(),
     #[serde(skip_serializing_if = "Option::is_none")]
     bar_rect: Option<OverlayRect> = None,
     #[serde(skip_serializing_if = "Option::is_none")]
     panel_rect: Option<OverlayRect> = None,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    flow_rect: Option<OverlayRect> = None,
 });
 config_table!(LatencyConfig {
     mode: String = "auto".into(),
@@ -377,6 +380,7 @@ impl Config {
         number!(overlay, background, 0.0, 1.0);
         number!(overlay, expire_s, 3.0, 60.0);
         number!(overlay, panel_lines, 4, 6);
+        number!(overlay, flow_lines, 2, 6);
         number!(latency, decode_interval_s, 0.3, 2.0);
         number!(latency, min_open_s, 0.5, 3.0);
         number!(latency, comma_min_tokens, 2, 20);
@@ -400,7 +404,7 @@ impl Config {
         number!(latency, auto_min_cores, 2, 64);
         choice!(latency, mode, &["auto", "continuous", "light", "off"]);
         choice!(overlay, draft_display, &["hold2", "settled", "all"]);
-        choice!(overlay, style, &["bar", "panel"]);
+        choice!(overlay, style, &["bar", "panel", "flow"]);
         choice!(overlay, panel_edge, &["left", "right"]);
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
         choice!(models, source, &["huggingface", "modelscope"]);
@@ -428,6 +432,7 @@ impl Config {
         for (name, rect) in [
             ("overlay.bar_rect", &mut self.overlay.bar_rect),
             ("overlay.panel_rect", &mut self.overlay.panel_rect),
+            ("overlay.flow_rect", &mut self.overlay.flow_rect),
         ] {
             if let Some(rect) = rect {
                 let default = OverlayRect::default();
@@ -487,6 +492,9 @@ impl Config {
         if let Some(rect) = &self.overlay.panel_rect {
             unknown_fields(&rect.extra, "overlay.panel_rect", messages);
         }
+        if let Some(rect) = &self.overlay.flow_rect {
+            unknown_fields(&rect.extra, "overlay.flow_rect", messages);
+        }
     }
 
     fn restore_extra(&mut self, value: &toml::Value, schema: &toml::Value) {
@@ -519,6 +527,7 @@ impl Config {
             for (key, rect) in [
                 ("bar_rect", &mut self.overlay.bar_rect),
                 ("panel_rect", &mut self.overlay.panel_rect),
+                ("flow_rect", &mut self.overlay.flow_rect),
             ] {
                 if let (Some(rect), Some(value), Some(schema)) =
                     (rect, overlay.get(key), schema.get(key))
@@ -553,7 +562,8 @@ fn schema() -> Result<toml::Value> {
         .and_then(toml::Value::as_table_mut)
     {
         overlay.insert("bar_rect".into(), rect.clone());
-        overlay.insert("panel_rect".into(), rect);
+        overlay.insert("panel_rect".into(), rect.clone());
+        overlay.insert("flow_rect".into(), rect);
     }
     Ok(schema)
 }
@@ -567,7 +577,7 @@ fn normalize_types(
     if let (Some(table), Some(default_table)) = (value.as_table_mut(), default.as_table()) {
         for (key, field_default) in default_table {
             if path == "overlay"
-                && matches!(key.as_str(), "bar_rect" | "panel_rect")
+                && matches!(key.as_str(), "bar_rect" | "panel_rect" | "flow_rect")
                 && table.get(key).is_some_and(|field| !field.is_table())
             {
                 table.remove(key);
@@ -696,6 +706,7 @@ fn integer_range(path: &str) -> (i64, i64) {
         "translate.window_chars" => (0, 60),
         "overlay.font_px" => (18, 40),
         "overlay.panel_lines" => (4, 6),
+        "overlay.flow_lines" => (2, 6),
         "latency.comma_min_tokens" => (2, 20),
         "latency.cap_tokens" => (0, 60),
         "latency.draft_min_chars" => (1, 10),

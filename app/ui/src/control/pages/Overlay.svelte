@@ -49,7 +49,7 @@
     }
   });
 
-  async function chooseStyle(event: Event, style: "bar" | "panel"): Promise<void> {
+  async function chooseStyle(event: Event, style: Config["overlay"]["style"]): Promise<void> {
     const input = event.currentTarget as HTMLInputElement;
     await session.save("overlay.style", overlayPatch({ style }));
     reconcileRadios(input, get(liveConfig)?.overlay.style ?? overlay.style);
@@ -113,6 +113,12 @@
     if (!saved) select.value = String(overlay.panel_lines);
   }
 
+  async function chooseFlowLines(event: Event): Promise<void> {
+    const select = event.currentTarget as HTMLSelectElement;
+    const saved = await session.save("overlay.flow_lines", overlayPatch({ flow_lines: Number(select.value) }));
+    if (!saved) select.value = String(overlay.flow_lines);
+  }
+
   async function saveHotkey(action: HotkeyAction): Promise<void> {
     if (get(busy).has(`hotkeys.${action}`)) return;
     const saved = await session.save(`hotkeys.${action}`, hotkeyPatch(action, hotkeyDrafts[action]));
@@ -134,6 +140,10 @@
       <label>
         <input type="radio" name="style" value="panel" checked={overlay.style === "panel"} onchange={(event) => chooseStyle(event, "panel")} />
         <span>Caption panel</span>
+      </label>
+      <label>
+        <input type="radio" name="style" value="flow" checked={overlay.style === "flow"} onchange={(event) => chooseStyle(event, "flow")} />
+        <span>Running text</span>
       </label>
     </div>
   </div>
@@ -205,6 +215,17 @@
       onchange={(event) => commitNumber("overlay.expire_s", event, "expire_s", 1, () => (expireDraft = null))}
     />
   </label>
+
+  {#if overlay.style === "flow"}
+    <label class="field">
+      <span>Lines of running text</span>
+      <select class="select" value={String(overlay.flow_lines)} onchange={chooseFlowLines}>
+        {#each Array.from({ length: OVERLAY_LIMITS.flow_lines.max - OVERLAY_LIMITS.flow_lines.min + 1 }, (_, index) => OVERLAY_LIMITS.flow_lines.min + index) as count (count)}
+          <option value={String(count)}>{count}</option>
+        {/each}
+      </select>
+    </label>
+  {/if}
 
   {#if overlay.style === "panel"}
     <div class="stack">

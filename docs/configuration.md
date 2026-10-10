@@ -94,18 +94,20 @@ target = "en"
 
 [overlay]
 visible = true
-style = "bar"                   # "bar" (subtitle bar) | "panel" (caption panel)
+style = "bar"                   # "bar" (subtitle bar) | "panel" (caption panel) | "flow" (running text)
 font_px = 26
 background = 0.82               # 0.0 to 1.0
 show_source = true              # show the Chinese line above the English
 expire_s = 8.0
 panel_edge = "right"            # "left" | "right"
 panel_lines = 5
+flow_lines = 3
 live_source = true              # show the Chinese of the clause being spoken
 draft_display = "hold2"         # "hold2" | "settled" | "all"
 # Saved positions, written by the app after move mode. Absent = default placement.
 # [overlay.bar_rect]   monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 140   (device-independent pixels)
 # [overlay.panel_rect] monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 420, h = 600
+# [overlay.flow_rect]  monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 360
 
 [latency]
 mode = "auto"                   # "auto" | "continuous" | "light" | "off"
@@ -246,16 +248,17 @@ The default values are in the file above.
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
 | `visible` | bool | live | Show the overlay |
-| `style` | `bar`, `panel` | live | Subtitle bar or caption panel |
+| `style` | `bar`, `panel`, `flow` | live | Subtitle bar, caption panel, or running text: the lines joined into one English paragraph (and one Chinese paragraph with `show_source`), newest at the end |
 | `font_px` | 18–40 | live | English text size. Chinese is 0.65 × this size. Older lines are 0.8 × this size. |
 | `background` | 0–1 | live | Background opacity. The control window warns below 0.5. |
 | `show_source` | bool | live | Show the Chinese line above the English line |
 | `expire_s` | 3–60 | live | Remove lines after this time without new speech |
 | `panel_edge` | `left`, `right` | live | Default edge for the panel |
 | `panel_lines` | 4–6 | live | Lines in the panel |
+| `flow_lines` | 2–6 | live | Wrapped lines kept of each running-text paragraph. Older text scrolls out at the top. |
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
 | `draft_display` | `hold2`, `settled`, `all` | live | Draft words to show. `hold2`: all words except the newest two. `settled`: words that the last two drafts agree on. `all`: all words. |
-| `bar_rect`, `panel_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
+| `bar_rect`, `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
 
 ### latency
 

@@ -10,12 +10,14 @@ import type {
   PipelineEvent,
   SourceInfo,
   SourceStateKind,
+  UtteranceId,
 } from "./types";
 
 export const FADE_MS = 200;
 export const CHIP_MS = 3000;
-/** Terminal rows kept after they leave the screen; the panel shows at most 6. */
-export const MAX_HISTORY_LINES = 6;
+/** Terminal rows kept after they leave the screen. The panel shows at most 6; running text
+ * needs more, because commit cuts make short lines and it keeps up to 6 wrapped lines. */
+export const MAX_HISTORY_LINES = 24;
 /** Defensive cap: the core bounds outstanding work, the UI must not trust that blindly. */
 export const MAX_OUTSTANDING_LINES = 32;
 
@@ -223,6 +225,49 @@ export function visibleLines(
 ): CaptionLine[] {
   const count = style === "bar" ? 2 : Math.min(6, Math.max(4, Math.round(panelLines)));
   return lines.filter((line) => !isHiddenLive(line, liveSource)).slice(-count);
+}
+
+export interface FlowPiece {
+  id: UtteranceId;
+  text: string;
+  /** "dim" is a draft or text that will not be translated; "live" is Chinese still being spoken. */
+  kind: "final" | "streaming" | "dim" | "live" | "pending";
+}
+
+export interface FlowText {
+  source: FlowPiece[];
+  english: FlowPiece[];
+}
+
+/** The lines as two running paragraphs, oldest first. Every line keeps its place, so a
+ * line's text appears where its Chinese was and later English replaces its draft in place. */
+export function flowText(lines: readonly CaptionLine[], showSource: boolean, liveSource: boolean): FlowText {
+  const source: FlowPiece[] = [];
+  const english: FlowPiece[] = [];
+  for (const line of lines) {
+    const { id } = line;
+    if (line.state === "english") {
+      english.push({ id, text: line.source, kind: "final" });
+      continue;
+    }
+    if (line.state === "other") {
+      english.push({ id, text: line.source, kind: "dim" });
+      continue;
+    }
+    if (line.state === "live") {
+      if (liveSource && line.source !== "") source.push({ id, text: line.source, kind: "live" });
+    } else if (showSource && line.source !== "") {
+      source.push({ id, text: line.source, kind: "final" });
+    }
+    if (line.state === "final" || line.state === "streaming") {
+      if (line.english !== "" || line.state === "streaming") english.push({ id, text: line.english, kind: line.state });
+    } else if (line.shown !== "") {
+      english.push({ id, text: line.shown, kind: "dim" });
+    } else if (line.state === "pending") {
+      english.push({ id, text: "···", kind: "pending" });
+    }
+  }
+  return { source, english };
 }
 
 interface AppSlice {

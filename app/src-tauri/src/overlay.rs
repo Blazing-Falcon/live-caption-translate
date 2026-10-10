@@ -65,11 +65,11 @@ impl Overlay {
         let Some((monitors, primary)) = monitors(&window) else {
             return;
         };
-        let panel = config.overlay.style == "panel";
-        let saved = if panel {
-            config.overlay.panel_rect.as_ref()
-        } else {
-            config.overlay.bar_rect.as_ref()
+        let style = config.overlay.style.as_str();
+        let saved = match style {
+            "panel" => config.overlay.panel_rect.as_ref(),
+            "flow" => config.overlay.flow_rect.as_ref(),
+            _ => config.overlay.bar_rect.as_ref(),
         };
         let name = saved.map_or("", |rect| rect.monitor.as_str());
         let Some(monitor) = geometry::pick(name, &monitors, primary) else {
@@ -78,7 +78,7 @@ impl Overlay {
         // A rect saved for a vanished monitor is relative to that one; the default is safer.
         let rect = match saved {
             Some(rect) if rect.monitor == monitor.name => rect.clone(),
-            _ => geometry::default_rect(panel, config.overlay.panel_edge != "left", monitor),
+            _ => geometry::default_rect(style, config.overlay.panel_edge != "left", monitor),
         };
         let target = geometry::to_physical(&rect, monitor);
         let _ = window.set_position(PhysicalPosition::new(target.x, target.y));
@@ -130,12 +130,12 @@ impl Overlay {
             },
             monitor,
         );
-        let panel = shared.config().overlay.style == "panel";
+        let style = shared.config().overlay.style.clone();
         shared.update_config(|config: &mut Config| {
-            let slot: &mut Option<OverlayRect> = if panel {
-                &mut config.overlay.panel_rect
-            } else {
-                &mut config.overlay.bar_rect
+            let slot: &mut Option<OverlayRect> = match style.as_str() {
+                "panel" => &mut config.overlay.panel_rect,
+                "flow" => &mut config.overlay.flow_rect,
+                _ => &mut config.overlay.bar_rect,
             };
             *slot = Some(rect);
         })

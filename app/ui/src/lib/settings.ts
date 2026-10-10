@@ -85,17 +85,19 @@ export interface Config extends ExtraFields {
   };
   overlay: ExtraFields & {
     visible: boolean;
-    style: "bar" | "panel";
+    style: "bar" | "panel" | "flow";
     font_px: number;
     background: number;
     show_source: boolean;
     expire_s: number;
     panel_edge: "left" | "right";
     panel_lines: number;
+    flow_lines: number;
     live_source: boolean;
     draft_display: "hold2" | "settled" | "all";
     bar_rect?: OverlayRect;
     panel_rect?: OverlayRect;
+    flow_rect?: OverlayRect;
   };
   latency: ExtraFields & {
     mode: "auto" | "continuous" | "light" | "off";
@@ -160,6 +162,7 @@ export const OVERLAY_LIMITS = {
   background: { min: 0, max: 1 },
   expire_s: { min: 3, max: 60 },
   panel_lines: { min: 4, max: 6 },
+  flow_lines: { min: 2, max: 6 },
 } as const;
 
 export const TRANSLATE_THREADS_MAX = 16;
@@ -309,7 +312,7 @@ export const CAPTION_SPEEDS: readonly { value: Config["latency"]["mode"]; label:
   { value: "auto", label: "Automatic (recommended)", help: "Uses Continuous on PCs with 6 or more cores, Light on smaller PCs." },
   { value: "continuous", label: "Continuous", help: "English follows the speaker within about a second. Uses the most CPU." },
   { value: "light", label: "Light", help: "Translates each phrase as soon as it ends. Less CPU, no draft text." },
-  { value: "off", label: "Wait for full sentences", help: "Translates after the speaker pauses, like version 1." },
+  { value: "off", label: "Wait for full sentences", help: "Translates whole sentences, or longer phrases when the speaker runs on. English comes later, with fewer sentences cut in half. With X-ASR streaming the Chinese still appears as it is spoken." },
 ];
 
 export function asrPatch(values: DeepPartial<Config["asr"]>): ConfigPatch {
@@ -448,6 +451,7 @@ export const DEFAULT_CONFIG: Config = {
     "expire_s": 8.0,
     "panel_edge": "right",
     "panel_lines": 5,
+    "flow_lines": 3,
     "live_source": true,
     "draft_display": "hold2"
   },

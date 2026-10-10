@@ -29,9 +29,9 @@ All processing is on your computer. After the first download, the app does not u
 | Page | Settings |
 |---|---|
 | **Capture** | Listen to the **whole system** (you can select an output device), or to **selected apps** such as Chrome and Discord. The app remembers apps by program name. |
-| **Overlay** | Style (subtitle bar at the bottom, or caption panel at a screen edge), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking", "Draft text" |
+| **Overlay** | Style (subtitle bar at the bottom, caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking", "Draft text" |
 | **Languages** | Chinese to English. English speech shows as heard. You can turn on translation for Japanese and Korean. Otherwise they show untranslated. |
-| **Performance** | **Caption speed**, word delay ("Word to first English", "Word to final English", medians for the last minute), memory, CPU, translator threads |
+| **Performance** | **Caption speed**, "Translate with the previous lines", word delay ("Word to first English", "Word to final English", medians for the last minute), memory, CPU, translator threads |
 
 When you close the control window, the app continues in the system tray. Right-click the tray icon for Pause, Hide overlay, Move overlay, Listen to, Open transcript folder, Settings and Quit.
 
