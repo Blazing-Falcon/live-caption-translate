@@ -2,6 +2,7 @@
   { "type": "speech_started", "id": 12, "at_ms": 45210 },
   { "type": "asr_partial", "id": 12, "text": "我也想", "class": "chinese", "end_ms": 45900 },
   { "type": "asr_final", "id": 12, "text": "我也想办一个。", "class": "chinese", "lang": "zh", "start_ms": 45210, "end_ms": 46300, "asr_ms": 330, "cut": "pause" },
+  { "type": "asr_second_pass", "id": 12, "engine": "funasr_nano", "text": "我也想办一个。", "class": "chinese", "lang": null, "fallback": null, "start_ms": 48310, "done_ms": 48920, "logprob": null },
   { "type": "joined", "id": 12, "absorbed": [13], "text": "我也想办一个，伟大的公司。", "kind": "hold" },
   { "type": "translation_delta", "id": 12, "text_so_far": "I also want to run" },
   { "type": "translation_draft", "id": 12, "rev": 2, "text": "I also want to run", "end_ms": 45900 },

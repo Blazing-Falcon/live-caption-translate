@@ -101,6 +101,7 @@ impl SegmentAsr for FakeAsr {
             },
             absorbed: Vec::new(),
             cut: segment.cut_reason,
+            logprob: None,
         })
     }
 }

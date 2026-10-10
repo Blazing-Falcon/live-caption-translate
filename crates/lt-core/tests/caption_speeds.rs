@@ -83,6 +83,7 @@ impl WindowAsr for AmplitudeAsr {
             timestamps: runs.iter().map(|(_, t)| *t).collect(),
             lang_tag: Some("zh".into()),
             event: None,
+            log_probs: Vec::new(),
         })
     }
 }
@@ -102,6 +103,7 @@ impl SegmentAsr for AmplitudeAsr {
             timing: StageTiming::default(),
             absorbed: Vec::new(),
             cut: segment.cut_reason,
+            logprob: None,
         })
     }
     fn window(&mut self) -> Option<&mut dyn WindowAsr> {

@@ -25,6 +25,12 @@ pub trait SegmentAsr: Send {
     fn window(&mut self) -> Option<&mut dyn WindowAsr> {
         None
     }
+
+    /// A streaming engine hears all audio continuously and finds its own clauses; the VAD and
+    /// the segment builder are not used.
+    fn stream(&mut self) -> Option<&mut dyn StreamingAsr> {
+        None
+    }
 }
 
 /// One recognizer run over a window of audio, with per-token start times.
@@ -38,16 +44,50 @@ pub struct TokenTranscript {
     pub timestamps: Vec<f32>,
     pub lang_tag: Option<String>,
     pub event: Option<String>,
+    /// Per-token log-probabilities, parallel to `tokens`; empty when the engine gives none.
+    pub log_probs: Vec<f32>,
+}
+
+impl TokenTranscript {
+    pub fn mean_log_prob(&self) -> Option<f32> {
+        mean_log_prob(&self.log_probs)
+    }
+}
+
+pub fn mean_log_prob(log_probs: &[f32]) -> Option<f32> {
+    let finite: Vec<f32> = log_probs
+        .iter()
+        .copied()
+        .filter(|p| p.is_finite())
+        .collect();
+    (!finite.is_empty()).then(|| finite.iter().sum::<f32>() / finite.len() as f32)
 }
 
 pub trait WindowAsr: Send {
     fn decode_window(&mut self, samples: &[f32]) -> Result<TokenTranscript>;
 }
 
+/// What a streaming engine recognized since its last reset.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct StreamResult {
+    /// When this part began, in seconds since the stream started.
+    pub start_s: f64,
+    /// Token times are seconds from `start_s`. Emitted tokens never change.
+    pub tokens: TokenTranscript,
+}
+
+/// A recognizer that keeps its state across pieces of audio (16 kHz mono).
 pub trait StreamingAsr: Send {
-    fn accept(&mut self, samples: &[f32]);
-    fn partial(&mut self) -> Option<String>;
+    /// Add audio and decode what is ready.
+    fn accept(&mut self, samples: &[f32]) -> Result<()>;
+    fn result(&mut self) -> Result<StreamResult>;
+    /// The engine's own pause rules found the end of an utterance.
+    fn is_endpoint(&mut self) -> bool;
+    /// Start a new part at the current position, keeping the stream clock.
     fn reset(&mut self);
+    /// Decode the remaining audio and return the last result. The next `accept` starts a new
+    /// stream at time 0.
+    fn finish(&mut self) -> Result<StreamResult>;
 }
 
 #[derive(Clone, Debug)]
@@ -126,6 +166,7 @@ pub trait Translator: Send {
 type AsrFactory = fn(&Config) -> Result<Box<dyn SegmentAsr>>;
 type VadFactory = fn(&Config) -> Result<Box<dyn Vad>>;
 type TranslatorFactory = fn(&Config) -> Result<Box<dyn Translator>>;
+type SecondPassFactory = fn(&Config) -> Result<Box<dyn WindowAsr>>;
 
 #[derive(Default)]
 pub struct EngineRegistry {
@@ -133,6 +174,7 @@ pub struct EngineRegistry {
     vad: BTreeMap<String, VadFactory>,
     translators: BTreeMap<String, TranslatorFactory>,
     draft_translators: BTreeMap<String, TranslatorFactory>,
+    second_pass: BTreeMap<String, SecondPassFactory>,
 }
 
 impl EngineRegistry {
@@ -148,6 +190,9 @@ impl EngineRegistry {
     pub fn register_draft_translator(&mut self, name: &str, factory: TranslatorFactory) {
         self.draft_translators.insert(name.into(), factory);
     }
+    pub fn register_second_pass(&mut self, name: &str, factory: SecondPassFactory) {
+        self.second_pass.insert(name.into(), factory);
+    }
     pub fn build_asr(&self, config: &Config) -> Result<Box<dyn SegmentAsr>> {
         self.asr
             .get(&config.asr.engine)
@@ -155,6 +200,19 @@ impl EngineRegistry {
                 kind: "ASR",
                 name: config.asr.engine.clone(),
             })?(config)
+    }
+    /// `None` when `asr.second_pass` is off.
+    pub fn build_second_pass(&self, config: &Config) -> Result<Option<Box<dyn WindowAsr>>> {
+        if config.asr.second_pass == "off" {
+            return Ok(None);
+        }
+        self.second_pass
+            .get(&config.asr.second_pass)
+            .ok_or_else(|| Error::UnknownEngine {
+                kind: "second-pass ASR",
+                name: config.asr.second_pass.clone(),
+            })?(config)
+        .map(Some)
     }
     pub fn build_vad(&self, config: &Config) -> Result<Box<dyn Vad>> {
         self.vad

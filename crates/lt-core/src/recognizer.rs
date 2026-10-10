@@ -7,7 +7,7 @@
 use crate::{
     commit::{cut_at, decide, is_word_token, join_tokens, CommitSettings, Decision},
     config::Config,
-    engines::{SegmentAsr, TokenTranscript},
+    engines::{mean_log_prob, SegmentAsr, TokenTranscript},
     error::Result,
     events::DropReason,
     text::{classify_with_lang, clean, drop_reason},
@@ -16,7 +16,7 @@ use crate::{
         SAMPLE_RATE,
     },
 };
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
 
 /// What the frontend tells the recognizer, in order.
 #[derive(Clone, Debug)]
@@ -31,6 +31,8 @@ pub enum RecognizerInput {
     Audio { id: UtteranceId, samples: Vec<f32> },
     /// The clause closed; the segment, unchanged.
     Closed(Segment),
+    /// Streaming engines only (`stream.rs`).
+    Stream(crate::stream::StreamInput),
 }
 
 /// The recognizer asks the frontend to cut the open clause `id` at `at`.
@@ -42,7 +44,8 @@ pub struct CommitCut {
 
 #[derive(Debug)]
 pub enum AsrMessage {
-    Transcript(Transcript),
+    /// A final clause and its audio, for the second pass.
+    Transcript(Transcript, Arc<[f32]>),
     Dropped(UtteranceId, DropReason),
     Failed(UtteranceId, String),
     /// Live text of the open clause.
@@ -58,7 +61,7 @@ pub enum AsrMessage {
 impl AsrMessage {
     pub fn id(&self) -> UtteranceId {
         match self {
-            Self::Transcript(transcript) => transcript.id,
+            Self::Transcript(transcript, _) => transcript.id,
             Self::Dropped(id, _) | Self::Failed(id, _) | Self::Partial { id, .. } => *id,
         }
     }
@@ -77,6 +80,7 @@ struct PendingCut {
     asr_ms: u32,
     lang: Option<String>,
     audio_end: StreamTime,
+    logprob: Option<f32>,
 }
 
 struct Clause {
@@ -170,6 +174,7 @@ impl Recognizer {
                 }
             }
             RecognizerInput::Closed(segment) => self.close(asr, segment, now, out),
+            RecognizerInput::Stream(_) => {}
         }
     }
 
@@ -264,7 +269,7 @@ impl Recognizer {
                 return;
             }
         };
-        let (tokens, times) = shift_tokens(&transcript, context_len);
+        let (tokens, times, log_probs) = shift_tokens(&transcript, context_len);
         let end = StreamTime(clause.start.0 + length as u64);
         let text = if tokens.is_empty() {
             transcript.text.trim().to_owned()
@@ -287,6 +292,7 @@ impl Recognizer {
                     asr_ms,
                     lang: transcript.lang_tag.clone(),
                     audio_end: end,
+                    logprob: mean_log_prob(log_probs.get(..=k).unwrap_or_default()),
                 });
                 out.push(Output::Cut(CommitCut { id: clause.id, at }));
             }
@@ -318,6 +324,7 @@ impl Recognizer {
                         timing: StageTiming::default(),
                         absorbed: Vec::new(),
                         cut: CutReason::Commit,
+                        logprob: pending.logprob,
                     };
                     out.push(Output::Message(finalize(
                         transcript,
@@ -375,7 +382,12 @@ impl Recognizer {
             return asr.transcribe(segment);
         };
         let decoded = window_asr.decode_window(&window)?;
-        let (tokens, _) = shift_tokens(&decoded, context_len);
+        let (tokens, _, log_probs) = shift_tokens(&decoded, context_len);
+        let logprob = if tokens.is_empty() && context_len == 0 {
+            decoded.mean_log_prob()
+        } else {
+            mean_log_prob(&log_probs)
+        };
         let text = if tokens.is_empty() && context_len == 0 {
             decoded.text.trim().to_owned()
         } else {
@@ -390,34 +402,50 @@ impl Recognizer {
             timing: StageTiming::default(),
             absorbed: Vec::new(),
             cut: segment.cut_reason,
+            logprob,
         })
     }
 }
 
-/// Tokens and start times relative to the clause start. With context, the context's own
-/// tokens (time below -0.03 s) and any non-word tokens left at the front are dropped.
-fn shift_tokens(transcript: &TokenTranscript, context_len: usize) -> (Vec<String>, Vec<f64>) {
+/// Tokens, start times relative to the clause start and log-probabilities (empty when the
+/// engine gives none). With context, the context's own tokens (time below -0.03 s) and any
+/// non-word tokens left at the front are dropped.
+fn shift_tokens(
+    transcript: &TokenTranscript,
+    context_len: usize,
+) -> (Vec<String>, Vec<f64>, Vec<f32>) {
     let shift = context_len as f64 / SAMPLE_RATE as f64;
+    let with_probs = transcript.log_probs.len() == transcript.tokens.len();
     let mut tokens = Vec::with_capacity(transcript.tokens.len());
     let mut times = Vec::with_capacity(transcript.tokens.len());
-    for (token, time) in transcript.tokens.iter().zip(&transcript.timestamps) {
+    let mut log_probs = Vec::new();
+    for (index, (token, time)) in transcript
+        .tokens
+        .iter()
+        .zip(&transcript.timestamps)
+        .enumerate()
+    {
         let relative = round3(f64::from(*time) - shift);
         if context_len > 0 && relative < -0.03 {
             continue;
         }
         tokens.push(token.clone());
         times.push(relative);
+        if with_probs {
+            log_probs.push(transcript.log_probs[index]);
+        }
     }
     if context_len > 0 {
         let lead = tokens.iter().take_while(|t| !is_word_token(t)).count();
         tokens.drain(..lead);
         times.drain(..lead);
+        log_probs.drain(..lead.min(log_probs.len()));
     }
     if transcript.timestamps.len() != transcript.tokens.len() {
         // Without one time per token the commit rule cannot place a cut.
         times.clear();
     }
-    (tokens, times)
+    (tokens, times, log_probs)
 }
 
 /// Apply the segment path's cleaning, language normalization, classification and drop rules to a clause
@@ -445,13 +473,17 @@ pub(crate) fn finalize(
     if class == TextClass::Other && transcript.lang_tag.is_none() {
         transcript.lang_tag = crate::pipeline::inferred_other_language(&transcript.text);
     }
+    // Engines without a language tag: the text decides.
+    if transcript.lang_tag.is_none() {
+        transcript.lang_tag = crate::pipeline::text_language(&transcript.text);
+    }
     match drop_reason(
         &transcript,
         segment.end.saturating_sub(segment.start).seconds(),
         &config.filter,
     ) {
         Some(reason) => AsrMessage::Dropped(segment.id, reason),
-        None => AsrMessage::Transcript(transcript),
+        None => AsrMessage::Transcript(transcript, segment.samples.clone()),
     }
 }
 
@@ -505,6 +537,7 @@ mod tests {
                 timestamps,
                 lang_tag: Some("zh".into()),
                 event: None,
+                log_probs: Vec::new(),
             })
         }
     }
@@ -531,6 +564,7 @@ mod tests {
                 timing: StageTiming::default(),
                 absorbed: Vec::new(),
                 cut: segment.cut_reason,
+                logprob: None,
             })
         }
         fn window(&mut self) -> Option<&mut dyn WindowAsr> {
@@ -662,7 +696,7 @@ mod tests {
                                 &mut closed,
                             );
                             for output in closed {
-                                if let Output::Message(AsrMessage::Transcript(t)) = output {
+                                if let Output::Message(AsrMessage::Transcript(t, _)) = output {
                                     replayed.transcripts.push(t);
                                 }
                             }
@@ -721,7 +755,7 @@ mod tests {
             let _ = contextual_final;
             for output in closed {
                 match output {
-                    Output::Message(AsrMessage::Transcript(t)) => replayed.transcripts.push(t),
+                    Output::Message(AsrMessage::Transcript(t, _)) => replayed.transcripts.push(t),
                     Output::Message(AsrMessage::Dropped(..)) => {}
                     other => panic!("unexpected close output {other:?}"),
                 }

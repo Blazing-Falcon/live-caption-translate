@@ -3,6 +3,7 @@
 pub mod downmix;
 pub mod mixer;
 pub mod normalize;
+pub mod priority;
 pub mod resample;
 pub mod resources;
 pub mod timeline;

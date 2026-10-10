@@ -339,6 +339,7 @@ mod tests {
             },
             absorbed: Vec::new(),
             cut: crate::types::CutReason::Pause,
+            logprob: None,
         }
     }
 

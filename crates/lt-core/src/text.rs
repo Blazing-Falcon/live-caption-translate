@@ -419,6 +419,7 @@ mod tests {
             timing: StageTiming::default(),
             absorbed: Vec::new(),
             cut: crate::types::CutReason::Pause,
+            logprob: None,
         }
     }
 }

@@ -134,7 +134,7 @@ pub struct StageTiming {
     pub asr_ms: u32,
 }
 
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Transcript {
     pub id: UtteranceId,
     pub text: String,
@@ -147,6 +147,9 @@ pub struct Transcript {
     /// How the clause ended. Early-commit clauses skip the short-phrase hold.
     #[serde(default = "default_cut")]
     pub cut: CutReason,
+    /// Mean token log-probability, when the engine gives one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logprob: Option<f32>,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]

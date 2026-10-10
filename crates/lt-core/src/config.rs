@@ -74,10 +74,15 @@ config_table!(VadConfig {
     hard_cut_s: f32 = 10.0,
 });
 config_table!(AsrConfig {
-    engine: String = "sensevoice".into(),
+    engine: String = "xasr_stream".into(),
     language: String = "auto".into(),
     use_itn: bool = true,
     threads: u32 = 1,
+    second_pass: String = "off".into(),
+    second_pass_threads: u32 = 2,
+    second_pass_timeout_s: f32 = 2.0,
+    stream_chunk_ms: u32 = 480,
+    stream_pause_s: f32 = 0.8,
 });
 config_table!(FilterConfig {
     drop_music: bool = true,
@@ -326,6 +331,30 @@ impl Config {
         number!(vad, soft_cut_prob, 0.05, threshold);
         choice!(asr, language, &["auto", "zh", "en", "ja", "ko", "yue"]);
         number!(asr, threads, 1, 4);
+        choice!(asr, engine, &["xasr_stream", "sensevoice", "xasr"]);
+        if ![480, 960].contains(&self.asr.stream_chunk_ms) {
+            messages.push(format!(
+                "asr.stream_chunk_ms: invalid value {}; using default {}",
+                self.asr.stream_chunk_ms, defaults.asr.stream_chunk_ms
+            ));
+            self.asr.stream_chunk_ms = defaults.asr.stream_chunk_ms;
+        }
+        number!(asr, stream_pause_s, 0.3, 3.0);
+        choice!(
+            asr,
+            second_pass,
+            &["off", "xasr", "funasr_nano", "qwen3_asr"]
+        );
+        if self.asr.second_pass == self.asr.engine {
+            messages.push(format!(
+                "asr.second_pass: {:?} is already the live recognizer; using \"off\"",
+                self.asr.second_pass
+            ));
+            self.asr.second_pass = "off".into();
+        }
+        number!(asr, second_pass_threads, 1, 4);
+        number!(asr, second_pass_timeout_s, 0.5, 30.0);
+        choice!(vad, engine, &["silero", "silero_v6", "ten"]);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
         choice!(routing, english, &["passthrough"]);

@@ -2,7 +2,7 @@
 use crate::bus::{EventBus, EventReceiver};
 use crate::config::Config;
 use crate::error::{Error, Result};
-use crate::events::{FailReason, PipelineEvent};
+use crate::events::{FailReason, PipelineEvent, SecondPassFallback};
 use crate::metrics::{canonical_language, OtherRouting};
 use crate::types::{CaptureMode, CutReason, TextClass, Timing, UtteranceId};
 use crossbeam_channel::{RecvTimeoutError, TryRecvError};
@@ -40,6 +40,11 @@ pub struct SessionConfig {
     /// The draft model in use, or `null` when the session runs without drafts.
     #[serde(default)]
     pub draft_model: Option<String>,
+    #[serde(default)]
+    pub vad_engine: String,
+    /// `asr.second_pass`: an engine name or "off".
+    #[serde(default)]
+    pub second_pass: String,
 }
 
 /// Manifest id of the draft model, recorded in the session header when drafts run.
@@ -68,6 +73,8 @@ impl From<&Config> for SessionConfig {
             },
             decode_interval_s: readable_f32(config.latency.decode_interval_s),
             draft_model: None,
+            vad_engine: config.vad.engine.clone(),
+            second_pass: config.asr.second_pass.clone(),
         }
     }
 }
@@ -108,6 +115,70 @@ struct Pending {
     lang: Option<String>,
     source: String,
     cut: CutReason,
+    live: LiveRecord,
+    second: Option<SecondRecord>,
+}
+
+/// The live recognizer's text. A joined line concatenates its parts.
+#[derive(Clone, Serialize)]
+struct LiveRecord {
+    engine: String,
+    text: String,
+    logprob: Option<f32>,
+    #[serde(skip)]
+    logprobs: Vec<f32>,
+}
+
+/// The second recognizer's text, or why the line kept the live text. A joined line
+/// concatenates the parts' texts and keeps the first fallback.
+#[derive(Clone, Serialize)]
+struct SecondRecord {
+    engine: Option<String>,
+    text: Option<String>,
+    fallback: Option<&'static str>,
+    start_ms: Option<u64>,
+    done_ms: Option<u64>,
+    logprob: Option<f32>,
+    #[serde(skip)]
+    logprobs: Vec<f32>,
+}
+
+fn fallback_name(fallback: SecondPassFallback) -> &'static str {
+    match fallback {
+        SecondPassFallback::Busy => "busy",
+        SecondPassFallback::Timeout => "timeout",
+        SecondPassFallback::Error => "error",
+        SecondPassFallback::Empty => "empty",
+        SecondPassFallback::Language => "language",
+    }
+}
+
+fn mean(values: &[f32]) -> Option<f32> {
+    (!values.is_empty()).then(|| values.iter().sum::<f32>() / values.len() as f32)
+}
+
+impl LiveRecord {
+    fn absorb(&mut self, other: LiveRecord) {
+        self.text.push_str(&other.text);
+        self.logprobs.extend(other.logprobs);
+        self.logprob = mean(&self.logprobs);
+    }
+}
+
+impl SecondRecord {
+    fn absorb(&mut self, other: SecondRecord) {
+        if let Some(text) = other.text {
+            self.text.get_or_insert_with(String::new).push_str(&text);
+        }
+        self.fallback = self.fallback.or(other.fallback);
+        self.start_ms = match (self.start_ms, other.start_ms) {
+            (Some(a), Some(b)) => Some(a.min(b)),
+            (a, b) => a.or(b),
+        };
+        self.done_ms = self.done_ms.max(other.done_ms);
+        self.logprobs.extend(other.logprobs);
+        self.logprob = mean(&self.logprobs);
+    }
 }
 
 #[derive(Serialize)]
@@ -131,6 +202,8 @@ struct UtteranceRecord<'a> {
     reason: Option<FailReason>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message: Option<&'a str>,
+    asr_live: &'a LiveRecord,
+    asr_second: Option<&'a SecondRecord>,
 }
 
 impl Pending {
@@ -151,6 +224,8 @@ impl Pending {
             timing: None,
             reason: None,
             message: None,
+            asr_live: &self.live,
+            asr_second: self.second.as_ref(),
         }
     }
 }
@@ -159,6 +234,8 @@ pub struct TranscriptWriter<W: Write> {
     writer: W,
     pending: BTreeMap<UtteranceId, Pending>,
     routing: OtherRouting,
+    live_engine: String,
+    second_pass: String,
 }
 
 impl<W: Write> TranscriptWriter<W> {
@@ -176,6 +253,8 @@ impl<W: Write> TranscriptWriter<W> {
             writer,
             pending: BTreeMap::new(),
             routing: OtherRouting::default(),
+            live_engine: header.asr.clone(),
+            second_pass: header.config.second_pass.clone(),
         })
     }
 
@@ -208,6 +287,7 @@ impl<W: Write> TranscriptWriter<W> {
                 start_ms,
                 end_ms,
                 cut,
+                logprob,
                 ..
             } => {
                 let pending_translation = matches!(class, TextClass::Chinese | TextClass::Mixed)
@@ -227,6 +307,24 @@ impl<W: Write> TranscriptWriter<W> {
                     lang: lang.as_deref().map(canonical_language),
                     source: text.clone(),
                     cut: *cut,
+                    live: LiveRecord {
+                        engine: self.live_engine.clone(),
+                        text: text.clone(),
+                        logprob: *logprob,
+                        logprobs: logprob.iter().copied().collect(),
+                    },
+                    // Lines that are not translated get no second pass.
+                    second: (pending_translation && self.second_pass == "off").then(|| {
+                        SecondRecord {
+                            engine: None,
+                            text: None,
+                            fallback: Some("off"),
+                            start_ms: None,
+                            done_ms: None,
+                            logprob: None,
+                            logprobs: Vec::new(),
+                        }
+                    }),
                 };
                 match class {
                     TextClass::Chinese | TextClass::Mixed => {
@@ -243,6 +341,33 @@ impl<W: Write> TranscriptWriter<W> {
                     }
                 }
             }
+            PipelineEvent::AsrSecondPass {
+                id,
+                engine,
+                text,
+                class,
+                fallback,
+                start_ms,
+                done_ms,
+                logprob,
+                ..
+            } => {
+                if let Some(pending) = self.pending.get_mut(id) {
+                    if let (None, Some(text), Some(class)) = (fallback, text, class) {
+                        pending.source.clone_from(text);
+                        pending.class = *class;
+                    }
+                    pending.second = Some(SecondRecord {
+                        engine: Some(engine.clone()),
+                        text: text.clone(),
+                        fallback: fallback.map(fallback_name),
+                        start_ms: *start_ms,
+                        done_ms: *done_ms,
+                        logprob: *logprob,
+                        logprobs: logprob.iter().copied().collect(),
+                    });
+                }
+            }
             PipelineEvent::Joined {
                 id, absorbed, text, ..
             } => {
@@ -254,6 +379,12 @@ impl<W: Write> TranscriptWriter<W> {
                             leader.end_ms = leader.end_ms.max(incoming.end_ms);
                             if incoming.class == TextClass::Mixed {
                                 leader.class = TextClass::Mixed;
+                            }
+                            leader.live.absorb(incoming.live);
+                            match (&mut leader.second, incoming.second) {
+                                (Some(second), Some(other)) => second.absorb(other),
+                                (second @ None, other) => *second = other,
+                                (Some(_), None) => {}
                             }
                             for child in incoming.joined {
                                 append_id(&mut leader.joined, leader.id, child);
@@ -504,11 +635,11 @@ mod tests {
 
     const WALL: &str = "2026-10-07T21:14:51+07:00";
     const GOLDEN: &str = concat!(
-        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"min_silence_s\":0.4,\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5,\"draft_model\":null}}\n",
-        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\"}\n",
-        "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\"}\n",
-        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\"}\n",
-        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9}}\n",
+        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"min_silence_s\":0.4,\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5,\"draft_model\":null,\"vad_engine\":\"silero\",\"second_pass\":\"off\"}}\n",
+        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null},\"asr_second\":null}\n",
+        "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"こんにちは。\",\"logprob\":null},\"asr_second\":null}\n",
+        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null},\"asr_second\":{\"engine\":null,\"text\":null,\"fallback\":\"off\",\"start_ms\":null,\"done_ms\":null,\"logprob\":null}}\n",
+        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9},\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"我也想办一个。伟大的公司。\",\"logprob\":null},\"asr_second\":{\"engine\":null,\"text\":null,\"fallback\":\"off\",\"start_ms\":null,\"done_ms\":null,\"logprob\":null}}\n",
     );
 
     fn header() -> SessionHeader {
@@ -530,6 +661,8 @@ mod tests {
                 cap_tokens: 20,
                 decode_interval_s: 0.5,
                 draft_model: None,
+                vad_engine: "silero".into(),
+                second_pass: "off".into(),
             },
         }
     }
@@ -551,6 +684,7 @@ mod tests {
             end_ms,
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
+            logprob: None,
         }
     }
 
@@ -642,6 +776,7 @@ mod tests {
                     end_ms: 1_500,
                     asr_ms: 100,
                     cut: CutReason::Commit,
+                    logprob: None,
                 },
                 WALL,
             )
