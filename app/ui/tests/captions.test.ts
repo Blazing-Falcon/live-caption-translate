@@ -50,6 +50,27 @@ describe("caption reducer", () => {
     expect(lines()).toMatchObject([{ state: "final", english: "Hello." }]);
   });
 
+  it("shows the second-pass text the translator gets, and keeps the live text on a fallback", () => {
+    const { lines, run } = setup();
+    const second = (id: number, text: string | null, fallback: "timeout" | null): PipelineEvent => ({
+      type: "asr_second_pass",
+      id,
+      engine: "qwen3_asr",
+      text,
+      class: text === null ? null : "chinese",
+      lang: null,
+      fallback,
+      start_ms: 1_000,
+      done_ms: fallback === null ? 1_400 : null,
+      logprob: null,
+    });
+    run(asrFinal(1, "我也想半个。"), asrFinal(2, "公式。"));
+    run(second(1, "我也想办一个。", null), second(2, null, "timeout"));
+    expect(lines().map((line) => line.source)).toEqual(["我也想办一个。", "公式。"]);
+    run(final(1, "I also want to run one."), second(1, "不应出现。", null));
+    expect(lines()[0]).toMatchObject({ state: "final", source: "我也想办一个。" });
+  });
+
   it("joins absorbed ids into the leader, which keeps the earliest position", () => {
     const { lines, run } = setup();
     run(asrFinal(10, "我也想"), asrFinal(11, "办一个"), asrFinal(12, "公司"), asrFinal(13, "别的话"));

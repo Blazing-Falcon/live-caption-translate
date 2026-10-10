@@ -487,6 +487,15 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         });
         return true;
       }
+      case "asr_second_pass": {
+        // The translator gets this text, so the line shows it too. A fallback keeps the live text.
+        const line = lines.get(event.id);
+        if (event.fallback !== null || event.text === null || !line || isTerminal(line.state) || line.state === "live") {
+          return false;
+        }
+        update(event.id, { source: event.text });
+        return true;
+      }
       case "joined": {
         const leader = lines.get(event.id);
         if (!leader || isTerminal(leader.state)) return false;
@@ -532,6 +541,13 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     switch (event.type) {
       case "dropped":
         // A drop only concerns the store when a live line was already showing; otherwise it is not a line event.
+        if (!applyLineEvent(event)) return;
+        prune();
+        armExpiry();
+        emit();
+        return;
+      case "asr_second_pass":
+        // A fallback leaves the line as it is.
         if (!applyLineEvent(event)) return;
         prune();
         armExpiry();

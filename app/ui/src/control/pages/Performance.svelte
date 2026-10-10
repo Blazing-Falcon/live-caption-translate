@@ -3,15 +3,32 @@
   import * as api from "../../lib/api";
   import { useSession } from "../../lib/context";
   import { reconcileChecked } from "../../lib/reconcile";
-  import { formatMemory, formatSeconds, modeStatusText, totalCpu, totalMemoryMb } from "../../lib/format";
+  import {
+    formatBytes,
+    formatMemory,
+    formatSeconds,
+    modeStatusText,
+    modelsPercent,
+    totalCpu,
+    totalMemoryMb,
+  } from "../../lib/format";
   import {
     CAPTION_SPEEDS,
+    LIVE_MODELS,
+    SECOND_PASSES,
+    STREAM_CHUNKS,
     TRANSLATE_THREADS_MAX,
+    VAD_ENGINES,
+    asrPatch,
     latencyPatch,
     transcriptPatch,
     translateThreadsPatch,
+    vadPatch,
     type Config,
+    type ConfigPatch,
+    type SpeechChoice,
   } from "../../lib/settings";
+  import type { ModelStatus } from "../../lib/types";
 
   let { config }: { config: Config } = $props();
 
@@ -71,6 +88,112 @@
     const input = event.currentTarget as HTMLInputElement;
     await session.save("transcript.enabled", transcriptPatch(input.checked));
     reconcileChecked(input, get(liveConfig)?.transcript.enabled ?? config.transcript.enabled);
+  }
+
+  interface SpeechRow {
+    key: "vad.engine" | "asr.engine" | "asr.stream_chunk_ms" | "asr.second_pass";
+    label: string;
+    value: string;
+    choices: readonly SpeechChoice<string>[];
+    patch: (value: string) => ConfigPatch;
+  }
+
+  const speechRows = $derived<SpeechRow[]>([
+    {
+      key: "vad.engine",
+      label: "Voice detection",
+      value: config.vad.engine,
+      choices: VAD_ENGINES,
+      patch: (value) => vadPatch({ engine: value as Config["vad"]["engine"] }),
+    },
+    {
+      key: "asr.engine",
+      label: "Live model",
+      value: config.asr.engine,
+      choices: LIVE_MODELS,
+      patch: (value) => asrPatch({ engine: value as Config["asr"]["engine"] }),
+    },
+    ...(config.asr.engine === "xasr_stream"
+      ? [
+          {
+            key: "asr.stream_chunk_ms" as const,
+            label: "Streaming chunk",
+            value: String(config.asr.stream_chunk_ms),
+            choices: STREAM_CHUNKS,
+            patch: (value: string) => asrPatch({ stream_chunk_ms: Number(value) as Config["asr"]["stream_chunk_ms"] }),
+          },
+        ]
+      : []),
+    {
+      key: "asr.second_pass",
+      label: "Second pass",
+      value: config.asr.second_pass,
+      // The second pass cannot be the live model.
+      choices: SECOND_PASSES.filter((choice) => choice.value !== config.asr.engine),
+      patch: (value) => asrPatch({ second_pass: value as Config["asr"]["second_pass"] }),
+    },
+  ]);
+
+  /** A choice whose model is downloading; it is saved when the model is ready. */
+  let waiting = $state<{ key: SpeechRow["key"]; value: string; model: string; patch: ConfigPatch } | null>(null);
+
+  const modelOf = (id: string | null): ModelStatus | undefined =>
+    id === null ? undefined : $models?.find((model) => model.id === id);
+  const ready = (choice: SpeechChoice<string>): boolean => choice.model === null || modelOf(choice.model)?.state === "ready";
+  const optionLabel = (choice: SpeechChoice<string>): string => {
+    const model = modelOf(choice.model);
+    return ready(choice) || model === undefined ? choice.label : `${choice.label} (download ${formatBytes(model.bytes_total)})`;
+  };
+
+  $effect(() => {
+    const pending = waiting;
+    if (pending === null || modelOf(pending.model)?.state !== "ready") return;
+    waiting = null;
+    void session.save(pending.key, pending.patch);
+  });
+
+  async function downloadModel(model: string): Promise<void> {
+    if (get(busy).has("models.download")) return;
+    await session.act("models.download", () => api.modelsDownload(config.models.source, [model]));
+  }
+
+  async function chooseSpeech(row: SpeechRow, event: Event): Promise<void> {
+    const select = event.currentTarget as HTMLSelectElement;
+    const chosen = row.choices.find((choice) => choice.value === select.value);
+    if (!chosen) {
+      select.value = row.value;
+      return;
+    }
+    if (chosen.model !== null && !ready(chosen)) {
+      // Listening keeps the current model until the new one is on disk.
+      select.value = row.value;
+      waiting = { key: row.key, value: chosen.value, model: chosen.model, patch: row.patch(chosen.value) };
+      await downloadModel(chosen.model);
+      return;
+    }
+    if (waiting?.key === row.key) waiting = null;
+    const saved = await session.save(row.key, row.patch(chosen.value));
+    if (!saved) select.value = row.value;
+  }
+
+  function speechStatus(row: SpeechRow): { text: string; download: string | null } {
+    if (waiting?.key === row.key) {
+      const choice = row.choices.find((item) => item.value === waiting?.value);
+      const model = modelOf(waiting.model);
+      const name = choice?.label ?? waiting.value;
+      if (model?.state === "downloading" || model?.state === "verifying") {
+        return { text: `Downloading ${name}: ${modelsPercent(model)}%. It is used when the download is done.`, download: null };
+      }
+      return { text: `${name} is not downloaded.`, download: waiting.model };
+    }
+    if (row.key === "vad.engine" && config.asr.engine === "xasr_stream") {
+      return { text: "X-ASR streaming finds the pauses itself and does not use voice detection.", download: null };
+    }
+    const current = row.choices.find((choice) => choice.value === row.value);
+    if (current && !ready(current) && current.model !== null) {
+      return { text: `${current.label} is not downloaded. Listening cannot start without it.`, download: current.model };
+    }
+    return { text: current?.help ?? "", download: null };
   }
 
   const openTranscripts = async (): Promise<void> => {
@@ -145,6 +268,42 @@
       </label>
       <p id="help-split-long" class="help small">Translates long sentences in parts when the speaker does not pause.</p>
     </div>
+  </div>
+
+  <div class="stack">
+    <h3 class="section-title">Speech recognition</h3>
+    {#each speechRows as row (row.key)}
+      {@const status = speechStatus(row)}
+      <div class="option">
+        <label class="field">
+          <span>{row.label}</span>
+          <select
+            class="select"
+            value={row.value}
+            aria-describedby={`help-${row.key}`}
+            data-testid={`speech-${row.key}`}
+            onchange={(event) => chooseSpeech(row, event)}
+          >
+            {#each row.choices as choice (choice.value)}
+              <option value={choice.value}>{optionLabel(choice)}</option>
+            {/each}
+          </select>
+        </label>
+        <div class="status-row">
+          <p id={`help-${row.key}`} class="help small" aria-live="polite">{status.text}</p>
+          {#if status.download}
+            <button
+              type="button"
+              class="btn"
+              aria-disabled={$busy.has("models.download")}
+              onclick={() => status.download && downloadModel(status.download)}
+            >
+              Download
+            </button>
+          {/if}
+        </div>
+      </div>
+    {/each}
   </div>
 
   <dl class="stat-grid">

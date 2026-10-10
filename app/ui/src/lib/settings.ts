@@ -32,7 +32,7 @@ export interface Config extends ExtraFields {
     norm_gate_dbfs: number;
   };
   vad: ExtraFields & {
-    engine: string;
+    engine: "silero" | "silero_v6" | "ten";
     threshold: number;
     min_speech_s: number;
     min_silence_s: number;
@@ -43,10 +43,15 @@ export interface Config extends ExtraFields {
     hard_cut_s: number;
   };
   asr: ExtraFields & {
-    engine: string;
+    engine: "xasr_stream" | "sensevoice" | "xasr";
     language: "auto" | "zh" | "en" | "ja" | "ko" | "yue";
     use_itn: boolean;
     threads: number;
+    second_pass: "off" | "xasr" | "funasr_nano" | "qwen3_asr";
+    second_pass_threads: number;
+    second_pass_timeout_s: number;
+    stream_chunk_ms: 480 | 960;
+    stream_pause_s: number;
   };
   filter: ExtraFields & {
     drop_music: boolean;
@@ -299,6 +304,47 @@ export const CAPTION_SPEEDS: readonly { value: Config["latency"]["mode"]; label:
   { value: "off", label: "Wait for full sentences", help: "Translates after the speaker pauses, like version 1." },
 ];
 
+export function asrPatch(values: DeepPartial<Config["asr"]>): ConfigPatch {
+  return { asr: values };
+}
+
+export function vadPatch(values: DeepPartial<Config["vad"]>): ConfigPatch {
+  return { vad: values };
+}
+
+/** A speech model choice; `model` is its manifest id, `null` when nothing is downloaded. */
+export interface SpeechChoice<T extends string> {
+  value: T;
+  label: string;
+  model: string | null;
+  help: string;
+}
+
+export const VAD_ENGINES: readonly SpeechChoice<Config["vad"]["engine"]>[] = [
+  { value: "silero", label: "Silero v5", model: "silero-vad-v5", help: "The default. Very little CPU." },
+  { value: "silero_v6", label: "Silero v6", model: "silero-vad-v6", help: "Newer Silero model. Same CPU as v5." },
+  { value: "ten", label: "TEN VAD", model: "ten-vad", help: "Different model, about 1.3x the CPU of Silero, still very little. Its license limits commercial use." },
+];
+
+export const LIVE_MODELS: readonly SpeechChoice<Config["asr"]["engine"]>[] = [
+  // The streaming model depends on the chunk size; the chunk row shows its download state.
+  { value: "xasr_stream", label: "X-ASR streaming", model: null, help: "The default. Hears speech as it comes, so words appear about half a second after they are spoken. About a quarter of SenseVoice's CPU." },
+  { value: "sensevoice", label: "SenseVoice", model: "sensevoice-2024-07-17-int8", help: "Tags each line's language. Decodes each sentence again every half second." },
+  { value: "xasr", label: "X-ASR", model: "xasr-zh-en-int8-2026-06-03", help: "Fewer errors than SenseVoice with game noise and mixed English. Decodes each sentence again every half second." },
+];
+
+export const STREAM_CHUNKS: readonly SpeechChoice<"480" | "960">[] = [
+  { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "Words appear sooner and with fewer errors." },
+  { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "About 30% less CPU. Words appear about 0.2 s later." },
+];
+
+export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
+  { value: "off", label: "Off", model: null, help: "Translates the live text." },
+  { value: "xasr", label: "X-ASR", model: "xasr-zh-en-int8-2026-06-03", help: "Checks each finished line again. Little extra CPU." },
+  { value: "funasr_nano", label: "Fun-ASR-Nano", model: "funasr-nano-int8-2025-12-30", help: "Better with people talking over each other. Uses about 5x more CPU than SenseVoice for each line." },
+  { value: "qwen3_asr", label: "Qwen3-ASR", model: "qwen3-asr-0.6b-int8-2026-03-25", help: "Fewest errors with game noise. Uses about 7x more CPU than SenseVoice for each line." },
+];
+
 export const DRAFT_DISPLAYS: readonly { value: Config["overlay"]["draft_display"]; label: string }[] = [
   { value: "hold2", label: "Hold back the newest words" },
   { value: "settled", label: "Show only settled words" },
@@ -345,10 +391,15 @@ export const DEFAULT_CONFIG: Config = {
     "hard_cut_s": 10.0
   },
   "asr": {
-    "engine": "sensevoice",
+    "engine": "xasr_stream",
     "language": "auto",
     "use_itn": true,
-    "threads": 1
+    "threads": 1,
+    "second_pass": "off",
+    "second_pass_threads": 2,
+    "second_pass_timeout_s": 2.0,
+    "stream_chunk_ms": 480,
+    "stream_pause_s": 0.8
   },
   "filter": {
     "drop_music": true,

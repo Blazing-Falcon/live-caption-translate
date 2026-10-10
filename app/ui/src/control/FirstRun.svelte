@@ -21,7 +21,8 @@
   // Optional models that are not recommended for this PC download only when ticked.
   let ticked = $state<string[]>([]);
 
-  const rows = $derived($models ?? []);
+  // Speech model choices download from the Performance page, not here.
+  const rows = $derived(($models ?? []).filter((row) => !row.optional || row.id === api.DRAFT_MODEL_ID));
   const wanted = (row: ModelStatus): boolean => !row.optional || row.recommended || ticked.includes(row.id);
   const totalBytes = $derived(rows.filter(wanted).reduce((sum, row) => sum + row.bytes_total, 0));
   const downloading = $derived(rows.some((row) => row.state === "downloading"));
