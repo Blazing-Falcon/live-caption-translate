@@ -23,6 +23,7 @@
     latencyPatch,
     transcriptPatch,
     translateThreadsPatch,
+    translateWindowPatch,
     vadPatch,
     type Config,
     type ConfigPatch,
@@ -82,6 +83,12 @@
     const select = event.currentTarget as HTMLSelectElement;
     const saved = await session.save("translate.threads", translateThreadsPatch(Number(select.value)));
     if (!saved) select.value = String(config.translate.threads);
+  }
+
+  async function toggleWindow(event: Event): Promise<void> {
+    const input = event.currentTarget as HTMLInputElement;
+    await session.save("translate.window_chars", translateWindowPatch(input.checked));
+    reconcileChecked(input, (get(liveConfig)?.translate.window_chars ?? config.translate.window_chars) > 0);
   }
 
   async function toggleTranscript(event: Event): Promise<void> {
@@ -267,6 +274,21 @@
         <span>Split long sentences</span>
       </label>
       <p id="help-split-long" class="help small">Translates long sentences in parts when the speaker does not pause.</p>
+    </div>
+    <div class="option">
+      <label class="check-row">
+        <input
+          type="checkbox"
+          checked={config.translate.window_chars > 0}
+          aria-describedby="help-window"
+          data-testid="translate-window"
+          onchange={toggleWindow}
+        />
+        <span>Translate with the previous lines</span>
+      </label>
+      <p id="help-window" class="help small">
+        Translates each line together with the line or two before it, so the translator knows what came before. Only the new line's English is shown. Each line's English appears a little later.
+      </p>
     </div>
   </div>
 
