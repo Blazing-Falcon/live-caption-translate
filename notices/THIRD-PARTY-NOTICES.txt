@@ -37,6 +37,43 @@ base_model and describes weighted/imatrix quantization. Both upstream and
 conversion attributions are retained; no additional custom Hunyuan conditions
 appear in this exact model's LICENSE.txt.
 
+Silero VAD v6.2.3 — Silero Team (optional voice detection)
+Project: https://github.com/snakers4/silero-vad/tree/v6.2.3
+License: MIT. The v6.2.3 LICENSE text is identical to the v5 text included below.
+
+TEN VAD 1.0 — Agora (optional voice detection)
+Project: https://github.com/TEN-framework/ten-vad/tree/v1.0-ONNX
+License: Apache-2.0 with additional conditions by Agora (checked 2026-10-10):
+you may not deploy ten-vad in a way that competes with Agora's offerings, and
+you may deploy it only for your own application(s) and their direct end users.
+Derivative works remain under the same terms. The ONNX model is downloaded on
+request. crates/lt-sherpa/src/ten.rs ports the reference feature frontend
+(constants and algorithm from src/aed.cc and src/coeff.h) and is therefore a
+derivative work under these terms, not under the workspace MIT license. The
+LPCNet-derived pitch code listed in NOTICES is not ported.
+
+X-ASR zh-en zipformer transducer — Gilgamesh-J (optional speech recognition)
+Upstream: https://github.com/Gilgamesh-J/X-ASR (Apache-2.0 LICENSE and README)
+Used conversion: https://huggingface.co/csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03
+Streaming models (default live recognizer): the 480 ms and 960 ms int8 archives in
+https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models (2026-06-05);
+upstream card https://huggingface.co/GilgameshWind/X-ASR-zh-en declares apache-2.0.
+The conversion repository states no license of its own. The Apache License 2.0
+text reproduced below for Hy-MT2 applies.
+
+Fun-ASR-Nano 2512 — FunAudioLLM / Tongyi Lab (optional second pass)
+Upstream: https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-2512 (card: apache-2.0)
+ONNX export: https://github.com/Wasser1462/FunASR-nano-onnx (no license file)
+Used conversion: https://huggingface.co/csukuangfj/sherpa-onnx-funasr-nano-int8-2025-12-30
+The Apache License 2.0 text reproduced below for Hy-MT2 applies.
+
+Qwen3-ASR 0.6B — Qwen team, Alibaba (optional second pass)
+Upstream: https://huggingface.co/Qwen/Qwen3-ASR-0.6B (card: apache-2.0) and
+https://github.com/QwenLM/Qwen3-ASR (Apache-2.0 LICENSE)
+ONNX export: https://github.com/Wasser1462/Qwen3-ASR-onnx (no license file)
+Used conversion: https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25
+The Apache License 2.0 text reproduced below for Hy-MT2 applies.
+
 LMT-60-0.6B — NiuTrans (optional "Faster captions" draft model)
 Upstream: https://huggingface.co/NiuTrans/LMT-60-0.6B
 Used quantization: LMT-60-0.6B.Q4_K_M.gguf by mradermacher.
@@ -8770,3 +8807,129 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+============================================================================
+TEN-VAD-LICENSE.txt
+Source: https://raw.githubusercontent.com/TEN-framework/ten-vad/v1.0-ONNX/LICENSE
+============================================================================
+
+Open Source License
+
+The ten-vad is licensed pursuant to the Apache License v2.0, with the
+following additional conditions. You may reproduce, prepare Derivative Works
+of, publicly display, publicly perform, sublicense, distribute, or otherwise
+make available (together, "Deploy") the ten-vad, for commercial or
+non-commercial purposes, provided that you agree to abide by the terms below:
+
+    1. You may not Deploy the ten-vad in a way that competes with Agora's
+       offerings and/or that allows others to compete with Agora's offerings,
+       including without limitation enabling any third party to develop or
+       deploy Applications.
+    
+    2. You may Deploy the ten-vad solely to create and enable deployment
+       of your Application(s) solely for your benefit and the benefit of your
+       direct End Users. If you prefer, you may include the following notice in
+       the documentation of your Application(s): "Powered by ten-vad".
+
+    3. Derivative Works of the ten-vad remain subject to this Open Source
+       License.
+
+    4. "End Users" shall mean the end-users of your Application(s) who access
+       the ten-vad solely to the extent necessary to access and use the
+       Application(s) you create or deploy using ten-vad.
+
+    5. "Application(s)" shall mean your software programs designed or developed
+       by using the ten-vad or where deployment is enabled by the ten-vad.
+
+  Copyright © 2025 Agora
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=======================================================================================
+
+  Note that the project contains derived code from other open source project
+  with BSD-3-Clause and BSD-2-Clause license, refer to the "NOTICES" 
+  file in the root directory for detailed information.
+
+============================================================================
+TEN-VAD-NOTICES.txt
+Source: https://raw.githubusercontent.com/TEN-framework/ten-vad/v1.0-ONNX/NOTICES
+============================================================================
+
+This project includes modified code from the following third-party component:
+
+1. File: lpcnet_enc.c
+   - Source: LPCNet (https:github.com/xiph/LPCNet)
+   - License: BSD-2-Clause
+   - Copyright: 2017-2019, Mozilla
+   - Original License Text:
+        Copyright (c) 2017-2019 Mozilla
+
+        Redistribution and use in source and binary forms, with or without modification,
+        are permitted provided that the following conditions are met:
+
+        - Redistributions of source code must retain the above copyright notice, 
+          this list of conditions and the following disclaimer.
+
+        - Redistributions in binary form must reproduce the above copyright notice,
+          this list of conditions and the following disclaimer in the documentation
+          and/or other materials provided with the distribution.
+
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+        ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+        LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+        A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR
+        CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+        EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+        PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+        PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+        LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+        NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+        SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+2. Project: LPCNet
+    - Source: LPCNet (https:github.com/xiph/LPCNet)
+    - License: BSD-3-Clause
+    - Copyright: 2017-2018, Mozilla, 2007-2017, Jean-Marc Valin, 2005-2017, Xiph.Org Foundation, 2003-2004, Mark Borgerding
+    - Original License Text of LPCNet open source project:
+        Copyright (c) 2017-2018, Mozilla
+        Copyright (c) 2007-2017, Jean-Marc Valin
+        Copyright (c) 2005-2017, Xiph.Org Foundation
+        Copyright (c) 2003-2004, Mark Borgerding
+
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions
+        are met:
+
+        - Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+
+        - Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+
+        - Neither the name of the Xiph.Org Foundation nor the names of its
+        contributors may be used to endorse or promote products derived from
+        this software without specific prior written permission.
+
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+        ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+        LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+        A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION
+        OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+        SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+        LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+        DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+        THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+        (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        

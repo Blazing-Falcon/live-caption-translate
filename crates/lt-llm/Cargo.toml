@@ -10,6 +10,9 @@ serde.workspace = true
 serde_json.workspace = true
 tracing.workspace = true
 sha2 = "0.10"
+# Some speech models are published only as .tar.bz2 archives. Pure-Rust bzip2 backend.
+bzip2 = "0.6.1"
+tar = { version = "0.4.46", default-features = false }
 # The translator supplies its own cancellable loopback transport. Separate
 # model-download agents can use the regular TLS/proxy-aware connector.
 ureq = { version = "~3.4.2", default-features = false, features = ["json", "rustls", "win-system-proxy"] }

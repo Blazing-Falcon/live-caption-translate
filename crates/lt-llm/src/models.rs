@@ -50,6 +50,37 @@ pub struct FileEntry {
     pub url: String,
     #[serde(default)]
     pub mirror: String,
+    /// Non-empty: the download is a `.tar.bz2` archive. These files are taken from it by file
+    /// name, checked, and kept; the archive itself is deleted.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub extract: Vec<ArchiveMember>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ArchiveMember {
+    pub name: String,
+    pub size: u64,
+    pub sha256: String,
+}
+
+impl FileEntry {
+    /// The files this entry leaves in the model folder.
+    fn local_files(&self) -> Vec<FileEntry> {
+        if self.extract.is_empty() {
+            return vec![self.clone()];
+        }
+        self.extract
+            .iter()
+            .map(|member| FileEntry {
+                name: member.name.clone(),
+                size: member.size,
+                sha256: member.sha256.clone(),
+                url: String::new(),
+                mirror: String::new(),
+                extract: Vec::new(),
+            })
+            .collect()
+    }
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -242,7 +273,12 @@ impl ModelManager {
             let file = &model.files[file_index];
             let paths = file_paths(dir, model, file, true)?;
             check_cancel(cancelled, &mut progress, dir, model)?;
-            if regular_len(&paths.final_file)?.is_some() {
+            if !file.extract.is_empty() {
+                if members_verified(file, cancelled, &mut progress, dir, model)? {
+                    progress.complete(dir, model)?;
+                    continue;
+                }
+            } else if regular_len(&paths.final_file)?.is_some() {
                 progress.emit(dir, model, ModelState::Verifying, true)?;
                 if verified(
                     &paths.final_file,
@@ -295,7 +331,12 @@ impl ModelManager {
                 return Err(Error::Engine(message));
             }
             check_cancel(cancelled, &mut progress, dir, model)?;
-            promote(&paths.partial, &paths.final_file)?;
+            if file.extract.is_empty() {
+                promote(&paths.partial, &paths.final_file)?;
+            } else {
+                extract(&paths.partial, file, cancelled, &mut progress, dir, model)?;
+                remove_regular(&paths.partial)?;
+            }
             progress.complete(dir, model)?;
         }
         self.status(dir)
@@ -314,7 +355,12 @@ impl ModelManager {
         let mut progress = Progress::new(on_progress);
         let mut found = false;
         for model in &self.manifest.models {
-            for file in &model.files {
+            let local: Vec<_> = model
+                .files
+                .iter()
+                .flat_map(FileEntry::local_files)
+                .collect();
+            for file in &local {
                 check_cancel(cancelled, &mut progress, dir, model)?;
                 let flat = from.join(&file.name);
                 let nested = from.join(&model.id).join(&file.name);
@@ -630,23 +676,25 @@ fn model_status(dir: &Path, model: &ModelEntry) -> Result<ModelStatus> {
     for file in &model.files {
         total = total.saturating_add(file.size);
         let paths = file_paths(dir, model, file, false)?;
-        match regular_len(&paths.final_file)? {
-            Some(size) if size == file.size => {
-                done = done.saturating_add(size);
-            }
-            Some(_) => {
-                ready = false;
-                corrupt = true;
-            }
-            None => {
-                ready = false;
+        // An archive counts as done when every extracted file has its size.
+        let mut file_ready = true;
+        for local in file.local_files() {
+            let local_paths = file_paths(dir, model, &local, false)?;
+            match regular_len(&local_paths.final_file)? {
+                Some(size) if size == local.size => {}
+                Some(_) => {
+                    file_ready = false;
+                    corrupt = true;
+                }
+                None => file_ready = false,
             }
         }
-        if regular_len(&paths.final_file)? != Some(file.size) {
-            if let Some(size) = regular_len(&paths.partial)? {
-                done = done.saturating_add(size.min(file.size));
-                paused |= size != 0;
-            }
+        ready &= file_ready;
+        if file_ready {
+            done = done.saturating_add(file.size);
+        } else if let Some(size) = regular_len(&paths.partial)? {
+            done = done.saturating_add(size.min(file.size));
+            paused |= size != 0;
         }
     }
     let state = if ready {
@@ -667,6 +715,104 @@ fn model_status(dir: &Path, model: &ModelEntry) -> Result<ModelStatus> {
         optional: model.optional,
         recommended: !model.optional,
     })
+}
+
+/// Every file of an archive entry is present and matches its SHA-256. Mismatching files are
+/// removed so the archive is extracted again.
+fn members_verified(
+    file: &FileEntry,
+    cancelled: &AtomicBool,
+    progress: &mut Progress<'_>,
+    dir: &Path,
+    model: &ModelEntry,
+) -> Result<bool> {
+    let mut all = true;
+    for local in file.local_files() {
+        let paths = file_paths(dir, model, &local, true)?;
+        if regular_len(&paths.final_file)?.is_none() {
+            all = false;
+            continue;
+        }
+        progress.emit(dir, model, ModelState::Verifying, true)?;
+        if !verified(&paths.final_file, &local, cancelled, progress, dir, model)? {
+            remove_regular(&paths.final_file)?;
+            all = false;
+        }
+    }
+    Ok(all)
+}
+
+/// Writes the listed files of a verified `.tar.bz2` archive into the model folder. Each goes
+/// through a `.part` file and its SHA-256 before it gets its name; other entries are skipped.
+fn extract(
+    archive: &Path,
+    file: &FileEntry,
+    cancelled: &AtomicBool,
+    progress: &mut Progress<'_>,
+    dir: &Path,
+    model: &ModelEntry,
+) -> Result<()> {
+    let wanted = file.local_files();
+    let mut written = BTreeSet::new();
+    let mut entries = tar::Archive::new(bzip2::read::BzDecoder::new(File::open(archive)?));
+    let invalid = |error: std::io::Error| {
+        Error::Engine(format!(
+            "Model archive {} is unreadable: {error}",
+            file.name
+        ))
+    };
+    for entry in entries.entries().map_err(invalid)? {
+        let mut entry = entry.map_err(invalid)?;
+        if !entry.header().entry_type().is_file() {
+            continue;
+        }
+        let path = entry.path().map_err(invalid)?;
+        let Some(name) = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .map(str::to_owned)
+        else {
+            continue;
+        };
+        let Some(local) = wanted.iter().find(|local| local.name == name) else {
+            continue;
+        };
+        if !written.insert(name.clone()) {
+            return Err(Error::Engine(format!(
+                "Model archive {} contains {name} twice",
+                file.name
+            )));
+        }
+        let paths = file_paths(dir, model, local, true)?;
+        progress.emit(dir, model, ModelState::Verifying, true)?;
+        let mut output = open_partial(&paths.partial, false)?;
+        let mut buffer = [0_u8; BUFFER_SIZE];
+        loop {
+            check_cancel(cancelled, progress, dir, model)?;
+            let read = entry.read(&mut buffer).map_err(invalid)?;
+            if read == 0 {
+                break;
+            }
+            output.write_all(&buffer[..read])?;
+        }
+        output.sync_all()?;
+        drop(output);
+        if !verified(&paths.partial, local, cancelled, progress, dir, model)? {
+            remove_regular(&paths.partial)?;
+            return Err(Error::Engine(format!(
+                "{name} in model archive {} failed its SHA-256 check",
+                file.name
+            )));
+        }
+        promote(&paths.partial, &paths.final_file)?;
+    }
+    if let Some(missing) = wanted.iter().find(|local| !written.contains(&local.name)) {
+        return Err(Error::Engine(format!(
+            "Model archive {} does not contain {}",
+            file.name, missing.name
+        )));
+    }
+    Ok(())
 }
 
 fn verified(
@@ -827,13 +973,31 @@ fn validate_manifest(manifest: &Manifest) -> Result<()> {
                     "Model manifest contains an unsafe or duplicate filename".into(),
                 ));
             }
-            if file.size == 0
-                || file.sha256.len() != 64
-                || !file.sha256.bytes().all(|byte| byte.is_ascii_hexdigit())
-            {
+            let valid_hash = |size: u64, sha256: &str| {
+                size != 0
+                    && sha256.len() == 64
+                    && sha256.bytes().all(|byte| byte.is_ascii_hexdigit())
+            };
+            if !valid_hash(file.size, &file.sha256) {
                 return Err(Error::Engine(
                     "Model manifest has an invalid size or SHA-256".into(),
                 ));
+            }
+            if !file.extract.is_empty() && !file.name.ends_with(".tar.bz2") {
+                return Err(Error::Engine(
+                    "Model manifest can extract only .tar.bz2 archives".into(),
+                ));
+            }
+            for member in &file.extract {
+                if !safe_component(&member.name)
+                    || member.name.ends_with(".part")
+                    || !names.insert(&member.name)
+                    || !valid_hash(member.size, &member.sha256)
+                {
+                    return Err(Error::Engine(
+                        "Model manifest has an invalid archive file entry".into(),
+                    ));
+                }
             }
             for (index, url) in [&file.url, &file.mirror].into_iter().enumerate() {
                 if url.is_empty() && index == 1 {
@@ -880,22 +1044,25 @@ mod tests {
     #[test]
     fn embedded_manifest_is_valid_and_sizes_are_known() {
         let manifest = embedded_manifest().unwrap();
-        assert_eq!(manifest.models.len(), 4);
+        assert_eq!(manifest.models.len(), 11);
         let required: Vec<_> = manifest.models.iter().filter(|m| !m.optional).collect();
         assert_eq!(required.len(), 3);
-        assert_eq!(required.iter().flat_map(|model| &model.files).count(), 4);
+        assert_eq!(required.iter().flat_map(|model| &model.files).count(), 3);
         let manager = ModelManager::new().unwrap();
         let missing = std::env::temp_dir().join("lt-no-such-models");
         let statuses = manager.status_for_cores(&missing, 8).unwrap();
-        assert_eq!(statuses.len(), 4);
-        let draft = statuses.iter().find(|s| s.optional).unwrap();
-        assert_eq!(draft.id, "lmt-60-0.6b-q4_k_m");
+        assert_eq!(statuses.len(), 11);
+        let draft = statuses
+            .iter()
+            .find(|s| s.id == "lmt-60-0.6b-q4_k_m")
+            .unwrap();
         assert!(
             draft.recommended,
             "8 physical cores recommend the draft model"
         );
         let small = manager.status_for_cores(&missing, 4).unwrap();
-        assert!(!small.iter().find(|s| s.optional).unwrap().recommended);
+        assert!(!small.iter().any(|s| s.optional && s.recommended));
+        // The speech model choices download only when the user selects them.
         assert_eq!(manager.default_ids(8).len(), 4);
         assert_eq!(manager.default_ids(4).len(), 3);
         assert!(!ModelManager::new()

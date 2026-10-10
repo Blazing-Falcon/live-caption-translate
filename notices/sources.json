@@ -171,6 +171,18 @@
       "source": "https://raw.githubusercontent.com/mborgerding/kissfft/febd4caeed32e33ad8b2e0bb5ea77542c40f18ec/LICENSES/BSD-3-Clause",
       "size": 1830,
       "sha256": "4d6bcab46f27d6d0c878e8305d4bdcfe040d52bf6656b9771f04c9fb9902c0ed"
+    },
+    {
+      "file": "TEN-VAD-LICENSE.txt",
+      "source": "https://raw.githubusercontent.com/TEN-framework/ten-vad/v1.0-ONNX/LICENSE",
+      "size": 2271,
+      "sha256": "4742ca2c66bc8949daddd4c0eadad7a322d2197a05082ada942f0568ca69f0fd"
+    },
+    {
+      "file": "TEN-VAD-NOTICES.txt",
+      "source": "https://raw.githubusercontent.com/TEN-framework/ten-vad/v1.0-ONNX/NOTICES",
+      "size": 3751,
+      "sha256": "83a1d666450e06c846be76efcdd311294c28d07417bed0cb119d6400ba3cdc3b"
     }
   ]
 }

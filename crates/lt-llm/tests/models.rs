@@ -167,6 +167,7 @@ fn file(name: &str, url: String, data: &[u8]) -> FileEntry {
         sha256: format!("{:x}", Sha256::digest(data)),
         url,
         mirror: String::new(),
+        extract: Vec::new(),
     }
 }
 fn manifest(url: String, data: &[u8]) -> Manifest {
@@ -339,4 +340,78 @@ fn a_model_directory_link_cannot_escape_the_selected_directory() {
         )
         .is_err());
     assert!(fs::read_dir(&outside.path).unwrap().next().is_none());
+}
+
+fn tar_bz2(files: &[(&str, &[u8])]) -> Vec<u8> {
+    let mut builder = tar::Builder::new(bzip2::write::BzEncoder::new(
+        Vec::new(),
+        bzip2::Compression::fast(),
+    ));
+    for (name, data) in files {
+        let mut header = tar::Header::new_gnu();
+        header.set_size(data.len() as u64);
+        header.set_mode(0o644);
+        header.set_cksum();
+        builder
+            .append_data(&mut header, format!("model-1.0/{name}"), *data)
+            .unwrap();
+    }
+    builder.into_inner().unwrap().finish().unwrap()
+}
+
+#[test]
+fn an_archive_is_extracted_file_by_file_with_hash_checks_and_then_deleted() {
+    let temp = TempDir::new();
+    let (encoder, tokens) = (vec![5_u8; 3_000], b"a 0\nb 1\n".to_vec());
+    let archive = tar_bz2(&[
+        ("encoder.onnx", &encoder),
+        ("README.md", b"not listed"),
+        ("tokens.txt", &tokens),
+    ]);
+    let served = archive.clone();
+    let server = MockServer::new(move |stream, request| serve(stream, request, &served));
+    let member = |name: &str, data: &[u8]| lt_llm::models::ArchiveMember {
+        name: name.into(),
+        size: data.len() as u64,
+        sha256: format!("{:x}", Sha256::digest(data)),
+    };
+    let mut manifest = manifest(format!("{}/model.tar.bz2", server.url), &archive);
+    let entry = &mut manifest.models[0].files[0];
+    entry.name = "model.tar.bz2".into();
+    entry.extract = vec![
+        member("encoder.onnx", &encoder),
+        member("tokens.txt", &tokens),
+    ];
+    let statuses = manager(manifest.clone())
+        .fetch(
+            ModelSource::Huggingface,
+            &temp.path,
+            &AtomicBool::new(false),
+            &mut |_| {},
+        )
+        .unwrap();
+    let folder = temp.path.join("test-model");
+    assert_eq!(statuses[0].state, ModelState::Ready);
+    assert_eq!(fs::read(folder.join("encoder.onnx")).unwrap(), encoder);
+    assert_eq!(fs::read(folder.join("tokens.txt")).unwrap(), tokens);
+    let mut left: Vec<_> = fs::read_dir(&folder)
+        .unwrap()
+        .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+        .collect();
+    left.sort();
+    assert_eq!(left, ["encoder.onnx", "tokens.txt"]);
+
+    // An archive whose content differs from the listed hashes leaves no usable file.
+    let other = TempDir::new();
+    manifest.models[0].files[0].extract[1].sha256 = format!("{:x}", Sha256::digest(b"other"));
+    let error = manager(manifest)
+        .fetch(
+            ModelSource::Huggingface,
+            &other.path,
+            &AtomicBool::new(false),
+            &mut |_| {},
+        )
+        .unwrap_err();
+    assert!(error.to_string().contains("tokens.txt"), "{error}");
+    assert!(!other.path.join("test-model/tokens.txt").exists());
 }
