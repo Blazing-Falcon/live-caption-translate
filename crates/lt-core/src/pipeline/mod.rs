@@ -12,7 +12,7 @@ mod frontend;
 mod handle;
 mod scheduler;
 
-pub use handle::{PipelineHandle, SegmentCounts};
+pub use handle::{ClauseCounts, PipelineHandle};
 
 use crate::{
     bus::EventBus,
@@ -25,7 +25,7 @@ use crate::{
     types::{PipelineStats, StreamTime, UtteranceId},
 };
 use crossbeam_channel::{bounded, Sender};
-use handle::SegmentCounters;
+use handle::ClauseCounters;
 use std::{
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -49,7 +49,7 @@ enum Command {
 enum FrontendNotice {
     Started(UtteranceId),
     Discontinuity(StreamTime),
-    SegmentClosed(UtteranceId, StreamTime),
+    ClauseClosed(UtteranceId, StreamTime),
 }
 
 pub struct Pipeline;
@@ -73,7 +73,7 @@ impl Pipeline {
         let clock = Arc::new(SessionClock::default());
         let listening = Arc::new(AtomicBool::new(false));
         let latest_stats = Arc::new(Mutex::new(PipelineStats::default()));
-        let segment_counts = Arc::new(SegmentCounters::default());
+        let clause_counts = Arc::new(ClauseCounters::default());
         let (command_tx, command_rx) = bounded(CONTROL_CAPACITY);
         let (audio_tx, audio_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
@@ -86,7 +86,7 @@ impl Pipeline {
             bus: bus.clone(),
             threads: Vec::with_capacity(3),
             latest_stats: latest_stats.clone(),
-            segment_counts: segment_counts.clone(),
+            clause_counts: clause_counts.clone(),
         };
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
@@ -97,7 +97,7 @@ impl Pipeline {
         let asr_config = config.clone();
         let asr_notices = asr::AsrNotices {
             notices: front_tx.clone(),
-            segment_counts: segment_counts.clone(),
+            clause_counts: clause_counts.clone(),
         };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())

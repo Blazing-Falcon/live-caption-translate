@@ -1,5 +1,5 @@
-//! Queue policy is independent of engine execution so live audio and hold
-//! deadlines continue advancing while exactly one translation is in flight.
+//! Queue policy is independent of engine execution so live audio and the lag
+//! that decides skips keep advancing while exactly one translation is in flight.
 use crate::{
     bus::EventBus,
     clock::Clock,

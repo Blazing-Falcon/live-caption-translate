@@ -2,9 +2,9 @@
 //!
 //! The engine's text only grows. A clause opens at its first word and ends at a commit
 //! (punctuation or the wait cap), at the engine's pause rule, or at a break in the audio. Each
-//! clause gets an id and start and close notices for the scheduler and joiner.
+//! clause gets an id and start and close notices for the scheduler.
 //!
-//! `StreamRecognizer` is a plain state machine; the `lt-asr` thread only moves its inputs and
+//! `Recognizer` is a plain state machine; the `lt-asr` thread only moves its inputs and
 //! outputs.
 
 use crate::{
@@ -33,7 +33,7 @@ const CAP_AFTER_S: f64 = 30.0;
 /// The commit rule for a clause whose newest word is `age_s` seconds after its start: sentence
 /// marks always, commas after `COMMA_AFTER_S`, the wait cap after `CAP_AFTER_S`.
 fn rules(age_s: f64) -> CommitSettings {
-    let rules = CommitSettings::STREAMING;
+    let rules = CommitSettings::FULL;
     if age_s < COMMA_AFTER_S {
         CommitSettings {
             comma_min_tokens: usize::MAX,
@@ -50,9 +50,9 @@ fn rules(age_s: f64) -> CommitSettings {
     }
 }
 
-/// What the frontend sends in streaming mode.
+/// What the frontend sends to the recognizer.
 #[derive(Clone, Debug)]
-pub enum StreamInput {
+pub enum RecognizerInput {
     /// Contiguous audio starting at `at`.
     Audio { at: StreamTime, samples: Vec<f32> },
     /// The audio stops or jumps (pause, device change, end of file).
@@ -84,7 +84,7 @@ impl AsrMessage {
 }
 
 #[derive(Debug)]
-pub enum StreamOutput {
+pub enum RecognizerOutput {
     Started(UtteranceId, StreamTime),
     Closed(UtteranceId, StreamTime, CutReason),
     Message(AsrMessage),
@@ -96,7 +96,7 @@ struct Clause {
     last_partial: String,
 }
 
-pub struct StreamRecognizer {
+pub struct Recognizer {
     config: Config,
     next_id: u64,
     /// Stream time of engine time 0; `None` until audio arrives after a break.
@@ -110,7 +110,7 @@ pub struct StreamRecognizer {
     consumed: usize,
 }
 
-impl StreamRecognizer {
+impl Recognizer {
     pub fn new(config: &Config) -> Self {
         Self {
             config: config.clone(),
@@ -126,11 +126,11 @@ impl StreamRecognizer {
     pub fn handle(
         &mut self,
         engine: &mut dyn StreamingAsr,
-        input: StreamInput,
-        out: &mut Vec<StreamOutput>,
+        input: RecognizerInput,
+        out: &mut Vec<RecognizerOutput>,
     ) {
         match input {
-            StreamInput::Audio { at, samples } => {
+            RecognizerInput::Audio { at, samples } => {
                 if self.origin.is_none() {
                     self.origin = Some(at);
                     self.floor = at;
@@ -151,7 +151,7 @@ impl StreamRecognizer {
                     Err(error) => self.fail(&error.to_string(), out),
                 }
             }
-            StreamInput::Break { reason, .. } => {
+            RecognizerInput::Break { reason, .. } => {
                 let started = Instant::now();
                 match engine.finish() {
                     Ok(result) => self.process(&result, elapsed_ms(started), true, reason, out),
@@ -174,7 +174,7 @@ impl StreamRecognizer {
         asr_ms: u32,
         close: bool,
         reason: CutReason,
-        out: &mut Vec<StreamOutput>,
+        out: &mut Vec<RecognizerOutput>,
     ) {
         let Some(origin) = self.origin else {
             return;
@@ -240,7 +240,7 @@ impl StreamRecognizer {
         }
     }
 
-    fn open(&mut self, start: StreamTime, out: &mut Vec<StreamOutput>) {
+    fn open(&mut self, start: StreamTime, out: &mut Vec<RecognizerOutput>) {
         let id = UtteranceId(self.next_id);
         self.next_id += 1;
         self.clause = Some(Clause {
@@ -248,7 +248,7 @@ impl StreamRecognizer {
             start,
             last_partial: String::new(),
         });
-        out.push(StreamOutput::Started(id, start));
+        out.push(RecognizerOutput::Started(id, start));
     }
 
     fn partial(
@@ -256,7 +256,7 @@ impl StreamRecognizer {
         tokens: &crate::engines::TokenTranscript,
         count: usize,
         end: StreamTime,
-        out: &mut Vec<StreamOutput>,
+        out: &mut Vec<RecognizerOutput>,
     ) {
         let Some(clause) = self.clause.as_mut() else {
             return;
@@ -272,7 +272,7 @@ impl StreamRecognizer {
             return;
         };
         clause.last_partial.clone_from(&text);
-        out.push(StreamOutput::Message(AsrMessage::Partial {
+        out.push(RecognizerOutput::Message(AsrMessage::Partial {
             id: clause.id,
             text,
             class,
@@ -287,7 +287,7 @@ impl StreamRecognizer {
         end: StreamTime,
         cut: CutReason,
         asr_ms: u32,
-        out: &mut Vec<StreamOutput>,
+        out: &mut Vec<RecognizerOutput>,
     ) {
         let Some(clause) = self.clause.take() else {
             return;
@@ -309,21 +309,24 @@ impl StreamRecognizer {
             cut,
             logprob: mean_log_prob(log_probs),
         };
-        out.push(StreamOutput::Closed(clause.id, end, cut));
-        out.push(StreamOutput::Message(finalize(transcript, &self.config)));
+        out.push(RecognizerOutput::Closed(clause.id, end, cut));
+        out.push(RecognizerOutput::Message(finalize(
+            transcript,
+            &self.config,
+        )));
         // Later clauses start after this one.
         self.floor = self.floor.max(end);
     }
 
-    fn fail(&mut self, message: &str, out: &mut Vec<StreamOutput>) {
+    fn fail(&mut self, message: &str, out: &mut Vec<RecognizerOutput>) {
         if let Some(clause) = self.clause.take() {
             let end = self.end_of_audio().max(StreamTime(clause.start.0 + 1));
-            out.push(StreamOutput::Closed(
+            out.push(RecognizerOutput::Closed(
                 clause.id,
                 end,
                 CutReason::Discontinuity,
             ));
-            out.push(StreamOutput::Message(AsrMessage::Failed(
+            out.push(RecognizerOutput::Message(AsrMessage::Failed(
                 clause.id,
                 message.to_owned(),
             )));
@@ -456,12 +459,12 @@ mod tests {
             part_start_s: 0.0,
             part_first: 0,
         };
-        let mut recognizer = StreamRecognizer::new(&Config::default());
+        let mut recognizer = Recognizer::new(&Config::default());
         let mut out = Vec::new();
         let base = StreamTime::from_seconds(10.0);
         let total = (end_s * 16_000.0) as usize;
         for (index, chunk) in (0..total).collect::<Vec<_>>().chunks(1_600).enumerate() {
-            let input = StreamInput::Audio {
+            let input = RecognizerInput::Audio {
                 at: StreamTime(base.0 + index as u64 * 1_600),
                 samples: vec![0.0; chunk.len()],
             };
@@ -469,7 +472,7 @@ mod tests {
         }
         recognizer.handle(
             &mut engine,
-            StreamInput::Break {
+            RecognizerInput::Break {
                 at: StreamTime(base.0 + total as u64),
                 reason: CutReason::End,
             },
@@ -481,17 +484,17 @@ mod tests {
         let mut partials = 0;
         for item in &out {
             match item {
-                StreamOutput::Started(id, at) => started.push((*id, *at)),
-                StreamOutput::Closed(id, _, _) => assert!(started.iter().any(|(s, _)| s == id)),
-                StreamOutput::Message(AsrMessage::Transcript(t)) => {
+                RecognizerOutput::Started(id, at) => started.push((*id, *at)),
+                RecognizerOutput::Closed(id, _, _) => assert!(started.iter().any(|(s, _)| s == id)),
+                RecognizerOutput::Message(AsrMessage::Transcript(t)) => {
                     assert!(
                         started.iter().any(|(s, _)| *s == t.id),
                         "final before start"
                     );
                     finals.push((t.text.clone(), t.cut, t.timing.start, t.timing.end));
                 }
-                StreamOutput::Message(AsrMessage::Partial { .. }) => partials += 1,
-                StreamOutput::Message(other) => panic!("unexpected {other:?}"),
+                RecognizerOutput::Message(AsrMessage::Partial { .. }) => partials += 1,
+                RecognizerOutput::Message(other) => panic!("unexpected {other:?}"),
             }
         }
         let ids = started.iter().map(|(id, _)| id.0).collect();

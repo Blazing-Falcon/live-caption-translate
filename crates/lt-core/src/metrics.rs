@@ -68,8 +68,8 @@ impl Metrics {
         }
     }
 
-    /// Internal audio/ASR seam; the wire event does not expose segment closure.
-    pub fn segment_closed(&mut self, id: UtteranceId, end: StreamTime) {
+    /// Internal ASR seam; the wire events do not expose clause closure.
+    pub fn clause_closed(&mut self, id: UtteranceId, end: StreamTime) {
         self.unfinished.insert(id, end.millis());
     }
 

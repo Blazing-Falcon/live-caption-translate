@@ -1,11 +1,11 @@
-use super::{send_cooperative, FrontendNotice, SegmentCounters, POLL};
+use super::{send_cooperative, ClauseCounters, FrontendNotice, POLL};
 use crate::{
     bus::EventBus,
     config::Config,
     engines::StreamingAsr,
     error::Result,
     events::{EngineKind, EngineState, PipelineEvent},
-    stream::{AsrMessage, StreamInput, StreamOutput, StreamRecognizer},
+    recognizer::{AsrMessage, Recognizer, RecognizerInput, RecognizerOutput},
 };
 use crossbeam_channel::{Receiver, Sender};
 use std::sync::{
@@ -16,24 +16,24 @@ use std::sync::{
 /// What the recognizer needs to report clauses itself.
 pub(super) struct AsrNotices {
     pub(super) notices: Sender<FrontendNotice>,
-    pub(super) segment_counts: Arc<SegmentCounters>,
+    pub(super) clause_counts: Arc<ClauseCounters>,
 }
 
 pub(super) fn asr_loop(
     mut asr: Box<dyn StreamingAsr>,
     config: &Config,
-    inputs: Receiver<StreamInput>,
+    inputs: Receiver<RecognizerInput>,
     output: Sender<AsrMessage>,
     bus: &EventBus,
     cancelled: &AtomicBool,
-    stream: AsrNotices,
+    notices: AsrNotices,
 ) -> Result<()> {
     bus.publish(PipelineEvent::EngineStatus {
         engine: EngineKind::Asr,
         state: EngineState::Ready,
         message: None,
     });
-    let mut recognizer = StreamRecognizer::new(config);
+    let mut recognizer = Recognizer::new(config);
     let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
@@ -44,22 +44,24 @@ pub(super) fn asr_loop(
         recognizer.handle(asr.as_mut(), input, &mut produced);
         for item in produced.drain(..) {
             match item {
-                StreamOutput::Started(id, at) => {
-                    send_cooperative(&stream.notices, FrontendNotice::Started(id), cancelled)?;
+                RecognizerOutput::Started(id, at) => {
+                    send_cooperative(&notices.notices, FrontendNotice::Started(id), cancelled)?;
                     bus.publish(PipelineEvent::SpeechStarted {
                         id,
                         at_ms: at.millis(),
                     });
                 }
-                StreamOutput::Closed(id, end, cut) => {
-                    stream.segment_counts.record(cut);
+                RecognizerOutput::Closed(id, end, cut) => {
+                    notices.clause_counts.record(cut);
                     send_cooperative(
-                        &stream.notices,
-                        FrontendNotice::SegmentClosed(id, end),
+                        &notices.notices,
+                        FrontendNotice::ClauseClosed(id, end),
                         cancelled,
                     )?;
                 }
-                StreamOutput::Message(message) => send_cooperative(&output, message, cancelled)?,
+                RecognizerOutput::Message(message) => {
+                    send_cooperative(&output, message, cancelled)?
+                }
             }
         }
     }

@@ -8,8 +8,8 @@ use crate::{
     events::{DropReason, EngineKind, EngineState, FailReason, PipelineEvent},
     metrics::{Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
+    recognizer::AsrMessage,
     source::SessionClock,
-    stream::AsrMessage,
     types::{PipelineStats, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use crossbeam_channel::{Receiver, TryRecvError};
@@ -82,10 +82,10 @@ impl Scheduler {
                 }
             }
             FrontendNotice::Discontinuity(at) => self.queue.discontinuity(at),
-            FrontendNotice::SegmentClosed(id, end) => {
+            FrontendNotice::ClauseClosed(id, end) => {
                 self.closed_through =
                     Some(self.closed_through.map_or(id, |previous| previous.max(id)));
-                self.metrics.segment_closed(id, end);
+                self.metrics.clause_closed(id, end);
             }
         }
     }
@@ -366,8 +366,8 @@ pub(super) fn scheduler_loop(
                         scheduler.observed.insert(id);
                     }
                 }
-                Ok(FrontendNotice::SegmentClosed(id, end)) => {
-                    scheduler.metrics.segment_closed(id, end);
+                Ok(FrontendNotice::ClauseClosed(id, end)) => {
+                    scheduler.metrics.clause_closed(id, end);
                 }
                 Ok(_) => {}
                 Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}

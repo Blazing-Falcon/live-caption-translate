@@ -156,7 +156,7 @@ pub trait AudioSource: Send {
 
 pub type AudioReceiver = Receiver<AudioFrame>;
 
-/// Stream positions drive fast replay; wall time keeps hold deadlines moving
+/// Stream positions drive fast replay; wall time keeps the queue lag moving
 /// during silence, slow engines and source interruptions.
 pub struct SessionClock {
     started: Instant,

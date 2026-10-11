@@ -31,7 +31,7 @@ npm --prefix app/ui test     # fast UI tests
 | Part | Location |
 |---|---|
 | Config | `crates/lt-core/src/config.rs` |
-| Recognizer, commit rule | `crates/lt-core/src/stream.rs`, `commit.rs` |
+| Recognizer, commit rule | `crates/lt-core/src/recognizer.rs`, `commit.rs` |
 | Filter, translation queue | `crates/lt-core/src/text.rs`, `queue.rs` |
 | Scheduler | `crates/lt-core/src/pipeline.rs` |
 | X-ASR streaming | `crates/lt-sherpa/src/` |

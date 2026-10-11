@@ -25,7 +25,8 @@ pub struct CommitSettings {
 }
 
 impl CommitSettings {
-    pub const STREAMING: Self = Self {
+    /// Every rule on: sentence marks, commas after 8 words, the wait cap after 20.
+    pub const FULL: Self = Self {
         comma_min_tokens: 8,
         split_long: true,
         cap_tokens: 20,
@@ -150,12 +151,12 @@ mod tests {
             *time += 0.3;
         }
         assert_eq!(
-            decide(&words, &times, &CommitSettings::STREAMING),
+            decide(&words, &times, &CommitSettings::FULL),
             Decision::Cap { k: 16 }
         );
         let off = CommitSettings {
             split_long: false,
-            ..CommitSettings::STREAMING
+            ..CommitSettings::FULL
         };
         assert_eq!(decide(&words, &times, &off), Decision::None);
     }

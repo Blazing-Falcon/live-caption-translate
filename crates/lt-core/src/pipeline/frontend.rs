@@ -4,8 +4,8 @@ use crate::{
     clock::Clock,
     error::{Error, Result},
     events::{ListeningStateKind, PipelineEvent},
+    recognizer::RecognizerInput,
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
-    stream::StreamInput,
     types::{CutReason, PipelineStats, StreamTime},
 };
 use crossbeam_channel::{bounded, Receiver, Sender, TrySendError};
@@ -19,19 +19,19 @@ use std::{
 
 const AUDIO_CAPACITY: usize = 64;
 /// The recognizer gets audio in pieces of this size (100 ms).
-const STREAM_FORWARD_SAMPLES: usize = 1_600;
+const FORWARD_SAMPLES: usize = 1_600;
 
 struct Frontend {
     source: Box<dyn AudioSource>,
     input: Option<AudioReceiver>,
     source_cancel: Arc<AtomicBool>,
-    inputs: VecDeque<StreamInput>,
+    inputs: VecDeque<RecognizerInput>,
     notices: VecDeque<FrontendNotice>,
     clock: Arc<SessionClock>,
     bus: EventBus,
-    /// The next expected sample. Audio not sent yet starts at `stream_at` minus its length.
-    stream_at: StreamTime,
-    stream_pending: Vec<f32>,
+    /// The next expected sample. Audio not sent yet starts at `next_at` minus its length.
+    next_at: StreamTime,
+    pending: Vec<f32>,
     ending: bool,
     started_once: bool,
     listening: Arc<AtomicBool>,
@@ -39,43 +39,44 @@ struct Frontend {
 }
 
 impl Frontend {
-    fn flush_stream(&mut self) {
-        if self.stream_pending.is_empty() {
+    fn flush(&mut self) {
+        if self.pending.is_empty() {
             return;
         }
-        let samples = std::mem::take(&mut self.stream_pending);
-        let at = StreamTime(self.stream_at.0 - samples.len() as u64);
-        self.inputs.push_back(StreamInput::Audio { at, samples });
+        let samples = std::mem::take(&mut self.pending);
+        let at = StreamTime(self.next_at.0 - samples.len() as u64);
+        self.inputs
+            .push_back(RecognizerInput::Audio { at, samples });
     }
 
     /// The audio stops or jumps: the stream ends its clause.
-    fn stream_break(&mut self, reason: CutReason) {
-        self.flush_stream();
-        let at = self.stream_at;
-        self.inputs.push_back(StreamInput::Break { at, reason });
+    fn push_break(&mut self, reason: CutReason) {
+        self.flush();
+        let at = self.next_at;
+        self.inputs.push_back(RecognizerInput::Break { at, reason });
     }
 
     fn frame(&mut self, frame: AudioFrame) {
-        if frame.t0 < self.stream_at {
+        if frame.t0 < self.next_at {
             return;
         }
-        if frame.t0 != self.stream_at || frame.flags.discontinuity {
-            self.stream_break(CutReason::Discontinuity);
+        if frame.t0 != self.next_at || frame.flags.discontinuity {
+            self.push_break(CutReason::Discontinuity);
             self.notices
                 .push_back(FrontendNotice::Discontinuity(frame.t0));
-            self.stream_at = frame.t0;
+            self.next_at = frame.t0;
         }
-        self.stream_pending.extend_from_slice(&frame.samples);
-        self.stream_at = StreamTime(frame.t0.0 + frame.samples.len() as u64);
-        if self.stream_pending.len() >= STREAM_FORWARD_SAMPLES {
-            self.flush_stream();
+        self.pending.extend_from_slice(&frame.samples);
+        self.next_at = StreamTime(frame.t0.0 + frame.samples.len() as u64);
+        if self.pending.len() >= FORWARD_SAMPLES {
+            self.flush();
         }
-        self.clock.advance_to(self.stream_at);
+        self.clock.advance_to(self.next_at);
     }
 
     fn start_source(&mut self) -> Result<()> {
         let at = if self.started_once {
-            self.clock.now().max(self.stream_at)
+            self.clock.now().max(self.next_at)
         } else {
             StreamTime::ZERO
         };
@@ -119,9 +120,9 @@ impl Frontend {
     }
 
     fn cut(&mut self, at: StreamTime) {
-        self.stream_break(CutReason::Discontinuity);
+        self.push_break(CutReason::Discontinuity);
         self.notices.push_back(FrontendNotice::Discontinuity(at));
-        self.stream_at = self.stream_at.max(at);
+        self.next_at = self.next_at.max(at);
     }
 
     fn command(&mut self, command: Command) {
@@ -129,7 +130,7 @@ impl Frontend {
             Command::Pause(reply) => {
                 if self.input.is_some() {
                     self.stop_source();
-                    self.cut(self.stream_at);
+                    self.cut(self.next_at);
                     self.bus.publish(PipelineEvent::ListeningState {
                         state: ListeningStateKind::Paused,
                     });
@@ -147,7 +148,7 @@ impl Frontend {
             Command::Reopen(source, reply) => {
                 let was_running = self.input.is_some();
                 self.stop_source();
-                self.cut(self.stream_at);
+                self.cut(self.next_at);
                 self.source = source;
                 let result = if was_running {
                     self.start_source()
@@ -171,7 +172,7 @@ impl Drop for Frontend {
 pub(super) fn frontend_loop(
     source: Box<dyn AudioSource>,
     commands: Receiver<Command>,
-    audio: Sender<StreamInput>,
+    audio: Sender<RecognizerInput>,
     notices: Sender<FrontendNotice>,
     clock: Arc<SessionClock>,
     bus: EventBus,
@@ -188,8 +189,8 @@ pub(super) fn frontend_loop(
         notices: VecDeque::new(),
         clock,
         bus,
-        stream_at: StreamTime::ZERO,
-        stream_pending: Vec::new(),
+        next_at: StreamTime::ZERO,
+        pending: Vec::new(),
         ending: false,
         started_once: false,
         listening,
@@ -263,7 +264,7 @@ pub(super) fn frontend_loop(
                 Ok(frame) => frontend.frame(frame),
                 Err(_) => {
                     frontend.stop_source();
-                    frontend.stream_break(CutReason::End);
+                    frontend.push_break(CutReason::End);
                     frontend.ending = true;
                 }
             },

@@ -1,6 +1,6 @@
 use lt_core::{
     events::PipelineEvent,
-    pipeline::SegmentCounts,
+    pipeline::ClauseCounts,
     types::{TextClass, UtteranceId},
 };
 use serde::Serialize;
@@ -23,7 +23,7 @@ pub struct Summary<'a> {
     pub clip: &'a str,
     pub start: f64,
     pub dur: f64,
-    pub segments: u64,
+    pub clauses: u64,
     pub cuts: BTreeMap<&'static str, u64>,
     pub status: BTreeMap<&'static str, u64>,
     pub lag_first_median: Option<f64>,
@@ -128,7 +128,7 @@ impl ReplayReport {
     }
     pub fn summary<'a>(
         self,
-        counts: SegmentCounts,
+        counts: ClauseCounts,
         clip: &'a str,
         start: f64,
         dur: f64,
@@ -138,7 +138,7 @@ impl ReplayReport {
             clip,
             start,
             dur,
-            segments: counts.total(),
+            clauses: counts.total(),
             cuts: [
                 ("pause", counts.pause),
                 ("discontinuity", counts.discontinuity),

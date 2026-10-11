@@ -180,7 +180,7 @@ fn run_session(
         bail!("Live event subscriber overflowed; report is incomplete");
     }
     let summary = report.summary(
-        pipeline.segment_counts(),
+        pipeline.clause_counts(),
         label,
         0.0,
         started.elapsed().as_secs_f64(),

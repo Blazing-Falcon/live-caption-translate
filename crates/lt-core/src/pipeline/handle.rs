@@ -16,23 +16,23 @@ use std::{
 
 /// Aggregate frontend diagnostics for replay reports; this does not change IPC.
 #[derive(Clone, Copy, Debug, Default)]
-pub struct SegmentCounts {
+pub struct ClauseCounts {
     pub pause: u64,
     pub discontinuity: u64,
     pub end: u64,
     pub commit: u64,
 }
 
-impl SegmentCounts {
+impl ClauseCounts {
     pub fn total(self) -> u64 {
         self.pause + self.discontinuity + self.end + self.commit
     }
 }
 
 #[derive(Default)]
-pub(super) struct SegmentCounters([AtomicU64; 4]);
+pub(super) struct ClauseCounters([AtomicU64; 4]);
 
-impl SegmentCounters {
+impl ClauseCounters {
     pub(super) fn record(&self, reason: CutReason) {
         let index = match reason {
             CutReason::Pause => 0,
@@ -42,9 +42,9 @@ impl SegmentCounters {
         };
         self.0[index].fetch_add(1, Ordering::Relaxed);
     }
-    fn snapshot(&self) -> SegmentCounts {
+    fn snapshot(&self) -> ClauseCounts {
         let counts = self.0.each_ref().map(|count| count.load(Ordering::Relaxed));
-        SegmentCounts {
+        ClauseCounts {
             pause: counts[0],
             discontinuity: counts[1],
             end: counts[2],
@@ -60,7 +60,7 @@ pub struct PipelineHandle {
     pub(super) bus: EventBus,
     pub(super) threads: Vec<JoinHandle<Result<()>>>,
     pub(super) latest_stats: Arc<Mutex<PipelineStats>>,
-    pub(super) segment_counts: Arc<SegmentCounters>,
+    pub(super) clause_counts: Arc<ClauseCounters>,
 }
 
 impl PipelineHandle {
@@ -75,8 +75,8 @@ impl PipelineHandle {
             .unwrap_or_default()
     }
 
-    pub fn segment_counts(&self) -> SegmentCounts {
-        self.segment_counts.snapshot()
+    pub fn clause_counts(&self) -> ClauseCounts {
+        self.clause_counts.snapshot()
     }
 
     pub fn pause(&self) -> Result<()> {

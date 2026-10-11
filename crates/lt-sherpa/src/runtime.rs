@@ -72,12 +72,15 @@ pub fn initialize_shared_runtime(path: impl AsRef<Path>) -> Result<()> {
     // same static API table, not merely the same reported version number.
     require_same_api(linked_api, ort::api(), &path)?;
     if !environment.with_telemetry(false).commit() {
-        return Err(Error::Engine("ONNX Runtime was initialized before its offline environment; initialize_shared_runtime must run before any ort session".into()));
+        return Err(Error::Engine("ONNX Runtime was initialized before its telemetry-free environment; initialize_shared_runtime must run before any ort session".into()));
     }
     // Commit config is lazy. Materialize the environment before calling into
     // sherpa, whose C++ model constructor also creates an Ort::Env.
     ort::environment::Environment::current().map_err(|error| {
-        engine_error("Cannot create the offline ONNX Runtime environment", error)
+        engine_error(
+            "Cannot create the telemetry-free ONNX Runtime environment",
+            error,
+        )
     })?;
     *initialized = Some(path);
     Ok(())
@@ -123,7 +126,7 @@ fn require_same_api(
 ) -> Result<()> {
     if !std::ptr::eq(linked, dynamic) {
         return Err(Error::Engine(format!(
-            "Silero and sherpa loaded different ONNX Runtime libraries; {} must resolve to the same DLL that is beside the application. Replace the adjacent DLL and restart the process",
+            "The model check and sherpa loaded different ONNX Runtime libraries; {} must resolve to the same DLL that is beside the application. Replace the adjacent DLL and restart the process",
             path.display()
         )));
     }

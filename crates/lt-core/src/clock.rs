@@ -1,4 +1,4 @@
-//! Injected stream time keeps hold/join behavior deterministic during replay.
+//! Injected stream time keeps the queue lag, and so its skips, deterministic during replay.
 use crate::types::StreamTime;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;

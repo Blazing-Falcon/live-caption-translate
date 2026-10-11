@@ -164,7 +164,7 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         .with_context(|| format!("Writing {}", words_path.display()))?;
     eprintln!("Per-word metrics: {}", serde_json::to_string(&words)?);
     let mut output = subscriber.finish()?;
-    let summary = report.summary(pipeline.segment_counts(), &info.label, args.start, duration);
+    let summary = report.summary(pipeline.clause_counts(), &info.label, args.start, duration);
     serde_json::to_writer(&mut output, &summary)?;
     output.write_all(b"\n")?;
     output.flush()?;

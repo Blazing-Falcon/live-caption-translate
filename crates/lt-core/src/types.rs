@@ -137,7 +137,7 @@ pub struct Transcript {
     pub timing: StageTiming,
     #[serde(default)]
     pub absorbed: Vec<UtteranceId>,
-    /// How the clause ended. Committed clauses skip the short-phrase hold.
+    /// How the clause ended.
     #[serde(default = "default_cut")]
     pub cut: CutReason,
     /// Mean token log-probability, when the engine gives one.

@@ -97,7 +97,7 @@ fn fast_replay_writes_the_shared_utf8_records_and_complete_summary() {
     assert_eq!(records[1]["source"], "你好，这是测试语音。");
     assert_eq!(records[1]["english"], "Hello.");
     assert_eq!(records[1]["status"], "final");
-    assert_eq!(records[2]["segments"], 1);
+    assert_eq!(records[2]["clauses"], 1);
     assert_eq!(records[2]["cuts"]["pause"], 1);
     assert_eq!(records[2]["status"]["final"], 1);
     let stdout: Value = serde_json::from_slice(&output.stdout).unwrap();

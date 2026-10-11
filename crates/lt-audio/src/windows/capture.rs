@@ -1060,7 +1060,7 @@ fn adapter_loop(
                     prepared.push(block, output)
                 };
                 // DATA_DISCONTINUITY is only a gap hint: the native timestamp
-                // supplies its missing interval, without resetting segmentation.
+                // supplies its missing interval, without ending the clause.
                 let _gap_hint = packet.data_discontinuity;
                 timeline.push_packet(
                     raw_t0,
