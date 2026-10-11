@@ -143,6 +143,7 @@ impl ReplayReport {
                 ("pause", counts.pause),
                 ("discontinuity", counts.discontinuity),
                 ("end", counts.end),
+                ("commit", counts.commit),
             ]
             .into(),
             status: self.status,
