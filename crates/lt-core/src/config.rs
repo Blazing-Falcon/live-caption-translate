@@ -34,7 +34,6 @@ config_table!(Config {
     audio: AudioConfig = AudioConfig::default(),
     asr: AsrConfig = AsrConfig::default(),
     filter: FilterConfig = FilterConfig::default(),
-    routing: RoutingConfig = RoutingConfig::default(),
     join: JoinConfig = JoinConfig::default(),
     translate: TranslateConfig = TranslateConfig::default(),
     overlay: OverlayConfig = OverlayConfig::default(),
@@ -70,10 +69,6 @@ config_table!(FilterConfig {
     single_char_max_s: f32 = 0.6,
     single_char_allow: Vec<String> = ["对", "好", "是", "行", "不", "哦"].map(String::from).to_vec(),
     fillers: Vec<String> = ["呃", "嗯", "额", "uh", "um"].map(String::from).to_vec(),
-});
-config_table!(RoutingConfig {
-    english: String = "passthrough".into(),
-    translate_other: Vec<String> = Vec::new(),
 });
 config_table!(JoinConfig {
     hold_max_chars: u32 = 8,
@@ -294,7 +289,6 @@ impl Config {
         number!(asr, stream_pause_s, 0.3, 3.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
-        choice!(routing, english, &["passthrough"]);
         number!(join, hold_max_chars, 0, 20);
         number!(join, hold_window_s, 0.2, 2.0);
         number!(join, max_segments, 2, 5);
@@ -376,8 +370,8 @@ impl Config {
             ($($name:ident),* $(,)?) => { $(unknown_fields(&self.$name.extra, stringify!($name), messages);)* };
         }
         table!(
-            capture, audio, asr, filter, routing, join, translate, overlay, latency, hotkeys,
-            transcript, logging, models
+            capture, audio, asr, filter, join, translate, overlay, latency, hotkeys, transcript,
+            logging, models
         );
         for (index, app) in self.capture.apps.iter().enumerate() {
             unknown_fields(&app.extra, &format!("capture.apps[{index}]"), messages);
@@ -403,8 +397,8 @@ impl Config {
             )* };
         }
         table!(
-            capture, audio, asr, filter, routing, join, translate, overlay, latency, hotkeys,
-            transcript, logging, models
+            capture, audio, asr, filter, join, translate, overlay, latency, hotkeys, transcript,
+            logging, models
         );
         if let Some(apps) = value
             .get("capture")

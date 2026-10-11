@@ -113,6 +113,13 @@ pub enum TextClass {
     Other,
 }
 
+impl TextClass {
+    /// Chinese and mixed lines go to the translator; the others show as heard.
+    pub fn is_translated(self) -> bool {
+        matches!(self, Self::Chinese | Self::Mixed)
+    }
+}
+
 #[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
 pub struct StageTiming {
     pub start: StreamTime,

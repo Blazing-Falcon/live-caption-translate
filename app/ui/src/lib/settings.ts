@@ -41,10 +41,6 @@ export interface Config extends ExtraFields {
     single_char_allow: string[];
     fillers: string[];
   };
-  routing: ExtraFields & {
-    english: "passthrough";
-    translate_other: string[];
-  };
   join: ExtraFields & {
     hold_max_chars: number;
     hold_window_s: number;
@@ -141,7 +137,7 @@ export function cloneConfig(config: Config): Config {
 }
 
 const CONFIG_TABLES = [
-  "capture", "audio", "asr", "filter", "routing", "join", "translate",
+  "capture", "audio", "asr", "filter", "join", "translate",
   "overlay", "latency", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
@@ -203,12 +199,6 @@ export function languageLabel(code: string | null | undefined): string {
   return LANGUAGE_NAMES[lang] ?? lang.toUpperCase();
 }
 
-export function isOtherLangTranslated(translateOther: readonly string[], lang: string | null | undefined): boolean {
-  const wanted = normalizeLang(lang);
-  if (wanted === null) return false;
-  return translateOther.some((code) => normalizeLang(code) === wanted);
-}
-
 export function sameExe(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }
@@ -241,13 +231,6 @@ export function overlayPatch(values: DeepPartial<Config["overlay"]>): ConfigPatc
 
 export function hotkeyPatch(action: HotkeyAction, accelerator: string): ConfigPatch {
   return { hotkeys: { [action]: accelerator.trim() } };
-}
-
-/** Keeps every enabled code the UI does not expose (anything besides the toggled one). */
-export function translateOtherPatch(current: readonly string[], code: string, enabled: boolean): ConfigPatch {
-  const target = normalizeLang(code) ?? code;
-  const rest = current.filter((entry) => (normalizeLang(entry) ?? entry) !== target);
-  return { routing: { translate_other: enabled ? [...rest, target] : rest } };
 }
 
 export function translateThreadsPatch(threads: number): ConfigPatch {
@@ -321,10 +304,6 @@ export const DEFAULT_CONFIG: Config = {
     "single_char_max_s": 0.6,
     "single_char_allow": ["对", "好", "是", "行", "不", "哦"],
     "fillers": ["呃", "嗯", "额", "uh", "um"]
-  },
-  "routing": {
-    "english": "passthrough",
-    "translate_other": []
   },
   "join": {
     "hold_max_chars": 8,

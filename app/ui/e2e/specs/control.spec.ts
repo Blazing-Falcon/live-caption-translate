@@ -24,7 +24,7 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     const external = await open(page, "control");
     await expect(page.getByTestId("header-title")).toHaveText("Listening");
     await expect(page.getByTestId("footer")).toHaveText("speech→English 1.8 s median · queue 1 · CPU 41%");
-    await expect(page.getByRole("tab")).toHaveText(["Capture", "Overlay", "Languages", "Performance"]);
+    await expect(page.getByRole("tab")).toHaveText(["Capture", "Overlay", "Performance"]);
     expect(external).toEqual([]);
   });
 

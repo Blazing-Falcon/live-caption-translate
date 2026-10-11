@@ -41,15 +41,7 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
         Applies::Restart,
         field(&capture_old, "autostart") != field(&capture_new, "autostart"),
     );
-    for name in [
-        "audio",
-        "asr",
-        "filter",
-        "routing",
-        "join",
-        "translate",
-        "latency",
-    ] {
+    for name in ["audio", "asr", "filter", "join", "translate", "latency"] {
         raise(Applies::Pipeline, table(old, name) != table(new, name));
     }
     let (transcript_old, transcript_new) = (table(old, "transcript"), table(new, "transcript"));
@@ -117,10 +109,6 @@ mod tests {
             Applies::Capture
         );
         assert_eq!(changed(|c| c.asr.stream_pause_s = 0.6), Applies::Pipeline);
-        assert_eq!(
-            changed(|c| c.routing.translate_other = vec!["ja".into()]),
-            Applies::Pipeline
-        );
         assert_eq!(changed(|c| c.translate.threads = 3), Applies::Pipeline);
         assert_eq!(changed(|c| c.overlay.live_source = false), Applies::Live);
         assert_eq!(changed(|c| c.capture.autostart = false), Applies::Restart);

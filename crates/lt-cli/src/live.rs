@@ -119,12 +119,11 @@ fn run_session(
             translator: config.translate.engine.clone(),
             config: SessionConfig::from(&config),
         };
-        let writer = TranscriptWriter::with_routing(
+        let writer = TranscriptWriter::new(
             BufWriter::new(
                 File::create(path).with_context(|| format!("Creating {}", path.display()))?,
             ),
             header,
-            &config.routing.translate_other,
         )?;
         Some(TranscriptSubscriber::start(
             &bus,
@@ -134,7 +133,7 @@ fn run_session(
     } else {
         None
     };
-    let mut report = ReplayReport::new(&config.routing);
+    let mut report = ReplayReport::new();
     let sampler = ProcessSampler::new(engines.pid.clone())?;
     let mut pipeline = Pipeline::start_with_options(
         config,

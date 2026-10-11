@@ -133,9 +133,6 @@ normalize = 123
 threads = 2.5
 [filter]
 fillers = ["um", 4]
-[routing]
-english = "translate"
-translate_other = [9]
 [join]
 hold_window_s = "one"
 [translate]
@@ -164,8 +161,6 @@ source = "elsewhere"
     assert!(config.audio.normalize);
     assert_eq!(config.asr.threads, 1);
     assert_eq!(config.filter.fillers, Config::default().filter.fillers);
-    assert_eq!(config.routing.english, "passthrough");
-    assert!(config.routing.translate_other.is_empty());
     assert_eq!(config.join.hold_window_s, 1.0);
     assert_eq!(config.translate.target, "en");
     assert_eq!(config.overlay.style, "bar");
@@ -173,7 +168,7 @@ source = "elsewhere"
     assert!(config.overlay.bar_rect.is_none());
     assert_eq!(config.logging.level, "info");
     assert_eq!(config.models.source, "huggingface");
-    assert_eq!(messages.len(), 17, "{messages:?}");
+    assert_eq!(messages.len(), 15, "{messages:?}");
 }
 
 #[test]

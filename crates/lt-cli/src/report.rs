@@ -1,18 +1,16 @@
 use lt_core::{
-    config::RoutingConfig,
     events::PipelineEvent,
     pipeline::SegmentCounts,
     types::{TextClass, UtteranceId},
 };
 use serde::Serialize;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 /// Complete-session latency samples, distinct from the UI's last-50 window.
 pub struct ReplayReport {
     status: BTreeMap<&'static str, u64>,
     absorbed: BTreeMap<UtteranceId, u64>,
     ends: BTreeMap<UtteranceId, Vec<u64>>,
-    translated_other: BTreeSet<String>,
     first: Vec<f64>,
     done: Vec<f64>,
     joins: BTreeMap<&'static str, u64>,
@@ -35,7 +33,7 @@ pub struct Summary<'a> {
 }
 
 impl ReplayReport {
-    pub fn new(routing: &RoutingConfig) -> Self {
+    pub fn new() -> Self {
         Self {
             status: [
                 "final",
@@ -50,11 +48,6 @@ impl ReplayReport {
             .into(),
             absorbed: BTreeMap::new(),
             ends: BTreeMap::new(),
-            translated_other: routing
-                .translate_other
-                .iter()
-                .map(|tag| canonical_language(tag))
-                .collect(),
             first: Vec::new(),
             done: Vec::new(),
             joins: [("hold", 0), ("queue", 0)].into(),
@@ -128,18 +121,9 @@ impl ReplayReport {
             PipelineEvent::AsrFinal {
                 id,
                 class: TextClass::Other,
-                lang,
-                end_ms,
                 ..
             } => {
-                let enabled = lang
-                    .as_ref()
-                    .is_some_and(|tag| self.translated_other.contains(&canonical_language(tag)));
-                if enabled {
-                    self.ends.insert(*id, vec![*end_ms]);
-                } else {
-                    self.terminal(*id, "untranslated");
-                }
+                self.terminal(*id, "untranslated");
             }
             PipelineEvent::AsrFinal { id, end_ms, .. } => {
                 self.ends.insert(*id, vec![*end_ms]);
@@ -172,23 +156,6 @@ impl ReplayReport {
             lag_done_p90: percentile(self.done, 0.9),
             joins: self.joins,
         }
-    }
-}
-
-// Keep the replay summary's Other routing aligned with pipeline/subscriber
-// normalization for model tokens, language names and regional tags.
-fn canonical_language(tag: &str) -> String {
-    let tag = tag.trim();
-    let tag = tag
-        .strip_prefix("<|")
-        .and_then(|tag| tag.strip_suffix("|>"))
-        .unwrap_or(tag);
-    let lowered = tag.to_ascii_lowercase();
-    let language = lowered.split(['-', '_']).next().unwrap_or(&lowered);
-    match language {
-        "japanese" | "jpn" => "ja".into(),
-        "korean" | "kor" => "ko".into(),
-        language => language.into(),
     }
 }
 

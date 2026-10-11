@@ -50,10 +50,6 @@ single_char_max_s = 0.6
 single_char_allow = ["对", "好", "是", "行", "不", "哦"]
 fillers = ["呃", "嗯", "额", "uh", "um"]
 
-[routing]
-english = "passthrough"         # "passthrough" is the only value
-translate_other = []            # e.g. ["ja", "ko"]; empty = show other languages untranslated
-
 [join]
 hold_max_chars = 8              # 0 disables short-phrase joining
 hold_window_s = 1.0
@@ -149,13 +145,6 @@ The default values are in the file above.
 | `single_char_max_s` | 0 or more | pipeline | Drop a one-character result from a segment shorter than this, unless the character is in `single_char_allow` |
 | `single_char_allow` | list of strings | pipeline | One-character results that the filter always keeps |
 | `fillers` | list of strings | pipeline | Words removed when they stand alone |
-
-### routing
-
-| Key | Range | Applies | Meaning |
-|---|---|---|---|
-| `english` | `passthrough` | pipeline | Show English speech as heard |
-| `translate_other` | list of language codes | pipeline | Other source languages to translate. The UI offers `ja` and `ko`. Empty: show them untranslated. |
 
 ### join
 

@@ -95,7 +95,7 @@ cargo test --workspace --all-features
 ```powershell
 cargo build --release -p lt-cli --all-features
 target\release\lt-cli.exe replay testdata\fetched\ramc\CTS-CN-F2F-2019-11-15-1449.wav --start 19 --dur 180 `
-    --pace realtime --mode continuous --server .deps\llama-b11429\llama-server.exe --out out\conv.jsonl
+    --pace realtime --server .deps\llama-b11429\llama-server.exe --out out\conv.jsonl
 python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeats, expected text
 target\release\lt-cli.exe live --mode system --dur 600 --out out\live.jsonl
 target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.stream_chunk_ms from --config

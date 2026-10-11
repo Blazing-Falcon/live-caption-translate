@@ -7,12 +7,12 @@ use crate::{
     bus::{EventBus, EventReceiver},
     clock::{Clock, ManualClock},
     commit::CommitSettings,
-    config::{Config, RoutingConfig},
+    config::Config,
     engines::{StreamingAsr, Translator},
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     join::{JoinResult, Joiner},
-    metrics::{canonical_language, Metrics, ResourceSample, ResourceSampler},
+    metrics::{Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
     stream::{AsrMessage, StreamInput, StreamOutput, StreamRecognizer},
@@ -686,17 +686,9 @@ fn asr_loop(
     Ok(())
 }
 
-fn translates(transcript: &Transcript, config: &RoutingConfig) -> bool {
-    match transcript.class {
-        TextClass::Chinese | TextClass::Mixed => true,
-        TextClass::English => false,
-        TextClass::Other => transcript.lang_tag.as_ref().is_some_and(|lang| {
-            config
-                .translate_other
-                .iter()
-                .any(|enabled| canonical_language(enabled) == *lang)
-        }),
-    }
+/// Chinese and mixed lines are translated; English and other languages show as heard.
+fn translates(transcript: &Transcript) -> bool {
+    transcript.class.is_translated()
 }
 
 fn send_cooperative<T>(sender: &Sender<T>, mut message: T, cancelled: &AtomicBool) -> Result<()> {
@@ -771,12 +763,8 @@ impl Scheduler {
             }
             self.publish(event);
         }
-        self.ready.extend(
-            result
-                .ready
-                .into_iter()
-                .filter(|transcript| translates(transcript, &self.config.routing)),
-        );
+        self.ready
+            .extend(result.ready.into_iter().filter(translates));
     }
 
     fn notice(&mut self, notice: FrontendNotice) {
@@ -842,7 +830,7 @@ impl Scheduler {
                     cut: transcript.cut,
                     logprob: transcript.logprob,
                 });
-                if translates(&transcript, &self.config.routing) {
+                if translates(&transcript) {
                     self.translating.insert(transcript.id);
                 } else {
                     self.observed.remove(&transcript.id);
@@ -927,7 +915,7 @@ fn scheduler_loop(
     let join_clock = Arc::new(ManualClock::default());
     let mut frontier = StreamTime::ZERO;
     let mut anchor = Instant::now();
-    let mut metrics = Metrics::with_routing(&config.routing.translate_other);
+    let mut metrics = Metrics::new();
     metrics.set_sampler(sampler.map(|inner| {
         Box::new(CachedSampler {
             inner,

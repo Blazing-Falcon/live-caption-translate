@@ -9,13 +9,11 @@ import {
   formatAccelerator,
   hasApp,
   hotkeyPatch,
-  isOtherLangTranslated,
   languageLabel,
   normalizeLang,
   overlayPatch,
   parseConfig,
   toggledApps,
-  translateOtherPatch,
   translateThreadsPatch,
 } from "../src/lib/settings";
 
@@ -67,12 +65,12 @@ describe("applyPatch", () => {
     base.overlay.bar_rect = { monitor: "A", x: 1, y: 2, w: 3, h: 4 };
     const next = applyPatch(base, {
       overlay: { font_px: 30, bar_rect: null },
-      routing: { translate_other: ["ko"] },
+      capture: { apps: [{ exe: "chrome.exe", name: "Chrome" }] },
     });
     expect(next.overlay.font_px).toBe(30);
     expect(next.overlay.style).toBe("bar");
     expect(next.overlay.bar_rect).toBeUndefined();
-    expect(next.routing.translate_other).toEqual(["ko"]);
+    expect(next.capture.apps).toEqual([{ exe: "chrome.exe", name: "Chrome" }]);
     expect(base.overlay.font_px).toBe(26);
   });
 });

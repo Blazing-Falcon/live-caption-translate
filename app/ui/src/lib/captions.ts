@@ -1,5 +1,5 @@
 import { readable, writable, type Readable } from "svelte/store";
-import { formatAccelerator, isOtherLangTranslated, normalizeLang, type Config } from "./settings";
+import { formatAccelerator, normalizeLang, type Config } from "./settings";
 import type {
   AppState,
   CaptionLine,
@@ -237,7 +237,6 @@ interface AppSlice {
 }
 
 interface SettingsSlice {
-  translateOther: string[];
   pauseHotkey: string;
   expireMs: number;
   appNames: string[];
@@ -249,7 +248,7 @@ export interface CaptionControllerOptions {
   onWarn?: (message: string) => void;
 }
 
-export type CaptionConfig = Pick<Config, "routing" | "hotkeys" | "overlay" | "capture">;
+export type CaptionConfig = Pick<Config, "hotkeys" | "overlay" | "capture">;
 
 export interface CaptionController extends Readable<CaptionView> {
   dispatch(event: PipelineEvent): void;
@@ -284,7 +283,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     engines: {},
   };
   let settings: SettingsSlice = {
-    translateOther: [],
     pauseHotkey: "",
     expireMs: 8000,
     appNames: [],
@@ -445,9 +443,8 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           state = "english";
           announcement = event.text;
         } else if (event.class === "other") {
-          const translated = isOtherLangTranslated(settings.translateOther, lang);
-          state = translated ? "pending" : "other";
-          if (!translated) announcement = event.text;
+          state = "other";
+          announcement = event.text;
         }
         lines.set(event.id, { ...base, state, source: event.text, lang, updatedAt: clock.now() });
         return true;
@@ -560,7 +557,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   function setConfig(config: CaptionConfig): void {
     if (disposed) return;
     settings = {
-      translateOther: [...config.routing.translate_other],
       pauseHotkey: config.hotkeys.pause,
       expireMs: Math.max(0, config.overlay.expire_s * 1000),
       appNames: config.capture.apps.map((entry) => entry.name),

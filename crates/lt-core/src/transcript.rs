@@ -3,7 +3,6 @@ use crate::bus::{EventBus, EventReceiver};
 use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::events::{FailReason, PipelineEvent};
-use crate::metrics::{canonical_language, OtherRouting};
 use crate::types::{CaptureMode, CutReason, TextClass, Timing, UtteranceId};
 use crossbeam_channel::{RecvTimeoutError, TryRecvError};
 use serde::{Deserialize, Serialize};
@@ -153,7 +152,6 @@ impl Pending {
 pub struct TranscriptWriter<W: Write> {
     writer: W,
     pending: BTreeMap<UtteranceId, Pending>,
-    routing: OtherRouting,
     live_engine: String,
 }
 
@@ -171,24 +169,8 @@ impl<W: Write> TranscriptWriter<W> {
         Ok(Self {
             writer,
             pending: BTreeMap::new(),
-            routing: OtherRouting::default(),
             live_engine: header.asr.clone(),
         })
-    }
-
-    pub fn with_routing(
-        writer: W,
-        header: SessionHeader,
-        translate_other: &[String],
-    ) -> Result<Self> {
-        let mut writer = Self::new(writer, header)?;
-        writer.set_translate_other(translate_other);
-        Ok(writer)
-    }
-
-    /// Configure before consuming events; a routing change starts a new pipeline.
-    pub fn set_translate_other(&mut self, translate_other: &[String]) {
-        self.routing.set(translate_other);
     }
 
     pub fn pending_count(&self) -> usize {
@@ -208,8 +190,7 @@ impl<W: Write> TranscriptWriter<W> {
                 logprob,
                 ..
             } => {
-                let pending_translation = matches!(class, TextClass::Chinese | TextClass::Mixed)
-                    || (*class == TextClass::Other && self.routing.translates(lang.as_deref()));
+                let pending_translation = class.is_translated();
                 if pending_translation
                     && self.pending.len() == Self::PENDING_CAPACITY
                     && !self.pending.contains_key(id)
@@ -222,7 +203,7 @@ impl<W: Write> TranscriptWriter<W> {
                     start_ms: *start_ms,
                     end_ms: *end_ms,
                     class: *class,
-                    lang: lang.as_deref().map(canonical_language),
+                    lang: lang.clone(),
                     source: text.clone(),
                     cut: *cut,
                     live: LiveRecord {
@@ -238,9 +219,6 @@ impl<W: Write> TranscriptWriter<W> {
                     }
                     TextClass::English => {
                         write_line(&mut self.writer, &pending.record(wall, "english"))?
-                    }
-                    TextClass::Other if self.routing.translates(lang.as_deref()) => {
-                        self.pending.insert(*id, pending);
                     }
                     TextClass::Other => {
                         write_line(&mut self.writer, &pending.record(wall, "other"))?

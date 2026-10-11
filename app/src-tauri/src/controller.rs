@@ -237,12 +237,8 @@ impl Controller {
             translator: config.translate.engine.clone(),
             config: SessionConfig::from(config),
         };
-        let writer = TranscriptWriter::with_routing(
-            BufWriter::new(file),
-            header,
-            &config.routing.translate_other,
-        )
-        .map_err(|e| e.to_string())?;
+        let writer =
+            TranscriptWriter::new(BufWriter::new(file), header).map_err(|e| e.to_string())?;
         TranscriptSubscriber::start(
             &self.shared.bus,
             writer,

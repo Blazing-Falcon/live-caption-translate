@@ -1,52 +1,14 @@
 //! Event-derived metrics and injected process resource sampling.
 use crate::events::PipelineEvent;
 use crate::text::chinese_chars;
-use crate::types::{PipelineStats, StreamTime, TextClass, UtteranceId};
-use std::collections::{BTreeMap, BTreeSet, VecDeque};
+use crate::types::{PipelineStats, StreamTime, UtteranceId};
+use std::collections::{BTreeMap, VecDeque};
 
 const WINDOW_SIZE: usize = 50;
 /// Per-word delay medians cover clauses that finished within this long.
 const WORD_WINDOW_MS: u64 = 60_000;
 /// Instants sampled inside each clause (an approximation of when words are spoken).
 const WORD_STEP_MS: u64 = 100;
-
-/// Shared routing for event subscribers: Other is terminal only if untranslated.
-#[derive(Default)]
-pub(crate) struct OtherRouting {
-    enabled: BTreeSet<String>,
-}
-
-impl OtherRouting {
-    pub(crate) fn set(&mut self, languages: &[String]) {
-        self.enabled = languages
-            .iter()
-            .map(|language| canonical_language(language))
-            .filter(|language| !language.is_empty())
-            .collect();
-    }
-
-    pub(crate) fn translates(&self, language: Option<&str>) -> bool {
-        language.is_some_and(|language| self.enabled.contains(&canonical_language(language)))
-    }
-}
-
-pub(crate) fn canonical_language(tag: &str) -> String {
-    let tag = tag.trim();
-    let tag = tag
-        .strip_prefix("<|")
-        .and_then(|tag| tag.strip_suffix("|>"))
-        .map_or(tag, |tag| tag);
-    let lowered = tag.to_ascii_lowercase();
-    let language = lowered
-        .split(['-', '_'])
-        .next()
-        .map_or(lowered.as_str(), |language| language);
-    match language {
-        "japanese" | "jpn" => "ja".into(),
-        "korean" | "kor" => "ko".into(),
-        language => language.into(),
-    }
-}
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct ResourceSample {
@@ -89,7 +51,6 @@ pub struct Metrics {
     failed_total: u32,
     leaked_cjk_total: u64,
     sampler: Option<Box<dyn ResourceSampler>>,
-    routing: OtherRouting,
     tracks: BTreeMap<UtteranceId, ClauseTrack>,
     words: VecDeque<WordClause>,
     resources: ResourceSample,
@@ -105,17 +66,6 @@ impl Metrics {
             sampler: Some(sampler),
             ..Self::default()
         }
-    }
-
-    pub fn with_routing(translate_other: &[String]) -> Self {
-        let mut metrics = Self::new();
-        metrics.set_translate_other(translate_other);
-        metrics
-    }
-
-    /// Applies to subsequent ASR events; the pipeline restarts on routing changes.
-    pub fn set_translate_other(&mut self, translate_other: &[String]) {
-        self.routing.set(translate_other);
     }
 
     /// Internal audio/ASR seam; the wire event does not expose segment closure.
@@ -211,15 +161,9 @@ impl Metrics {
     fn record_event(&mut self, event: &PipelineEvent) {
         match event {
             PipelineEvent::AsrFinal {
-                id,
-                class,
-                lang,
-                end_ms,
-                ..
+                id, class, end_ms, ..
             } => {
-                if matches!(class, TextClass::Chinese | TextClass::Mixed)
-                    || (*class == TextClass::Other && self.routing.translates(lang.as_deref()))
-                {
+                if class.is_translated() {
                     self.unfinished.insert(*id, *end_ms);
                 } else {
                     self.unfinished.remove(id);
@@ -339,7 +283,7 @@ fn nearest_rank(values: &[u32], percentile: usize) -> Option<u32> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::types::Timing;
+    use crate::types::{TextClass, Timing};
 
     fn asr(id: u64, end: u64, class: TextClass) -> PipelineEvent {
         PipelineEvent::AsrFinal {

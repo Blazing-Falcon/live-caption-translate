@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ageOpacity, isHiddenLive, type OverlayStyle, type StatusLine } from "../lib/captions";
-  import { languageLabel, normalizeLang } from "../lib/settings";
+  import { languageLabel } from "../lib/settings";
   import type { CaptionLine } from "../lib/types";
 
   interface Props {
@@ -23,17 +23,11 @@
     fading = false,
   }: Props = $props();
 
-  const TOGGLEABLE = new Set(["ja", "ko"]);
-
   // Labels are uppercased by CSS; the DOM keeps sentence case so screen readers do not spell them out.
   const sentenceCase = (value: string): string => value.charAt(0) + value.slice(1).toLowerCase();
 
   const langName = $derived(sentenceCase(languageLabel(line?.lang)));
-  const otherLabel = $derived(
-    TOGGLEABLE.has(normalizeLang(line?.lang) ?? "")
-      ? `${langName} · Turn on in settings to translate`
-      : `${langName} · Not translated`,
-  );
+  const otherLabel = $derived(`${langName} · Not translated`);
   // A live line with nothing to show yet is not rendered at all, so it reserves no space.
   const hidden = $derived(line !== null && isHiddenLive(line, liveSource));
   const sourceVisible = $derived(

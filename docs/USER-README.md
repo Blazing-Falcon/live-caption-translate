@@ -30,7 +30,6 @@ All processing is on your computer. After the first download, the app does not u
 |---|---|
 | **Capture** | Listen to the **whole system** (you can select an output device), or to **selected apps** such as Chrome and Discord. The app remembers apps by program name. |
 | **Overlay** | Style (subtitle bar at the bottom, caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
-| **Languages** | Chinese to English. English speech shows as heard. You can turn on translation for Japanese and Korean. Otherwise they show untranslated. |
 | **Performance** | "Give games priority", "Translate with the previous lines", word delay ("Word to English", median for the last minute), memory, CPU, translator threads |
 
 When you close the control window, the app continues in the system tray. Right-click the tray icon for Pause, Hide overlay, Move overlay, Listen to, Open transcript folder, Settings and Quit.
@@ -54,6 +53,8 @@ If a different program uses a hotkey, the Overlay page tells you. The other hotk
 1. The Chinese appears while the person speaks.
 2. The line ends at the end of a sentence (。？！) or when the person pauses. If a sentence runs on with commas, a comma can end the line after about 6 seconds. After 30 seconds, the app cuts the line at a gap between words.
 3. The English appears below the Chinese. The transcript keeps only the final text.
+
+English speech shows as heard. It is not translated.
 
 **Give games priority** on the Performance page (on by default) runs the translator at low priority, so a game keeps its frame rate. If you turn it off, the translator restarts.
 

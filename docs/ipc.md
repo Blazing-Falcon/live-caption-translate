@@ -48,7 +48,7 @@ Enum values:
 
 Notes:
 
-- The core translates `other` text only if its language is in `routing.translate_other`.
+- The core translates only `chinese` and `mixed` text. `english` and `other` lines show as heard.
 - `dropped` can come for an id that already has a live line.
 - If an ASR decode fails, the core sends `engine_status` (`asr`, `failed`) and then `dropped` (`empty`).
 - When listening stops, each open id gets a terminal event: `translation_failed` (`error`) if a translation is in progress, otherwise `dropped` (`empty`).

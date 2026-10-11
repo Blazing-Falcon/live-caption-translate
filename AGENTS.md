@@ -33,7 +33,7 @@ npm --prefix app/ui test     # fast UI tests
 | Config | `crates/lt-core/src/config.rs` |
 | Recognizer, commit rule | `crates/lt-core/src/stream.rs`, `commit.rs` |
 | Filter, joiner, queue | `crates/lt-core/src/text.rs`, `join.rs`, `queue.rs` |
-| Scheduler, step-down | `crates/lt-core/src/pipeline.rs`, `stepdown.rs` |
+| Scheduler | `crates/lt-core/src/pipeline.rs` |
 | X-ASR streaming | `crates/lt-sherpa/src/` |
 | llama-server, model downloads | `crates/lt-llm/src/` |
 | Windows capture | `crates/lt-audio/src/windows/` |

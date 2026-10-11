@@ -95,10 +95,10 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         .into(),
         config: SessionConfig::from(&config),
     };
-    let writer = TranscriptWriter::with_routing(output, header, &config.routing.translate_other)?;
+    let writer = TranscriptWriter::new(output, header)?;
     let subscriber =
         TranscriptSubscriber::start(&bus, writer, Arc::new(|| Local::now().to_rfc3339()))?;
-    let mut report = ReplayReport::new(&config.routing);
+    let mut report = ReplayReport::new();
     let sampler = ProcessSampler::new(engines.pid.clone())?;
     let mut timed: Vec<TimedEvent> = Vec::new();
     let events_path = sibling(&args.out, "events.jsonl");

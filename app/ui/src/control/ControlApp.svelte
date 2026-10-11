@@ -8,7 +8,6 @@
   import HeaderCard from "./HeaderCard.svelte";
   import Notices from "./Notices.svelte";
   import Capture from "./pages/Capture.svelte";
-  import Languages from "./pages/Languages.svelte";
   import Overlay from "./pages/Overlay.svelte";
   import Performance from "./pages/Performance.svelte";
 
@@ -20,7 +19,6 @@
   const PAGES = [
     { id: "capture", label: "Capture" },
     { id: "overlay", label: "Overlay" },
-    { id: "languages", label: "Languages" },
     { id: "performance", label: "Performance" },
   ] as const;
   type PageId = (typeof PAGES)[number]["id"];
@@ -113,8 +111,6 @@
             <Capture config={$config} />
           {:else if page === "overlay"}
             <Overlay config={$config} />
-          {:else if page === "languages"}
-            <Languages config={$config} />
           {:else}
             <Performance config={$config} />
           {/if}
