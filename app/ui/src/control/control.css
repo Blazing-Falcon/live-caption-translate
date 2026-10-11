@@ -321,21 +321,6 @@ input[type="radio"] {
   height: 1px;
 }
 
-.kv {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-2) var(--space-6);
-  max-width: 520px;
-}
-
-.kv dt {
-  color: var(--c-text-label);
-}
-
-.kv dd {
-  margin: 0;
-}
-
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

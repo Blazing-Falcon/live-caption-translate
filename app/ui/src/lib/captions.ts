@@ -1,4 +1,4 @@
-import { readable, writable, type Readable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 import { formatAccelerator, normalizeLang, type Config } from "./settings";
 import type {
   AppState,
@@ -578,9 +578,4 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   }
 
   return { subscribe: store.subscribe, dispatch, setAppState, setConfig, dispose };
-}
-
-/** Fixed view for rendering fixtures and component tests. */
-export function staticView(partial: Partial<CaptionView>): Readable<CaptionView> {
-  return readable({ lines: [], fadingIds: new Set<number>(), status: null, chip: null, announcement: "", ...partial });
 }
