@@ -9,7 +9,7 @@ Rules:
 - A value with the wrong type gets the default value. The app logs a warning.
 - A number out of range is clamped to the nearest limit.
 - An enum value that is not permitted gets the default value.
-- A file that is not valid TOML does not load.
+- A file that does not load (not valid TOML, not UTF-8, or not readable) is renamed to `config.toml.bad-<seconds>`, and the app starts with the defaults. A notice gives the new name.
 - The app writes `config.toml.tmp` and renames it, so a save is atomic.
 - A file with `config_version = 1` is migrated when it loads. Renamed keys keep their values (`asr.stream_chunk_ms` becomes `asr.chunk_ms`, `asr.stream_pause_s` becomes `asr.pause_s`, `latency.low_priority` becomes `performance.low_priority`). `translate.threads = 0` becomes `2`. Keys that version 2 does not have are removed, and the app logs one info line with their names. The next save writes version 2.
 

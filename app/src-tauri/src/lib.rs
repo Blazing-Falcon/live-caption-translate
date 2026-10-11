@@ -29,6 +29,25 @@ use tauri::{Manager, RunEvent, WindowEvent};
 
 static LOG_GUARD: OnceLock<tracing_appender::non_blocking::WorkerGuard> = OnceLock::new();
 
+/// The next save would replace a file that did not load, so keep it under another name first.
+fn set_aside(path: &std::path::Path, error: &lt_core::error::Error) -> String {
+    let seconds = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .map_or(0, |since| since.as_secs());
+    let mut kept = path.as_os_str().to_os_string();
+    kept.push(format!(".bad-{seconds}"));
+    let kept = std::path::PathBuf::from(kept);
+    match std::fs::rename(path, &kept) {
+        Ok(()) => format!(
+            "Settings were reset: {error}. The old file is {}",
+            kept.display()
+        ),
+        Err(rename) => {
+            format!("Settings were reset: {error}. The old file could not be kept: {rename}")
+        }
+    }
+}
+
 fn init_logging(paths: &paths::Paths, config: &Config) {
     let filter = std::env::var("LT_LOG").unwrap_or_else(|_| {
         let level = &config.logging.level;
@@ -80,7 +99,7 @@ pub fn run() {
             let (config, messages) = Config::load(&paths.config_file).unwrap_or_else(|error| {
                 (
                     Config::default(),
-                    vec![format!("Settings were reset: {error}")],
+                    vec![set_aside(&paths.config_file, &error)],
                 )
             });
             init_logging(&paths, &config);
