@@ -229,7 +229,7 @@ mod tests {
     use crate::types::{StageTiming, UtteranceId};
 
     #[test]
-    fn cleanup_and_routing_table() {
+    fn cleanup_and_classification_table() {
         let config = FilterConfig::default();
         let cases = [
             (
