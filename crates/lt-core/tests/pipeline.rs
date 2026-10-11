@@ -11,7 +11,7 @@ use lt_core::{
         TranslationOut, Translator, TranslatorCaps,
     },
     error::{Error, Result},
-    events::{DropReason, FailReason, ListeningStateKind, PipelineEvent},
+    events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     fakes::{FakeStream, FakeTranslator},
     pipeline::{Pipeline, PipelineHandle},
     queue::TranslationQueue,
@@ -704,6 +704,55 @@ fn a_blocked_translator_bounds_the_lines_recognized_ahead() {
     // One line at the translator, a full queue and one line between the queue and the recognizer.
     assert!(count(&recorded, is_final) <= TranslationQueue::CAPACITY + 2);
     assert_eq!(requests.lock().unwrap().len(), 1);
+}
+
+/// A translator that panics.
+struct PanickingTranslator;
+
+impl Translator for PanickingTranslator {
+    fn caps(&self) -> TranslatorCaps {
+        TranslatorCaps {
+            context: false,
+            max_input_chars: 300,
+        }
+    }
+    fn warm_up(&mut self, _: &TranslationControl) -> Result<()> {
+        Ok(())
+    }
+    fn translate(
+        &mut self,
+        _: &TranslateRequest<'_>,
+        _: &mut dyn FnMut(&str),
+    ) -> Result<TranslationOut> {
+        panic!("scripted translator panic");
+    }
+}
+
+/// A translator panic ends the session with an error instead of stalling it, and every line
+/// still gets its terminal event.
+#[test]
+fn a_translator_panic_ends_the_session_and_settles_every_line() {
+    let (mut handle, events) = start(
+        VecSource::new(tones(3)),
+        FakeStream::new(vec!["你好。".into(); 3], PAUSE_S),
+        PanickingTranslator,
+    );
+    let deadline = Instant::now() + WATCHDOG;
+    while !handle.is_finished() {
+        assert!(Instant::now() < deadline, "the pipeline stalled");
+        thread::park_timeout(Duration::from_millis(2));
+    }
+    assert!(handle.wait().is_err());
+    let events: Vec<_> = events.try_iter().collect();
+    assert_order(&events);
+    assert!(events.iter().any(|event| matches!(
+        event,
+        PipelineEvent::EngineStatus {
+            engine: EngineKind::Translator,
+            state: EngineState::Failed,
+            ..
+        }
+    )));
 }
 
 #[test]

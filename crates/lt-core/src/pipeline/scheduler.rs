@@ -253,9 +253,23 @@ pub(super) fn scheduler_loop(
                 }
             }
         }
-        for event in worker.completed.try_iter() {
-            progressed = true;
-            scheduler.completed(event);
+        let mut worker_lost = false;
+        loop {
+            match worker.completed.try_recv() {
+                Ok(event) => {
+                    progressed = true;
+                    scheduler.completed(event);
+                }
+                Err(TryRecvError::Empty) => break,
+                Err(TryRecvError::Disconnected) => {
+                    worker_lost = true;
+                    break;
+                }
+            }
+        }
+        if worker_lost {
+            translator_lost(&scheduler, &cancelled);
+            break;
         }
         while scheduler.queue.len() < TranslationQueue::CAPACITY {
             let Some(transcript) = scheduler.ready.pop_front() else {
@@ -320,7 +334,13 @@ pub(super) fn scheduler_loop(
                 scheduler.publish(event);
             }
             if let Some(item) = batch.item {
-                send_cooperative(&worker.input, item, &cancelled)?;
+                // Its id stays observed, so the shutdown below settles it either way.
+                if send_cooperative(&worker.input, item, &cancelled).is_err() {
+                    if !cancelled.load(Ordering::Acquire) {
+                        translator_lost(&scheduler, &cancelled);
+                    }
+                    break;
+                }
                 scheduler.in_flight = true;
                 progressed = true;
             }
@@ -355,7 +375,8 @@ pub(super) fn scheduler_loop(
             thread::sleep(POLL);
         }
     }
-    worker.stop()?;
+    // A worker that panicked reports it after every line is settled.
+    let stopped = worker.stop();
     // Wait for producers to close before publishing shutdown terminals. This
     // prevents a racing SpeechStarted or delta from appearing after a terminal.
     while !front_done || !asr_done {
@@ -404,5 +425,16 @@ pub(super) fn scheduler_loop(
     scheduler.queue = TranslationQueue::new(scheduler.config.translate.clone());
     scheduler.in_flight = false;
     scheduler.refresh_stats(clock.now());
-    Ok(())
+    stopped
+}
+
+/// The translator thread ended by itself, which only a panic does: report it and stop the
+/// session, whose shutdown settles every line.
+fn translator_lost(scheduler: &Scheduler, cancelled: &AtomicBool) {
+    scheduler.bus.publish(PipelineEvent::EngineStatus {
+        engine: EngineKind::Translator,
+        state: EngineState::Failed,
+        message: Some("The translator stopped unexpectedly".into()),
+    });
+    cancelled.store(true, Ordering::Release);
 }
