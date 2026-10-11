@@ -288,9 +288,7 @@ fn run(samples: Vec<f32>, config: Config, translator: Box<dyn Translator>) -> Ru
 }
 
 fn config() -> Config {
-    let mut config = Config::default();
-    config.join.hold_max_chars = 0;
-    config
+    Config::default()
 }
 
 /// The per-id ordering rules.

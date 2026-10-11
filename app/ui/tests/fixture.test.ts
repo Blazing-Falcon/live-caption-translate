@@ -25,7 +25,7 @@ describe("wire fixture", () => {
 });
 
 describe("lawful full-stream fixtures", () => {
-  it("handles a conversation with hold join, skip, failure, English and Other lines", () => {
+  it("handles a conversation with a join, skip, failure, English and Other lines", () => {
     const clock = new FakeClock();
     const controller = createCaptionController({ clock, reducedMotion: () => false });
     controller.setConfig(testConfig());

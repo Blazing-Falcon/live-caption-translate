@@ -278,8 +278,7 @@ fn assert_terminal_order(events: &[PipelineEvent], enabled_other: &[&str]) {
 fn wav_replay_translates_chinese_passes_english_and_drops_fillers_before_asr_final() {
     let bus = EventBus::default();
     let events = bus.subscribe(128);
-    let mut config = Config::default();
-    config.join.hold_max_chars = 0;
+    let config = Config::default();
     let asr = fake_stream(&["你好。", "Okay I see.", "嗯。"]);
     let translator = FakeTranslator::default();
     let metrics = translator.metrics.clone();
@@ -382,8 +381,7 @@ fn gated() -> (GatedTranslator, Sender<()>, Receiver<()>, RequestLog) {
 fn catch_up_skips_waiting_items_and_translates_the_newest_after_a_busy_request() {
     let bus = EventBus::default();
     let events = bus.subscribe(512);
-    let mut config = Config::default();
-    config.join.hold_max_chars = 0;
+    let config = Config::default();
     let (translator, release, started, requests) = gated();
     let phrases: Vec<String> = (0..14)
         .map(|index| format!("我们说第{index}句话。"))
@@ -432,8 +430,7 @@ fn catch_up_skips_waiting_items_and_translates_the_newest_after_a_busy_request()
 fn pause_finishes_pending_translation_and_resume_preserves_ids_and_source_changes() {
     let bus = EventBus::default();
     let events = bus.subscribe(256);
-    let mut config = Config::default();
-    config.join.hold_max_chars = 0;
+    let config = Config::default();
     let mut source = SyntheticWavSource::from_bytes(&wav(10));
     source.frame_delay = Duration::from_millis(3);
     let mut handle = Pipeline::start_with_bus(
@@ -486,8 +483,7 @@ fn pause_finishes_pending_translation_and_resume_preserves_ids_and_source_change
 fn stop_joins_every_worker_while_translation_is_busy_and_settles_pending_lines() {
     let bus = EventBus::default();
     let events = bus.subscribe(512);
-    let mut config = Config::default();
-    config.join.hold_max_chars = 0;
+    let config = Config::default();
     let (translator, _release, started, _) = gated();
     let mut handle = Pipeline::start_with_bus(
         config,
@@ -513,7 +509,6 @@ fn stop_joins_every_worker_while_translation_is_busy_and_settles_pending_lines()
     let stats = handle.get_stats();
     assert_eq!(stats.lag_ms, 0);
     assert_eq!(stats.queue_depth, 0);
-    assert_eq!(stats.held, 0);
     assert!(stats.failed_total > 0);
     recorded.extend(events.try_iter());
     assert_terminal_order(&recorded, &[]);
@@ -523,8 +518,7 @@ fn stop_joins_every_worker_while_translation_is_busy_and_settles_pending_lines()
 fn saturated_translation_backpressures_asr_and_pause_stop_remain_responsive() {
     let bus = EventBus::default();
     let events = bus.subscribe(2048);
-    let mut config = Config::default();
-    config.join.hold_max_chars = 0;
+    let config = Config::default();
     let (translator, _release, started, requests) = gated();
     let mut handle = Pipeline::start_with_bus(
         config,

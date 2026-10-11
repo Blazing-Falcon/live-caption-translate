@@ -487,15 +487,8 @@ mod tests {
         let errors = source.error_handle();
         let bus = EventBus::default();
         let events = bus.subscribe(128);
-        let config = Config {
-            join: lt_core::config::JoinConfig {
-                hold_max_chars: 0,
-                ..lt_core::config::JoinConfig::default()
-            },
-            ..Config::default()
-        };
         let mut pipeline = Pipeline::start_with_bus(
-            config,
+            Config::default(),
             Box::new(source),
             Box::new(FakeStream::new(
                 vec!["我们今天一起谈论这个问题。".into()],

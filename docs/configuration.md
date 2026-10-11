@@ -50,12 +50,6 @@ single_char_max_s = 0.6
 single_char_allow = ["对", "好", "是", "行", "不", "哦"]
 fillers = ["呃", "嗯", "额", "uh", "um"]
 
-[join]
-hold_max_chars = 8              # 0 disables short-phrase joining
-hold_window_s = 1.0
-max_segments = 3
-max_chars = 40
-
 [translate]
 engine = "hymt2"
 server_url = ""                 # "" = spawn the bundled llama-server; otherwise use this OpenAI-compatible base URL
@@ -145,15 +139,6 @@ The default values are in the file above.
 | `single_char_max_s` | 0 or more | pipeline | Drop a one-character result from a segment shorter than this, unless the character is in `single_char_allow` |
 | `single_char_allow` | list of strings | pipeline | One-character results that the filter always keeps |
 | `fillers` | list of strings | pipeline | Words removed when they stand alone |
-
-### join
-
-| Key | Range | Applies | Meaning |
-|---|---|---|---|
-| `hold_max_chars` | 0–20 | pipeline | Hold Chinese or mixed segments with this number of Chinese characters or fewer. `0` disables the hold. |
-| `hold_window_s` | 0.2–2.0 | pipeline | Time that a held segment waits for the next segment |
-| `max_segments` | 2–5 | pipeline | Maximum segments in one join |
-| `max_chars` | 10–80 | pipeline | Maximum Chinese characters in one join |
 
 ### translate
 

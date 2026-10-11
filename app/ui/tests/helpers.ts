@@ -98,12 +98,11 @@ export const failed = (id: number, reason: FailReason, message = ""): PipelineEv
   message,
 });
 export const skipped = (id: number): PipelineEvent => ({ type: "skipped", id, reason: "catch_up" });
-export const joined = (id: number, absorbed: number[], text: string, kind: "hold" | "queue" = "hold"): PipelineEvent => ({
+export const joined = (id: number, absorbed: number[], text: string): PipelineEvent => ({
   type: "joined",
   id,
   absorbed,
   text,
-  kind,
 });
 
 export function testConfig(patch?: (config: Config) => void): Config {
@@ -128,7 +127,6 @@ export function testState(patch: Partial<AppState> = {}): AppState {
 export const STATS: PipelineStats = {
   lag_ms: 400,
   queue_depth: 1,
-  held: 0,
   done_p50_ms: 1800,
   done_p95_ms: 2100,
   first_p50_ms: 700,

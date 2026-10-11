@@ -6,8 +6,7 @@ use crate::{
     config::TranslateConfig,
     engines::{TranslateRequest, TranslationControl, Translator},
     error::{Error, Result},
-    events::{EngineKind, EngineState, FailReason, JoinKind, PipelineEvent, SkipReason, Timing},
-    join::join_text,
+    events::{EngineKind, EngineState, FailReason, PipelineEvent, SkipReason, Timing},
     text::chinese_chars,
     types::{StreamTime, Transcript, UtteranceId},
 };
@@ -181,12 +180,22 @@ impl TranslationQueue {
                 id: item.transcript.id,
                 absorbed,
                 text: item.transcript.text.clone(),
-                kind: JoinKind::Queue,
             });
         }
         batch.item = Some(item);
         batch
     }
+}
+
+/// A sentence end becomes a comma at the join boundary.
+pub fn join_text(first: &str, next: &str) -> String {
+    let first = first.trim_end();
+    let mut joined = match first.strip_suffix('。').or_else(|| first.strip_suffix('.')) {
+        Some(prefix) => format!("{prefix}，"),
+        None => first.to_owned(),
+    };
+    joined.push_str(next.trim_start());
+    joined
 }
 
 pub fn strip_wrappers(text: &str) -> String {

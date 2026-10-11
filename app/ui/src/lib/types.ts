@@ -3,7 +3,6 @@
 export type UtteranceId = number;
 export type TextClass = "chinese" | "mixed" | "english" | "other";
 export type CaptureMode = "system" | "apps";
-export type JoinKind = "hold" | "queue";
 export type SkipReason = "catch_up";
 export type FailReason = "timeout" | "server_unavailable" | "echo" | "runaway" | "error";
 export type DropReason = "empty" | "single_char";
@@ -41,7 +40,6 @@ export interface SourceInfo {
 export interface PipelineStats {
   lag_ms: number;
   queue_depth: number;
-  held: number;
   done_p50_ms: number | null;
   done_p95_ms: number | null;
   first_p50_ms: number | null;
@@ -73,7 +71,7 @@ export type PipelineEvent =
       /** Mean token log-probability; only engines that give one send it. */
       logprob?: number;
     }
-  | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string; kind: JoinKind }
+  | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }
   | { type: "translation_final"; id: UtteranceId; text: string; timing: Timing }
   | { type: "skipped"; id: UtteranceId; reason: SkipReason }

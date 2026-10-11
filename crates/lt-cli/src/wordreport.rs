@@ -186,7 +186,6 @@ mod tests {
                     id: UtteranceId(1),
                     absorbed: vec![UtteranceId(2)],
                     text: "你好你好".into(),
-                    kind: lt_core::events::JoinKind::Hold,
                 },
             ),
             at(3_000, translation_final(1)),

@@ -13,7 +13,7 @@ pub struct ReplayReport {
     ends: BTreeMap<UtteranceId, Vec<u64>>,
     first: Vec<f64>,
     done: Vec<f64>,
-    joins: BTreeMap<&'static str, u64>,
+    joins: u64,
 }
 
 #[derive(Serialize)]
@@ -29,7 +29,8 @@ pub struct Summary<'a> {
     pub lag_first_median: Option<f64>,
     pub lag_done_median: Option<f64>,
     pub lag_done_p90: Option<f64>,
-    pub joins: BTreeMap<&'static str, u64>,
+    /// Lines the translation queue joined into an earlier one.
+    pub joins: u64,
 }
 
 impl ReplayReport {
@@ -50,7 +51,7 @@ impl ReplayReport {
             ends: BTreeMap::new(),
             first: Vec::new(),
             done: Vec::new(),
-            joins: [("hold", 0), ("queue", 0)].into(),
+            joins: 0,
         }
     }
     fn terminal(&mut self, id: UtteranceId, state: &'static str) -> u64 {
@@ -60,14 +61,8 @@ impl ReplayReport {
     }
     pub fn on_event(&mut self, event: &PipelineEvent) {
         match event {
-            PipelineEvent::Joined {
-                id, absorbed, kind, ..
-            } => {
-                let kind = match kind {
-                    lt_core::events::JoinKind::Hold => "hold",
-                    lt_core::events::JoinKind::Queue => "queue",
-                };
-                *self.joins.entry(kind).or_default() += absorbed.len() as u64;
+            PipelineEvent::Joined { id, absorbed, .. } => {
+                self.joins += absorbed.len() as u64;
                 let mut count = self.absorbed.remove(id).unwrap_or(0);
                 let mut ends = self.ends.remove(id).unwrap_or_default();
                 for child in absorbed {

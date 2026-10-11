@@ -133,8 +133,6 @@ normalize = 123
 threads = 2.5
 [filter]
 fillers = ["um", 4]
-[join]
-hold_window_s = "one"
 [translate]
 target = "fr"
 [overlay]
@@ -161,14 +159,13 @@ source = "elsewhere"
     assert!(config.audio.normalize);
     assert_eq!(config.asr.threads, 1);
     assert_eq!(config.filter.fillers, Config::default().filter.fillers);
-    assert_eq!(config.join.hold_window_s, 1.0);
     assert_eq!(config.translate.target, "en");
     assert_eq!(config.overlay.style, "bar");
     assert_eq!(config.overlay.panel_edge, "right");
     assert!(config.overlay.bar_rect.is_none());
     assert_eq!(config.logging.level, "info");
     assert_eq!(config.models.source, "huggingface");
-    assert_eq!(messages.len(), 15, "{messages:?}");
+    assert_eq!(messages.len(), 14, "{messages:?}");
 }
 
 #[test]
@@ -177,7 +174,6 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
         "config_version":100,
         "audio":{"norm_attack_s":-1,"norm_release_s":99,"norm_max_gain_db":99,"norm_gate_dbfs":-100},
         "asr":{"threads":-10},
-        "join":{"hold_max_chars":99,"hold_window_s":0,"max_segments":99,"max_chars":0},
         "translate":{"threads":99,"ctx":0,"temperature":99,"repeat_penalty":0,"max_tokens_cap":99_999,"timeout_s":0,"queue_join_max_chars":0,"skip_lag_s":0},
         "overlay":{"font_px":0,"background":99,"expire_s":0,"panel_lines":0},
         "transcript":{"retention_days":-1},"logging":{"keep_files":-1}
@@ -188,10 +184,6 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     assert_eq!(config.audio.norm_max_gain_db, 30.0);
     assert_eq!(config.audio.norm_gate_dbfs, -90.0);
     assert_eq!(config.asr.threads, 1);
-    assert_eq!(config.join.hold_max_chars, 20);
-    assert_eq!(config.join.hold_window_s, 0.2);
-    assert_eq!(config.join.max_segments, 5);
-    assert_eq!(config.join.max_chars, 10);
     assert_eq!(config.translate.threads, 16);
     assert_eq!(config.translate.ctx, 512);
     assert_eq!(config.translate.temperature, 1.0);
@@ -206,7 +198,7 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     assert_eq!(config.overlay.panel_lines, 4);
     assert_eq!(config.transcript.retention_days, 0);
     assert_eq!(config.logging.keep_files, 0);
-    assert_eq!(messages.len(), 24, "{messages:?}");
+    assert_eq!(messages.len(), 20, "{messages:?}");
 }
 
 #[test]

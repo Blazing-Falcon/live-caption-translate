@@ -41,7 +41,7 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
         Applies::Restart,
         field(&capture_old, "autostart") != field(&capture_new, "autostart"),
     );
-    for name in ["audio", "asr", "filter", "join", "translate", "latency"] {
+    for name in ["audio", "asr", "filter", "translate", "latency"] {
         raise(Applies::Pipeline, table(old, name) != table(new, name));
     }
     let (transcript_old, transcript_new) = (table(old, "transcript"), table(new, "transcript"));

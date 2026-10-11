@@ -23,14 +23,12 @@ pub struct SessionSource {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SessionConfig {
-    pub hold_max_chars: u32,
     pub skip_lag_s: f64,
 }
 
 impl From<&Config> for SessionConfig {
     fn from(config: &Config) -> Self {
         Self {
-            hold_max_chars: config.join.hold_max_chars,
             skip_lag_s: readable_f32(config.translate.skip_lag_s),
         }
     }
@@ -479,7 +477,7 @@ fn generated_filename(name: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::events::{DropReason, JoinKind, SkipReason};
+    use crate::events::{DropReason, SkipReason};
     use std::fs::{File, FileTimes};
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicUsize, Ordering};
@@ -487,7 +485,7 @@ mod tests {
 
     const WALL: &str = "2026-10-07T21:14:51+07:00";
     const GOLDEN: &str = concat!(
-        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"hold_max_chars\":8,\"skip_lag_s\":6.0}}\n",
+        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"skip_lag_s\":6.0}}\n",
         "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null}}\n",
         "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"こんにちは。\",\"logprob\":null}}\n",
         "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null}}\n",
@@ -504,10 +502,7 @@ mod tests {
             },
             asr: "sensevoice-2024-07-17-int8".into(),
             translator: "hy-mt2-1.8b-q4_0".into(),
-            config: SessionConfig {
-                hold_max_chars: 8,
-                skip_lag_s: 6.0,
-            },
+            config: SessionConfig { skip_lag_s: 6.0 },
         }
     }
 
@@ -532,12 +527,11 @@ mod tests {
         }
     }
 
-    fn joined(id: u64, absorbed: &[u64], text: &str, kind: JoinKind) -> PipelineEvent {
+    fn joined(id: u64, absorbed: &[u64], text: &str) -> PipelineEvent {
         PipelineEvent::Joined {
             id: UtteranceId(id),
             absorbed: absorbed.iter().copied().map(UtteranceId).collect(),
             text: text.into(),
-            kind,
         }
     }
 
@@ -552,7 +546,7 @@ mod tests {
                 46_300,
             ),
             asr(13, "伟大的公司。", TextClass::Chinese, "zh", 46_900, 47_980),
-            joined(12, &[13], "我也想办一个，伟大的公司。", JoinKind::Hold),
+            joined(12, &[13], "我也想办一个，伟大的公司。"),
             asr(14, "来不及。", TextClass::Chinese, "zh", 50_000, 51_000),
             asr(20, "Hello world.", TextClass::English, "en", 52_000, 53_000),
             asr(21, "こんにちは。", TextClass::Other, "ja", 54_000, 55_000),

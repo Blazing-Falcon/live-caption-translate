@@ -2,7 +2,7 @@ use lt_core::{
     bus::EventBus,
     clock::{Clock, ManualClock},
     config::Config,
-    events::{EngineState, FailReason, JoinKind, PipelineEvent},
+    events::{EngineState, FailReason, PipelineEvent},
     fakes::FakeTranslator,
     queue::{
         stop_runaway, strip_wrappers, translate_one, QueuedTranscript, TranslationQueue,
@@ -56,13 +56,7 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
     assert_eq!(item.transcript.text, "你好，你好。");
     assert_eq!(item.transcript.absorbed, vec![UtteranceId(2)]);
     assert_eq!(item.transcript.timing.end, StreamTime::from_seconds(2.0));
-    assert!(matches!(
-        &batch.events[0],
-        PipelineEvent::Joined {
-            kind: JoinKind::Queue,
-            ..
-        }
-    ));
+    assert!(matches!(&batch.events[0], PipelineEvent::Joined { .. }));
     assert_eq!(
         queue
             .take(StreamTime::from_seconds(3.0))

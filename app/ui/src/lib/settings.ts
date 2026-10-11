@@ -41,12 +41,6 @@ export interface Config extends ExtraFields {
     single_char_allow: string[];
     fillers: string[];
   };
-  join: ExtraFields & {
-    hold_max_chars: number;
-    hold_window_s: number;
-    max_segments: number;
-    max_chars: number;
-  };
   translate: ExtraFields & {
     engine: string;
     server_url: string;
@@ -137,7 +131,7 @@ export function cloneConfig(config: Config): Config {
 }
 
 const CONFIG_TABLES = [
-  "capture", "audio", "asr", "filter", "join", "translate",
+  "capture", "audio", "asr", "filter", "translate",
   "overlay", "latency", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
@@ -304,12 +298,6 @@ export const DEFAULT_CONFIG: Config = {
     "single_char_max_s": 0.6,
     "single_char_allow": ["对", "好", "是", "行", "不", "哦"],
     "fillers": ["呃", "嗯", "额", "uh", "um"]
-  },
-  "join": {
-    "hold_max_chars": 8,
-    "hold_window_s": 1.0,
-    "max_segments": 3,
-    "max_chars": 40
   },
   "translate": {
     "engine": "hymt2",

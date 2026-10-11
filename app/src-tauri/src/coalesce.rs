@@ -130,7 +130,7 @@ fn delta(id: u64, text_so_far: String) -> PipelineEvent {
 mod tests {
     use super::*;
     use lt_core::{
-        events::{JoinKind, SkipReason},
+        events::SkipReason,
         types::{Timing, UtteranceId},
     };
 
@@ -242,7 +242,6 @@ mod tests {
                 id: UtteranceId(7),
                 absorbed: vec![UtteranceId(6)],
                 text: "t".into(),
-                kind: JoinKind::Queue,
             },
             t0 + Duration::from_millis(2),
         );

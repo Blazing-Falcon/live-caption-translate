@@ -53,11 +53,7 @@ fn fast_replay_writes_the_shared_utf8_records_and_complete_summary() {
     let wav = scratch.0.join("speech.wav");
     let config = scratch.0.join("config.toml");
     let out = scratch.0.join("replay.jsonl");
-    fs::write(
-        &config,
-        "[join]\nhold_max_chars=0\n[audio]\nnormalize=false\n",
-    )
-    .unwrap();
+    fs::write(&config, "[audio]\nnormalize=false\n").unwrap();
     let spec = hound::WavSpec {
         channels: 2,
         sample_rate: 44_100,

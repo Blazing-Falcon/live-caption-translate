@@ -56,10 +56,10 @@ describe("caption reducer", () => {
   it("joins absorbed ids into the leader, which keeps the earliest position", () => {
     const { lines, run } = setup();
     run(asrFinal(10, "我也想"), asrFinal(11, "办一个"), asrFinal(12, "公司"), asrFinal(13, "别的话"));
-    run(joined(10, [11], "我也想，办一个", "hold"));
+    run(joined(10, [11], "我也想，办一个"));
     expect(summary(lines())).toEqual(["10:pending", "12:pending", "13:pending"]);
     expect(lines()[0]?.source).toBe("我也想，办一个");
-    run(joined(10, [12], "我也想，办一个，公司", "queue"));
+    run(joined(10, [12], "我也想，办一个，公司"));
     expect(summary(lines())).toEqual(["10:pending", "13:pending"]);
     expect(lines()[0]?.source).toBe("我也想，办一个，公司");
     run(delta(10, "I also"), final(10, "I also want to run a company."));

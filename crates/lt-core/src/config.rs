@@ -34,7 +34,6 @@ config_table!(Config {
     audio: AudioConfig = AudioConfig::default(),
     asr: AsrConfig = AsrConfig::default(),
     filter: FilterConfig = FilterConfig::default(),
-    join: JoinConfig = JoinConfig::default(),
     translate: TranslateConfig = TranslateConfig::default(),
     overlay: OverlayConfig = OverlayConfig::default(),
     latency: LatencyConfig = LatencyConfig::default(),
@@ -69,12 +68,6 @@ config_table!(FilterConfig {
     single_char_max_s: f32 = 0.6,
     single_char_allow: Vec<String> = ["对", "好", "是", "行", "不", "哦"].map(String::from).to_vec(),
     fillers: Vec<String> = ["呃", "嗯", "额", "uh", "um"].map(String::from).to_vec(),
-});
-config_table!(JoinConfig {
-    hold_max_chars: u32 = 8,
-    hold_window_s: f32 = 1.0,
-    max_segments: u32 = 3,
-    max_chars: u32 = 40,
 });
 config_table!(TranslateConfig {
     engine: String = "hymt2".into(),
@@ -289,10 +282,6 @@ impl Config {
         number!(asr, stream_pause_s, 0.3, 3.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
-        number!(join, hold_max_chars, 0, 20);
-        number!(join, hold_window_s, 0.2, 2.0);
-        number!(join, max_segments, 2, 5);
-        number!(join, max_chars, 10, 80);
         number!(translate, threads, 0, 16);
         number!(translate, ctx, 512, 4096);
         number!(translate, temperature, 0.0, 1.0);
@@ -370,8 +359,8 @@ impl Config {
             ($($name:ident),* $(,)?) => { $(unknown_fields(&self.$name.extra, stringify!($name), messages);)* };
         }
         table!(
-            capture, audio, asr, filter, join, translate, overlay, latency, hotkeys, transcript,
-            logging, models
+            capture, audio, asr, filter, translate, overlay, latency, hotkeys, transcript, logging,
+            models
         );
         for (index, app) in self.capture.apps.iter().enumerate() {
             unknown_fields(&app.extra, &format!("capture.apps[{index}]"), messages);
@@ -397,8 +386,8 @@ impl Config {
             )* };
         }
         table!(
-            capture, audio, asr, filter, join, translate, overlay, latency, hotkeys, transcript,
-            logging, models
+            capture, audio, asr, filter, translate, overlay, latency, hotkeys, transcript, logging,
+            models
         );
         if let Some(apps) = value
             .get("capture")
@@ -549,7 +538,6 @@ fn normalize_float(
         "audio.norm_release_s" => (0.5, 20.0),
         "audio.norm_max_gain_db" => (0.0, 30.0),
         "audio.norm_gate_dbfs" => (-90.0, -30.0),
-        "join.hold_window_s" => (0.2, 2.0),
         "translate.temperature" | "overlay.background" => (0.0, 1.0),
         "translate.repeat_penalty" => (1.0, 1.3),
         "translate.timeout_s" => (2.0, 60.0),
@@ -570,9 +558,6 @@ fn integer_range(path: &str) -> (i64, i64) {
     match path {
         "config_version" => (1, 1),
         "asr.threads" => (1, 4),
-        "join.hold_max_chars" => (0, 20),
-        "join.max_segments" => (2, 5),
-        "join.max_chars" => (10, 80),
         "translate.threads" => (0, 16),
         "translate.ctx" => (512, 4096),
         "translate.max_tokens_cap" => (32, 1024),

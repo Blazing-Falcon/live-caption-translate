@@ -5,12 +5,11 @@
 
 use crate::{
     bus::{EventBus, EventReceiver},
-    clock::{Clock, ManualClock},
+    clock::Clock,
     config::Config,
     engines::{StreamingAsr, Translator},
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
-    join::{JoinResult, Joiner},
     metrics::{Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
@@ -43,9 +42,8 @@ enum Command {
 
 #[derive(Clone, Copy)]
 enum FrontendNotice {
-    Started(UtteranceId, StreamTime),
+    Started(UtteranceId),
     Discontinuity(StreamTime),
-    Progress(StreamTime),
     SegmentClosed(UtteranceId, StreamTime),
 }
 
@@ -428,8 +426,6 @@ impl Frontend {
             self.flush_stream();
         }
         self.clock.advance_to(self.stream_at);
-        self.notices
-            .push_back(FrontendNotice::Progress(self.stream_at));
     }
 
     fn start_source(&mut self) -> Result<()> {
@@ -664,7 +660,7 @@ fn asr_loop(
         for item in produced.drain(..) {
             match item {
                 StreamOutput::Started(id, at) => {
-                    send_cooperative(&stream.notices, FrontendNotice::Started(id, at), cancelled)?;
+                    send_cooperative(&stream.notices, FrontendNotice::Started(id), cancelled)?;
                     bus.publish(PipelineEvent::SpeechStarted {
                         id,
                         at_ms: at.millis(),
@@ -707,7 +703,6 @@ fn send_cooperative<T>(sender: &Sender<T>, mut message: T, cancelled: &AtomicBoo
 
 struct Scheduler {
     config: Config,
-    joiner: Joiner,
     queue: TranslationQueue,
     ready: VecDeque<Transcript>,
     bus: EventBus,
@@ -744,45 +739,22 @@ impl Scheduler {
             .len()
             .saturating_add(self.ready.len())
             .min(u32::MAX as usize) as u32;
-        let snapshot = self
-            .metrics
-            .snapshot(live, waiting, self.joiner.held_count());
+        let snapshot = self.metrics.snapshot(live, waiting);
         if let Ok(mut latest) = self.latest_stats.lock() {
             *latest = snapshot;
         }
     }
 
-    fn joined(&mut self, result: JoinResult) {
-        for event in result.events {
-            if let PipelineEvent::Joined { absorbed, .. } = &event {
-                for id in absorbed {
-                    self.observed.remove(id);
-                    self.translating.remove(id);
-                }
-            }
-            self.publish(event);
-        }
-        self.ready
-            .extend(result.ready.into_iter().filter(translates));
-    }
-
     fn notice(&mut self, notice: FrontendNotice) {
         match notice {
-            FrontendNotice::Started(id, at) => {
+            FrontendNotice::Started(id) => {
                 self.started_through =
                     Some(self.started_through.map_or(id, |previous| previous.max(id)));
                 if self.handled_through.is_none_or(|handled| id > handled) {
                     self.observed.insert(id);
                 }
-                let result = self.joiner.speech_started(id, at);
-                self.joined(result);
             }
-            FrontendNotice::Discontinuity(at) => {
-                self.queue.discontinuity(at);
-                let result = self.joiner.discontinuity_at(at);
-                self.joined(result);
-            }
-            FrontendNotice::Progress(_) => {}
+            FrontendNotice::Discontinuity(at) => self.queue.discontinuity(at),
             FrontendNotice::SegmentClosed(id, end) => {
                 self.closed_through =
                     Some(self.closed_through.map_or(id, |previous| previous.max(id)));
@@ -831,17 +803,14 @@ impl Scheduler {
                 });
                 if translates(&transcript) {
                     self.translating.insert(transcript.id);
+                    self.ready.push_back(transcript);
                 } else {
                     self.observed.remove(&transcript.id);
                 }
-                let result = self.joiner.push(transcript);
-                self.joined(result);
             }
             AsrMessage::Dropped(id, reason) => {
                 self.observed.remove(&id);
                 self.publish(PipelineEvent::Dropped { id, reason });
-                let result = self.joiner.dropped(id);
-                self.joined(result);
             }
             AsrMessage::Partial { .. } => {}
             AsrMessage::Failed(id, message) => {
@@ -858,8 +827,6 @@ impl Scheduler {
                     id,
                     reason: DropReason::Empty,
                 });
-                let result = self.joiner.dropped(id);
-                self.joined(result);
             }
         }
     }
@@ -908,12 +875,6 @@ fn scheduler_loop(
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
 ) -> Result<()> {
-    // This clock advances only after ordered frontend notices are consumed.
-    // Fast replay must not expire a hold using future frames whose speech start
-    // notice is still in the channel. Wall time continues between notices.
-    let join_clock = Arc::new(ManualClock::default());
-    let mut frontier = StreamTime::ZERO;
-    let mut anchor = Instant::now();
     let mut metrics = Metrics::new();
     metrics.set_sampler(sampler.map(|inner| {
         Box::new(CachedSampler {
@@ -923,7 +884,6 @@ fn scheduler_loop(
         }) as Box<dyn ResourceSampler>
     }));
     let mut scheduler = Scheduler {
-        joiner: Joiner::new(config.join.clone(), join_clock.clone()),
         queue: TranslationQueue::new(config.translate.clone()),
         config: config.clone(),
         ready: VecDeque::new(),
@@ -947,7 +907,6 @@ fn scheduler_loop(
     )?;
     let mut front_done = false;
     let mut asr_done = false;
-    let mut holds_finished = false;
     let mut pending_asr = None;
     let mut last_stats = Instant::now();
     let mut was_listening = listening.load(Ordering::Acquire);
@@ -958,11 +917,6 @@ fn scheduler_loop(
             match front.try_recv() {
                 Ok(notice) => {
                     progressed = true;
-                    if let FrontendNotice::Progress(at) = notice {
-                        frontier = frontier.max(at);
-                        anchor = Instant::now();
-                        join_clock.set(frontier.max(join_clock.now()));
-                    }
                     scheduler.notice(notice);
                 }
                 Err(TryRecvError::Empty) => break,
@@ -983,11 +937,10 @@ fn scheduler_loop(
             scheduler.queue.push(transcript, clock.now().millis())?;
             progressed = true;
         }
-        // A Joiner push can release two transcripts. Keep that bounded staging
-        // space available and stop reading ASR when translation is saturated.
+        // Stop reading ASR when translation is saturated.
         if !asr_done
             && scheduler.ready.is_empty()
-            && scheduler.queue.len() < TranslationQueue::CAPACITY - 2
+            && scheduler.queue.len() < TranslationQueue::CAPACITY
         {
             let message = if let Some(message) = pending_asr.take() {
                 Some(message)
@@ -1003,10 +956,9 @@ fn scheduler_loop(
                 }
             };
             if let Some(message) = message {
-                // The control and transcript channels have independent senders.
-                // A finite control burst must still consume this segment's own
-                // start notice before routing its transcript or timing its hold.
-                // A partial only needs its start notice: the clause is still open.
+                // The notice and transcript channels have independent senders. A line's
+                // start and close notices come first, so a terminal event at shutdown and
+                // the lag stat know the line. A partial only needs its start notice.
                 let started = scheduler
                     .started_through
                     .is_some_and(|id| id >= message.id());
@@ -1021,22 +973,6 @@ fn scheduler_loop(
                     pending_asr = Some(message);
                 }
             }
-        }
-        if front.is_empty() {
-            let wall_progress = StreamTime::from_seconds(anchor.elapsed().as_secs_f64());
-            let at = StreamTime(frontier.samples().saturating_add(wall_progress.samples()));
-            join_clock.set(at.max(join_clock.now()));
-            let result = scheduler.joiner.tick();
-            progressed |= !result.ready.is_empty() || !result.events.is_empty();
-            scheduler.joined(result);
-        }
-        // Frontend EOF alone is too early: a timely successor may still be in
-        // the bounded ASR channel or an active native decode call.
-        if asr_done && !holds_finished {
-            let result = scheduler.joiner.finish();
-            scheduler.joined(result);
-            holds_finished = true;
-            progressed = true;
         }
         if !scheduler.in_flight && !scheduler.queue.is_empty() {
             let batch = scheduler.queue.take(clock.now());
@@ -1098,7 +1034,7 @@ fn scheduler_loop(
     while !front_done || !asr_done {
         if !front_done {
             match front.recv_timeout(POLL) {
-                Ok(FrontendNotice::Started(id, _)) => {
+                Ok(FrontendNotice::Started(id)) => {
                     if scheduler.handled_through.is_none_or(|handled| id > handled) {
                         scheduler.observed.insert(id);
                     }
@@ -1139,7 +1075,6 @@ fn scheduler_loop(
     }
     scheduler.ready.clear();
     scheduler.queue = TranslationQueue::new(scheduler.config.translate.clone());
-    let _ = scheduler.joiner.finish();
     scheduler.in_flight = false;
     scheduler.refresh_stats(clock.now());
     Ok(())

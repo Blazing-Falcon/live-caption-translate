@@ -8,13 +8,6 @@ pub use crate::types::{
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
-pub enum JoinKind {
-    Hold,
-    Queue,
-}
-
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(rename_all = "snake_case")]
 pub enum SkipReason {
     CatchUp,
 }
@@ -103,7 +96,6 @@ pub enum PipelineEvent {
         id: UtteranceId,
         absorbed: Vec<UtteranceId>,
         text: String,
-        kind: JoinKind,
     },
     TranslationDelta {
         id: UtteranceId,
@@ -177,7 +169,6 @@ mod tests {
                 id: UtteranceId(12),
                 absorbed: vec![UtteranceId(13)],
                 text: "我也想办一个，伟大的公司。".into(),
-                kind: JoinKind::Hold,
             },
             PipelineEvent::TranslationDelta {
                 id: UtteranceId(12),
@@ -234,7 +225,6 @@ mod tests {
             PipelineEvent::Stats(PipelineStats {
                 lag_ms: 400,
                 queue_depth: 1,
-                held: 0,
                 done_p50_ms: Some(1_230),
                 done_p95_ms: Some(2_100),
                 first_p50_ms: Some(700),

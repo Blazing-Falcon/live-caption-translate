@@ -177,7 +177,6 @@ pub struct Timing {
 pub struct PipelineStats {
     pub lag_ms: u64,
     pub queue_depth: u32,
-    pub held: u32,
     pub done_p50_ms: Option<u32>,
     pub done_p95_ms: Option<u32>,
     pub first_p50_ms: Option<u32>,

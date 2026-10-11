@@ -17,7 +17,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `speech_started` | `id`, `at_ms` | A speech segment opens |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | The open clause's text grew |
 | `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`? | A clause is complete. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). |
-| `joined` | `id`, `absorbed[]`, `text`, `kind` | Clauses join into the leader `id` |
+| `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
 | `translation_failed` | `id`, `reason`, `message` | The final translation failed |
@@ -35,7 +35,6 @@ Enum values:
 |---|---|
 | `TextClass` | `chinese`, `mixed`, `english`, `other` |
 | `CutReason` | `pause`, `discontinuity`, `end`, `commit` |
-| `JoinKind` | `hold`, `queue` |
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
 | `DropReason` | `empty`, `single_char` |
@@ -60,7 +59,7 @@ Notes:
 | Field | Meaning |
 |---|---|
 | `lag_ms` | Live position minus the end of the oldest unfinished clause |
-| `queue_depth`, `held` | Waiting translation items; segments that the joiner holds |
+| `queue_depth` | Waiting translation items |
 | `done_p50_ms`, `done_p95_ms`, `first_p50_ms` | Speech end to final and to first delta, last 50 finals |
 | `word_final_p50_ms` | Median delay from a spoken word to its English, last 60 s |
 | `skipped_total`, `failed_total` | Session counters |
@@ -160,7 +159,7 @@ Other rules:
 
 The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.jsonl`. `lt-cli replay` writes the same format.
 
-- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (`hold_max_chars` and `skip_lag_s`).
+- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (`skip_lag_s`).
 - Each other line is one `utterance` record. The writer writes it when the line becomes terminal.
 - The writer does not write dropped lines or partials.
 

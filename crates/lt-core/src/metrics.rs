@@ -211,7 +211,7 @@ impl Metrics {
     }
 
     /// The caller requests snapshots on its once-per-second timer.
-    pub fn snapshot(&mut self, live: StreamTime, queue_depth: u32, held: u32) -> PipelineStats {
+    pub fn snapshot(&mut self, live: StreamTime, queue_depth: u32) -> PipelineStats {
         let done: Vec<_> = self.finals.iter().map(|sample| sample.done_ms).collect();
         let first: Vec<_> = self
             .finals
@@ -231,7 +231,7 @@ impl Metrics {
         PipelineStats {
             word_final_p50_ms: nearest_rank(&word_delays, 50),
             cpu_system_pct: resources.cpu_system_pct,
-            ..self.base_snapshot(live, queue_depth, held, &done, &first, resources)
+            ..self.base_snapshot(live, queue_depth, &done, &first, resources)
         }
     }
 
@@ -239,7 +239,6 @@ impl Metrics {
         &self,
         live: StreamTime,
         queue_depth: u32,
-        held: u32,
         done: &[u32],
         first: &[u32],
         resources: ResourceSample,
@@ -251,7 +250,6 @@ impl Metrics {
                 .min()
                 .map_or(0, |end| live.millis().saturating_sub(*end)),
             queue_depth,
-            held,
             done_p50_ms: nearest_rank(done, 50),
             done_p95_ms: nearest_rank(done, 95),
             first_p50_ms: nearest_rank(first, 50),
@@ -318,7 +316,7 @@ mod tests {
         metrics.record(&asr(1, 1_500, TextClass::Chinese));
         // The final finishes at 3000.
         metrics.record(&final_event_at(1, 3_000));
-        let stats = metrics.snapshot(StreamTime::from_millis(3_000), 0, 0);
+        let stats = metrics.snapshot(StreamTime::from_millis(3_000), 0);
         // final English per instant: 2000 1900 1800 1700 1600 -> median 1800
         assert_eq!(stats.word_final_p50_ms, Some(1_800));
     }
@@ -339,20 +337,19 @@ mod tests {
     fn percentile_window_uses_nearest_rank_over_last_fifty_finals() {
         let mut metrics = Metrics::new();
         assert_eq!(
-            metrics.snapshot(StreamTime::ZERO, 0, 0),
+            metrics.snapshot(StreamTime::ZERO, 0),
             PipelineStats::default()
         );
         for index in 1..=50 {
             metrics.record(&final_event(index, index * 100, Some(index * 10)));
         }
-        let stats = metrics.snapshot(StreamTime::ZERO, 3, 2);
+        let stats = metrics.snapshot(StreamTime::ZERO, 3);
         assert_eq!(stats.done_p50_ms, Some(2_500));
         assert_eq!(stats.done_p95_ms, Some(4_800));
         assert_eq!(stats.first_p50_ms, Some(250));
         assert_eq!(stats.queue_depth, 3);
-        assert_eq!(stats.held, 2);
         metrics.record(&final_event(51, 9_000, None));
-        let stats = metrics.snapshot(StreamTime::ZERO, 0, 0);
+        let stats = metrics.snapshot(StreamTime::ZERO, 0);
         assert_eq!(stats.done_p50_ms, Some(2_600));
         assert_eq!(stats.done_p95_ms, Some(4_900));
         assert_eq!(stats.first_p50_ms, Some(260));
