@@ -14,7 +14,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 
 | `type` | Fields | Sent when |
 |---|---|---|
-| `speech_started` | `id`, `at_ms` | A speech segment opens |
+| `speech_started` | `id`, `at_ms` | A clause opens at its first word |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | The open clause's text grew |
 | `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`? | A clause is complete. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). |
 | `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
@@ -22,7 +22,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
 | `translation_failed` | `id`, `reason`, `message` | The final translation failed |
 | `skipped` | `id`, `reason` | The translator skipped the line to catch up |
-| `dropped` | `id`, `reason` | The segment has no usable text, or listening stopped |
+| `dropped` | `id`, `reason` | The clause has no usable text, or listening stopped |
 | `source_changed` | `info` (`mode`, `label`, `sample_rate`, `channels`) | The capture source changed |
 | `source_state` | `state`, `detail` | The capture state changed |
 | `listening_state` | `state` | Listening starts, runs or pauses |
@@ -69,7 +69,7 @@ Notes:
 
 ## Order of events
 
-These rules apply to each id. `crates/lt-core/tests/caption_speeds.rs` checks them with random delays and failures.
+These rules apply to each id. `crates/lt-core/tests/pipeline.rs` checks them with random translation timing and failures.
 
 ```
 speech_started? -> asr_partial* -> dropped                                           (end)

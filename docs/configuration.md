@@ -135,7 +135,7 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `single_char_max_s` | 0 or more | pipeline | Drop a one-character result from a segment shorter than this, unless the character is in `single_char_allow` |
+| `single_char_max_s` | 0 or more | pipeline | Drop a one-character result from a clause shorter than this, unless the character is in `single_char_allow` |
 | `single_char_allow` | list of strings | pipeline | One-character results that the filter always keeps |
 | `fillers` | list of strings | pipeline | Words removed when they stand alone |
 
