@@ -89,7 +89,6 @@ impl ClockMixer {
             return None;
         }
         let mut samples = [0.0_f32; 512];
-        let mut gap_only = true;
         let mut discontinuity = std::mem::take(&mut self.discontinuity);
         for frames in self.sources.values_mut() {
             while frames
@@ -115,7 +114,6 @@ impl ClockMixer {
                 for index in 0..count {
                     samples[output_offset + index] += frame.samples[input_offset + index];
                 }
-                gap_only &= frame.flags.gap_filled;
                 // Apply a source fence once, at its own first sample.
                 if input_start >= start {
                     discontinuity |= frame.flags.discontinuity;
@@ -135,10 +133,7 @@ impl ClockMixer {
         Some(AudioFrame {
             t0: StreamTime(start),
             samples,
-            flags: FrameFlags {
-                gap_filled: gap_only,
-                discontinuity,
-            },
+            flags: FrameFlags { discontinuity },
         })
     }
 }
@@ -182,7 +177,7 @@ mod tests {
         assert_eq!(tail.samples[256..], [0.0; 256]);
         mixer.remove_source(2);
         let gap = mixer.take_until(StreamTime(1536)).unwrap();
-        assert!(gap.flags.gap_filled && gap.flags.discontinuity);
+        assert!(gap.flags.discontinuity);
         assert!(matches!(
             mixer.push(1, frame(0, 0.2)).unwrap(),
             MixerPush::Late

@@ -8,7 +8,6 @@ use crate::{
     types::{SourceInfo, StreamTime},
 };
 use crossbeam_channel::{Receiver, Sender};
-use std::ops::BitOr;
 use std::sync::{
     atomic::{AtomicBool, AtomicU64, Ordering},
     Arc,
@@ -17,38 +16,14 @@ use std::time::{Duration, Instant};
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub struct FrameFlags {
-    pub gap_filled: bool,
+    /// The audio before this frame is not contiguous with it (device change, restart).
     pub discontinuity: bool,
 }
 
 impl FrameFlags {
     pub const EMPTY: Self = Self {
-        gap_filled: false,
         discontinuity: false,
     };
-    pub const GAP_FILLED: Self = Self {
-        gap_filled: true,
-        discontinuity: false,
-    };
-    pub const DISCONTINUITY: Self = Self {
-        gap_filled: false,
-        discontinuity: true,
-    };
-
-    pub const fn contains(self, other: Self) -> bool {
-        (!other.gap_filled || self.gap_filled) && (!other.discontinuity || self.discontinuity)
-    }
-}
-
-impl BitOr for FrameFlags {
-    type Output = Self;
-
-    fn bitor(self, other: Self) -> Self {
-        Self {
-            gap_filled: self.gap_filled || other.gap_filled,
-            discontinuity: self.discontinuity || other.discontinuity,
-        }
-    }
 }
 
 #[derive(Clone)]

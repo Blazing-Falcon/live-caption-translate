@@ -21,7 +21,6 @@ pub struct MonoTimeline {
     sample_rate: u32,
     cursor: u64,
     block: MonoBlock,
-    all_gap: bool,
 }
 
 impl MonoTimeline {
@@ -39,7 +38,6 @@ impl MonoTimeline {
                 frames: 0,
                 flags: FrameFlags::EMPTY,
             },
-            all_gap: true,
         })
     }
 
@@ -70,7 +68,7 @@ impl MonoTimeline {
             self.zeros(pcm.len().saturating_sub(skip) as u64, emit)
         } else {
             for sample in &pcm[skip..] {
-                self.sample(*sample, false, emit)?;
+                self.sample(*sample, emit)?;
             }
             Ok(())
         }
@@ -112,12 +110,10 @@ impl MonoTimeline {
     fn sample(
         &mut self,
         sample: f32,
-        gap: bool,
         emit: &mut impl FnMut(MonoBlock) -> Result<()>,
     ) -> Result<()> {
         self.block.samples[self.block.frames] = sample;
         self.block.frames += 1;
-        self.all_gap &= gap;
         self.cursor = self
             .cursor
             .checked_add(1)
@@ -133,7 +129,6 @@ impl MonoTimeline {
         if self.block.frames == 0 {
             return Ok(());
         }
-        self.block.flags.gap_filled = self.all_gap;
         emit(self.block)?;
         self.block = MonoBlock {
             t0: self.cursor,
@@ -142,7 +137,6 @@ impl MonoTimeline {
             frames: 0,
             flags: FrameFlags::EMPTY,
         };
-        self.all_gap = true;
         Ok(())
     }
 
@@ -181,10 +175,7 @@ mod tests {
         timeline
             .timeout_until(16_384 + 5 * 16_000, &mut emit)
             .unwrap();
-        let filled: Vec<_> = blocks
-            .iter()
-            .filter(|block| block.flags.gap_filled)
-            .collect();
+        let filled: Vec<_> = blocks.iter().filter(|block| block.t0 >= 16_384).collect();
         assert_eq!(filled.first().map(|block| block.t0), Some(16_384));
         assert!(filled
             .iter()
@@ -219,14 +210,12 @@ mod tests {
         assert_eq!(blocks[0].t0, 0);
         assert_eq!(&blocks[0].samples[300..400], &[0.75; 100]);
         assert!(blocks[0].samples[400..].iter().all(|sample| *sample == 0.0));
-        assert!(!blocks[0].flags.gap_filled);
         assert_eq!(blocks[1].t0, 512);
-        assert!(blocks[1].flags.gap_filled);
+        assert!(blocks[1].samples.iter().all(|sample| *sample == 0.0));
         assert!(!blocks[1].flags.discontinuity);
         assert_eq!(blocks[2].t0, 2_000);
         assert_eq!(blocks[2].frames, 7);
         assert!(blocks[2].flags.discontinuity);
-        assert!(!blocks[2].flags.gap_filled);
         assert_eq!(timeline.cursor(), 2_007);
     }
 }

@@ -957,7 +957,6 @@ struct PreparedFrames {
     converted: Vec<f32>,
     frame: [f32; 512],
     filled: usize,
-    frame_flags: FrameFlags,
     next_time: StreamTime,
     mark_discontinuity: bool,
 }
@@ -969,7 +968,6 @@ impl PreparedFrames {
             converted: Vec::with_capacity(2048),
             frame: [0.0; 512],
             filled: 0,
-            frame_flags: FrameFlags::EMPTY,
             next_time: start,
             mark_discontinuity: discontinuity,
         })
@@ -978,30 +976,20 @@ impl PreparedFrames {
         self.converted.clear();
         self.resampler
             .push(&block.samples[..block.frames], &mut self.converted)?;
-        // GAP_FILLED applies only if every contributing raw block is generated
-        // silence. A mixed block contains real captured samples and is not a gap.
-        let flags = FrameFlags {
-            gap_filled: block.flags.gap_filled,
-            discontinuity: false,
-        };
-        self.append_converted(flags, output)
+        self.append_converted(output)
     }
-    fn append_converted(&mut self, flags: FrameFlags, output: &AudioProducer) -> Result<()> {
+    fn append_converted(&mut self, output: &AudioProducer) -> Result<()> {
         for index in 0..self.converted.len() {
-            if self.filled == 0 {
-                self.frame_flags = flags;
-            } else {
-                self.frame_flags.gap_filled &= flags.gap_filled;
-            }
             self.frame[self.filled] = self.converted[index];
             self.filled += 1;
             if self.filled == 512 {
                 self.normalizer.process(&mut self.frame);
-                self.frame_flags.discontinuity |= self.mark_discontinuity;
                 output.send(AudioFrame {
                     t0: self.next_time,
                     samples: self.frame,
-                    flags: self.frame_flags,
+                    flags: FrameFlags {
+                        discontinuity: self.mark_discontinuity,
+                    },
                 })?;
                 self.next_time = StreamTime(self.next_time.samples().saturating_add(512));
                 self.mark_discontinuity = false;
@@ -1013,7 +1001,7 @@ impl PreparedFrames {
     fn finish(&mut self, output: &AudioProducer) -> Result<()> {
         self.converted.clear();
         self.resampler.finish(&mut self.converted)?;
-        self.append_converted(FrameFlags::EMPTY, output)?;
+        self.append_converted(output)?;
         // Generation boundaries keep complete prepared frames. A residual <32 ms
         // is discarded and the next epoch advances to its absolute wall position.
         self.filled = 0;
@@ -1278,7 +1266,7 @@ mod tests {
             sample_rate: 16_000,
             frames: 512,
             samples: [0.0; 512],
-            flags: FrameFlags::GAP_FILLED,
+            flags: FrameFlags::EMPTY,
         };
         for _ in 0..93 {
             silence.observe(&block, |state| changes.push(state));
