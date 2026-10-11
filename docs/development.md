@@ -106,7 +106,7 @@ target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.chunk
 ## Package
 
 ```powershell
-./scripts/package.ps1 -Version 0.2.0
+./scripts/package.ps1 -Version 0.5.0
 ```
 
 The script builds the UI and the release app. It makes `dist/LiveTranslation-<version>-win-x64.zip` with the app, the native DLLs, `llama-server`, the WebView2 bootstrapper (signature checked), the notices and `docs/USER-README.md`. It does not include models. `-SkipUi`, `-SkipBuild`, `-SkipBootstrapper` and `-Jobs` change the steps.
