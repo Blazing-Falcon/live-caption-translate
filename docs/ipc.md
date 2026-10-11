@@ -25,7 +25,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `dropped` | `id`, `reason` | The clause has no usable text, or listening stopped |
 | `source_changed` | `info` (`mode`, `label`, `sample_rate`, `channels`) | The capture source changed |
 | `source_state` | `state`, `detail` | The capture state changed |
-| `listening_state` | `state` | Listening starts, runs or pauses |
+| `listening_state` | `state` | Listening starts, runs or pauses. `paused` also follows when the audio ends by itself (end of a file, capture that failed for good). |
 | `engine_status` | `engine`, `state`, `message` | An engine changed state |
 | `stats` | `PipelineStats` fields | One time each second while listening |
 

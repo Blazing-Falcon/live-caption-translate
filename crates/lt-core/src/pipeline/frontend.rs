@@ -266,6 +266,11 @@ pub(super) fn frontend_loop(
                     frontend.stop_source();
                     frontend.push_break(CutReason::End);
                     frontend.ending = true;
+                    // The audio ended by itself (end of a file, or a capture that failed for
+                    // good): listening is over, and nothing else would say so.
+                    frontend.bus.publish(PipelineEvent::ListeningState {
+                        state: ListeningStateKind::Paused,
+                    });
                 }
             },
             default(POLL) => {}
