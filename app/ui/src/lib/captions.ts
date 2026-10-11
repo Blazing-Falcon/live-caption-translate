@@ -264,7 +264,9 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
 
   const lines = new Map<number, CaptionLine>();
   const fading = new Set<number>();
-  let lastAsrFinalAt: number | null = null;
+  /** Last speech or translation result: terminal lines fade `expire_s` after it, together. A
+   * translation that ends after the speech still shows for the whole time. */
+  let expiryFrom: number | null = null;
   let expiryTimer: unknown = null;
   let fadeTimer: unknown = null;
   let chipTimer: unknown = null;
@@ -347,8 +349,8 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
 
   function armExpiry(): void {
     expiryTimer = clearTimer(expiryTimer);
-    if (lastAsrFinalAt === null || expirable().length === 0) return;
-    const delay = Math.max(0, lastAsrFinalAt + settings.expireMs - clock.now());
+    if (expiryFrom === null || expirable().length === 0) return;
+    const delay = Math.max(0, expiryFrom + settings.expireMs - clock.now());
     expiryTimer = clock.setTimer(onExpire, delay);
   }
 
@@ -415,19 +417,24 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     return line !== undefined && !isTerminal(line.state);
   }
 
+  function settled(): void {
+    cancelFade();
+    expiryFrom = clock.now();
+  }
+
   function applyLineEvent(event: PipelineEvent): boolean {
     switch (event.type) {
       case "asr_partial": {
         const line = lines.get(event.id);
         if (line === undefined) {
           cancelFade();
-          lastAsrFinalAt = clock.now();
+          expiryFrom = clock.now();
           addLine(newLine(event.id, event.text, "live", null));
           return true;
         }
         if (line.state !== "live") return false;
         cancelFade();
-        lastAsrFinalAt = clock.now();
+        expiryFrom = clock.now();
         update(event.id, { source: event.text });
         return true;
       }
@@ -435,7 +442,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         const existing = lines.get(event.id);
         if (existing !== undefined && existing.state !== "live") return false;
         cancelFade();
-        lastAsrFinalAt = clock.now();
+        expiryFrom = clock.now();
         const lang = normalizeLang(event.lang);
         const base = existing ?? newLine(event.id, event.text, "pending", lang);
         let state: CaptionLine["state"] = "pending";
@@ -472,15 +479,18 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       }
       case "translation_final":
         if (!isActive(event.id)) return false;
+        settled();
         update(event.id, { state: "final", english: event.text });
         announcement = event.text;
         return true;
       case "translation_failed":
         if (!isActive(event.id)) return false;
+        settled();
         update(event.id, { state: "failed", reason: failReasonText(event.reason, event.message) });
         return true;
       case "skipped":
         if (!isActive(event.id)) return false;
+        settled();
         update(event.id, { state: "skipped" });
         return true;
       case "dropped": {

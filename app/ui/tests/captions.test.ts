@@ -122,14 +122,17 @@ describe("expiry", () => {
     expect(summary(c.lines())).toEqual(["2:streaming", "3:pending"]);
     c.clock.advance(60_000);
     expect(summary(c.lines())).toEqual(["2:streaming", "3:pending"]);
+    // English that arrives long after the speech still shows for the whole expiry time.
     c.run(final(2, "Two"));
-    c.clock.advance(0);
+    c.clock.advance(7999);
+    expect(c.view().fadingIds.size).toBe(0);
+    c.clock.advance(1);
     expect(c.view().fadingIds.has(2)).toBe(true);
     expect(c.view().fadingIds.has(3)).toBe(false);
     c.clock.advance(FADE_MS);
     expect(summary(c.lines())).toEqual(["3:pending"]);
     c.run(skipped(3));
-    c.clock.advance(0);
+    c.clock.advance(8000);
     c.clock.advance(FADE_MS);
     expect(c.lines()).toHaveLength(0);
   });

@@ -151,7 +151,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 
 Other rules:
 
-- Terminal lines fade `overlay.expire_s` after the last speech. Unfinished lines do not expire.
+- Terminal lines fade together `overlay.expire_s` after the last speech or translation result, so a late translation still shows for that time. Unfinished lines do not expire.
 - The store keeps a maximum of 24 terminal lines and 32 unfinished lines.
 - The bar shows the last 2 lines. The panel shows `panel_lines` lines (4–6).
 

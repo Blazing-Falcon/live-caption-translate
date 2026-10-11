@@ -163,7 +163,7 @@ The default values are in the file above.
 | `font_px` | 18–40 | live | English text size. Chinese is 0.65 × this size. Older lines are 0.8 × this size. |
 | `background` | 0–1 | live | Background opacity. The control window warns below 0.5. |
 | `show_source` | bool | live | Show the Chinese line above the English line |
-| `expire_s` | 3–60 | live | Remove lines after this time without new speech |
+| `expire_s` | 3–60 | live | Remove lines after this time without new speech or translation |
 | `panel_edge` | `left`, `right` | live | Default edge for the panel |
 | `panel_lines` | 4–6 | live | Lines in the panel |
 | `flow_lines` | 2–6 | live | Wrapped lines kept of each running-text paragraph. Older text scrolls out at the top. |

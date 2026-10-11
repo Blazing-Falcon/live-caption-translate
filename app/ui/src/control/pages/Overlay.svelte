@@ -178,7 +178,7 @@
   </label>
 
   <label class="field">
-    <span>Clear captions after {expireS} s without speech</span>
+    <span>Clear captions after {expireS} s without new captions</span>
     <input
       class="range"
       type="range"
