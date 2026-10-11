@@ -24,7 +24,7 @@ pub fn all_ready(dir: &Path) -> bool {
         .unwrap_or(false)
 }
 
-/// Names of the models that the chosen voice detection, live model and second pass need
+/// Names of the speech models that the chosen chunk size needs
 /// and that are not ready on disk.
 pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
     let wanted = lt_sherpa::model_ids(config);
