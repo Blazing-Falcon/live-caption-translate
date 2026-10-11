@@ -97,11 +97,19 @@
     if (!saved) select.value = config.capture.device;
   }
 
-  async function toggleApp(event: Event, row: Row): Promise<void> {
+  // The patch replaces the whole list, so each toggle starts from the list the previous one saved.
+  let appSaves: Promise<void> = Promise.resolve();
+
+  function toggleApp(event: Event, row: Row): Promise<void> {
     const input = event.currentTarget as HTMLInputElement;
     const entry: CaptureApp = { exe: row.exe, name: row.name };
-    await session.save("capture.apps", captureAppsPatch(toggledApps(config.capture.apps, entry, input.checked)));
-    reconcileChecked(input, hasApp(get(liveConfig)?.capture.apps ?? [], row.exe));
+    const checked = input.checked;
+    appSaves = appSaves.then(async () => {
+      const current = get(liveConfig)?.capture.apps ?? config.capture.apps;
+      await session.save("capture.apps", captureAppsPatch(toggledApps(current, entry, checked)));
+      reconcileChecked(input, hasApp(get(liveConfig)?.capture.apps ?? [], row.exe));
+    });
+    return appSaves;
   }
 </script>
 
