@@ -150,9 +150,10 @@ impl XAsrStream {
         let parsed = {
             // SAFETY: NUL-terminated string, valid until destroyed below.
             let json = unsafe { CStr::from_ptr(pointer.as_ptr().cast::<c_char>()) };
-            json.to_str()
-                .map_err(|error| engine_error(&format!("{NAME} result is not UTF-8"), error))
-                .and_then(|json| parse_result(json, self.lag_s))
+            // A token can hold part of a UTF-8 character; failing the whole result would fail
+            // every later result of this part too, so the broken bytes are left out instead.
+            let json = json.to_string_lossy().replace('\u{FFFD}', "");
+            parse_result(&json, self.lag_s)
         };
         // SAFETY: the matching destroy function, called once.
         unsafe { sys::SherpaOnnxDestroyOnlineStreamResultJson(pointer.as_ptr()) };
@@ -230,11 +231,14 @@ impl StreamingAsr for XAsrStream {
         let tail = std::mem::take(&mut self.tail);
         let fed = self.feed(&tail);
         self.tail = tail;
-        fed?;
-        // SAFETY: the live stream; no audio follows this call.
-        unsafe { sys::SherpaOnnxOnlineStreamInputFinished(stream.as_ptr()) };
-        self.decode_ready(stream);
-        let result = self.read(stream);
+        let result = fed.and_then(|()| {
+            // SAFETY: the live stream; no audio follows this call.
+            unsafe { sys::SherpaOnnxOnlineStreamInputFinished(stream.as_ptr()) };
+            self.decode_ready(stream);
+            self.read(stream)
+        });
+        // The caller starts a new time origin after a finish, also a failed one, so the stream
+        // must start over too.
         // SAFETY: destroyed once; the next accept creates a new stream.
         unsafe { sys::SherpaOnnxDestroyOnlineStream(stream.as_ptr()) };
         self.stream = None;
