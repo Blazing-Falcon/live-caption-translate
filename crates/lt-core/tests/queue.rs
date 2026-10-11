@@ -98,6 +98,11 @@ fn window_holds_whole_earlier_lines_and_restarts_after_a_gap_or_a_break() {
     queue.discontinuity(StreamTime::from_seconds(20.5));
     assert!(next(&mut queue, 6, "到了。", 22.0).is_empty());
     assert_eq!(next(&mut queue, 7, "进去吧。", 23.0), ["到了。"]);
+    // Notices run ahead of the audio: both breaks arrive before the line between them.
+    queue.discontinuity(StreamTime::from_seconds(23.5));
+    queue.discontinuity(StreamTime::from_seconds(25.5));
+    assert!(next(&mut queue, 8, "好。", 25.0).is_empty());
+    assert!(next(&mut queue, 9, "走。", 27.0).is_empty());
 
     let mut off = TranslationQueue::new(TranslateConfig {
         window_chars: 0,

@@ -48,7 +48,8 @@ pub struct TranslationQueue {
     waiting: VecDeque<QueuedTranscript>,
     /// Queued lines with their end times, newest last.
     earlier: VecDeque<(StreamTime, UtteranceId, String)>,
-    break_at: Option<StreamTime>,
+    /// Breaks after the end of the newest queued line, oldest first.
+    breaks: VecDeque<StreamTime>,
 }
 
 impl TranslationQueue {
@@ -58,7 +59,7 @@ impl TranslationQueue {
             config,
             waiting: VecDeque::new(),
             earlier: VecDeque::new(),
-            break_at: None,
+            breaks: VecDeque::new(),
         }
     }
     pub fn push(&mut self, transcript: Transcript, queued_ms: u64) -> Result<()> {
@@ -77,20 +78,30 @@ impl TranslationQueue {
     /// Lines before a discontinuity are not context for lines after it. Lines
     /// reach the queue after their notice, so the break is kept by time.
     pub fn discontinuity(&mut self, at: StreamTime) {
-        self.break_at = Some(at);
+        self.breaks.push_back(at);
     }
 
     /// The newest earlier lines that fit in `window_chars` together, whole lines only.
     fn window(&mut self, transcript: &Transcript) -> Vec<(UtteranceId, String)> {
+        let start = transcript.timing.start;
+        // Every kept break is at or after the previous line's end.
+        let after_break = self.breaks.front().is_some_and(|at| *at <= start);
+        while self
+            .breaks
+            .front()
+            .is_some_and(|at| *at < transcript.timing.end)
+        {
+            self.breaks.pop_front();
+        }
         let limit = self.config.window_chars as usize;
         if limit == 0 {
             return Vec::new();
         }
-        let start = transcript.timing.start;
-        let stale = self.earlier.back().is_some_and(|(end, _, _)| {
-            start.saturating_sub(*end).seconds() > WINDOW_GAP_S
-                || self.break_at.is_some_and(|at| *end <= at && at <= start)
-        });
+        let stale = after_break
+            || self
+                .earlier
+                .back()
+                .is_some_and(|(end, _, _)| start.saturating_sub(*end).seconds() > WINDOW_GAP_S);
         if stale {
             self.earlier.clear();
         }
