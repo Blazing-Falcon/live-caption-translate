@@ -691,7 +691,10 @@ fn native_loop(
     } else {
         None
     };
-    let _mmcss = MmcssGuard::new()?;
+    // MMCSS only raises this thread's priority; capture works without it (service disabled).
+    let _mmcss = MmcssGuard::new()
+        .inspect_err(|error| tracing::warn!(%error, "Capture runs without MMCSS"))
+        .ok();
     let mut backoff = ReopenBackoff::default();
     let mut generation = 0u64;
     let mut observed_dirty = dirty.load(Ordering::Acquire);
@@ -699,6 +702,8 @@ fn native_loop(
     let mut assembler = PacketAssembler::default();
     while !cancelled.load(Ordering::Acquire) {
         if active.is_none() {
+            // A device change during the open must still be seen afterwards.
+            let dirty_before_open = dirty.load(Ordering::Acquire);
             let opened = factory(&enumerator, &cancelled)
                 .and_then(|opened| ActiveClient::start(opened, &clock));
             match opened {
@@ -718,7 +723,7 @@ fn native_loop(
                     active = Some(client);
                     backoff.reset();
                     assembler = PacketAssembler::default();
-                    observed_dirty = dirty.load(Ordering::Acquire);
+                    observed_dirty = dirty_before_open;
                 }
                 Err(Error::Stopped) => return Ok(()),
                 Err(error) => {
@@ -1029,6 +1034,9 @@ fn adapter_loop(
     let mut last_state = None;
     let mut seen_overflows = 0;
     let mut silence = SilenceTracker::new(rate);
+    // A Ready waits one pass: the worker sends it after its last packet for the old ring, so
+    // the drain after receiving it is complete.
+    let mut ready: Option<NativeNotice> = None;
     while !worker.cancelled.load(Ordering::Acquire) && !pipeline_cancelled.load(Ordering::Acquire) {
         // Finish the previous generation's ring before processing its replacement.
         // Ready owns a new consumer, so queued old audio is never skipped by a
@@ -1060,7 +1068,18 @@ fn adapter_loop(
         }
         // Apply one notice per iteration and drain that generation before the
         // next Ready. A burst of endpoint changes still preserves audio order.
-        if let Ok(notice) = worker.notices.try_recv() {
+        let notice = match ready.take() {
+            Some(notice) => Some(notice),
+            None => match worker.notices.try_recv() {
+                Ok(notice @ NativeNotice::Ready { .. }) => {
+                    ready = Some(notice);
+                    continue;
+                }
+                Ok(notice) => Some(notice),
+                Err(_) => None,
+            },
+        };
+        if let Some(notice) = notice {
             match notice {
                 NativeNotice::Ready {
                     generation: new_generation,
@@ -1112,13 +1131,15 @@ fn adapter_loop(
                 }
             }
         }
+        // The worker pushes its last packet before it stores the watermark, so reading the
+        // watermark first means an empty ring cannot hide that packet.
+        let watermark = if unavailable {
+            clock.now()?.saturating_sub(500_000)
+        } else {
+            worker.timeout_qpc_100ns.load(Ordering::Acquire)
+        };
         if worker.consumer.slots() == 0 && worker.notices.is_empty() {
             if let (Some(timeline), Some(prepared)) = (&mut timeline, &mut prepared) {
-                let watermark = if unavailable {
-                    clock.now()?.saturating_sub(500_000)
-                } else {
-                    worker.timeout_qpc_100ns.load(Ordering::Acquire)
-                };
                 let mut emit = |block| {
                     silence.observe(&block, |state| {
                         publish_source_state(state, events, &mut last_state, unavailable)
