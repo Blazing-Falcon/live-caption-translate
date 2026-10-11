@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { NOW, calls, emitAll, emitEvent, emitNamed, open } from "./support";
+import { NOW, emitEvent, open } from "./support";
 
 test.describe("overlay (browser simulation with mocked transport)", () => {
 

@@ -1,21 +1,9 @@
 import { get } from "svelte/store";
 import { describe, expect, it, vi } from "vitest";
-import {
-  CHIP_MS,
-  FADE_MS,
-  MAX_HISTORY_LINES,
-  MAX_OUTSTANDING_LINES,
-  ageOpacity,
-  createCaptionController,
-  failReasonText,
-  flowText,
-  visibleLines,
-  type CaptionController,
-} from "../src/lib/captions";
+import { FADE_MS, MAX_HISTORY_LINES, createCaptionController, failReasonText, flowText } from "../src/lib/captions";
 import type { CaptionLine, FailReason, PipelineEvent } from "../src/lib/types";
 import {
   FakeClock,
-  STATS,
   asrFinal,
   delta,
   dropped,
@@ -25,7 +13,6 @@ import {
   partial,
   skipped,
   testConfig,
-  testState,
 } from "./helpers";
 
 function setup(options: { reducedMotion?: boolean; configure?: Parameters<typeof testConfig>[0] } = {}) {
@@ -128,10 +115,6 @@ describe("running text", () => {
 });
 
 describe("expiry", () => {
-  const settle = (c: ReturnType<typeof setup>, id: number) => {
-    c.run(asrFinal(id, `行${id}`), final(id, `Line ${id}`));
-  };
-
   it("never expires pending or streaming rows, and expires them after they settle", () => {
     const c = setup();
     c.run(asrFinal(1, "一"), asrFinal(2, "二"), asrFinal(3, "三"), final(1, "One"), delta(2, "Tw"));

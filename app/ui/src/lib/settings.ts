@@ -125,10 +125,6 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-export function cloneConfig(config: Config): Config {
-  return structuredClone(config);
-}
-
 const CONFIG_TABLES = [
   "capture", "audio", "asr", "filter", "translate",
   "overlay", "performance", "hotkeys", "transcript", "logging", "models",

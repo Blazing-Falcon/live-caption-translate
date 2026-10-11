@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, cloneConfig, type Config } from "../src/lib/settings";
+import { DEFAULT_CONFIG, type Config } from "../src/lib/settings";
 import type { Clock } from "../src/lib/captions";
 import type {
   AppState,
@@ -106,7 +106,7 @@ export const joined = (id: number, absorbed: number[], text: string): PipelineEv
 });
 
 export function testConfig(patch?: (config: Config) => void): Config {
-  const config = cloneConfig(DEFAULT_CONFIG);
+  const config = structuredClone(DEFAULT_CONFIG);
   patch?.(config);
   return config;
 }

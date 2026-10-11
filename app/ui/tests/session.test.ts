@@ -3,10 +3,10 @@ import { emit } from "@tauri-apps/api/event";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { get } from "svelte/store";
 import { afterEach, describe, expect, it } from "vitest";
-import { createSession, applyEventToState, EVENTS, type Session } from "../src/lib/events";
-import { DEFAULT_CONFIG, type SetConfigResult } from "../src/lib/settings";
+import { createSession, EVENTS, type Session } from "../src/lib/events";
+import type { SetConfigResult } from "../src/lib/settings";
 import type { ModelStatus } from "../src/lib/types";
-import { FakeClock, STATS, asrFinal, final, testConfig, testState } from "./helpers";
+import { FakeClock, STATS, asrFinal, testConfig, testState } from "./helpers";
 
 const MODELS: ModelStatus[] = [
   { id: "hy-mt2-1.8b-q4_0", name: "Translation", bytes_total: 1_080_000_000, bytes_done: 1_080_000_000, optional: false, state: "ready" },

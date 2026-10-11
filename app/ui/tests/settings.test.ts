@@ -1,20 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import {
-  DEFAULT_CONFIG,
-  applyPatch,
-  captureAppsPatch,
-  captureModePatch,
-  cloneConfig,
-  formatAccelerator,
-  hasApp,
-  hotkeyPatch,
-  languageLabel,
-  normalizeLang,
-  overlayPatch,
-  parseConfig,
-  toggledApps,
-} from "../src/lib/settings";
+import { DEFAULT_CONFIG, applyPatch } from "../src/lib/settings";
 
 function parseDefaultToml(): Record<string, unknown> {
   const doc = readFileSync(new URL("../../../docs/configuration.md", import.meta.url), "utf8");
@@ -60,7 +46,7 @@ describe("DEFAULT_CONFIG", () => {
 
 describe("applyPatch", () => {
   it("merges nested tables, replaces arrays and removes keys set to null", () => {
-    const base = cloneConfig(DEFAULT_CONFIG);
+    const base = structuredClone(DEFAULT_CONFIG);
     base.overlay.bar_rect = { monitor: "A", x: 1, y: 2, w: 3, h: 4 };
     const next = applyPatch(base, {
       overlay: { font_px: 30, bar_rect: null },
