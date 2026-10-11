@@ -47,9 +47,6 @@ export interface Config extends ExtraFields {
     language: "auto" | "zh" | "en" | "ja" | "ko" | "yue";
     use_itn: boolean;
     threads: number;
-    second_pass: "off" | "xasr" | "funasr_nano" | "qwen3_asr";
-    second_pass_threads: number;
-    second_pass_timeout_s: number;
     stream_chunk_ms: 160 | 480 | 960;
     stream_pause_s: number;
   };
@@ -350,13 +347,6 @@ export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
   { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "About 30% less CPU. Words appear about 0.2 s later." },
 ];
 
-export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
-  { value: "off", label: "Off", model: null, help: "Translates the live text." },
-  { value: "xasr", label: "X-ASR", model: "xasr-zh-en-int8-2026-06-03", help: "Checks each finished line again. Little extra CPU." },
-  { value: "funasr_nano", label: "Fun-ASR-Nano", model: "funasr-nano-int8-2025-12-30", help: "Better with people talking over each other. Uses about 5x more CPU than SenseVoice for each line." },
-  { value: "qwen3_asr", label: "Qwen3-ASR", model: "qwen3-asr-0.6b-int8-2026-03-25", help: "Fewest errors with game noise. Uses about 7x more CPU than SenseVoice for each line." },
-];
-
 export const DRAFT_DISPLAYS: readonly { value: Config["overlay"]["draft_display"]; label: string }[] = [
   { value: "hold2", label: "Hold back the newest words" },
   { value: "settled", label: "Show only settled words" },
@@ -407,9 +397,6 @@ export const DEFAULT_CONFIG: Config = {
     "language": "auto",
     "use_itn": true,
     "threads": 1,
-    "second_pass": "off",
-    "second_pass_threads": 2,
-    "second_pass_timeout_s": 2.0,
     "stream_chunk_ms": 480,
     "stream_pause_s": 0.8
   },

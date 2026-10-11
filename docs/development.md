@@ -79,7 +79,6 @@ These tests skip if their variables are not set. `check.ps1` shows the skipped t
 |---|---|---|
 | `lt-sherpa` `vad`, `native` | `LT_MODELS_DIR`, test audio | Silero and SenseVoice against the parity fixtures; TEN VAD against the reference library's probabilities |
 | `lt-sherpa` `stream` | `LT_MODELS_DIR` with the 480 ms streaming model, test audio | Streaming X-ASR: emitted tokens never change, accuracy |
-| `lt-sherpa` `second_pass` | `LT_MODELS_DIR` with X-ASR, Fun-ASR-Nano and Qwen3-ASR, test audio | X-ASR against its recorded outputs, Qwen3-ASR accuracy, the output cap |
 | `lt-sherpa` Juan trace | Also `LT_JUAN_CLIP` (default `testdata/fetched/juan-clip-16k.wav`) | Windowed decodes of a recorded trace. The clip is private. |
 | `lt-llm` `real_server` | `LT_LLAMA_SERVER`, Hy-MT2 (`LT_MT_MODEL` or `LT_MODELS_DIR`) | 37 sentences against the fixture |
 | `lt-llm` drafts and mode switches | `LT_LLAMA_SERVER`, `LT_DRAFT_MODEL` | 40 draft sentences; servers start and stop correctly |
@@ -105,7 +104,6 @@ target\release\lt-cli.exe replay testdata\fetched\ramc\CTS-CN-F2F-2019-11-15-144
 python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeats, expected text
 target\release\lt-cli.exe live --mode system --dur 600 --out out\live.jsonl
 target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.engine from --config
-target\release\lt-cli.exe bench second-pass testdata\fetched\ascend  # asr.second_pass from --config
 target\release\lt-cli.exe bench vad testdata\fetched\leijun          # vad.engine from --config
 ```
 

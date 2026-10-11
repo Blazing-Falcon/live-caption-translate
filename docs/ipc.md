@@ -17,7 +17,6 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `speech_started` | `id`, `at_ms` | A speech segment opens |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | Each decode of the open clause (not in Off mode) |
 | `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`? | A clause is complete. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). |
-| `asr_second_pass` | `id`, `engine`, `text`, `class`, `lang`, `fallback`, `start_ms`, `done_ms`, `logprob` | The second pass of a translated line is done or skipped (`asr.second_pass` on). With `fallback` null, `text` replaces the line's Chinese and goes to the translator. Otherwise the line keeps its live text; `text` can still hold what the engine heard. `start_ms` and `done_ms` are null when the engine did not start or finish the clause. |
 | `translation_draft` | `id`, `rev`, `text`, `end_ms` | A draft is ready (Continuous mode, Chinese or mixed text only). `rev` starts at 1. |
 | `joined` | `id`, `absorbed[]`, `text`, `kind` | Clauses join into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
@@ -41,7 +40,6 @@ Enum values:
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
 | `DropReason` | `empty`, `music`, `single_char` |
-| `SecondPassFallback` | `busy` (a clause was already waiting, or the pipeline stepped down for CPU or lag), `timeout`, `error`, `empty`, `language` (the second pass heard a language that is not translated) |
 | `EngineKind` | `vad`, `asr`, `translator`, `draft_translator` |
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |
@@ -82,8 +80,8 @@ These rules apply to each id. `crates/lt-core/tests/caption_speeds.rs` checks th
 speech_started? -> (asr_partial | translation_draft)* -> dropped                     (end)
 speech_started? -> (asr_partial | translation_draft)* -> asr_final -> ...
 asr_final (english, or other not translated)                                         (end)
-asr_final -> asr_second_pass? -> joined (as absorbed)                                 (end)
-asr_final -> asr_second_pass? -> joined (as leader)* -> translation_draft?
+asr_final -> joined (as absorbed)                                                    (end)
+asr_final -> joined (as leader)* -> translation_draft?
           -> translation_delta* -> translation_final | translation_failed | skipped   (end)
 ```
 
@@ -91,7 +89,6 @@ asr_final -> asr_second_pass? -> joined (as leader)* -> translation_draft?
 - `translation_draft.rev` increases by 1 each time.
 - `joined` comes after the `asr_final` of each id that it names. A leader can get more than one `joined`.
 - Absorbed ids get no translation events.
-- With the second pass on, each translated line gets exactly one `asr_second_pass`. Lines reach the joiner and the translator in id order, also when a later line's second pass finishes first. `asr_second_pass` events of different ids can arrive out of id order.
 
 ## Tauri events
 
@@ -177,12 +174,12 @@ Other rules:
 
 The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.jsonl`. `lt-cli replay` writes the same format.
 
-- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (main latency settings, the draft model id, `vad_engine` and `second_pass`).
+- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (main latency settings, the draft model id and `vad_engine`).
 - Each other line is one `utterance` record. The writer writes it when the line becomes terminal.
 - The writer does not write dropped lines, partials or drafts.
 
 ```json
-{"type":"utterance","id":12,"joined":[13],"start_ms":45210,"end_ms":47980,"cut":"commit","wall":"2026-10-07T21:14:51+08:00","class":"chinese","lang":"zh","source":"我也想办一个，伟大的公司。","english":"I also want to run a great company.","status":"final","timing":{...},"asr_live":{"engine":"sensevoice","text":"我也想办一个。伟大的公司。","logprob":null},"asr_second":{"engine":"funasr_nano","text":"我也想办一个，伟大的公司。","fallback":null,"start_ms":48310,"done_ms":48920,"logprob":null}}
+{"type":"utterance","id":12,"joined":[13],"start_ms":45210,"end_ms":47980,"cut":"commit","wall":"2026-10-07T21:14:51+08:00","class":"chinese","lang":"zh","source":"我也想办一个，伟大的公司。","english":"I also want to run a great company.","status":"final","timing":{...},"asr_live":{"engine":"xasr_stream","text":"我也想办一个。伟大的公司。","logprob":-0.12}}
 ```
 
 | Field | Meaning |
@@ -193,6 +190,5 @@ The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.j
 | `timing` | Only for `final` |
 | `reason`, `message` | Only for `failed` |
 | `asr_live` | The live recognizer's `engine`, `text` and mean token `logprob` (null when the engine gives none) |
-| `asr_second` | The second pass: `engine`, `text`, `fallback`, `start_ms`, `done_ms`, `logprob`. `fallback` is `off`, `busy`, `timeout`, `error`, `empty`, `language` or null (the text was used). Null for lines that are not translated. |
 
 A joined line concatenates the texts of its parts. Its `logprob` is the mean of the parts, its `fallback` is the first one among the parts, `start_ms` is the earliest and `done_ms` the latest.

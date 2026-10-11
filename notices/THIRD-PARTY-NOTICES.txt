@@ -61,19 +61,6 @@ upstream card https://huggingface.co/GilgameshWind/X-ASR-zh-en declares apache-2
 The conversion repository states no license of its own. The Apache License 2.0
 text reproduced below for Hy-MT2 applies.
 
-Fun-ASR-Nano 2512 — FunAudioLLM / Tongyi Lab (optional second pass)
-Upstream: https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-2512 (card: apache-2.0)
-ONNX export: https://github.com/Wasser1462/FunASR-nano-onnx (no license file)
-Used conversion: https://huggingface.co/csukuangfj/sherpa-onnx-funasr-nano-int8-2025-12-30
-The Apache License 2.0 text reproduced below for Hy-MT2 applies.
-
-Qwen3-ASR 0.6B — Qwen team, Alibaba (optional second pass)
-Upstream: https://huggingface.co/Qwen/Qwen3-ASR-0.6B (card: apache-2.0) and
-https://github.com/QwenLM/Qwen3-ASR (Apache-2.0 LICENSE)
-ONNX export: https://github.com/Wasser1462/Qwen3-ASR-onnx (no license file)
-Used conversion: https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25
-The Apache License 2.0 text reproduced below for Hy-MT2 applies.
-
 LMT-60-0.6B — NiuTrans (optional "Faster captions" draft model)
 Upstream: https://huggingface.co/NiuTrans/LMT-60-0.6B
 Used quantization: LMT-60-0.6B.Q4_K_M.gguf by mradermacher.

@@ -532,16 +532,11 @@ mod tests {
             match item {
                 StreamOutput::Started(id, at) => started.push((*id, *at)),
                 StreamOutput::Closed(id, _, _) => assert!(started.iter().any(|(s, _)| s == id)),
-                StreamOutput::Message(AsrMessage::Transcript(t, audio)) => {
+                StreamOutput::Message(AsrMessage::Transcript(t)) => {
                     assert!(
                         started.iter().any(|(s, _)| *s == t.id),
                         "final before start"
                     );
-                    let length = t.timing.end.0 - t.timing.start.0;
-                    assert_eq!(audio.len() as u64, length, "clause audio matches its times");
-                    // The buffer holds sample index / total, so the first sample names the start.
-                    let first = (audio[0] * total as f32).round() as u64;
-                    assert!((base.0 + first).abs_diff(t.timing.start.0) <= 1);
                     finals.push((t.text.clone(), t.cut, t.timing.start, t.timing.end));
                 }
                 StreamOutput::Message(AsrMessage::Partial { .. }) => partials += 1,

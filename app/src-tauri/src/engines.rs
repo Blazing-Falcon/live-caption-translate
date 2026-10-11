@@ -2,7 +2,7 @@
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{EngineRegistry, SegmentAsr, Translator, Vad, WindowAsr},
+    engines::{EngineRegistry, SegmentAsr, Translator, Vad},
     events::{EngineKind, EngineState, PipelineEvent},
 };
 use lt_llm::supervisor::{ServerOptions, ServerRole, Supervisor};
@@ -15,11 +15,7 @@ use std::{
     time::Duration,
 };
 
-pub type SpeechEngines = (
-    Box<dyn Vad>,
-    Box<dyn SegmentAsr>,
-    Option<Box<dyn WindowAsr>>,
-);
+pub type SpeechEngines = (Box<dyn Vad>, Box<dyn SegmentAsr>);
 
 pub const TRANSLATOR_MODEL: &str = "hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf";
 pub const DRAFT_MODEL: &str = "lmt-60-0.6b-q4_k_m/LMT-60-0.6B.Q4_K_M.gguf";
@@ -44,18 +40,7 @@ pub fn speech(config: &Config, models: &Path) -> Result<SpeechEngines, String> {
     let asr = registry
         .build_asr(&engine_config)
         .map_err(|e| e.to_string())?;
-    let second_pass = if config.latency.low_priority {
-        // Nothing else starts threads while the controller loads engines.
-        let (engine, lowered) = lt_audio::priority::with_new_threads_lowered(|| {
-            registry.build_second_pass(&engine_config)
-        });
-        tracing::debug!(lowered, "second-pass threads at below-normal priority");
-        engine
-    } else {
-        registry.build_second_pass(&engine_config)
-    }
-    .map_err(|e| format!("Second pass: {e}"))?;
-    Ok((vad, asr, second_pass))
+    Ok((vad, asr))
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {

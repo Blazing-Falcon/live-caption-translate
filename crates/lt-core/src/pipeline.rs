@@ -11,17 +11,13 @@ use crate::{
         DraftOutcome, DraftResult, DraftState, DraftWorker, PublishedDraft, WORKER_FAILED,
         WORKER_READY,
     },
-    engines::{SegmentAsr, Translator, Vad, WindowAsr},
+    engines::{SegmentAsr, Translator, Vad},
     error::{Error, Result},
-    events::{
-        DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent,
-        SecondPassFallback,
-    },
+    events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     join::{JoinResult, Joiner},
     metrics::{canonical_language, Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
     recognizer::{AsrMessage, CommitCut, Output, Recognizer, RecognizerInput},
-    second_pass::{Job, Outcome, SecondPassWorker},
     segment::{SegmentBuilder, SegmentUpdate},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
     stepdown::{ModeState, StepDown},
@@ -52,11 +48,6 @@ const COMMIT_CAPACITY: usize = 4;
 const AUDIO_FORWARD_SAMPLES: u64 = 1_600;
 /// A streaming engine gets audio in pieces of this size (100 ms).
 const STREAM_FORWARD_SAMPLES: usize = 1_600;
-/// Final lines that wait in order for a second pass. The joiner's start-notice margin
-/// assumes no more than this.
-const HELD_CAPACITY: usize = 4;
-/// The second-pass timeout grows by this many seconds per second of clause audio.
-const SECOND_PASS_TIMEOUT_PER_S: f64 = 0.5;
 
 enum Command {
     Pause(Sender<Result<()>>),
@@ -139,10 +130,6 @@ pub struct PipelineOptions {
     pub draft: Option<Box<dyn Translator>>,
     /// Physical cores, for `latency.mode = "auto"`. Unknown counts half the logical CPUs.
     pub physical_cores: Option<usize>,
-    /// The second recognizer (`asr.second_pass`), which re-decodes each final clause.
-    pub second_pass: Option<Box<dyn WindowAsr>>,
-    /// Runs first on the second-pass thread, for example to lower its priority.
-    pub second_pass_setup: Option<fn()>,
 }
 
 /// How `latency.mode` resolves for this engine set.
@@ -228,8 +215,6 @@ impl Pipeline {
             sampler,
             draft,
             physical_cores,
-            second_pass,
-            second_pass_setup,
         } = options;
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
@@ -334,7 +319,6 @@ impl Pipeline {
                         scheduler_latest,
                         sampler,
                         draft,
-                        second_pass.map(|engine| (engine, second_pass_setup)),
                         initial_mode,
                         mode_rx,
                     )
@@ -1135,40 +1119,6 @@ fn send_cooperative<T>(sender: &Sender<T>, mut message: T, cancelled: &AtomicBoo
     }
 }
 
-/// A final line on its way to the joiner, in utterance order.
-enum HeldItem {
-    Push(Transcript),
-    Drop(UtteranceId),
-}
-
-impl HeldItem {
-    fn id(&self) -> UtteranceId {
-        match self {
-            Self::Push(transcript) => transcript.id,
-            Self::Drop(id) => *id,
-        }
-    }
-}
-
-struct HeldLine {
-    item: HeldItem,
-    /// Set while the second pass decodes this line.
-    wait: Option<SecondPassWait>,
-}
-
-struct SecondPassWait {
-    deadline: Instant,
-    start_ms: Option<u64>,
-}
-
-/// The second-pass engine and the setup that runs first on its thread.
-type SecondPassEngine = (Box<dyn WindowAsr>, Option<fn()>);
-
-struct SecondPass {
-    worker: SecondPassWorker,
-    engine: String,
-}
-
 struct Scheduler {
     config: Config,
     joiner: Joiner,
@@ -1194,9 +1144,6 @@ struct Scheduler {
     draft_ready: bool,
     /// A draft request is out (counts as the single request in flight).
     draft_in_flight: bool,
-    second: Option<SecondPass>,
-    /// Final lines in utterance order; the front waits while its second pass runs.
-    held: VecDeque<HeldLine>,
 }
 
 impl Scheduler {
@@ -1350,7 +1297,7 @@ impl Scheduler {
             });
         }
         match message {
-            AsrMessage::Transcript(transcript, audio) => {
+            AsrMessage::Transcript(transcript) => {
                 self.observed.insert(transcript.id);
                 self.publish(PipelineEvent::AsrFinal {
                     id: transcript.id,
@@ -1364,21 +1311,20 @@ impl Scheduler {
                     logprob: transcript.logprob,
                 });
                 self.drafts.final_arrived(transcript.id);
-                // Only translated lines get a second pass.
-                let wait = if translates(&transcript, &self.config.routing) {
+                if translates(&transcript, &self.config.routing) {
                     self.translating.insert(transcript.id);
-                    self.start_second_pass(&transcript, audio)
                 } else {
                     self.observed.remove(&transcript.id);
-                    None
-                };
-                self.hold(HeldItem::Push(transcript), wait);
+                }
+                let result = self.joiner.push(transcript);
+                self.joined(result);
             }
             AsrMessage::Dropped(id, reason) => {
                 self.observed.remove(&id);
                 self.drafts.terminal(id);
                 self.publish(PipelineEvent::Dropped { id, reason });
-                self.hold(HeldItem::Drop(id), None);
+                let result = self.joiner.dropped(id);
+                self.joined(result);
             }
             AsrMessage::Partial { .. } => {}
             AsrMessage::Failed(id, message) => {
@@ -1396,207 +1342,9 @@ impl Scheduler {
                     id,
                     reason: DropReason::Empty,
                 });
-                self.hold(HeldItem::Drop(id), None);
+                let result = self.joiner.dropped(id);
+                self.joined(result);
             }
-        }
-    }
-
-    /// Queue a line behind the lines that wait for their second pass, then release what is ready.
-    fn hold(&mut self, item: HeldItem, wait: Option<SecondPassWait>) {
-        self.held.push_back(HeldLine { item, wait });
-        self.release_held();
-    }
-
-    fn release_held(&mut self) {
-        while self.held.front().is_some_and(|line| line.wait.is_none()) {
-            let Some(line) = self.held.pop_front() else {
-                break;
-            };
-            let result = match line.item {
-                HeldItem::Push(transcript) => self.joiner.push(transcript),
-                HeldItem::Drop(id) => self.joiner.dropped(id),
-            };
-            self.joined(result);
-        }
-    }
-
-    /// A line keeps its live text; `fallback` says why.
-    fn second_pass_fallback(
-        &mut self,
-        id: UtteranceId,
-        fallback: SecondPassFallback,
-        start_ms: Option<u64>,
-        done_ms: Option<u64>,
-    ) {
-        let Some(engine) = self.second.as_ref().map(|second| second.engine.clone()) else {
-            return;
-        };
-        self.publish(PipelineEvent::AsrSecondPass {
-            id,
-            engine,
-            text: None,
-            class: None,
-            lang: None,
-            fallback: Some(fallback),
-            start_ms,
-            done_ms,
-            logprob: None,
-        });
-    }
-
-    /// Send the clause to the second pass, or publish why it keeps its live text.
-    fn start_second_pass(
-        &mut self,
-        transcript: &Transcript,
-        audio: Arc<[f32]>,
-    ) -> Option<SecondPassWait> {
-        let second = self.second.as_ref()?;
-        let stepped_down = self.mode.mode == EffectiveMode::Light
-            && matches!(self.mode.reason, Some(ModeReason::Cpu | ModeReason::Lag));
-        let duration = transcript
-            .timing
-            .end
-            .saturating_sub(transcript.timing.start);
-        let timeout = f64::from(self.config.asr.second_pass_timeout_s)
-            + SECOND_PASS_TIMEOUT_PER_S * duration.seconds();
-        let deadline = Instant::now() + Duration::from_secs_f64(timeout);
-        let fallback = if stepped_down || audio.is_empty() {
-            SecondPassFallback::Busy
-        } else {
-            let job = Job {
-                id: transcript.id,
-                samples: audio,
-                deadline,
-            };
-            match second.worker.try_submit(job) {
-                Ok(true) => {
-                    return Some(SecondPassWait {
-                        deadline,
-                        start_ms: None,
-                    })
-                }
-                Ok(false) => SecondPassFallback::Busy,
-                Err(error) => {
-                    tracing::warn!(%error, "second pass unavailable");
-                    SecondPassFallback::Error
-                }
-            }
-        };
-        self.second_pass_fallback(transcript.id, fallback, None, None);
-        None
-    }
-
-    fn second_pass_outcome(&mut self, outcome: Outcome) {
-        let (id, result, done_ms) = match outcome {
-            Outcome::Started { id, at_ms } => {
-                if let Some(wait) = self
-                    .held
-                    .iter_mut()
-                    .find(|line| line.item.id() == id)
-                    .and_then(|line| line.wait.as_mut())
-                {
-                    wait.start_ms = Some(at_ms);
-                }
-                return;
-            }
-            Outcome::Expired { id } => (id, None, None),
-            Outcome::Done { id, result, at_ms } => (id, Some(result), Some(at_ms)),
-        };
-        // A result after the timeout fallback is too late: the line has moved on.
-        let Some(index) = self
-            .held
-            .iter()
-            .position(|line| line.item.id() == id && line.wait.is_some())
-        else {
-            return;
-        };
-        let start_ms = self.held[index].wait.take().and_then(|wait| wait.start_ms);
-        match result {
-            None => self.second_pass_fallback(id, SecondPassFallback::Timeout, start_ms, None),
-            Some(Err(error)) => {
-                tracing::warn!(id = id.0, %error, "second pass failed");
-                self.second_pass_fallback(id, SecondPassFallback::Error, start_ms, done_ms);
-            }
-            Some(Ok(decoded)) => {
-                if let HeldItem::Push(transcript) = &self.held[index].item {
-                    let event =
-                        self.apply_second_pass(transcript.clone(), &decoded, start_ms, done_ms);
-                    if let (Some(replaced), HeldItem::Push(transcript)) =
-                        (event, &mut self.held[index].item)
-                    {
-                        *transcript = replaced;
-                    }
-                }
-            }
-        }
-        self.release_held();
-    }
-
-    /// Publish the second-pass result and return the line with its text when it is usable.
-    fn apply_second_pass(
-        &mut self,
-        mut transcript: Transcript,
-        decoded: &crate::engines::TokenTranscript,
-        start_ms: Option<u64>,
-        done_ms: Option<u64>,
-    ) -> Option<Transcript> {
-        let text = crate::text::clean(&decoded.text, &self.config.filter.fillers);
-        let lang =
-            normalized_language(decoded.lang_tag.as_deref()).or_else(|| text_language(&text));
-        let class = crate::text::classify_with_lang(&text, lang.as_deref());
-        transcript.text.clone_from(&text);
-        transcript.lang_tag.clone_from(&lang);
-        if let Some(class) = class {
-            transcript.class = class;
-        }
-        let duration = transcript
-            .timing
-            .end
-            .saturating_sub(transcript.timing.start);
-        let fallback = if class.is_none()
-            || crate::text::drop_reason(&transcript, duration.seconds(), &self.config.filter)
-                .is_some()
-        {
-            Some(SecondPassFallback::Empty)
-        } else if !translates(&transcript, &self.config.routing) {
-            Some(SecondPassFallback::Language)
-        } else {
-            None
-        };
-        let engine = self
-            .second
-            .as_ref()
-            .map(|second| second.engine.clone())
-            .unwrap_or_default();
-        self.publish(PipelineEvent::AsrSecondPass {
-            id: transcript.id,
-            engine,
-            text: (!text.is_empty()).then_some(text),
-            class,
-            lang,
-            fallback,
-            start_ms,
-            done_ms,
-            logprob: decoded.mean_log_prob(),
-        });
-        fallback.is_none().then_some(transcript)
-    }
-
-    /// Lines whose second pass takes too long keep their live text.
-    fn second_pass_timeouts(&mut self) {
-        let now = Instant::now();
-        let mut expired = Vec::new();
-        for line in &mut self.held {
-            if line.wait.as_ref().is_some_and(|wait| now >= wait.deadline) {
-                let start_ms = line.wait.take().and_then(|wait| wait.start_ms);
-                expired.push((line.item.id(), start_ms));
-            }
-        }
-        for (id, start_ms) in &expired {
-            self.second_pass_fallback(*id, SecondPassFallback::Timeout, *start_ms, None);
-        }
-        if !expired.is_empty() {
-            self.release_held();
         }
     }
 
@@ -1617,15 +1365,10 @@ impl Scheduler {
     /// ready or in flight. Phrases the joiner holds do not count; waiting for the next phrase
     /// is not the translator falling behind (the step-down must not react to it).
     fn translation_lag_ms(&self, live: StreamTime) -> u64 {
-        let held = self.held.iter().find_map(|line| match &line.item {
-            HeldItem::Push(transcript) => Some(transcript.timing.end),
-            HeldItem::Drop(_) => None,
-        });
         [
             self.final_end,
             self.queue.oldest_end(),
             self.ready.front().map(|t| t.timing.end),
-            held,
         ]
         .into_iter()
         .flatten()
@@ -1666,7 +1409,6 @@ fn scheduler_loop(
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
     draft: Option<Box<dyn Translator>>,
-    second_pass: Option<SecondPassEngine>,
     initial_mode: ModeState,
     modes: Receiver<EffectiveMode>,
 ) -> Result<()> {
@@ -1706,14 +1448,6 @@ fn scheduler_loop(
         drafts: DraftState::new(&config.latency),
         draft_ready: false,
         draft_in_flight: false,
-        second: match second_pass {
-            Some((engine, setup)) => Some(SecondPass {
-                worker: SecondPassWorker::start(engine, setup, clock.clone(), cancelled.clone())?,
-                engine: config.asr.second_pass.clone(),
-            }),
-            None => None,
-        },
-        held: VecDeque::new(),
     };
     let mut draft_worker = match draft {
         Some(translator) if initial_mode.mode != EffectiveMode::Off => Some(DraftWorker::start(
@@ -1765,16 +1499,6 @@ fn scheduler_loop(
             progressed = true;
             scheduler.completed(event);
         }
-        let outcomes: Vec<Outcome> = scheduler
-            .second
-            .as_ref()
-            .map(|second| second.worker.completed.try_iter().collect())
-            .unwrap_or_default();
-        for outcome in outcomes {
-            progressed = true;
-            scheduler.second_pass_outcome(outcome);
-        }
-        scheduler.second_pass_timeouts();
         if let Some(draft_worker) = draft_worker.as_ref() {
             for outcome in draft_worker.completed.try_iter() {
                 progressed = true;
@@ -1816,7 +1540,6 @@ fn scheduler_loop(
         // space available and stop reading ASR when translation is saturated.
         if !asr_done
             && scheduler.ready.is_empty()
-            && scheduler.held.len() < HELD_CAPACITY
             && scheduler.queue.len() < TranslationQueue::CAPACITY - 2
         {
             let message = if let Some(message) = pending_asr.take() {
@@ -1862,7 +1585,7 @@ fn scheduler_loop(
         }
         // Frontend EOF alone is too early: a timely successor may still be in
         // the bounded ASR channel or an active native decode call.
-        if asr_done && scheduler.held.is_empty() && !holds_finished {
+        if asr_done && !holds_finished {
             let result = scheduler.joiner.finish();
             scheduler.joined(result);
             holds_finished = true;
@@ -1910,7 +1633,6 @@ fn scheduler_loop(
         }
         if asr_done
             && front_done
-            && scheduler.held.is_empty()
             && scheduler.ready.is_empty()
             && scheduler.queue.is_empty()
             && !scheduler.in_flight
@@ -1954,9 +1676,6 @@ fn scheduler_loop(
     worker.stop()?;
     if let Some(draft_worker) = draft_worker.as_mut() {
         draft_worker.stop()?;
-    }
-    if let Some(second) = scheduler.second.as_mut() {
-        second.worker.stop()?;
     }
     // Wait for producers to close before publishing shutdown terminals. This
     // prevents a racing SpeechStarted or delta from appearing after a terminal.
@@ -2004,7 +1723,6 @@ fn scheduler_loop(
         });
     }
     scheduler.ready.clear();
-    scheduler.held.clear();
     scheduler.queue = TranslationQueue::new(scheduler.config.translate.clone());
     let _ = scheduler.joiner.finish();
     scheduler.in_flight = false;

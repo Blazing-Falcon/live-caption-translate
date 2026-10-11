@@ -4,7 +4,7 @@ use anyhow::{bail, Result};
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{SegmentAsr, Translator, Vad, WindowAsr},
+    engines::{SegmentAsr, Translator, Vad},
     fakes::{FakeAsr, FakeTranslator, FakeVad},
 };
 use std::path::PathBuf;
@@ -19,8 +19,6 @@ use std::{
 pub struct Engines {
     pub vad: Box<dyn Vad>,
     pub asr: Box<dyn SegmentAsr>,
-    /// `asr.second_pass`, when it is not off.
-    pub second_pass: Option<Box<dyn WindowAsr>>,
     pub translator: Box<dyn Translator>,
     pub pid: Arc<AtomicU32>,
     /// The draft translator (Continuous mode) and its server's process id.
@@ -81,7 +79,6 @@ pub fn build(
                 "你好，这是测试语音。".into();
                 4096
             ])),
-            second_pass: None,
             translator: Box::<FakeTranslator>::default(),
             pid: Arc::new(AtomicU32::new(0)),
             draft: None,
@@ -100,15 +97,6 @@ pub fn build(
         engine_config.models.dir = models.to_string_lossy().into_owned();
         let vad = registry.build_vad(&engine_config)?;
         let asr = registry.build_asr(&engine_config)?;
-        let second_pass = if config.latency.low_priority {
-            let (engine, lowered) = lt_audio::priority::with_new_threads_lowered(|| {
-                registry.build_second_pass(&engine_config)
-            });
-            tracing::debug!(lowered, "second-pass threads at below-normal priority");
-            engine?
-        } else {
-            registry.build_second_pass(&engine_config)?
-        };
         let (translator, supervisor, pid) = translator(config, models, binary, bus, cancelled)?;
         let (draft, draft_supervisor, draft_pid) =
             match draft(config, models, binary, bus, cancelled)? {
@@ -118,7 +106,6 @@ pub fn build(
         Ok(Engines {
             vad,
             asr,
-            second_pass,
             translator,
             supervisor,
             pid,

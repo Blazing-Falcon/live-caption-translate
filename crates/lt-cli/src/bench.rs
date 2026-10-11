@@ -9,8 +9,7 @@ use std::sync::{atomic::AtomicBool, Arc};
 
 pub fn bench(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
     match args.engine {
-        BenchEngine::Asr => asr(args, config, cancelled, false),
-        BenchEngine::SecondPass => asr(args, config, cancelled, true),
+        BenchEngine::Asr => asr(args, config, cancelled),
         BenchEngine::Vad => vad(args, config, cancelled),
         BenchEngine::Mt => mt(args, config, cancelled),
     }
@@ -29,23 +28,13 @@ fn registry(args: &BenchArgs, config: &Config) -> (lt_core::engines::EngineRegis
 }
 
 #[cfg(feature = "sherpa")]
-fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>, second: bool) -> Result<()> {
-    use lt_core::{
-        engines::mean_log_prob,
-        types::{CutReason, Segment, StreamTime, UtteranceId},
-    };
+fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
+    use lt_core::types::{CutReason, Segment, StreamTime, UtteranceId};
     use std::time::Instant;
     engines::check_cancel(&cancelled)?;
     let (registry, config) = registry(&args, &config);
     let loading = Instant::now();
-    let (mut live, mut second_pass) = if second {
-        let engine = registry
-            .build_second_pass(&config)?
-            .ok_or_else(|| anyhow::anyhow!("Set asr.second_pass in the config"))?;
-        (None, Some(engine))
-    } else {
-        (Some(registry.build_asr(&config)?), None)
-    };
+    let mut asr = registry.build_asr(&config)?;
     eprintln!("load_ms={}", loading.elapsed().as_millis());
     for (id, path) in engines::wav_files(&args.input)?.into_iter().enumerate() {
         engines::check_cancel(&cancelled)?;
@@ -59,18 +48,9 @@ fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>, second: bool
             cut_reason: CutReason::End,
         };
         let started = Instant::now();
-        let (text, lang, event, logprob) = match (live.as_mut(), second_pass.as_mut()) {
-            (Some(asr), _) => {
-                let output = asr.transcribe(&segment)?;
-                (output.text, output.lang_tag, output.event, output.logprob)
-            }
-            (None, Some(asr)) => {
-                let output = asr.decode_window(&segment.samples)?;
-                let logprob = mean_log_prob(&output.log_probs);
-                (output.text, output.lang_tag, output.event, logprob)
-            }
-            (None, None) => unreachable!("one engine is built"),
-        };
+        let output = asr.transcribe(&segment)?;
+        let (text, lang, event, logprob) =
+            (output.text, output.lang_tag, output.event, output.logprob);
         println!(
             "{}",
             serde_json::json!({"file":path,"text":text,"lang":lang,"event":event,"logprob":logprob,"asr_ms":started.elapsed().as_millis(),"audio_s":end.seconds()})
@@ -79,7 +59,7 @@ fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>, second: bool
     Ok(())
 }
 #[cfg(not(feature = "sherpa"))]
-fn asr(_: BenchArgs, _: Config, _: Arc<AtomicBool>, _: bool) -> Result<()> {
+fn asr(_: BenchArgs, _: Config, _: Arc<AtomicBool>) -> Result<()> {
     bail!("ASR bench requires --features sherpa");
 }
 

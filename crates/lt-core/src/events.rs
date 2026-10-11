@@ -37,19 +37,6 @@ pub enum DropReason {
     SingleChar,
 }
 
-/// Why a line kept its live text instead of the second-pass text.
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum SecondPassFallback {
-    /// A clause was already waiting, or the pipeline stepped down for CPU or lag.
-    Busy,
-    Timeout,
-    Error,
-    Empty,
-    /// The second pass heard a language that is not translated, unlike the live text.
-    Language,
-}
-
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum EngineKind {
@@ -113,20 +100,6 @@ pub enum PipelineEvent {
         cut: CutReason,
         /// Mean token log-probability, when the live engine gives one.
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        logprob: Option<f32>,
-    },
-    /// The second recognizer's result for a final line. With `text`, it replaces the live text
-    /// and is what the translator gets; with `fallback`, the live text stays.
-    AsrSecondPass {
-        id: UtteranceId,
-        engine: String,
-        text: Option<String>,
-        class: Option<TextClass>,
-        lang: Option<String>,
-        fallback: Option<SecondPassFallback>,
-        /// Stream times; `None` when the clause never reached the engine.
-        start_ms: Option<u64>,
-        done_ms: Option<u64>,
         logprob: Option<f32>,
     },
     Joined {
@@ -210,17 +183,6 @@ mod tests {
                 end_ms: 46_300,
                 asr_ms: 330,
                 cut: CutReason::Pause,
-                logprob: None,
-            },
-            PipelineEvent::AsrSecondPass {
-                id: UtteranceId(12),
-                engine: "funasr_nano".into(),
-                text: Some("我也想办一个。".into()),
-                class: Some(TextClass::Chinese),
-                lang: None,
-                fallback: None,
-                start_ms: Some(48_310),
-                done_ms: Some(48_920),
                 logprob: None,
             },
             PipelineEvent::Joined {
@@ -322,7 +284,7 @@ mod tests {
         ))
         .unwrap();
         let events = every_event_variant();
-        assert_eq!(events.len(), 16);
+        assert_eq!(events.len(), 15);
         assert_eq!(serde_json::to_value(&events).unwrap(), rust_fixture);
         assert_eq!(rust_fixture, frontend_fixture);
         assert_eq!(

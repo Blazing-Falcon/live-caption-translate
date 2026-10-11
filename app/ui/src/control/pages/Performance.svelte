@@ -15,7 +15,6 @@
   import {
     CAPTION_SPEEDS,
     LIVE_MODELS,
-    SECOND_PASSES,
     STREAM_CHUNKS,
     TRANSLATE_THREADS_MAX,
     VAD_ENGINES,
@@ -98,7 +97,7 @@
   }
 
   interface SpeechRow {
-    key: "vad.engine" | "asr.engine" | "asr.stream_chunk_ms" | "asr.second_pass";
+    key: "vad.engine" | "asr.engine" | "asr.stream_chunk_ms";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -131,14 +130,6 @@
           },
         ]
       : []),
-    {
-      key: "asr.second_pass",
-      label: "Second pass",
-      value: config.asr.second_pass,
-      // The second pass cannot be the live model.
-      choices: SECOND_PASSES.filter((choice) => choice.value !== config.asr.engine),
-      patch: (value) => asrPatch({ second_pass: value as Config["asr"]["second_pass"] }),
-    },
   ]);
 
   /** A choice whose model is downloading; it is saved when the model is ready. */

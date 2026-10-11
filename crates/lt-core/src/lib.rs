@@ -15,7 +15,6 @@ pub mod metrics;
 pub mod pipeline;
 pub mod queue;
 pub mod recognizer;
-pub mod second_pass;
 pub mod segment;
 pub mod source;
 pub mod stepdown;

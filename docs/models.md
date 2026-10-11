@@ -14,9 +14,7 @@
 | `lmt-60-0.6b-q4_k_m` | Drafts (optional) | `LMT-60-0.6B.Q4_K_M.gguf` | 484,220,000 | `743c6cdc13294b5c470ec0e89e79d64f96ef0cab94ce1285c78da4dc0f56be5c` |
 | `silero-vad-v6` | Voice activity (optional) | `silero_vad_v6.onnx` | 2,327,524 | `1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3` |
 | `ten-vad` | Voice activity (optional) | `ten-vad.onnx` | 315,449 | `e10b98a0cab1c98e847fbdda14cb3d45a38336d47535a3f63a0fb6c4e0f4cdf4` |
-| `xasr-zh-en-int8-2026-06-03` | Live model or second pass (optional) | 4 files | 175,693,762 | in the manifest |
-| `funasr-nano-int8-2025-12-30` | Second pass (optional) | 6 files | 1,009,605,061 | in the manifest |
-| `qwen3-asr-0.6b-int8-2026-03-25` | Second pass (optional) | 6 files | 987,015,347 | in the manifest |
+| `xasr-zh-en-int8-2026-06-03` | Live model (optional) | 4 files | 175,693,762 | in the manifest |
 | `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
 | `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
@@ -28,8 +26,6 @@ Sources (Hugging Face):
 - LMT-60: `mradermacher/LMT-60-0.6B-GGUF` (base model `NiuTrans/LMT-60-0.6B`)
 - X-ASR: `csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03`
 - X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
-- Fun-ASR-Nano: `csukuangfj/sherpa-onnx-funasr-nano-int8-2025-12-30` (tokenizer files from its `Qwen3-0.6B/` folder)
-- Qwen3-ASR: `csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25` (tokenizer files from its `tokenizer/` folder)
 - Silero VAD v6 and TEN VAD: GitHub release tags `snakers4/silero-vad` `v6.2.3` and `TEN-framework/ten-vad` `v1.0-ONNX`
 
 **Do not use** the SenseVoice export `2025-09-09`. It is a Cantonese model. It tags all speech as `yue`, has no punctuation and gives worse English.
@@ -53,8 +49,6 @@ Rules:
 | Silero VAD v5 and v6 | MIT |
 | TEN VAD 1.0 | Apache-2.0 with Agora's conditions: no use that competes with Agora's offerings; deploy only for your own application and its direct end users; derivative works keep these terms. `crates/lt-sherpa/src/ten.rs` is such a derivative work. |
 | X-ASR | Apache-2.0 (upstream `Gilgamesh-J/X-ASR`) |
-| Fun-ASR-Nano 2512 | Apache-2.0 (model card `FunAudioLLM/Fun-ASR-Nano-2512`). The ONNX export repository has no license file. |
-| Qwen3-ASR 0.6B | Apache-2.0 (model card `Qwen/Qwen3-ASR-0.6B`). The ONNX export repository has no license file. |
 | Hy-MT2 1.8B | Apache-2.0 (recorded; confirm on the `tencent/Hy-MT2-1.8B` model card) |
 | LMT-60 0.6B | Apache-2.0 |
 | sherpa-onnx 1.13.8 | Apache-2.0 |
@@ -87,11 +81,7 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 **TEN VAD:** runs on ONNX Runtime with a port of the reference feature frontend: 0.97 pre-emphasis, a 768-sample Hann window every 256 samples, a 1024-point FFT, 40 mel bands, the reference mean and deviation, and 3 frames of context. The recurrent state resets every 1,875 hops (30 s), as in the reference. The reference also gives the model a pitch estimate; the port gives 0 Hz, as sherpa-onnx does. A 512-sample frame is two hops; its probability is the larger one. The same thresholds apply as for Silero. They were not tuned for TEN VAD.
 
-**X-ASR:** sherpa-onnx offline transducer, greedy search, `asr.threads` live or `asr.second_pass_threads` as the second pass. The result JSON gives token times and token log-probabilities, but no language tag. The share of Latin letters and Chinese characters sets the language.
-
-**Fun-ASR-Nano, Qwen3-ASR:** second pass only. `max_new_tokens = 96` for both, `max_total_len = 512` for Qwen3-ASR, and sherpa-onnx's default temperature, top-p and seed. Qwen3-ASR uses 128 mel bins.
-
-**Second-pass priority:** with `latency.low_priority`, the second-pass thread and the ONNX Runtime threads that its engine starts run at below-normal priority. The app finds those threads by the thread ids that are new after the engine loads.
+**X-ASR:** sherpa-onnx offline transducer, greedy search, `asr.threads`. The result JSON gives token times and token log-probabilities, but no language tag. The share of Latin letters and Chinese characters sets the language.
 
 **llama-server:** one binary, two processes. The supervisor starts each server with:
 

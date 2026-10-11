@@ -78,9 +78,6 @@ config_table!(AsrConfig {
     language: String = "auto".into(),
     use_itn: bool = true,
     threads: u32 = 1,
-    second_pass: String = "off".into(),
-    second_pass_threads: u32 = 2,
-    second_pass_timeout_s: f32 = 2.0,
     stream_chunk_ms: u32 = 480,
     stream_pause_s: f32 = 0.8,
 });
@@ -344,20 +341,6 @@ impl Config {
             self.asr.stream_chunk_ms = defaults.asr.stream_chunk_ms;
         }
         number!(asr, stream_pause_s, 0.3, 3.0);
-        choice!(
-            asr,
-            second_pass,
-            &["off", "xasr", "funasr_nano", "qwen3_asr"]
-        );
-        if self.asr.second_pass == self.asr.engine {
-            messages.push(format!(
-                "asr.second_pass: {:?} is already the live recognizer; using \"off\"",
-                self.asr.second_pass
-            ));
-            self.asr.second_pass = "off".into();
-        }
-        number!(asr, second_pass_threads, 1, 4);
-        number!(asr, second_pass_timeout_s, 0.5, 30.0);
         choice!(vad, engine, &["silero", "silero_v6", "ten"]);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);

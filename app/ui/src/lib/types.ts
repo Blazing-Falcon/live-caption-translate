@@ -7,7 +7,6 @@ export type JoinKind = "hold" | "queue";
 export type SkipReason = "catch_up";
 export type FailReason = "timeout" | "server_unavailable" | "echo" | "runaway" | "error";
 export type DropReason = "empty" | "music" | "single_char";
-export type SecondPassFallback = "busy" | "timeout" | "error" | "empty" | "language";
 export type EngineKind = "vad" | "asr" | "translator" | "draft_translator";
 export type EngineState = "loading" | "ready" | "restarting" | "failed";
 export type SourceStateKind =
@@ -82,19 +81,6 @@ export type PipelineEvent =
       cut: CutReason;
       /** Mean token log-probability; only engines that give one send it. */
       logprob?: number;
-    }
-  | {
-      type: "asr_second_pass";
-      id: UtteranceId;
-      engine: string;
-      /** Replaces the line's Chinese when `fallback` is null. */
-      text: string | null;
-      class: TextClass | null;
-      lang: string | null;
-      fallback: SecondPassFallback | null;
-      start_ms: number | null;
-      done_ms: number | null;
-      logprob: number | null;
     }
   | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string; kind: JoinKind }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }

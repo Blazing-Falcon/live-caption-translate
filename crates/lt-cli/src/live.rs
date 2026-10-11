@@ -135,7 +135,6 @@ fn run_session(
     };
     let mut report = ReplayReport::new(&config.routing);
     let sampler = ProcessSampler::new(engines.pid.clone())?.with_draft(engines.draft_pid.clone());
-    let low_priority = config.latency.low_priority;
     let mut pipeline = Pipeline::start_with_options(
         config,
         source,
@@ -147,9 +146,6 @@ fn run_session(
             sampler: Some(Box::new(sampler)),
             draft: engines.draft,
             physical_cores: Some(num_cpus::get_physical()),
-            second_pass: engines.second_pass,
-            second_pass_setup: low_priority
-                .then_some(lt_audio::priority::lower_current_thread_priority as fn()),
         },
     )?;
     let started = Instant::now();

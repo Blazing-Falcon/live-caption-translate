@@ -2,14 +2,11 @@ use crossbeam_channel::{bounded, Receiver, Sender};
 use lt_core::{
     bus::{EventBus, EventReceiver},
     config::Config,
-    engines::{
-        TokenTranscript, TranslateRequest, TranslationControl, TranslationOut, Translator,
-        TranslatorCaps, WindowAsr,
-    },
+    engines::{TranslateRequest, TranslationControl, TranslationOut, Translator, TranslatorCaps},
     error::{Error, Result},
-    events::{DropReason, ListeningStateKind, PipelineEvent, SecondPassFallback, SourceStateKind},
+    events::{DropReason, ListeningStateKind, PipelineEvent, SourceStateKind},
     fakes::{FakeAsr, FakeTranslator, FakeVad},
-    pipeline::{Pipeline, PipelineHandle, PipelineOptions},
+    pipeline::{Pipeline, PipelineHandle},
     segment::FrameFlags,
     source::{AudioFrame, AudioProducer, AudioSource, SourceEvents},
     types::{CaptureMode, SourceInfo, StreamTime, TextClass, UtteranceId},
@@ -577,120 +574,4 @@ fn saturated_translation_backpressures_asr_and_pause_stop_remain_responsive() {
     assert!(start.elapsed() < Duration::from_secs(1));
     recorded.extend(events.try_iter());
     assert_terminal_order(&recorded, &[]);
-}
-
-/// The first clause decodes quickly; every later one takes longer than its timeout.
-struct ScriptedSecondPass {
-    calls: usize,
-}
-
-impl WindowAsr for ScriptedSecondPass {
-    fn decode_window(&mut self, _samples: &[f32]) -> Result<TokenTranscript> {
-        self.calls += 1;
-        let (delay, text) = if self.calls == 1 {
-            (Duration::from_millis(300), "甲乙丙丁。")
-        } else {
-            (Duration::from_secs(2), "不应出现。")
-        };
-        thread::sleep(delay);
-        Ok(TokenTranscript {
-            text: text.into(),
-            ..TokenTranscript::default()
-        })
-    }
-}
-
-#[test]
-fn second_pass_text_is_translated_in_order_and_a_slow_or_busy_engine_keeps_the_live_line() {
-    let bus = EventBus::default();
-    let events = bus.subscribe(512);
-    let mut config = Config::default();
-    config.join.hold_max_chars = 0;
-    config.asr.second_pass = "funasr_nano".into();
-    config.asr.second_pass_timeout_s = 1.0;
-    let translator = RecordingTranslator::default();
-    let requests = translator.requests.clone();
-    // One phrase every 0.67 s: clause 1 is replaced, clause 2 times out in the engine,
-    // clause 3 times out in the queue, and clause 4 finds the queue full.
-    let mut source = SyntheticWavSource::from_bytes(&wav(4));
-    source.frame_delay = Duration::from_millis(32);
-    let mut handle = Pipeline::start_with_options(
-        config,
-        Box::new(source),
-        Box::new(FakeVad::from_energy(0.001)),
-        Box::new(FakeAsr::new(
-            ["一号句子。", "二号句子。", "三号句子。", "四号句子。"]
-                .map(String::from)
-                .to_vec(),
-        )),
-        Box::new(translator),
-        bus,
-        PipelineOptions {
-            second_pass: Some(Box::new(ScriptedSecondPass { calls: 0 })),
-            ..PipelineOptions::default()
-        },
-    )
-    .unwrap();
-    handle.wait().unwrap();
-    let recorded: Vec<_> = events.try_iter().collect();
-    let mut second: Vec<_> = recorded
-        .iter()
-        .filter_map(|event| match event {
-            PipelineEvent::AsrSecondPass {
-                id, text, fallback, ..
-            } => Some((*id, text.clone(), *fallback)),
-            _ => None,
-        })
-        .collect();
-    second.sort_by_key(|(id, _, _)| *id);
-    assert_eq!(
-        second.iter().map(|(_, _, f)| *f).collect::<Vec<_>>(),
-        [
-            None,
-            Some(SecondPassFallback::Timeout),
-            Some(SecondPassFallback::Timeout),
-            Some(SecondPassFallback::Busy),
-        ],
-        "{recorded:?}"
-    );
-    assert_eq!(second[0].1.as_deref(), Some("甲乙丙丁。"));
-    // The translator gets the second-pass text for clause 1, the live text for the others,
-    // in utterance order, and never a late result.
-    let sent = requests.lock().unwrap().join("|");
-    let positions: Vec<_> = ["甲乙丙丁", "二号", "三号", "四号"]
-        .iter()
-        .map(|piece| {
-            sent.find(piece)
-                .unwrap_or_else(|| panic!("{piece} missing: {sent}"))
-        })
-        .collect();
-    assert!(positions.is_sorted(), "out of order: {sent}");
-    assert!(
-        !sent.contains("一号") && !sent.contains("不应出现"),
-        "{sent}"
-    );
-    assert_terminal_order(&recorded, &[]);
-}
-
-#[derive(Default)]
-struct RecordingTranslator {
-    requests: RequestLog,
-    fake: FakeTranslator,
-}
-
-impl Translator for RecordingTranslator {
-    fn caps(&self) -> TranslatorCaps {
-        self.fake.caps()
-    }
-    fn warm_up(&mut self, control: &TranslationControl) -> Result<()> {
-        self.fake.warm_up(control)
-    }
-    fn translate(
-        &mut self,
-        request: &TranslateRequest<'_>,
-        on_delta: &mut dyn FnMut(&str),
-    ) -> Result<TranslationOut> {
-        self.requests.lock().unwrap().push(request.text.to_owned());
-        self.fake.translate(request, on_delta)
-    }
 }

@@ -16,7 +16,7 @@ use crate::{
         SAMPLE_RATE,
     },
 };
-use std::{sync::Arc, time::Instant};
+use std::time::Instant;
 
 /// What the frontend tells the recognizer, in order.
 #[derive(Clone, Debug)]
@@ -44,8 +44,7 @@ pub struct CommitCut {
 
 #[derive(Debug)]
 pub enum AsrMessage {
-    /// A final clause and its audio, for the second pass.
-    Transcript(Transcript, Arc<[f32]>),
+    Transcript(Transcript),
     Dropped(UtteranceId, DropReason),
     Failed(UtteranceId, String),
     /// Live text of the open clause.
@@ -61,7 +60,7 @@ pub enum AsrMessage {
 impl AsrMessage {
     pub fn id(&self) -> UtteranceId {
         match self {
-            Self::Transcript(transcript, _) => transcript.id,
+            Self::Transcript(transcript) => transcript.id,
             Self::Dropped(id, _) | Self::Failed(id, _) | Self::Partial { id, .. } => *id,
         }
     }
@@ -483,7 +482,7 @@ pub(crate) fn finalize(
         &config.filter,
     ) {
         Some(reason) => AsrMessage::Dropped(segment.id, reason),
-        None => AsrMessage::Transcript(transcript, segment.samples.clone()),
+        None => AsrMessage::Transcript(transcript),
     }
 }
 
@@ -696,7 +695,7 @@ mod tests {
                                 &mut closed,
                             );
                             for output in closed {
-                                if let Output::Message(AsrMessage::Transcript(t, _)) = output {
+                                if let Output::Message(AsrMessage::Transcript(t)) = output {
                                     replayed.transcripts.push(t);
                                 }
                             }
@@ -755,7 +754,7 @@ mod tests {
             let _ = contextual_final;
             for output in closed {
                 match output {
-                    Output::Message(AsrMessage::Transcript(t, _)) => replayed.transcripts.push(t),
+                    Output::Message(AsrMessage::Transcript(t)) => replayed.transcripts.push(t),
                     Output::Message(AsrMessage::Dropped(..)) => {}
                     other => panic!("unexpected close output {other:?}"),
                 }

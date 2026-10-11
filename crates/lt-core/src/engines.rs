@@ -168,7 +168,6 @@ pub trait Translator: Send {
 type AsrFactory = fn(&Config) -> Result<Box<dyn SegmentAsr>>;
 type VadFactory = fn(&Config) -> Result<Box<dyn Vad>>;
 type TranslatorFactory = fn(&Config) -> Result<Box<dyn Translator>>;
-type SecondPassFactory = fn(&Config) -> Result<Box<dyn WindowAsr>>;
 
 #[derive(Default)]
 pub struct EngineRegistry {
@@ -176,7 +175,6 @@ pub struct EngineRegistry {
     vad: BTreeMap<String, VadFactory>,
     translators: BTreeMap<String, TranslatorFactory>,
     draft_translators: BTreeMap<String, TranslatorFactory>,
-    second_pass: BTreeMap<String, SecondPassFactory>,
 }
 
 impl EngineRegistry {
@@ -192,9 +190,6 @@ impl EngineRegistry {
     pub fn register_draft_translator(&mut self, name: &str, factory: TranslatorFactory) {
         self.draft_translators.insert(name.into(), factory);
     }
-    pub fn register_second_pass(&mut self, name: &str, factory: SecondPassFactory) {
-        self.second_pass.insert(name.into(), factory);
-    }
     pub fn build_asr(&self, config: &Config) -> Result<Box<dyn SegmentAsr>> {
         self.asr
             .get(&config.asr.engine)
@@ -202,19 +197,6 @@ impl EngineRegistry {
                 kind: "ASR",
                 name: config.asr.engine.clone(),
             })?(config)
-    }
-    /// `None` when `asr.second_pass` is off.
-    pub fn build_second_pass(&self, config: &Config) -> Result<Option<Box<dyn WindowAsr>>> {
-        if config.asr.second_pass == "off" {
-            return Ok(None);
-        }
-        self.second_pass
-            .get(&config.asr.second_pass)
-            .ok_or_else(|| Error::UnknownEngine {
-                kind: "second-pass ASR",
-                name: config.asr.second_pass.clone(),
-            })?(config)
-        .map(Some)
     }
     pub fn build_vad(&self, config: &Config) -> Result<Box<dyn Vad>> {
         self.vad
