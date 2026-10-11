@@ -69,6 +69,20 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
             .id,
         UtteranceId(3)
     );
+
+    // Lines on either side of a break, or of a gap of more than 10 s, belong to different
+    // contexts and are never translated as one sentence.
+    let mut queue = TranslationQueue::new(Config::default().translate);
+    queue.push(transcript(1, "你好。", 1.0), 0).unwrap();
+    queue.discontinuity(StreamTime::from_seconds(1.5));
+    queue.push(transcript(2, "再见。", 3.0), 0).unwrap();
+    queue.push(transcript(3, "走吧。", 15.0), 0).unwrap();
+    // Taken at each line's own end, so the skip rule stays out of it.
+    for (id, end) in [(1, 1.0), (2, 3.0), (3, 15.0)] {
+        let batch = queue.take(StreamTime::from_seconds(end));
+        assert!(batch.events.is_empty());
+        assert_eq!(batch.item.unwrap().transcript.id, UtteranceId(id));
+    }
 }
 
 /// A wrong window only makes translations worse: lines from before a break,

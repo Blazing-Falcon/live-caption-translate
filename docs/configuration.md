@@ -150,7 +150,7 @@ The default values are in the file above.
 | `repeat_penalty` | 1.0–1.3 | pipeline | Repeat penalty |
 | `max_tokens_cap` | 32–1024 | pipeline | Maximum output tokens: `min(cap, 4 × characters + 16)` |
 | `timeout_s` | 2–60 | pipeline | Time limit for one request |
-| `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items |
+| `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items. Items are not joined across a pause, a device change or a gap of more than 10 s. |
 | `skip_lag_s` | 2–30 | pipeline | Lag at which the translator skips older items |
 | `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters. Their English is given as the start of the answer, so only the new line is translated. Whole lines only. `0`: off. |
 

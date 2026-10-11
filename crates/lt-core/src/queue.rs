@@ -45,11 +45,14 @@ pub struct QueueBatch {
 
 pub struct TranslationQueue {
     config: TranslateConfig,
-    waiting: VecDeque<QueuedTranscript>,
+    /// Each waiting line, and whether it starts a new context (see `new_context`).
+    waiting: VecDeque<(QueuedTranscript, bool)>,
     /// Queued lines with their end times, newest last.
     earlier: VecDeque<(StreamTime, UtteranceId, String)>,
     /// Breaks after the end of the newest queued line, oldest first.
     breaks: VecDeque<StreamTime>,
+    /// End of the newest queued line.
+    last_end: Option<StreamTime>,
 }
 
 impl TranslationQueue {
@@ -60,18 +63,23 @@ impl TranslationQueue {
             waiting: VecDeque::new(),
             earlier: VecDeque::new(),
             breaks: VecDeque::new(),
+            last_end: None,
         }
     }
     pub fn push(&mut self, transcript: Transcript, queued_ms: u64) -> Result<()> {
         if self.waiting.len() == Self::CAPACITY {
             return Err(Error::Engine("Translation queue is full".into()));
         }
-        let window = self.window(&transcript);
-        self.waiting.push_back(QueuedTranscript {
-            transcript,
-            queued_ms,
-            window,
-        });
+        let new_context = self.new_context(&transcript);
+        let window = self.window(&transcript, new_context);
+        self.waiting.push_back((
+            QueuedTranscript {
+                transcript,
+                queued_ms,
+                window,
+            },
+            new_context,
+        ));
         Ok(())
     }
 
@@ -81,8 +89,9 @@ impl TranslationQueue {
         self.breaks.push_back(at);
     }
 
-    /// The newest earlier lines that fit in `window_chars` together, whole lines only.
-    fn window(&mut self, transcript: &Transcript) -> Vec<(UtteranceId, String)> {
+    /// A break or a long gap comes before this line, so earlier lines are another context: they
+    /// are neither its window nor joined with it.
+    fn new_context(&mut self, transcript: &Transcript) -> bool {
         let start = transcript.timing.start;
         // Every kept break is at or after the previous line's end.
         let after_break = self.breaks.front().is_some_and(|at| *at <= start);
@@ -93,16 +102,20 @@ impl TranslationQueue {
         {
             self.breaks.pop_front();
         }
+        let after_gap = self
+            .last_end
+            .is_some_and(|end| start.saturating_sub(end).seconds() > WINDOW_GAP_S);
+        self.last_end = Some(transcript.timing.end);
+        after_break || after_gap
+    }
+
+    /// The newest earlier lines that fit in `window_chars` together, whole lines only.
+    fn window(&mut self, transcript: &Transcript, new_context: bool) -> Vec<(UtteranceId, String)> {
         let limit = self.config.window_chars as usize;
         if limit == 0 {
             return Vec::new();
         }
-        let stale = after_break
-            || self
-                .earlier
-                .back()
-                .is_some_and(|(end, _, _)| start.saturating_sub(*end).seconds() > WINDOW_GAP_S);
-        if stale {
+        if new_context {
             self.earlier.clear();
         }
         let mut window = Vec::new();
@@ -135,13 +148,13 @@ impl TranslationQueue {
 
     pub fn take(&mut self, live: StreamTime) -> QueueBatch {
         let mut batch = QueueBatch::default();
-        let skip = self.waiting.front().is_some_and(|item| {
+        let skip = self.waiting.front().is_some_and(|(item, _)| {
             live.saturating_sub(item.transcript.timing.end).seconds()
                 > f64::from(self.config.skip_lag_s)
         });
         if skip {
             while self.waiting.len() > 1 {
-                if let Some(old) = self.waiting.pop_front() {
+                if let Some((old, _)) = self.waiting.pop_front() {
                     batch.events.push(PipelineEvent::Skipped {
                         id: old.transcript.id,
                         reason: SkipReason::CatchUp,
@@ -150,16 +163,19 @@ impl TranslationQueue {
                 }
             }
         }
-        let Some(mut item) = self.waiting.pop_front() else {
+        let Some((mut item, _)) = self.waiting.pop_front() else {
             return batch;
         };
         let mut absorbed = Vec::new();
-        while let Some(next) = self.waiting.front() {
+        while let Some((next, new_context)) = self.waiting.front() {
+            if *new_context {
+                break;
+            }
             let joined = join_text(&item.transcript.text, &next.transcript.text);
             if joined.chars().count() > self.config.queue_join_max_chars as usize {
                 break;
             }
-            let Some(next) = self.waiting.pop_front() else {
+            let Some((next, _)) = self.waiting.pop_front() else {
                 break;
             };
             absorbed.push(next.transcript.id);
