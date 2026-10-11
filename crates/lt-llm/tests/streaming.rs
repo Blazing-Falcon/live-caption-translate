@@ -51,6 +51,8 @@ impl MockServer {
             while !worker_stop.load(Ordering::Acquire) {
                 match listener.accept() {
                     Ok((stream, _)) => {
+                        // Windows sockets inherit the listener's non-blocking mode.
+                        stream.set_nonblocking(false).unwrap();
                         stream
                             .set_read_timeout(Some(Duration::from_millis(100)))
                             .unwrap();

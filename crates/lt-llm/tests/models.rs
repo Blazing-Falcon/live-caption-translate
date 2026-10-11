@@ -80,6 +80,9 @@ impl MockServer {
             while !worker_stopped.load(Ordering::Acquire) {
                 match listener.accept() {
                     Ok((mut stream, _)) => {
+                        // Windows sockets inherit the listener's non-blocking mode; a request
+                        // that has not arrived yet would read as WouldBlock and be dropped.
+                        stream.set_nonblocking(false).unwrap();
                         stream
                             .set_read_timeout(Some(Duration::from_secs(1)))
                             .unwrap();
