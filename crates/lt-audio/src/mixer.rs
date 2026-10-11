@@ -67,6 +67,11 @@ impl ClockMixer {
             .sources
             .get_mut(&id)
             .ok_or_else(|| Error::Engine("Audio source is not registered with the mixer".into()))?;
+        // `take_until` applies a fence at the frame's first sample, which is already mixed:
+        // keep the boundary here instead of losing it with the late part.
+        if frame.flags.discontinuity && frame.t0 < self.cursor {
+            self.discontinuity = true;
+        }
         if frame.t0.samples().saturating_add(512) <= self.cursor.samples() {
             return Ok(MixerPush::Late);
         }
@@ -187,6 +192,18 @@ mod tests {
         let resumed = mixer.take_until(StreamTime(2048)).unwrap();
         assert!(resumed.flags.discontinuity);
         assert_eq!(resumed.samples, [0.4; 512]);
+        // A restarted stream whose first frame comes too late still marks the boundary.
+        let mut restarted = frame(1024, 0.3);
+        restarted.flags.discontinuity = true;
+        assert!(matches!(mixer.push(1, restarted).unwrap(), MixerPush::Late));
+        mixer.push(1, frame(2048, 0.3)).unwrap();
+        assert!(
+            mixer
+                .take_until(StreamTime(2560))
+                .unwrap()
+                .flags
+                .discontinuity
+        );
     }
 
     #[test]
