@@ -9,9 +9,9 @@
 //! outputs.
 
 use crate::{
-    commit::{cut_at, decide, is_word_token, join_tokens, CommitSettings, Decision},
+    commit::{cut_at, decide, is_word_token, join_tokens, CommitSettings, Decision, MIN_CLAUSE_S},
     config::Config,
-    engines::{mean_log_prob, StreamResult, StreamingAsr},
+    engines::{mean_log_prob, StreamResult, StreamingAsr, Vad},
     recognizer::{finalize, AsrMessage},
     text::{classify_with_lang, clean},
     types::{CutReason, Segment, StageTiming, StreamTime, TextClass, Transcript, UtteranceId},
@@ -32,6 +32,15 @@ const SENTENCE_COMMA_S: f64 = 6.0;
 /// In sentence mode a clause that runs this long is cut by the normal rules,
 /// so translation input and clause audio stay bounded.
 const SENTENCE_MAX_S: f64 = 30.0;
+/// A commit cut is searched for from the last word's start plus this (a word is at least this
+/// long) to the next word's start plus `CUT_SEARCH_AFTER_S`.
+const CUT_SEARCH_WORD_S: f64 = 0.1;
+/// Token times are corrected by the model's typical delay; a word may still start this much later.
+const CUT_SEARCH_AFTER_S: f64 = 0.15;
+/// Audio the voice detector hears before the search window, so its state has settled.
+const CUT_SEARCH_LEAD_S: f64 = 0.5;
+/// Below this speech probability the voice detector hears a gap between words.
+const CUT_GAP_PROB: f32 = 0.5;
 /// The longest clause audio kept for the second pass, above `SENTENCE_MAX_S`
 /// because a cut needs a few more words after that.
 const MAX_CLAUSE_S: f64 = 40.0;
@@ -63,6 +72,9 @@ pub struct StreamRecognizer {
     commit: CommitSettings,
     /// Rules for sentence mode; `None` in the other modes.
     sentence: Option<CommitSettings>,
+    /// Finds the gap between words at a commit. Token times alone are too coarse: the
+    /// second pass decodes the clause audio and would hear part of the next word.
+    vad: Option<Box<dyn Vad>>,
     next_id: u64,
     /// Stream time of engine time 0; `None` until audio arrives after a break.
     origin: Option<StreamTime>,
@@ -76,7 +88,7 @@ pub struct StreamRecognizer {
 
 impl StreamRecognizer {
     /// `sentences`: cut at sentence ends and pauses; commas only after `SENTENCE_COMMA_S`.
-    pub fn new(config: &Config, sentences: bool) -> Self {
+    pub fn new(config: &Config, sentences: bool, vad: Option<Box<dyn Vad>>) -> Self {
         // Streaming tokens never change, so a commit needs no second look.
         let commit = CommitSettings {
             stability: false,
@@ -89,6 +101,7 @@ impl StreamRecognizer {
                 ..commit
             }),
             commit,
+            vad,
             config: config.clone(),
             next_id: 0,
             origin: None,
@@ -195,11 +208,26 @@ impl StreamRecognizer {
             };
             match decide(&words, &times, None, &settings) {
                 Decision::Commit { k } | Decision::Cap { k } => {
-                    let cut = StreamTime::from_seconds(cut_at(
-                        clause_start,
-                        times[k + 1],
-                        audio_end.seconds(),
-                    ));
+                    let last_word = (0..=k).rev().find(|&i| is_word_token(&words[i]));
+                    let estimate = cut_at(clause_start, times[k + 1], audio_end.seconds());
+                    let gap = last_word.and_then(|i| {
+                        self.gap_in(
+                            clause_start + times[i] + CUT_SEARCH_WORD_S,
+                            clause_start + times[k + 1] + CUT_SEARCH_AFTER_S,
+                        )
+                    });
+                    tracing::debug!(
+                        estimate,
+                        gap,
+                        from = last_word.map(|i| clause_start + times[i]),
+                        next = clause_start + times[k + 1],
+                        "commit cut"
+                    );
+                    let cut = StreamTime::from_seconds(
+                        gap.unwrap_or(estimate)
+                            .max(clause_start + MIN_CLAUSE_S)
+                            .min(audio_end.seconds()),
+                    );
                     let range = self.consumed..self.consumed + k + 1;
                     self.close(tokens, range, cut, CutReason::Commit, asr_ms, out);
                     self.consumed += k + 1;
@@ -329,6 +357,38 @@ impl StreamRecognizer {
         }
     }
 
+    /// The middle of the quietest frame of the first gap the voice detector hears between
+    /// `from_s` and `to_s`. The first, because speakers often pause after a filler such as
+    /// 然后 that opens the next clause, and that later gap may be the deeper one.
+    fn gap_in(&mut self, from_s: f64, to_s: f64) -> Option<f64> {
+        let from = StreamTime::from_seconds(from_s);
+        let to = StreamTime::from_seconds(to_s).min(self.end_of_audio());
+        if from >= to || self.vad.is_none() {
+            return None;
+        }
+        let lead =
+            StreamTime::from_seconds((from_s - CUT_SEARCH_LEAD_S).max(0.0)).max(self.audio_start);
+        let samples = self.slice(lead, to);
+        let vad = self.vad.as_mut()?;
+        vad.reset();
+        let mut quietest: Option<(f32, u64)> = None;
+        for (index, frame) in samples.as_chunks::<512>().0.iter().enumerate() {
+            let probability = vad.speech_prob(frame);
+            let middle = lead.0 + index as u64 * 512 + 256;
+            if middle < from.0 {
+                continue;
+            }
+            if probability < CUT_GAP_PROB {
+                if quietest.is_none_or(|(lowest, _)| probability < lowest) {
+                    quietest = Some((probability, middle));
+                }
+            } else if quietest.is_some() {
+                break;
+            }
+        }
+        quietest.map(|(_, middle)| StreamTime(middle).seconds())
+    }
+
     fn slice(&self, start: StreamTime, end: StreamTime) -> Vec<f32> {
         let from = start.0.saturating_sub(self.audio_start.0) as usize;
         let to = (end.0.saturating_sub(self.audio_start.0) as usize).min(self.audio.len());
@@ -421,7 +481,7 @@ mod tests {
     type Final = (String, CutReason, StreamTime, StreamTime);
 
     /// Two sentences, a 2 s pause, and a last sentence that the end of the audio closes.
-    fn run(sentences: bool) -> (Vec<Final>, Vec<u64>, usize) {
+    fn run(sentences: bool, vad: Option<Box<dyn Vad>>) -> (Vec<Final>, Vec<u64>, usize) {
         let mut config = Config::default();
         config.latency.comma_min_tokens = 3;
         let mut script = Vec::new();
@@ -444,7 +504,7 @@ mod tests {
             part_start_s: 0.0,
             part_first: 0,
         };
-        let mut recognizer = StreamRecognizer::new(&config, sentences);
+        let mut recognizer = StreamRecognizer::new(&config, sentences, vad);
         let mut out = Vec::new();
         let base = StreamTime::from_seconds(10.0);
         let total = (at * 16_000.0) as usize;
@@ -494,7 +554,7 @@ mod tests {
 
     #[test]
     fn clauses_end_at_marks_and_pauses_without_losing_text_and_carry_their_own_audio() {
-        let (finals, ids, partials) = run(false);
+        let (finals, ids, partials) = run(false, None);
         let texts: Vec<_> = finals.iter().map(|(text, ..)| text.as_str()).collect();
         assert_eq!(
             texts,
@@ -521,7 +581,7 @@ mod tests {
     /// "Wait for full sentences" must not cut at a comma, and must still show the live text.
     #[test]
     fn sentence_mode_cuts_only_at_sentence_ends_and_still_shows_live_text() {
-        let (finals, ids, partials) = run(true);
+        let (finals, ids, partials) = run(true, None);
         let texts: Vec<_> = finals.iter().map(|(text, ..)| text.as_str()).collect();
         assert_eq!(
             texts,
@@ -531,5 +591,39 @@ mod tests {
         assert_eq!(cuts, [CutReason::Commit, CutReason::Pause, CutReason::End]);
         assert_eq!(ids, [0, 1, 2]);
         assert!(partials > 0);
+    }
+
+    /// Hears a gap from 2.70 s to 2.80 s after the start of `run`'s audio. The buffer holds
+    /// sample index / total, so a frame's first sample tells its time.
+    struct GapVad {
+        total: f32,
+    }
+
+    impl Vad for GapVad {
+        fn speech_prob(&mut self, frame: &[f32; 512]) -> f32 {
+            let at = f64::from(frame[0] * self.total) / 16_000.0;
+            if (2.70..2.80).contains(&at) {
+                0.1
+            } else {
+                0.9
+            }
+        }
+        fn reset(&mut self) {}
+    }
+
+    /// The comma's next word is reported at 2.9 s, but the gap the voice detector hears is
+    /// earlier. The cut must land in the gap, or the second pass hears the next word.
+    #[test]
+    fn a_commit_cut_lands_in_the_gap_the_voice_detector_hears() {
+        // `run` feeds 6.9 s of audio.
+        let total = (6.9_f64 * 16_000.0) as usize;
+        let vad = GapVad {
+            total: total as f32,
+        };
+        let (finals, _, _) = run(false, Some(Box::new(vad)));
+        let base = StreamTime::from_seconds(10.0);
+        let cut = finals[1].3.seconds() - base.seconds();
+        assert!((2.70..2.80).contains(&cut), "cut at {cut}");
+        assert_eq!(finals[2].2, finals[1].3);
     }
 }

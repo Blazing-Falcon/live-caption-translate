@@ -79,7 +79,7 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 ## Engines
 
-**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. Pause rules: 2.4 s of silence with no words, `asr.stream_pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words.
+**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. Pause rules: 2.4 s of silence with no words, `asr.stream_pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after Silero's speech onset (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
 
 **SenseVoice:** sherpa-onnx C API, `language = auto`, `use_itn = true`, 1 thread, greedy search, 16 kHz mono input. The result JSON gives the text, the language tag, the audio event and token times. The commit rule uses the token times.
 

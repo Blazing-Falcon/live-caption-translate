@@ -34,6 +34,18 @@ pub struct XAsrStream {
     stream: Option<NonNull<sys::OnlineStream>>,
     /// Silence added before the end of input: the encoder needs a full chunk plus look-ahead.
     tail: Vec<f32>,
+    /// Seconds the model reports a word after it starts; subtracted from token times.
+    lag_s: f32,
+}
+
+/// The median delay of this model's first word after silence behind Silero's speech onset, for
+/// each chunk size. Times count audio frames, so the delay does not depend on the PC.
+fn token_lag_s(chunk_ms: u32) -> f32 {
+    match chunk_ms {
+        160 => 0.44,
+        960 => 0.23,
+        _ => 0.34,
+    }
 }
 
 // SAFETY: the recognizer and its stream move to one ASR worker together and every call takes
@@ -86,6 +98,7 @@ impl XAsrStream {
             recognizer,
             stream: None,
             tail: vec![0.0; ((2.0 * chunk_s + 0.5) * 16_000.0) as usize],
+            lag_s: token_lag_s(settings.stream_chunk_ms),
         })
     }
 
@@ -147,7 +160,7 @@ impl XAsrStream {
             let json = unsafe { CStr::from_ptr(pointer.as_ptr().cast::<c_char>()) };
             json.to_str()
                 .map_err(|error| engine_error(&format!("{NAME} result is not UTF-8"), error))
-                .and_then(parse_result)
+                .and_then(|json| parse_result(json, self.lag_s))
         };
         // SAFETY: the matching destroy function, called once.
         unsafe { sys::SherpaOnnxDestroyOnlineStreamResultJson(pointer.as_ptr()) };
@@ -169,7 +182,7 @@ struct OnlineResult {
     start_time: f64,
 }
 
-fn parse_result(json: &str) -> Result<StreamResult> {
+fn parse_result(json: &str, lag_s: f32) -> Result<StreamResult> {
     let raw: OnlineResult = serde_json::from_str(json)
         .map_err(|error| engine_error(&format!("{NAME} returned invalid result JSON"), error))?;
     let mut tokens = raw.tokens;
@@ -179,7 +192,11 @@ fn parse_result(json: &str) -> Result<StreamResult> {
         tokens: TokenTranscript {
             text: raw.text,
             tokens,
-            timestamps: raw.timestamps,
+            timestamps: raw
+                .timestamps
+                .iter()
+                .map(|time| (time - lag_s).max(0.0))
+                .collect(),
             lang_tag: None,
             event: None,
             log_probs: raw.ys_probs,

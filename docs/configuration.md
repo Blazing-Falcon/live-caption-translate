@@ -177,7 +177,7 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `engine` | `silero`, `silero_v6`, `ten` | pipeline | Voice detection model: Silero v5, Silero v6 or TEN VAD. All three give a speech probability, so the other `vad` keys apply to each. |
+| `engine` | `silero`, `silero_v6`, `ten` | pipeline | Voice detection model: Silero v5, Silero v6 or TEN VAD. All three give a speech probability, so the other `vad` keys apply to each. With `xasr_stream` it only places the cut between two lines. |
 | `threshold` | 0.2–0.9 | pipeline | Speech probability that counts as speech |
 | `min_speech_s` | 0.05–1.0 | pipeline | Speech necessary to open a segment |
 | `min_silence_s` | 0.15–1.5 | pipeline | Pause that closes a segment. This is the main latency setting. |

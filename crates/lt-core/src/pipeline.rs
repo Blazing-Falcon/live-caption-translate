@@ -258,6 +258,13 @@ impl Pipeline {
             cores,
         );
         let recognizer_active = initial_mode.mode != EffectiveMode::Off && !streaming;
+        // A streaming engine finds its own clauses; the voice detector then only places cuts,
+        // on the thread that holds the clause audio.
+        let (front_vad, stream_vad) = if streaming {
+            (None, Some(vad))
+        } else {
+            (Some(vad), None)
+        };
         let mut handle = PipelineHandle {
             commands: command_tx,
             cancelled: cancelled.clone(),
@@ -285,6 +292,7 @@ impl Pipeline {
             notices: front_tx.clone(),
             segment_counts: segment_counts.clone(),
             sentences: initial_mode.mode == EffectiveMode::Off,
+            vad: stream_vad,
         };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())
@@ -341,7 +349,7 @@ impl Pipeline {
                 .spawn(move || {
                     frontend_loop(
                         source,
-                        vad,
+                        front_vad,
                         config,
                         command_rx,
                         segment_tx,
@@ -508,7 +516,8 @@ impl Drop for Finished {
 
 struct Frontend {
     source: Box<dyn AudioSource>,
-    vad: Box<dyn Vad>,
+    /// `None` with a streaming engine, which does not use it here.
+    vad: Option<Box<dyn Vad>>,
     builder: SegmentBuilder,
     input: Option<AudioReceiver>,
     source_cancel: Arc<AtomicBool>,
@@ -636,7 +645,9 @@ impl Frontend {
         let update = self.builder.discontinuity(at);
         self.notices.push_back(FrontendNotice::Discontinuity(at));
         self.stage(update, false);
-        self.vad.reset();
+        if let Some(vad) = &mut self.vad {
+            vad.reset();
+        }
     }
 
     /// Queue an input for the recognizer, merging consecutive audio of the same clause.
@@ -779,7 +790,10 @@ impl Frontend {
             self.cut(frame.t0);
             frame.flags.discontinuity = false;
         }
-        let probability = self.vad.speech_prob(&frame.samples);
+        let probability = self
+            .vad
+            .as_mut()
+            .map_or(0.0, |vad| vad.speech_prob(&frame.samples));
         let update = self.builder.push(&frame.samples, probability, frame.flags);
         self.stage(update, false);
         if self.recognizer {
@@ -800,7 +814,7 @@ impl Drop for Frontend {
 #[allow(clippy::too_many_arguments)]
 fn frontend_loop(
     source: Box<dyn AudioSource>,
-    vad: Box<dyn Vad>,
+    vad: Option<Box<dyn Vad>>,
     config: Config,
     commands: Receiver<Command>,
     segments: Sender<RecognizerInput>,
@@ -946,6 +960,7 @@ struct AsrNotices {
     segment_counts: Arc<SegmentCounters>,
     /// Off mode: clauses end only at sentence ends and pauses.
     sentences: bool,
+    vad: Option<Box<dyn Vad>>,
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -1008,7 +1023,7 @@ fn stream_loop(
     cancelled: &AtomicBool,
     stream: AsrNotices,
 ) -> Result<()> {
-    let mut recognizer = StreamRecognizer::new(config, stream.sentences);
+    let mut recognizer = StreamRecognizer::new(config, stream.sentences, stream.vad);
     let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {

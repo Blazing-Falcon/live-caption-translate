@@ -194,7 +194,7 @@
       return { text: `${name} is not downloaded.`, download: waiting.model };
     }
     if (row.key === "vad.engine" && config.asr.engine === "xasr_stream") {
-      return { text: "X-ASR streaming finds the pauses itself and does not use voice detection.", download: null };
+      return { text: "X-ASR streaming finds the pauses itself. Voice detection only places the cut between two lines.", download: null };
     }
     const current = row.choices.find((choice) => choice.value === row.value);
     if (current && !ready(current) && current.model !== null) {
