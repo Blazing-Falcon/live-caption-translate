@@ -25,10 +25,7 @@ use lt_llm::supervisor::Supervisor;
 use std::{
     fs::File,
     io::BufWriter,
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
+    sync::Arc,
     thread::{self, JoinHandle},
 };
 
@@ -58,7 +55,6 @@ pub struct Controller {
     shared: Arc<Shared>,
     session: Option<Session>,
     supervisor: Option<Supervisor>,
-    cancelled: Arc<AtomicBool>,
 }
 
 pub fn spawn(shared: Arc<Shared>, commands: Receiver<Cmd>) -> std::io::Result<JoinHandle<()>> {
@@ -69,7 +65,6 @@ pub fn spawn(shared: Arc<Shared>, commands: Receiver<Cmd>) -> std::io::Result<Jo
                 shared,
                 session: None,
                 supervisor: None,
-                cancelled: Arc::new(AtomicBool::new(false)),
             }
             .run(commands)
         })
@@ -114,7 +109,6 @@ impl Controller {
                     }
                 }
                 Cmd::Shutdown(reply) => {
-                    self.cancelled.store(true, Ordering::Release);
                     self.stop_session();
                     self.stop_supervisor();
                     let _ = reply.send(Ok(()));
@@ -127,6 +121,7 @@ impl Controller {
     }
 
     fn start(&mut self) -> Result<(), String> {
+        self.drop_finished_session();
         if let Some(session) = &self.session {
             return session.pipeline.resume().map_err(|e| e.to_string());
         }
@@ -142,7 +137,6 @@ impl Controller {
                 missing.join(", ")
             ));
         }
-        self.cancelled.store(false, Ordering::Release);
         let bus = self.shared.bus.clone();
         bus.publish(PipelineEvent::EngineStatus {
             engine: EngineKind::Asr,
@@ -161,13 +155,23 @@ impl Controller {
             state: EngineState::Ready,
             message: None,
         });
+        if self
+            .supervisor
+            .as_ref()
+            .is_some_and(|supervisor| !supervisor.is_running())
+        {
+            // It gave up after repeated crashes; a new start tries a new server.
+            self.stop_supervisor();
+        }
         if config.translate.server_url.is_empty() && self.supervisor.is_none() {
+            // Quit sets `quitting` before its command waits here, so a slow model load
+            // cannot hold up the exit.
             match engines::start_supervisor(
                 &config,
                 &models,
                 &crate::paths::llama_server(),
                 &bus,
-                &self.cancelled,
+                &self.shared.quitting,
             ) {
                 Ok(supervisor) => self.supervisor = Some(supervisor),
                 Err(message) => {
@@ -247,9 +251,21 @@ impl Controller {
     }
 
     fn pause(&mut self) -> Result<(), String> {
+        self.drop_finished_session();
         match &self.session {
             Some(session) => session.pipeline.pause().map_err(|e| e.to_string()),
             None => Ok(()),
+        }
+    }
+
+    /// A pipeline ends by itself when its capture fails for good; it cannot resume.
+    fn drop_finished_session(&mut self) {
+        if self
+            .session
+            .as_ref()
+            .is_some_and(|session| session.pipeline.is_finished())
+        {
+            self.stop_session();
         }
     }
 

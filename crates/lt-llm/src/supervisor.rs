@@ -163,6 +163,13 @@ impl Supervisor {
         self.ready.load(Ordering::Acquire)
     }
 
+    /// False once the supervisor gave up after repeated crashes or was stopped.
+    pub fn is_running(&self) -> bool {
+        self.worker
+            .as_ref()
+            .is_some_and(|worker| !worker.is_finished())
+    }
+
     pub fn wait_ready(&self, timeout: Duration) -> Result<()> {
         self.wait_ready_cancellable(timeout, &AtomicBool::new(false))
     }
