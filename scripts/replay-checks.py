@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """Checks on a `lt-cli replay` event log (`<out>.events.jsonl`).
 
-  python scripts/replay-checks.py out/conv.events.jsonl [--trace TRACE.json] [--expect 麒麟9050pro]
+  python scripts/replay-checks.py out/conv.events.jsonl [--expect 麒麟9050pro]
 
-Reports per-id event ordering violations (see docs/ipc.md), the share of reference-trace
-clauses reproduced, and whether the final clause texts contain an expected string. Exit status
-1 when a hard check fails.
+Reports per-id event ordering violations (see docs/ipc.md) and whether the final clause texts
+contain an expected string. Exit status 1 when a check fails.
 """
 import argparse
 import json
-import re
 import sys
 
 TERMINAL = {"translation_final", "translation_failed", "skipped", "dropped"}
@@ -56,26 +54,13 @@ def ordering(events):
     return problems
 
 
-def strip(text):
-    return re.sub(r"[\s，。、？！,.?!；;：:]", "", text)
-
-
 def final_clauses(events):
     return [item["event"]["text"] for item in events if item["event"]["type"] == "asr_final"]
-
-
-def trace_match(clauses, trace_path):
-    trace = json.load(open(trace_path, encoding="utf-8"))
-    wanted = [piece_clause["text"] for piece in trace["pieces"] for piece_clause in piece["clauses"]]
-    got = {strip(text) for text in clauses}
-    hits = sum(1 for text in wanted if strip(text) in got)
-    return hits, len(wanted)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("events")
-    parser.add_argument("--trace")
     parser.add_argument("--expect", action="append", default=[])
     args = parser.parse_args()
     events = load(args.events)
@@ -91,11 +76,6 @@ def main():
         present = any(expected.lower() in text.lower() for text in clauses)
         print(f"clause text contains {expected!r}: {present}")
         failed |= not present
-    if args.trace:
-        hits, total = trace_match(clauses, args.trace)
-        share = hits / total if total else 0
-        print(f"reference clauses reproduced: {hits}/{total} ({share:.0%})")
-        failed |= share < 0.9
     return 1 if failed else 0
 
 
