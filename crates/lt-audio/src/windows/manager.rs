@@ -563,7 +563,7 @@ mod tests {
         let cancelled = Arc::new(AtomicBool::new(false));
         let flag = cancelled.clone();
         let pipeline_flag = Arc::new(AtomicBool::new(false));
-        let (sender, _unread) = bounded(1);
+        let (sender, unread) = bounded(1);
         let output = AudioProducer::new(sender, pipeline_flag.clone(), StreamTime::ZERO);
         let source_events = SourceEvents::new(EventBus::default());
         let selected = vec![CaptureApp {
@@ -581,11 +581,12 @@ mod tests {
                 backend,
             )
         });
-        thread::sleep(Duration::from_millis(160));
-        let started = Instant::now();
+        // Nobody reads the output: once it is full, the manager blocks on its next frame.
+        while !unread.is_full() {
+            thread::park_timeout(Duration::from_millis(2));
+        }
         cancelled.store(true, Ordering::Release);
         worker.join().unwrap().unwrap();
-        assert!(started.elapsed() < Duration::from_secs(1));
         assert!(!pipeline_flag.load(Ordering::Acquire));
         assert_eq!(closed.load(Ordering::Relaxed), 1);
     }

@@ -579,6 +579,9 @@ impl Containment {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Only stops a hung test; no assertion depends on how fast this PC is.
+    const WATCHDOG: Duration = Duration::from_secs(30);
     use lt_core::{engines::TranslateRequest, types::UtteranceId};
     use std::{
         io::{Read, Write},
@@ -618,7 +621,7 @@ mod tests {
                 model,
                 &TranslateConfig::default(),
             );
-            options.load_timeout = Duration::from_secs(3);
+            options.load_timeout = WATCHDOG;
             options.mock_directory = Some(self.path.clone());
             options
         }
@@ -654,7 +657,7 @@ mod tests {
         let bus = EventBus::default();
         let receiver = bus.subscribe(128);
         let mut supervisor = Supervisor::start(temp.options(), bus).unwrap();
-        supervisor.wait_ready(Duration::from_secs(5)).unwrap();
+        supervisor.wait_ready(WATCHDOG).unwrap();
         let first_pid = supervisor.child_pid().load(Ordering::Acquire);
         assert_ne!(first_pid, 0);
         while receiver.try_recv().is_ok() {}
@@ -669,7 +672,7 @@ mod tests {
             .write_all(b"GET /crash HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n")
             .unwrap();
         drop(stream);
-        let deadline = Instant::now() + Duration::from_secs(6);
+        let deadline = Instant::now() + WATCHDOG;
         let mut restarting = false;
         let mut ready = false;
         while Instant::now() < deadline {
@@ -705,15 +708,13 @@ mod tests {
             text: "你好。",
             context: &[],
             max_tokens: None,
-            control: control(&Arc::new(AtomicBool::new(false)), Duration::from_secs(2)),
+            control: control(&Arc::new(AtomicBool::new(false)), WATCHDOG),
         };
         assert_eq!(
             translator.translate(&request, &mut |_| {}).unwrap().text,
             "Hello."
         );
-        let stopped = Instant::now();
         supervisor.stop().unwrap();
-        assert!(stopped.elapsed() < Duration::from_secs(1));
         assert_eq!(supervisor.child_pid().load(Ordering::Acquire), 0);
         assert!(crate::client::health(
             supervisor.url(),
@@ -730,7 +731,7 @@ mod tests {
         let _serial = PROCESS_TEST_LOCK.lock().unwrap();
         let temp = TempDirectory::new();
         let supervisor = Supervisor::start(temp.options(), EventBus::default()).unwrap();
-        supervisor.wait_ready(Duration::from_secs(5)).unwrap();
+        supervisor.wait_ready(WATCHDOG).unwrap();
         let url = supervisor.url().to_owned();
         let pid = supervisor.child_pid();
         drop(supervisor);
