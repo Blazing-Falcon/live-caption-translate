@@ -48,6 +48,12 @@
 
   async function chooseWindow(event: Event): Promise<void> {
     const input = event.currentTarget as HTMLInputElement;
+    const saved = get(liveConfig)?.translate.window_chars ?? config.translate.window_chars;
+    // An empty or unreadable field reads as "" here; it must not save 0 and turn the window off.
+    if (input.value.trim() === "" || !Number.isFinite(Number(input.value))) {
+      input.value = String(saved);
+      return;
+    }
     const patch = windowCharsPatch(Number(input.value));
     await session.save("translate.window_chars", patch);
     // Show what was saved: a clamped value, or the old one after a failed save.
