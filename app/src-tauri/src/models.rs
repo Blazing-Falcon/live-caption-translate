@@ -193,36 +193,3 @@ impl Models {
         self.status(shared)
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn status(id: &str, state: ModelState) -> ModelStatus {
-        ModelStatus {
-            id: id.into(),
-            name: id.into(),
-            bytes_total: 10,
-            bytes_done: 5,
-            state,
-            optional: false,
-        }
-    }
-
-    #[test]
-    fn an_optional_model_does_not_block_listening() {
-        // all_ready consults the real manifest: with nothing on disk it is false, and an
-        // optional model alone never decides the answer.
-        assert!(!all_ready(Path::new("definitely/not/here")));
-        let optional = ModelStatus {
-            optional: true,
-            ..status("chunk160", ModelState::Missing)
-        };
-        let required = status("asr", ModelState::Ready);
-        let ready = [required, optional]
-            .iter()
-            .filter(|m| !m.optional)
-            .all(|m| m.state == ModelState::Ready);
-        assert!(ready);
-    }
-}

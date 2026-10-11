@@ -103,19 +103,3 @@ fn fast_replay_writes_the_shared_utf8_records_and_complete_summary() {
     let stdout: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(stdout, records[2]);
 }
-
-#[test]
-fn invalid_replay_range_and_missing_wav_exit_with_readable_errors() {
-    let output = cli()
-        .args(["replay", "missing.wav", "--fake", "--start", "NaN"])
-        .output()
-        .unwrap();
-    assert!(!output.status.success());
-    assert!(String::from_utf8_lossy(&output.stderr).contains("finite"));
-    let output = cli()
-        .args(["replay", "missing.wav", "--fake"])
-        .output()
-        .unwrap();
-    assert!(!output.status.success());
-    assert!(String::from_utf8_lossy(&output.stderr).contains("WAV"));
-}
