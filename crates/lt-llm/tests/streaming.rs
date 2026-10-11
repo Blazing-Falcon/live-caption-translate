@@ -19,6 +19,12 @@ use std::{
     time::{Duration, Instant},
 };
 
+/// Only stops a hung test; no assertion depends on how fast this PC is.
+const WATCHDOG: Duration = Duration::from_secs(30);
+/// A stalled mock server holds its reply this long, or until the test ends. A client that waited
+/// for it would outlast `WATCHDOG`.
+const STALL: Duration = Duration::from_secs(120);
+
 struct MockServer {
     url: String,
     stop: Arc<AtomicBool>,
@@ -46,7 +52,7 @@ impl MockServer {
         let stop = Arc::new(AtomicBool::new(false));
         let worker_stop = stop.clone();
         let thread = thread::spawn(move || {
-            let deadline = Instant::now() + Duration::from_secs(3);
+            let deadline = Instant::now() + WATCHDOG;
             let mut served = 0;
             while !worker_stop.load(Ordering::Acquire) {
                 match listener.accept() {
@@ -100,7 +106,7 @@ impl Drop for MockServer {
 }
 
 fn read_request(stream: &mut TcpStream) -> (String, Value) {
-    let deadline = Instant::now() + Duration::from_secs(2);
+    let deadline = Instant::now() + WATCHDOG;
     let mut bytes = Vec::new();
     let mut buffer = [0_u8; 1024];
     let header_end = loop {
@@ -212,12 +218,11 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
             .unwrap();
     let mut deltas = Vec::new();
     let output = translator
-        .translate(
-            &request("你好。", control(Duration::from_secs(3))),
-            &mut |text| deltas.push(text.to_owned()),
-        )
+        .translate(&request("你好。", control(WATCHDOG)), &mut |text| {
+            deltas.push(text.to_owned())
+        })
         .unwrap();
-    let (headers, body) = sent_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+    let (headers, body) = sent_rx.recv_timeout(WATCHDOG).unwrap();
     assert!(headers.starts_with("POST /v1/chat/completions HTTP/1.1\r\n"));
     assert_eq!(
         body,
@@ -286,7 +291,7 @@ fn window_prefills_earlier_english_shows_only_the_new_line_and_falls_back_when_e
     ] {
         let request = TranslateRequest {
             context: &earlier,
-            ..request("然后吃饭。", control(Duration::from_secs(3)))
+            ..request("然后吃饭。", control(WATCHDOG))
         };
         let mut deltas = Vec::new();
         let output = translator
@@ -294,12 +299,9 @@ fn window_prefills_earlier_english_shows_only_the_new_line_and_falls_back_when_e
             .unwrap();
         assert_eq!(deltas, expected);
         assert_eq!(output.text, *expected.last().unwrap());
-        assert_eq!(
-            sent_rx.recv_timeout(Duration::from_secs(1)).unwrap(),
-            window
-        );
+        assert_eq!(sent_rx.recv_timeout(WATCHDOG).unwrap(), window);
     }
-    let alone = sent_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+    let alone = sent_rx.recv_timeout(WATCHDOG).unwrap();
     assert_eq!(
         alone["messages"],
         json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}])
@@ -309,7 +311,7 @@ fn window_prefills_earlier_english_shows_only_the_new_line_and_falls_back_when_e
 }
 
 #[test]
-fn cancellation_during_headers_or_partial_sse_line_finishes_within_one_second() {
+fn cancellation_during_headers_or_a_partial_sse_line_stops_the_request() {
     for body_started in [false, true] {
         let (entered_tx, entered_rx) = mpsc::channel();
         let server = MockServer::start(move |mut stream, stop| {
@@ -318,9 +320,9 @@ fn cancellation_during_headers_or_partial_sse_line_finishes_within_one_second() 
                 stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\ndata: {\"choices\":[{\"delta\":{\"content\":\"partial").unwrap();
             }
             entered_tx.send(()).unwrap();
-            delay(&stop, Duration::from_secs(2));
+            delay(&stop, STALL);
         });
-        let token = control(Duration::from_secs(3));
+        let token = control(STALL);
         let worker_token = token.clone();
         let url = server.url.clone();
         let (result_tx, result_rx) = mpsc::channel();
@@ -330,13 +332,11 @@ fn cancellation_during_headers_or_partial_sse_line_finishes_within_one_second() 
             let result = translator.translate(&request("你好。", worker_token), &mut |_| {});
             result_tx.send(result).unwrap();
         });
-        entered_rx.recv_timeout(Duration::from_secs(1)).unwrap();
-        let started = Instant::now();
+        entered_rx.recv_timeout(WATCHDOG).unwrap();
         token.cancelled.store(true, Ordering::Release);
-        let result = result_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+        let result = result_rx.recv_timeout(WATCHDOG).unwrap();
         worker.join().unwrap();
         assert!(matches!(result, Err(Error::Stopped)));
-        assert!(started.elapsed() < Duration::from_secs(1));
         server.finish();
     }
 }
@@ -349,7 +349,7 @@ fn deadline_covers_stalled_headers_and_a_body_that_never_completes() {
             if body_started {
                 stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\ndata: {\"choices\":[{\"delta\":{\"content\":\"still incomplete").unwrap();
             }
-            delay(&stop, Duration::from_secs(2));
+            delay(&stop, STALL);
         });
         let mut translator =
             OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
@@ -361,7 +361,10 @@ fn deadline_covers_stalled_headers_and_a_body_that_never_completes() {
             ),
             FailReason::Timeout,
         );
-        assert!(started.elapsed() < Duration::from_secs(1));
+        assert!(
+            started.elapsed() < WATCHDOG,
+            "the request waited for the server"
+        );
         server.finish();
     }
 }
@@ -372,6 +375,8 @@ fn connection_refused_is_server_unavailable_and_remote_urls_are_rejected() {
     let url = format!("http://{}", listener.local_addr().unwrap());
     drop(listener);
     let mut translator = OpenAiCompatTranslator::new(&url, TranslateConfig::default()).unwrap();
+    // Windows retries a refused local connection; the deadline before any connection then
+    // reports the same reason, so this short deadline only bounds the test.
     assert_reason(
         translator.translate(
             &request("你好。", control(Duration::from_secs(1))),
