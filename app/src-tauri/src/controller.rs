@@ -294,7 +294,7 @@ impl Controller {
                 mode,
                 label: label.into(),
             },
-            asr: config.asr.engine.clone(),
+            asr: lt_core::transcript::recognizer_name(config),
             translator: config.translate.engine.clone(),
             config: SessionConfig::from(config).with_draft(drafts),
         };

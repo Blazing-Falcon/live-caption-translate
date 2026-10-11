@@ -14,7 +14,6 @@
   } from "../../lib/format";
   import {
     CAPTION_SPEEDS,
-    LIVE_MODELS,
     STREAM_CHUNKS,
     TRANSLATE_THREADS_MAX,
     VAD_ENGINES,
@@ -97,7 +96,7 @@
   }
 
   interface SpeechRow {
-    key: "vad.engine" | "asr.engine" | "asr.stream_chunk_ms";
+    key: "vad.engine" | "asr.stream_chunk_ms";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -113,23 +112,12 @@
       patch: (value) => vadPatch({ engine: value as Config["vad"]["engine"] }),
     },
     {
-      key: "asr.engine",
-      label: "Live model",
-      value: config.asr.engine,
-      choices: LIVE_MODELS,
-      patch: (value) => asrPatch({ engine: value as Config["asr"]["engine"] }),
+      key: "asr.stream_chunk_ms",
+      label: "Streaming chunk",
+      value: String(config.asr.stream_chunk_ms),
+      choices: STREAM_CHUNKS,
+      patch: (value) => asrPatch({ stream_chunk_ms: Number(value) as Config["asr"]["stream_chunk_ms"] }),
     },
-    ...(config.asr.engine === "xasr_stream"
-      ? [
-          {
-            key: "asr.stream_chunk_ms" as const,
-            label: "Streaming chunk",
-            value: String(config.asr.stream_chunk_ms),
-            choices: STREAM_CHUNKS,
-            patch: (value: string) => asrPatch({ stream_chunk_ms: Number(value) as Config["asr"]["stream_chunk_ms"] }),
-          },
-        ]
-      : []),
   ]);
 
   /** A choice whose model is downloading; it is saved when the model is ready. */
@@ -184,7 +172,7 @@
       }
       return { text: `${name} is not downloaded.`, download: waiting.model };
     }
-    if (row.key === "vad.engine" && config.asr.engine === "xasr_stream") {
+    if (row.key === "vad.engine") {
       return { text: "X-ASR streaming finds the pauses itself. Voice detection only places the cut between two lines.", download: null };
     }
     const current = row.choices.find((choice) => choice.value === row.value);

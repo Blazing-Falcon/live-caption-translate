@@ -28,7 +28,6 @@ fn transcript(id: u64, text: &str, end: f64) -> Transcript {
         text: text.into(),
         lang_tag: Some("zh".into()),
         class: TextClass::Chinese,
-        event: None,
         timing: StageTiming {
             start: StreamTime::from_seconds(end - 1.0),
             end: StreamTime::from_seconds(end),

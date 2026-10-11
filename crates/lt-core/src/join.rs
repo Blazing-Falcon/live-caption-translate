@@ -330,7 +330,6 @@ mod tests {
             text: text.into(),
             lang_tag: Some("zh".into()),
             class,
-            event: None,
             timing: StageTiming {
                 start: time(start),
                 end: time(end),

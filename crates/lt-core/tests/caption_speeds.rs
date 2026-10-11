@@ -2,26 +2,22 @@
 //! drafts, and the event ordering rules.
 //!
 //! The fake recognizer reads its text from the audio itself: every 200 ms of speech is one
-//! token whose amplitude encodes its position in a fixed sentence. A window's tokens therefore
-//! follow the audio exactly like a real recognizer's would, including after a cut.
+//! token whose amplitude encodes its position in a fixed sentence, so its tokens follow the
+//! audio like a real streaming recognizer's would.
 
 use lt_core::{
     bus::EventBus,
     config::Config,
     engines::{
-        SegmentAsr, TokenTranscript, TranslateRequest, TranslationControl, TranslationOut,
-        Translator, TranslatorCaps, WindowAsr,
+        StreamResult, StreamingAsr, TokenTranscript, TranslateRequest, TranslationControl,
+        TranslationOut, Translator, TranslatorCaps,
     },
     error::{Error, Result},
     events::{FailReason, PipelineEvent},
     fakes::{FakeTranslator, FakeVad},
     pipeline::{Pipeline, PipelineOptions},
-    segment::FrameFlags,
-    source::{AudioFrame, AudioProducer, AudioSource, SourceEvents},
-    types::{
-        CaptureMode, CutReason, EffectiveMode, Segment, SourceInfo, StageTiming, StreamTime,
-        TextClass, Transcript, UtteranceId,
-    },
+    source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
+    types::{CaptureMode, CutReason, EffectiveMode, SourceInfo, StreamTime, UtteranceId},
 };
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -54,13 +50,15 @@ fn speech(tokens: usize, pause_s: f32) -> Vec<f32> {
     samples
 }
 
-/// Runs of constant amplitude at least 50 ms long: `(char, start_seconds)`.
-fn decode_runs(samples: &[f32]) -> Vec<(char, f32)> {
+/// Runs of constant amplitude at least 50 ms long: `(char, start_seconds)`. Without `complete`,
+/// the last run counts only once the amplitude changed after it.
+fn decode_runs(samples: &[f32], complete: bool) -> Vec<(char, f32)> {
     let chars = sentence_chars();
     let mut tokens = Vec::new();
     let mut start = 0;
     for end in 1..=samples.len() {
-        if end == samples.len() || (samples[end] - samples[start]).abs() > 1e-6 {
+        let closed = end < samples.len() && (samples[end] - samples[start]).abs() > 1e-6;
+        if closed || (end == samples.len() && complete) {
             let value = samples[start];
             if end - start >= 800 && value > 0.04 {
                 let index = ((value - 0.05) / 0.0005).round() as usize;
@@ -72,42 +70,55 @@ fn decode_runs(samples: &[f32]) -> Vec<(char, f32)> {
     tokens
 }
 
-struct AmplitudeAsr;
+/// A streaming recognizer over the amplitude-coded audio: a token appears when its run of
+/// constant amplitude ends. Its pause rule fires after `PAUSE_SAMPLES` of silence after a token.
+#[derive(Default)]
+struct AmplitudeStream {
+    /// Audio of the current part.
+    part: Vec<f32>,
+    /// Samples heard since the stream started, and where the current part starts.
+    heard: u64,
+    part_start: u64,
+}
 
-impl WindowAsr for AmplitudeAsr {
-    fn decode_window(&mut self, samples: &[f32]) -> Result<TokenTranscript> {
-        let runs = decode_runs(samples);
-        Ok(TokenTranscript {
-            text: runs.iter().map(|(c, _)| *c).collect(),
-            tokens: runs.iter().map(|(c, _)| c.to_string()).collect(),
-            timestamps: runs.iter().map(|(_, t)| *t).collect(),
-            lang_tag: Some("zh".into()),
-            event: None,
-            log_probs: Vec::new(),
-        })
+const PAUSE_SAMPLES: usize = 6_400;
+
+impl AmplitudeStream {
+    fn tokens(&self, complete: bool) -> StreamResult {
+        let runs = decode_runs(&self.part, complete);
+        StreamResult {
+            start_s: self.part_start as f64 / 16_000.0,
+            tokens: TokenTranscript {
+                text: runs.iter().map(|(c, _)| *c).collect(),
+                tokens: runs.iter().map(|(c, _)| c.to_string()).collect(),
+                timestamps: runs.iter().map(|(_, t)| *t).collect(),
+                log_probs: Vec::new(),
+            },
+        }
     }
 }
 
-impl SegmentAsr for AmplitudeAsr {
-    fn transcribe(&mut self, segment: &Segment) -> Result<Transcript> {
-        let text: String = decode_runs(&segment.samples)
-            .iter()
-            .map(|(c, _)| *c)
-            .collect();
-        Ok(Transcript {
-            id: segment.id,
-            text,
-            lang_tag: Some("zh".into()),
-            class: TextClass::Chinese,
-            event: None,
-            timing: StageTiming::default(),
-            absorbed: Vec::new(),
-            cut: segment.cut_reason,
-            logprob: None,
-        })
+impl StreamingAsr for AmplitudeStream {
+    fn accept(&mut self, samples: &[f32]) -> Result<()> {
+        self.part.extend_from_slice(samples);
+        self.heard += samples.len() as u64;
+        Ok(())
     }
-    fn window(&mut self) -> Option<&mut dyn WindowAsr> {
-        Some(self)
+    fn result(&mut self) -> Result<StreamResult> {
+        Ok(self.tokens(false))
+    }
+    fn is_endpoint(&mut self) -> bool {
+        let silence = self.part.iter().rev().take_while(|s| **s == 0.0).count();
+        silence >= PAUSE_SAMPLES && !decode_runs(&self.part, false).is_empty()
+    }
+    fn reset(&mut self) {
+        self.part.clear();
+        self.part_start = self.heard;
+    }
+    fn finish(&mut self) -> Result<StreamResult> {
+        let result = self.tokens(true);
+        *self = Self::default();
+        Ok(result)
     }
 }
 
@@ -267,7 +278,7 @@ fn run(samples: Vec<f32>, config: Config, draft: Option<ScriptedDraft>, final_de
         config,
         Box::new(VecSource::new(samples, Duration::from_millis(1))),
         Box::new(FakeVad::from_energy(0.001)),
-        Box::new(AmplitudeAsr),
+        Box::<AmplitudeStream>::default(),
         Box::new(translator),
         bus,
         PipelineOptions {
@@ -410,19 +421,27 @@ fn a_long_sentence_is_committed_into_clauses_that_add_up_to_the_whole_text() {
     assert!(stats_mode.is_none_or(|mode| mode == EffectiveMode::Light));
 }
 
+/// Off cuts at the sentence end and the pause, not at the early comma, and still shows the
+/// Chinese while it is spoken.
 #[test]
-fn off_mode_translates_when_the_speaker_pauses() {
+fn off_mode_cuts_at_sentence_ends_and_pauses_and_shows_live_text() {
     let chars = sentence_chars();
     let run = run(speech(chars.len(), 1.0), config("off"), None, 0);
     assert_ordering(&run.events);
-    assert!(!run.events.iter().any(|event| matches!(
-        event,
-        PipelineEvent::AsrPartial { .. } | PipelineEvent::TranslationDraft { .. }
-    )));
+    assert!(run
+        .events
+        .iter()
+        .any(|event| matches!(event, PipelineEvent::AsrPartial { .. })));
+    assert!(!run
+        .events
+        .iter()
+        .any(|event| matches!(event, PipelineEvent::TranslationDraft { .. })));
     let clauses = finals(&run.events);
-    assert_eq!(clauses.len(), 1, "{clauses:?}");
-    assert_eq!(clauses[0].1, SENTENCE);
-    assert_ne!(clauses[0].2, CutReason::Commit);
+    let texts: Vec<_> = clauses.iter().map(|(_, text, _)| text.as_str()).collect();
+    let (sentence, rest) = SENTENCE.split_at(SENTENCE.find('。').unwrap() + '。'.len_utf8());
+    assert_eq!(texts, [sentence, rest]);
+    let cuts: Vec<_> = clauses.iter().map(|(_, _, cut)| *cut).collect();
+    assert_eq!(cuts, [CutReason::Commit, CutReason::Pause]);
 }
 
 #[test]
@@ -481,40 +500,39 @@ fn many_seeds_keep_every_ordering_rule_with_random_delays_and_failures() {
 fn mode_resolution_follows_the_decisions() {
     use lt_core::{pipeline::resolve_mode, types::ModeReason};
     let mut latency = lt_core::config::LatencyConfig::default();
-    let state = |latency: &lt_core::config::LatencyConfig, windowed, draft, cores| {
-        let resolved = resolve_mode(latency, windowed, draft, cores);
+    let state = |latency: &lt_core::config::LatencyConfig, draft, cores| {
+        let resolved = resolve_mode(latency, draft, cores);
         (resolved.mode, resolved.reason)
     };
     assert_eq!(
-        state(&latency, true, true, 8),
+        state(&latency, true, 8),
         (EffectiveMode::Continuous, Some(ModeReason::Auto))
     );
     assert_eq!(
-        state(&latency, true, true, 4),
+        state(&latency, true, 4),
         (EffectiveMode::Light, Some(ModeReason::Auto))
     );
     assert_eq!(
-        state(&latency, true, false, 16),
+        state(&latency, false, 16),
         (EffectiveMode::Light, Some(ModeReason::Auto))
     );
-    assert_eq!(state(&latency, false, true, 16), (EffectiveMode::Off, None));
     latency.mode = "continuous".into();
     assert_eq!(
-        state(&latency, true, false, 2),
+        state(&latency, false, 2),
         (EffectiveMode::Light, Some(ModeReason::DraftUnavailable))
     );
     assert_eq!(
-        state(&latency, true, true, 2),
+        state(&latency, true, 2),
         (EffectiveMode::Continuous, Some(ModeReason::User))
     );
     latency.mode = "light".into();
     assert_eq!(
-        state(&latency, true, true, 16),
+        state(&latency, true, 16),
         (EffectiveMode::Light, Some(ModeReason::User))
     );
     latency.mode = "off".into();
     assert_eq!(
-        state(&latency, true, true, 16),
+        state(&latency, true, 16),
         (EffectiveMode::Off, Some(ModeReason::User))
     );
 }

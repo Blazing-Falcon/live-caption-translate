@@ -31,11 +31,10 @@ npm --prefix app/ui test     # fast UI tests
 | Part | Location |
 |---|---|
 | Config | `crates/lt-core/src/config.rs` |
-| Segment builder | `crates/lt-core/src/segment.rs` |
-| Recognizer, commit rule | `crates/lt-core/src/recognizer.rs`, `commit.rs` |
+| Recognizer, commit rule | `crates/lt-core/src/stream.rs`, `commit.rs` |
 | Filter, joiner, queue | `crates/lt-core/src/text.rs`, `join.rs`, `queue.rs` |
 | Drafts, scheduler, step-down | `crates/lt-core/src/draft.rs`, `drafts.rs`, `pipeline.rs`, `stepdown.rs` |
-| SenseVoice, Silero | `crates/lt-sherpa/src/` |
+| X-ASR streaming, Silero | `crates/lt-sherpa/src/` |
 | llama-server, model downloads | `crates/lt-llm/src/` |
 | Windows capture | `crates/lt-audio/src/windows/` |
 | App commands and bridge | `app/src-tauri/src/` |

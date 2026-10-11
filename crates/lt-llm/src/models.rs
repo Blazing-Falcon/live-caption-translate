@@ -1044,14 +1044,14 @@ mod tests {
     #[test]
     fn embedded_manifest_is_valid_and_sizes_are_known() {
         let manifest = embedded_manifest().unwrap();
-        assert_eq!(manifest.models.len(), 10);
+        assert_eq!(manifest.models.len(), 8);
         let required: Vec<_> = manifest.models.iter().filter(|m| !m.optional).collect();
         assert_eq!(required.len(), 3);
         assert_eq!(required.iter().flat_map(|model| &model.files).count(), 3);
         let manager = ModelManager::new().unwrap();
         let missing = std::env::temp_dir().join("lt-no-such-models");
         let statuses = manager.status_for_cores(&missing, 8).unwrap();
-        assert_eq!(statuses.len(), 10);
+        assert_eq!(statuses.len(), 8);
         let draft = statuses
             .iter()
             .find(|s| s.id == "lmt-60-0.6b-q4_k_m")

@@ -2,7 +2,7 @@
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{EngineRegistry, SegmentAsr, Translator, Vad},
+    engines::{EngineRegistry, StreamingAsr, Translator, Vad},
     events::{EngineKind, EngineState, PipelineEvent},
 };
 use lt_llm::supervisor::{ServerOptions, ServerRole, Supervisor};
@@ -15,7 +15,7 @@ use std::{
     time::Duration,
 };
 
-pub type SpeechEngines = (Box<dyn Vad>, Box<dyn SegmentAsr>);
+pub type SpeechEngines = (Box<dyn Vad>, Box<dyn StreamingAsr>);
 
 pub const TRANSLATOR_MODEL: &str = "hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf";
 pub const DRAFT_MODEL: &str = "lmt-60-0.6b-q4_k_m/LMT-60-0.6B.Q4_K_M.gguf";

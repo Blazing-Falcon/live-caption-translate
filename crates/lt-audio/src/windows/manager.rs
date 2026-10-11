@@ -517,7 +517,7 @@ mod tests {
                         let frame = AudioFrame {
                             t0,
                             samples: [amplitude; 512],
-                            flags: lt_core::segment::FrameFlags::EMPTY,
+                            flags: lt_core::source::FrameFlags::EMPTY,
                         };
                         if producer.send(frame).is_err() {
                             break;

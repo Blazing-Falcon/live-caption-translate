@@ -16,7 +16,8 @@ use lt_core::{
     events::PipelineEvent,
     pipeline::{Pipeline, PipelineOptions},
     transcript::{
-        SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber, TranscriptWriter,
+        recognizer_name, SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber,
+        TranscriptWriter,
     },
 };
 use std::{
@@ -87,7 +88,7 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
         asr: if args.fake {
             "fake".into()
         } else {
-            config.asr.engine.clone()
+            recognizer_name(&config)
         },
         translator: if args.fake {
             "fake"

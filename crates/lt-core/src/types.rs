@@ -1,7 +1,5 @@
 //! Shared data carried between pipeline workers and across the IPC boundary.
 
-use std::sync::Arc;
-
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
 /// All stream positions count mono samples at this rate.
@@ -94,9 +92,8 @@ impl StreamTime {
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CutReason {
+    /// The engine's pause rule.
     Pause,
-    SoftCut,
-    HardCut,
     Discontinuity,
     End,
     /// The recognizer committed a clause at punctuation or the wait cap.
@@ -105,16 +102,6 @@ pub enum CutReason {
 
 fn default_cut() -> CutReason {
     CutReason::Pause
-}
-
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub struct Segment {
-    pub id: UtteranceId,
-    pub start: StreamTime,
-    pub end: StreamTime,
-    /// Mono 16 kHz PCM, shared without copying between workers.
-    pub samples: Arc<[f32]>,
-    pub cut_reason: CutReason,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -140,11 +127,10 @@ pub struct Transcript {
     pub text: String,
     pub lang_tag: Option<String>,
     pub class: TextClass,
-    pub event: Option<String>,
     pub timing: StageTiming,
     #[serde(default)]
     pub absorbed: Vec<UtteranceId>,
-    /// How the clause ended. Early-commit clauses skip the short-phrase hold.
+    /// How the clause ended. Committed clauses skip the short-phrase hold.
     #[serde(default = "default_cut")]
     pub cut: CutReason,
     /// Mean token log-probability, when the engine gives one.

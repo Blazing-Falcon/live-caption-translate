@@ -11,17 +11,15 @@ use crate::{
         DraftOutcome, DraftResult, DraftState, DraftWorker, PublishedDraft, WORKER_FAILED,
         WORKER_READY,
     },
-    engines::{SegmentAsr, Translator, Vad},
+    engines::{StreamingAsr, Translator, Vad},
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     join::{JoinResult, Joiner},
     metrics::{canonical_language, Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
-    recognizer::{AsrMessage, CommitCut, Output, Recognizer, RecognizerInput},
-    segment::{SegmentBuilder, SegmentUpdate},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
     stepdown::{ModeState, StepDown},
-    stream::{StreamInput, StreamOutput, StreamRecognizer},
+    stream::{AsrMessage, StreamInput, StreamOutput, StreamRecognizer},
     types::{
         CutReason, EffectiveMode, ModeReason, PipelineStats, StreamTime, TextClass, Transcript,
         UtteranceId,
@@ -42,11 +40,7 @@ const POLL: Duration = Duration::from_millis(5);
 const AUDIO_CAPACITY: usize = 64;
 const CONTROL_CAPACITY: usize = 16;
 const ASR_CAPACITY: usize = 4;
-/// Commit requests are rare and tiny; a full channel simply skips one.
-const COMMIT_CAPACITY: usize = 4;
-/// The open clause's audio goes to the recognizer at least this often.
-const AUDIO_FORWARD_SAMPLES: u64 = 1_600;
-/// A streaming engine gets audio in pieces of this size (100 ms).
+/// The recognizer gets audio in pieces of this size (100 ms).
 const STREAM_FORWARD_SAMPLES: usize = 1_600;
 
 enum Command {
@@ -69,8 +63,6 @@ pub struct Pipeline;
 #[derive(Clone, Copy, Debug, Default)]
 pub struct SegmentCounts {
     pub pause: u64,
-    pub soft_cut: u64,
-    pub hard_cut: u64,
     pub discontinuity: u64,
     pub end: u64,
     pub commit: u64,
@@ -78,22 +70,20 @@ pub struct SegmentCounts {
 
 impl SegmentCounts {
     pub fn total(self) -> u64 {
-        self.pause + self.soft_cut + self.hard_cut + self.discontinuity + self.end + self.commit
+        self.pause + self.discontinuity + self.end + self.commit
     }
 }
 
 #[derive(Default)]
-struct SegmentCounters([AtomicU64; 6]);
+struct SegmentCounters([AtomicU64; 4]);
 
 impl SegmentCounters {
     fn record(&self, reason: CutReason) {
         let index = match reason {
             CutReason::Pause => 0,
-            CutReason::SoftCut => 1,
-            CutReason::HardCut => 2,
-            CutReason::Discontinuity => 3,
-            CutReason::End => 4,
-            CutReason::Commit => 5,
+            CutReason::Discontinuity => 1,
+            CutReason::End => 2,
+            CutReason::Commit => 3,
         };
         self.0[index].fetch_add(1, Ordering::Relaxed);
     }
@@ -101,11 +91,9 @@ impl SegmentCounters {
         let counts = self.0.each_ref().map(|count| count.load(Ordering::Relaxed));
         SegmentCounts {
             pause: counts[0],
-            soft_cut: counts[1],
-            hard_cut: counts[2],
-            discontinuity: counts[3],
-            end: counts[4],
-            commit: counts[5],
+            discontinuity: counts[1],
+            end: counts[2],
+            commit: counts[3],
         }
     }
 }
@@ -135,23 +123,18 @@ pub struct PipelineOptions {
 /// How `latency.mode` resolves for this engine set.
 pub fn resolve_mode(
     config: &LatencyConfig,
-    windowed_asr: bool,
     draft_available: bool,
     physical_cores: usize,
 ) -> ModeState {
-    let (mode, reason) = if !windowed_asr {
-        (EffectiveMode::Off, None)
-    } else {
-        match config.mode.as_str() {
-            "off" => (EffectiveMode::Off, Some(ModeReason::User)),
-            "light" => (EffectiveMode::Light, Some(ModeReason::User)),
-            "continuous" if draft_available => (EffectiveMode::Continuous, Some(ModeReason::User)),
-            "continuous" => (EffectiveMode::Light, Some(ModeReason::DraftUnavailable)),
-            _ if draft_available && physical_cores >= config.auto_min_cores as usize => {
-                (EffectiveMode::Continuous, Some(ModeReason::Auto))
-            }
-            _ => (EffectiveMode::Light, Some(ModeReason::Auto)),
+    let (mode, reason) = match config.mode.as_str() {
+        "off" => (EffectiveMode::Off, Some(ModeReason::User)),
+        "light" => (EffectiveMode::Light, Some(ModeReason::User)),
+        "continuous" if draft_available => (EffectiveMode::Continuous, Some(ModeReason::User)),
+        "continuous" => (EffectiveMode::Light, Some(ModeReason::DraftUnavailable)),
+        _ if draft_available && physical_cores >= config.auto_min_cores as usize => {
+            (EffectiveMode::Continuous, Some(ModeReason::Auto))
         }
+        _ => (EffectiveMode::Light, Some(ModeReason::Auto)),
     };
     ModeState { mode, reason }
 }
@@ -161,7 +144,7 @@ impl Pipeline {
         config: Config,
         source: Box<dyn AudioSource>,
         vad: Box<dyn Vad>,
-        asr: Box<dyn SegmentAsr>,
+        asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
     ) -> Result<PipelineHandle> {
         Self::start_with_bus(config, source, vad, asr, translator, EventBus::default())
@@ -172,7 +155,7 @@ impl Pipeline {
         config: Config,
         source: Box<dyn AudioSource>,
         vad: Box<dyn Vad>,
-        asr: Box<dyn SegmentAsr>,
+        asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
     ) -> Result<PipelineHandle> {
@@ -183,7 +166,7 @@ impl Pipeline {
         config: Config,
         source: Box<dyn AudioSource>,
         vad: Box<dyn Vad>,
-        asr: Box<dyn SegmentAsr>,
+        asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
         sampler: Option<Box<dyn ResourceSampler>>,
@@ -206,7 +189,7 @@ impl Pipeline {
         mut config: Config,
         source: Box<dyn AudioSource>,
         vad: Box<dyn Vad>,
-        mut asr: Box<dyn SegmentAsr>,
+        asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
         options: PipelineOptions,
@@ -226,30 +209,14 @@ impl Pipeline {
         let latest_stats = Arc::new(Mutex::new(PipelineStats::default()));
         let segment_counts = Arc::new(SegmentCounters::default());
         let (command_tx, command_rx) = bounded(CONTROL_CAPACITY);
-        let (segment_tx, segment_rx) = bounded(ASR_CAPACITY);
+        let (audio_tx, audio_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
         let (asr_tx, asr_rx) = bounded(ASR_CAPACITY);
-        let (commit_tx, commit_rx) = bounded(COMMIT_CAPACITY);
         let (mode_tx, mode_rx) = bounded(CONTROL_CAPACITY);
         let (ready_tx, ready_rx) = bounded(1);
-        // An engine without a windowed decode cannot run the recognizer: that case runs in Off mode.
         let cores = physical_cores
             .unwrap_or_else(|| thread::available_parallelism().map_or(1, |n| (n.get() / 2).max(1)));
-        let streaming = asr.stream().is_some();
-        let initial_mode = resolve_mode(
-            &config.latency,
-            asr.window().is_some() || streaming,
-            draft.is_some(),
-            cores,
-        );
-        let recognizer_active = initial_mode.mode != EffectiveMode::Off && !streaming;
-        // A streaming engine finds its own clauses; the voice detector then only places cuts,
-        // on the thread that holds the clause audio.
-        let (front_vad, stream_vad) = if streaming {
-            (None, Some(vad))
-        } else {
-            (Some(vad), None)
-        };
+        let initial_mode = resolve_mode(&config.latency, draft.is_some(), cores);
         let mut handle = PipelineHandle {
             commands: command_tx,
             cancelled: cancelled.clone(),
@@ -270,27 +237,24 @@ impl Pipeline {
         });
 
         let asr_cancel = cancelled.clone();
-        let asr_clock = clock.clone();
         let asr_bus = bus.clone();
         let asr_config = config.clone();
         let asr_notices = AsrNotices {
             notices: front_tx.clone(),
             segment_counts: segment_counts.clone(),
             sentences: initial_mode.mode == EffectiveMode::Off,
-            vad: stream_vad,
+            vad,
         };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())
             .spawn(move || {
                 asr_loop(
                     asr,
-                    asr_config,
-                    segment_rx,
-                    commit_tx,
+                    &asr_config,
+                    audio_rx,
                     asr_tx,
-                    asr_clock,
-                    asr_bus,
-                    asr_cancel,
+                    &asr_bus,
+                    &asr_cancel,
                     asr_notices,
                 )
             })?;
@@ -333,13 +297,8 @@ impl Pipeline {
                 .spawn(move || {
                     frontend_loop(
                         source,
-                        front_vad,
-                        config,
                         command_rx,
-                        segment_tx,
-                        commit_rx,
-                        recognizer_active,
-                        streaming,
+                        audio_tx,
                         front_tx,
                         clock,
                         front_bus,
@@ -347,7 +306,6 @@ impl Pipeline {
                         ready_tx,
                         listening,
                         latest_stats,
-                        segment_counts,
                     )
                 })?;
         handle.threads.insert(0, frontend_thread);
@@ -390,8 +348,8 @@ impl PipelineHandle {
         self.initial_mode
     }
 
-    /// Switch between Continuous and Light while running. Off needs a restart: the recognizer
-    /// is not fed audio in Off mode.
+    /// Switch between Continuous and Light while running. Off needs a restart: it changes the
+    /// commit rules.
     pub fn set_mode(&self, mode: EffectiveMode) -> Result<()> {
         if mode == EffectiveMode::Off || self.initial_mode.mode == EffectiveMode::Off {
             return Err(Error::Engine(
@@ -500,61 +458,39 @@ impl Drop for Finished {
 
 struct Frontend {
     source: Box<dyn AudioSource>,
-    /// `None` with a streaming engine, which does not use it here.
-    vad: Option<Box<dyn Vad>>,
-    builder: SegmentBuilder,
     input: Option<AudioReceiver>,
     source_cancel: Arc<AtomicBool>,
-    inputs: VecDeque<RecognizerInput>,
+    inputs: VecDeque<StreamInput>,
     notices: VecDeque<FrontendNotice>,
     clock: Arc<SessionClock>,
     bus: EventBus,
-    /// Forward the open clause's audio to the recognizer (Continuous and Light); Off sends
-    /// only `Closed`, exactly like the segment path.
-    recognizer: bool,
-    /// The clause whose audio the recognizer holds, and the stream sample sent so far.
-    forwarded: Option<(UtteranceId, u64)>,
-    /// A streaming engine gets all audio; the VAD and the segment builder do not run.
-    streaming: bool,
-    /// Streaming: the next expected sample and audio not sent yet (it starts at `stream_at`
-    /// minus its length).
+    /// The next expected sample. Audio not sent yet starts at `stream_at` minus its length.
     stream_at: StreamTime,
     stream_pending: Vec<f32>,
     ending: bool,
     started_once: bool,
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
-    segment_counts: Arc<SegmentCounters>,
 }
 
 impl Frontend {
-    fn current_time(&self) -> StreamTime {
-        if self.streaming {
-            self.stream_at
-        } else {
-            self.builder.current_time()
-        }
-    }
-
     fn flush_stream(&mut self) {
         if self.stream_pending.is_empty() {
             return;
         }
         let samples = std::mem::take(&mut self.stream_pending);
         let at = StreamTime(self.stream_at.0 - samples.len() as u64);
-        self.inputs
-            .push_back(RecognizerInput::Stream(StreamInput::Audio { at, samples }));
+        self.inputs.push_back(StreamInput::Audio { at, samples });
     }
 
     /// The audio stops or jumps: the stream ends its clause.
     fn stream_break(&mut self, reason: CutReason) {
         self.flush_stream();
         let at = self.stream_at;
-        self.inputs
-            .push_back(RecognizerInput::Stream(StreamInput::Break { at, reason }));
+        self.inputs.push_back(StreamInput::Break { at, reason });
     }
 
-    fn stream_frame(&mut self, frame: AudioFrame) {
+    fn frame(&mut self, frame: AudioFrame) {
         if frame.t0 < self.stream_at {
             return;
         }
@@ -576,7 +512,7 @@ impl Frontend {
 
     fn start_source(&mut self) -> Result<()> {
         let at = if self.started_once {
-            self.clock.now().max(self.current_time())
+            self.clock.now().max(self.stream_at)
         } else {
             StreamTime::ZERO
         };
@@ -620,110 +556,9 @@ impl Frontend {
     }
 
     fn cut(&mut self, at: StreamTime) {
-        if self.streaming {
-            self.stream_break(CutReason::Discontinuity);
-            self.notices.push_back(FrontendNotice::Discontinuity(at));
-            self.stream_at = self.stream_at.max(at);
-            return;
-        }
-        let update = self.builder.discontinuity(at);
+        self.stream_break(CutReason::Discontinuity);
         self.notices.push_back(FrontendNotice::Discontinuity(at));
-        self.stage(update, false);
-        if let Some(vad) = &mut self.vad {
-            vad.reset();
-        }
-    }
-
-    /// Queue an input for the recognizer, merging consecutive audio of the same clause.
-    fn push_input(&mut self, input: RecognizerInput) {
-        if let (
-            RecognizerInput::Audio { id, samples },
-            Some(RecognizerInput::Audio {
-                id: last_id,
-                samples: last,
-            }),
-        ) = (&input, self.inputs.back_mut())
-        {
-            if id == last_id {
-                last.extend_from_slice(samples);
-                return;
-            }
-        }
-        self.inputs.push_back(input);
-    }
-
-    /// Send the open clause's audio that the recognizer does not hold yet.
-    fn sync_audio(&mut self, force: bool) {
-        let Some((id, sent)) = self.forwarded else {
-            return;
-        };
-        let current = self.builder.current_time().0;
-        if !force && current.saturating_sub(sent) < AUDIO_FORWARD_SAMPLES {
-            return;
-        }
-        if let Some((open, samples)) = self.builder.open_audio(sent) {
-            if open == id && !samples.is_empty() {
-                self.forwarded = Some((id, current));
-                self.push_input(RecognizerInput::Audio { id, samples });
-            }
-        }
-    }
-
-    /// A clause closed: the recognizer receives the audio it is missing, then the segment.
-    fn close_forwarding(&mut self, segment: &crate::types::Segment) {
-        if let Some((id, sent)) = self.forwarded.filter(|(id, _)| *id == segment.id) {
-            if sent < segment.end.0 {
-                let from = sent.max(segment.start.0);
-                let offset = (from - segment.start.0) as usize;
-                if let Some(rest) = segment.samples.get(offset..).filter(|r| !r.is_empty()) {
-                    self.push_input(RecognizerInput::Audio {
-                        id,
-                        samples: rest.to_vec(),
-                    });
-                }
-            }
-            self.forwarded = None;
-        }
-    }
-
-    fn stage(&mut self, update: SegmentUpdate, after_commit: bool) {
-        let started = update.started;
-        self.notices.extend(
-            started
-                .iter()
-                .map(|(id, at)| FrontendNotice::Started(*id, *at)),
-        );
-        for segment in update.segments {
-            self.segment_counts.record(segment.cut_reason);
-            self.notices
-                .push_back(FrontendNotice::SegmentClosed(segment.id, segment.end));
-            if self.recognizer {
-                self.close_forwarding(&segment);
-            }
-            self.push_input(RecognizerInput::Closed(segment));
-        }
-        if self.recognizer {
-            for (id, _) in started {
-                // Only the clause that is still open can receive audio.
-                if let Some((open, start)) = self.builder.open_clause().filter(|(o, _)| *o == id) {
-                    self.push_input(RecognizerInput::Open {
-                        id: open,
-                        start,
-                        after_commit,
-                    });
-                    self.forwarded = Some((open, start.0));
-                    self.sync_audio(true);
-                }
-            }
-        }
-    }
-
-    /// The recognizer committed a clause: cut the open clause where it asked.
-    fn commit(&mut self, cut: CommitCut) {
-        let update = self.builder.commit_cut(cut.id, cut.at);
-        if !update.segments.is_empty() {
-            self.stage(update, true);
-        }
+        self.stream_at = self.stream_at.max(at);
     }
 
     fn command(&mut self, command: Command) {
@@ -731,7 +566,7 @@ impl Frontend {
             Command::Pause(reply) => {
                 if self.input.is_some() {
                     self.stop_source();
-                    self.cut(self.current_time());
+                    self.cut(self.stream_at);
                     self.bus.publish(PipelineEvent::ListeningState {
                         state: ListeningStateKind::Paused,
                     });
@@ -749,7 +584,7 @@ impl Frontend {
             Command::Reopen(source, reply) => {
                 let was_running = self.input.is_some();
                 self.stop_source();
-                self.cut(self.current_time());
+                self.cut(self.stream_at);
                 self.source = source;
                 let result = if was_running {
                     self.start_source()
@@ -760,32 +595,6 @@ impl Frontend {
             }
         };
         let _ = reply.try_send(result);
-    }
-
-    fn frame(&mut self, mut frame: AudioFrame) {
-        if self.streaming {
-            self.stream_frame(frame);
-            return;
-        }
-        if frame.t0 < self.builder.current_time() {
-            return;
-        }
-        if frame.t0 != self.builder.current_time() || frame.flags.discontinuity {
-            self.cut(frame.t0);
-            frame.flags.discontinuity = false;
-        }
-        let probability = self
-            .vad
-            .as_mut()
-            .map_or(0.0, |vad| vad.speech_prob(&frame.samples));
-        let update = self.builder.push(&frame.samples, probability, frame.flags);
-        self.stage(update, false);
-        if self.recognizer {
-            self.sync_audio(false);
-        }
-        let at = self.builder.current_time();
-        self.clock.advance_to(at);
-        self.notices.push_back(FrontendNotice::Progress(at));
     }
 }
 
@@ -798,13 +607,8 @@ impl Drop for Frontend {
 #[allow(clippy::too_many_arguments)]
 fn frontend_loop(
     source: Box<dyn AudioSource>,
-    vad: Option<Box<dyn Vad>>,
-    config: Config,
     commands: Receiver<Command>,
-    segments: Sender<RecognizerInput>,
-    commits: Receiver<CommitCut>,
-    recognizer: bool,
-    streaming: bool,
+    audio: Sender<StreamInput>,
     notices: Sender<FrontendNotice>,
     clock: Arc<SessionClock>,
     bus: EventBus,
@@ -812,28 +616,21 @@ fn frontend_loop(
     ready: Sender<Result<()>>,
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
-    segment_counts: Arc<SegmentCounters>,
 ) -> Result<()> {
     let mut frontend = Frontend {
         source,
-        vad,
-        builder: SegmentBuilder::new(config.vad),
         input: None,
         source_cancel: Arc::new(AtomicBool::new(false)),
         inputs: VecDeque::new(),
         notices: VecDeque::new(),
         clock,
         bus,
-        recognizer,
-        forwarded: None,
-        streaming,
         stream_at: StreamTime::ZERO,
         stream_pending: Vec::new(),
         ending: false,
         started_once: false,
         listening,
         latest_stats,
-        segment_counts,
     };
     if let Err(error) = frontend.start_source() {
         let _ = ready.try_send(Err(Error::Engine(error.to_string())));
@@ -847,23 +644,13 @@ fn frontend_loop(
     });
     let _ = ready.try_send(Ok(()));
     while !cancelled.load(Ordering::Acquire) {
-        // Commands stay responsive even if segments are backpressured by ASR.
+        // Commands stay responsive even if audio is backpressured by ASR.
         for command in commands.try_iter().take(CONTROL_CAPACITY) {
             frontend.command(command);
         }
-        for cut in commits.try_iter().take(COMMIT_CAPACITY) {
-            frontend.commit(cut);
-        }
         while let Some(notice) = frontend.notices.pop_front() {
             match notices.try_send(notice) {
-                Ok(()) => {
-                    if let FrontendNotice::Started(id, at) = notice {
-                        frontend.bus.publish(PipelineEvent::SpeechStarted {
-                            id,
-                            at_ms: at.millis(),
-                        });
-                    }
-                }
+                Ok(()) => {}
                 Err(TrySendError::Full(notice)) => {
                     frontend.notices.push_front(notice);
                     break;
@@ -873,7 +660,7 @@ fn frontend_loop(
         }
         if frontend.notices.is_empty() {
             while let Some(input) = frontend.inputs.pop_front() {
-                match segments.try_send(input) {
+                match audio.try_send(input) {
                     Ok(()) => {}
                     Err(TrySendError::Full(input)) => {
                         frontend.inputs.push_front(input);
@@ -891,9 +678,6 @@ fn frontend_loop(
                 send(notices, notice) -> result => {
                     result.map_err(|_| Error::Stopped)?;
                     frontend.notices.pop_front();
-                    if let FrontendNotice::Started(id, at) = notice {
-                        frontend.bus.publish(PipelineEvent::SpeechStarted { id, at_ms: at.millis() });
-                    }
                 },
                 recv(commands) -> command => match command { Ok(command) => frontend.command(command), Err(_) => break },
                 default(POLL) => {}
@@ -902,12 +686,11 @@ fn frontend_loop(
         }
         if let Some(input) = frontend.inputs.front().cloned() {
             crossbeam_channel::select! {
-                send(segments, input) -> result => {
+                send(audio, input) -> result => {
                     result.map_err(|_| Error::Stopped)?;
                     frontend.inputs.pop_front();
                 },
                 recv(commands) -> command => match command { Ok(command) => frontend.command(command), Err(_) => break },
-                recv(commits) -> cut => if let Ok(cut) = cut { frontend.commit(cut) },
                 default(POLL) => {}
             }
             continue;
@@ -918,17 +701,11 @@ fn frontend_loop(
             .unwrap_or_else(crossbeam_channel::never);
         crossbeam_channel::select! {
             recv(commands) -> command => match command { Ok(command) => frontend.command(command), Err(_) => break },
-            recv(commits) -> cut => if let Ok(cut) = cut { frontend.commit(cut) },
             recv(input) -> frame => match frame {
                 Ok(frame) => frontend.frame(frame),
                 Err(_) => {
                     frontend.stop_source();
-                    if frontend.streaming {
-                        frontend.stream_break(CutReason::End);
-                    } else {
-                        let update = frontend.builder.finish();
-                        frontend.stage(update, false);
-                    }
+                    frontend.stream_break(CutReason::End);
                     frontend.ending = true;
                 }
             },
@@ -938,25 +715,22 @@ fn frontend_loop(
     Ok(())
 }
 
-/// What a streaming recognizer needs to report clauses itself.
+/// What the recognizer needs to report clauses itself.
 struct AsrNotices {
     notices: Sender<FrontendNotice>,
     segment_counts: Arc<SegmentCounters>,
     /// Off mode: clauses end only at sentence ends and pauses.
     sentences: bool,
-    vad: Option<Box<dyn Vad>>,
+    vad: Box<dyn Vad>,
 }
 
-#[allow(clippy::too_many_arguments)]
 fn asr_loop(
-    mut asr: Box<dyn SegmentAsr>,
-    config: Config,
-    inputs: Receiver<RecognizerInput>,
-    commits: Sender<CommitCut>,
+    mut asr: Box<dyn StreamingAsr>,
+    config: &Config,
+    inputs: Receiver<StreamInput>,
     output: Sender<AsrMessage>,
-    clock: Arc<SessionClock>,
-    bus: EventBus,
-    cancelled: Arc<AtomicBool>,
+    bus: &EventBus,
+    cancelled: &AtomicBool,
     stream: AsrNotices,
 ) -> Result<()> {
     bus.publish(PipelineEvent::EngineStatus {
@@ -964,11 +738,7 @@ fn asr_loop(
         state: EngineState::Ready,
         message: None,
     });
-    if asr.stream().is_some() {
-        return stream_loop(asr, &config, inputs, output, &bus, &cancelled, stream);
-    }
-    drop(stream);
-    let mut recognizer = Recognizer::new(&config);
+    let mut recognizer = StreamRecognizer::new(config, stream.sentences, Some(stream.vad));
     let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
@@ -976,49 +746,7 @@ fn asr_loop(
             Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
             Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
         };
-        let id = match &input {
-            RecognizerInput::Open { id, .. } | RecognizerInput::Audio { id, .. } => *id,
-            RecognizerInput::Closed(segment) => segment.id,
-            RecognizerInput::Stream(_) => continue,
-        };
-        let span = tracing::info_span!("asr", id = id.0);
-        let _utterance = span.enter();
-        produced.clear();
-        recognizer.handle(asr.as_mut(), input, clock.now(), &mut produced);
-        for item in produced.drain(..) {
-            match item {
-                Output::Message(message) => send_cooperative(&output, message, &cancelled)?,
-                Output::Cut(cut) => {
-                    // A full channel means the frontend is behind; the next decode asks again.
-                    let _ = commits.try_send(cut);
-                }
-            }
-        }
-    }
-    Ok(())
-}
-
-fn stream_loop(
-    mut asr: Box<dyn SegmentAsr>,
-    config: &Config,
-    inputs: Receiver<RecognizerInput>,
-    output: Sender<AsrMessage>,
-    bus: &EventBus,
-    cancelled: &AtomicBool,
-    stream: AsrNotices,
-) -> Result<()> {
-    let mut recognizer = StreamRecognizer::new(config, stream.sentences, stream.vad);
-    let mut produced = Vec::new();
-    while !cancelled.load(Ordering::Acquire) {
-        let input = match inputs.recv_timeout(POLL) {
-            Ok(RecognizerInput::Stream(input)) => input,
-            Ok(_) | Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
-            Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
-        };
-        let Some(engine) = asr.stream() else {
-            break;
-        };
-        recognizer.handle(engine, input, &mut produced);
+        recognizer.handle(asr.as_mut(), input, &mut produced);
         for item in produced.drain(..) {
             match item {
                 StreamOutput::Started(id, at) => {
@@ -1041,54 +769,6 @@ fn stream_loop(
         }
     }
     Ok(())
-}
-
-pub(crate) fn normalized_language(tag: Option<&str>) -> Option<String> {
-    let tag = tag?.trim();
-    let tag = tag
-        .strip_prefix("<|")
-        .and_then(|tag| tag.strip_suffix("|>"))
-        .unwrap_or(tag)
-        .trim();
-    let tag = tag.to_ascii_lowercase();
-    let primary = tag.split(['-', '_']).next().unwrap_or(&tag);
-    let language = match primary {
-        "ja" | "jpn" | "japanese" => "ja",
-        "ko" | "kor" | "korean" => "ko",
-        "zh" | "zho" | "chi" | "chinese" | "mandarin" => "zh",
-        "en" | "eng" | "english" => "en",
-        _ => &tag,
-    };
-    (!language.is_empty()).then(|| language.to_owned())
-}
-
-pub(crate) fn inferred_other_language(text: &str) -> Option<String> {
-    let kana = text
-        .chars()
-        .filter(|character| matches!(character, '\u{3040}'..='\u{30ff}'))
-        .count();
-    let hangul = text
-        .chars()
-        .filter(|character| matches!(character, '\u{ac00}'..='\u{d7af}'))
-        .count();
-    if hangul > kana {
-        Some("ko".into())
-    } else if kana > 0 {
-        Some("ja".into())
-    } else {
-        None
-    }
-}
-
-/// Language from the share of Latin letters and CJK characters, for engines without a tag.
-pub(crate) fn text_language(text: &str) -> Option<String> {
-    let latin = text.chars().filter(char::is_ascii_alphabetic).count();
-    let cjk = crate::text::chinese_chars(text);
-    match (latin, cjk) {
-        (0, 0) => None,
-        _ if latin > cjk => Some("en".into()),
-        _ => Some("zh".into()),
-    }
 }
 
 fn translates(transcript: &Transcript, config: &RoutingConfig) -> bool {

@@ -16,7 +16,7 @@ use lt_core::{
     config::AudioConfig,
     error::{Error, Result},
     events::{PipelineEvent, SourceStateKind},
-    segment::FrameFlags,
+    source::FrameFlags,
     source::{AudioFrame, AudioProducer, AudioSource, SourceEvents},
     types::{CaptureMode, SourceInfo, StreamTime, FRAME_SAMPLES, SAMPLE_RATE},
 };
@@ -414,7 +414,7 @@ mod tests {
     use lt_core::{
         bus::EventBus,
         config::Config,
-        fakes::{FakeAsr, FakeTranslator, FakeVad},
+        fakes::{FakeStream, FakeTranslator, FakeVad},
         pipeline::Pipeline,
     };
     use std::{fs, sync::atomic::AtomicUsize};
@@ -498,7 +498,10 @@ mod tests {
             config,
             Box::new(source),
             Box::new(FakeVad::from_energy(0.005)),
-            Box::new(FakeAsr::new(vec!["我们今天一起谈论这个问题。".into()])),
+            Box::new(FakeStream::new(
+                vec!["我们今天一起谈论这个问题。".into()],
+                0.8,
+            )),
             Box::new(FakeTranslator::default()),
             bus,
         )

@@ -42,30 +42,6 @@
       "optional": false
     },
     {
-      "id": "sensevoice-2024-07-17-int8",
-      "name": "Speech recognition (SenseVoice Small, 2024-07-17)",
-      "role": "asr",
-      "license": "FunASR model license (verify before public release)",
-      "page": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17",
-      "files": [
-        {
-          "name": "model.int8.onnx",
-          "size": 239233841,
-          "sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
-          "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/model.int8.onnx",
-          "mirror": ""
-        },
-        {
-          "name": "tokens.txt",
-          "size": 315894,
-          "sha256": "f449eb28dc567533d7fa59be34e2abca8784f771850c78a47fb731a31429a1dc",
-          "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/tokens.txt",
-          "mirror": ""
-        }
-      ],
-      "optional": true
-    },
-    {
       "id": "silero-vad-v5",
       "name": "Voice activity detection (Silero VAD v5)",
       "role": "vad",
@@ -168,44 +144,6 @@
           "size": 315449,
           "sha256": "e10b98a0cab1c98e847fbdda14cb3d45a38336d47535a3f63a0fb6c4e0f4cdf4",
           "url": "https://github.com/TEN-framework/ten-vad/raw/v1.0-ONNX/src/onnx_model/ten-vad.onnx",
-          "mirror": ""
-        }
-      ],
-      "optional": true
-    },
-    {
-      "id": "xasr-zh-en-int8-2026-06-03",
-      "name": "Speech recognition (X-ASR zh-en, int8)",
-      "role": "asr",
-      "license": "Apache-2.0 (upstream github.com/Gilgamesh-J/X-ASR LICENSE and README, checked 2026-10-10; the sherpa-onnx conversion repo states no license)",
-      "page": "https://huggingface.co/csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03",
-      "files": [
-        {
-          "name": "encoder-epoch-99-avg-1.int8.onnx",
-          "size": 161744450,
-          "sha256": "fe0198b52626f2a1012ebb6d6a7259c5137c4c964f3a524135e353f4687b5d14",
-          "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/resolve/main/encoder-epoch-99-avg-1.int8.onnx",
-          "mirror": ""
-        },
-        {
-          "name": "decoder-epoch-99-avg-1.onnx",
-          "size": 11309084,
-          "sha256": "a9fe7c320337e6f510809c028a8accf074d45f42aab852e2d29830babc41a3f9",
-          "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/resolve/main/decoder-epoch-99-avg-1.onnx",
-          "mirror": ""
-        },
-        {
-          "name": "joiner-epoch-99-avg-1.int8.onnx",
-          "size": 2581422,
-          "sha256": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
-          "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/resolve/main/joiner-epoch-99-avg-1.int8.onnx",
-          "mirror": ""
-        },
-        {
-          "name": "tokens.txt",
-          "size": 58806,
-          "sha256": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
-          "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/resolve/main/tokens.txt",
           "mirror": ""
         }
       ],

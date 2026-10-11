@@ -1,6 +1,6 @@
 # Architecture
 
-Live Translation captures the audio that a Windows PC plays. It recognizes Chinese speech with a streaming X-ASR model (SenseVoice and offline X-ASR are options) and translates it with two local llama.cpp models. It shows the result in an overlay that lets mouse clicks pass through. All processing is on the PC. The only network use is the model download.
+Live Translation captures the audio that a Windows PC plays. It recognizes Chinese speech with a streaming X-ASR model and translates it with two local llama.cpp models. It shows the result in an overlay that lets mouse clicks pass through. All processing is on the PC. The only network use is the model download.
 
 ## Repository
 
@@ -8,7 +8,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 |---|---|
 | `crates/lt-core` | Pipeline, types, config, event bus, metrics, transcripts. No OS code and no engine code. |
 | `crates/lt-audio` | WASAPI capture (system mix or selected apps), WAV replay, resampling, normalization |
-| `crates/lt-sherpa` | Voice detection (Silero v5 and v6, TEN VAD) and speech recognition (SenseVoice, X-ASR) |
+| `crates/lt-sherpa` | Streaming speech recognition (X-ASR) and voice detection (Silero v5 and v6, TEN VAD) |
 | `crates/lt-llm` | llama-server clients, the server supervisor, model downloads |
 | `crates/lt-cli` | Headless runner: `replay`, `live`, `bench`, `models fetch` |
 | `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge |
@@ -40,22 +40,20 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 ## Data flow
 
 1. **Capture.** The audio callback copies samples into a lock-free ring buffer.
-2. **VAD.** The frontend thread resamples to 16 kHz mono and runs Silero VAD on 32 ms frames. A streaming engine (`xasr_stream`, the default) skips steps 2 and 3: the frontend sends it all audio in 100 ms pieces.
-3. **Segments.** The segment builder cuts speech at a 0.4 s pause, at a breath after 7 s, and at 10 s. Each segment has its own `UtteranceId`.
-4. **Recognizer.** It decodes the open segment again after each 0.5 s of new audio. The latest text is the live Chinese line. A streaming engine instead keeps its state and decodes each piece of audio once; its emitted words never change. A clause opens at its first word and gets its `UtteranceId` there.
-5. **Commit.** If a sentence mark is stable for two decodes and speech continues, the recognizer cuts the clause there. A comma can also end a clause after 8 word tokens. With no punctuation for 20 word tokens, it cuts at the widest gap. A streaming engine uses the same rule without the stability check, and does not restart at a cut. Its clause also ends at a pause of `asr.stream_pause_s` (the engine's own rule) or when the audio stops. The engine reports each word late, so its token times are moved earlier by a fixed delay for each chunk size. At a commit the cut goes to the first gap that the voice detector hears between the last word and the next word; without a gap, to just before the next word.
-6. **Filter and joiner.** The filter removes tags and fillers, classifies the text, and drops empty text, music and one-character noise. The joiner holds short pause-closed phrases (8 Chinese characters or fewer) for up to 1 s and joins them to the next phrase. It does not hold committed clauses.
-7. **Translation.** Finals and drafts share one slot: one request at a time, finals first, and only the newest draft waits. If the oldest final is more than 6 s behind, the translator skips older items. English speech is shown as heard. With `translate.window_chars` set, a final is translated together with the earlier lines that fit in that many characters, joined by `<br>`. The answer is prefilled with the English already shown for those lines, so Hy-MT2 writes only the new line's English and stops at the next `<br>`. The window ends at a line that has no English (skipped or failed), and restarts after 10 s without lines and at a discontinuity. An empty answer is translated again without the window.
-8. **Drafts.** In Continuous mode, LMT-60 translates each longer Chinese prefix into a dimmed draft. The final translation replaces the draft.
-9. **Events.** Each stage sends events to the bus. The bridge sends them to the windows. The transcript writer and the metrics read the same events. See [ipc.md](ipc.md).
+2. **Recognizer.** The frontend thread resamples to 16 kHz mono and sends all audio to the streaming X-ASR engine in pieces of about 100 ms. The engine keeps its state and decodes each piece once; its emitted words never change. A clause opens at its first word and gets its `UtteranceId` there. The text of the open clause is the live Chinese line.
+3. **Commit.** If a sentence mark is followed by two more words, the recognizer cuts the clause there. A comma can also end a clause after 8 word tokens. With no punctuation for 20 word tokens, it cuts at the widest gap. A clause also ends at a pause of `asr.stream_pause_s` (the engine's own rule) or when the audio stops. The engine reports each word late, so its token times are moved earlier by a fixed delay for each chunk size. At a commit the cut goes to the first gap that the voice detector hears between the last word and the next word; without a gap, to just before the next word.
+4. **Filter and joiner.** The filter removes tags and fillers, classifies the text, and drops empty text and one-character noise. The joiner holds short pause-closed phrases (8 Chinese characters or fewer) for up to 1 s and joins them to the next phrase. It does not hold committed clauses.
+5. **Translation.** Finals and drafts share one slot: one request at a time, finals first, and only the newest draft waits. If the oldest final is more than 6 s behind, the translator skips older items. English speech is shown as heard. With `translate.window_chars` set, a final is translated together with the earlier lines that fit in that many characters, joined by `<br>`. The answer is prefilled with the English already shown for those lines, so Hy-MT2 writes only the new line's English and stops at the next `<br>`. The window ends at a line that has no English (skipped or failed), and restarts after 10 s without lines and at a discontinuity. An empty answer is translated again without the window.
+6. **Drafts.** In Continuous mode, LMT-60 translates each longer Chinese prefix into a dimmed draft. The final translation replaces the draft.
+7. **Events.** Each stage sends events to the bus. The bridge sends them to the windows. The transcript writer and the metrics read the same events. See [ipc.md](ipc.md).
 
 ## Threads
 
 | Thread | Work |
 |---|---|
 | `lt-wasapi-capture` and adapters | Capture |
-| `lt-frontend` | Resample, VAD, segment builder |
-| `lt-asr` | Recognizer and commit rule; with a streaming engine also the clause start and end notices |
+| `lt-frontend` | Resample, send audio to the recognizer |
+| `lt-asr` | Streaming recognizer, commit rule, clause start and end notices |
 | `lt-scheduler` | Filter, joiner, queue, drafts, step-down, stats |
 | `lt-translator`, `lt-draft` | HTTP requests to the two servers |
 | `lt-transcript` | Transcript writer |
@@ -77,7 +75,6 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 
 - `auto` selects Continuous if the PC has 6 or more physical cores and the draft model is present. Otherwise it selects Light.
 - `continuous` without the draft model runs Light, with the reason `draft_unavailable`.
-- An ASR engine without a windowed decode always runs Off.
 - In Off with a streaming engine, a clause still open after 30 s is also cut by the word-cap rule.
 - A change to a `latency` key restarts the pipeline.
 

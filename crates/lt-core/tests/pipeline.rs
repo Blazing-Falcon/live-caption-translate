@@ -5,10 +5,9 @@ use lt_core::{
     engines::{TranslateRequest, TranslationControl, TranslationOut, Translator, TranslatorCaps},
     error::{Error, Result},
     events::{DropReason, ListeningStateKind, PipelineEvent, SourceStateKind},
-    fakes::{FakeAsr, FakeTranslator, FakeVad},
+    fakes::{FakeStream, FakeTranslator, FakeVad},
     pipeline::{Pipeline, PipelineHandle},
-    segment::FrameFlags,
-    source::{AudioFrame, AudioProducer, AudioSource, SourceEvents},
+    source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
     types::{CaptureMode, SourceInfo, StreamTime, TextClass, UtteranceId},
 };
 use std::{
@@ -128,11 +127,22 @@ impl Drop for SyntheticWavSource {
     }
 }
 
+/// The fake recognizer's pause rule. The synthetic WAV has 0.42 s of silence between phrases,
+/// which holds at least two full 128 ms pieces of quiet audio.
+const PAUSE_S: f64 = 0.25;
+
+fn fake_stream(texts: &[&str]) -> FakeStream {
+    FakeStream::new(
+        texts.iter().map(|text| (*text).to_owned()).collect(),
+        PAUSE_S,
+    )
+}
+
 fn wav(phrases: usize) -> Vec<u8> {
     let mut pcm = Vec::new();
     for _ in 0..phrases {
-        // Eight speech frames satisfy the default 0.25 s minimum; thirteen
-        // silence frames satisfy the 0.4 s close. Speech is a 1 kHz sine wave.
+        // Eight speech frames, then thirteen silent frames: more than the fake recognizer's
+        // pause rule. Speech is a 1 kHz sine wave.
         for sample in 0..8 * 512 {
             let tone = (sample as f64 * std::f64::consts::TAU * 1000.0 / 16_000.0).sin();
             pcm.extend_from_slice(&((tone * 16_000.0) as i16).to_le_bytes());
@@ -265,34 +275,17 @@ fn assert_terminal_order(events: &[PipelineEvent], enabled_other: &[&str]) {
 }
 
 #[test]
-fn wav_replay_routes_chinese_english_other_and_drops_fillers_before_asr_final() {
+fn wav_replay_translates_chinese_passes_english_and_drops_fillers_before_asr_final() {
     let bus = EventBus::default();
     let events = bus.subscribe(128);
     let mut config = Config::default();
     config.join.hold_max_chars = 0;
-    let asr = FakeAsr::with_metadata(vec![
-        (
-            "<|zh|>你好。".into(),
-            Some("<|zh|>".into()),
-            Some("<|Speech|>".into()),
-        ),
-        (
-            "Okay I see.".into(),
-            Some("en".into()),
-            Some("Speech".into()),
-        ),
-        (
-            "こんにちは。".into(),
-            Some("ja".into()),
-            Some("Speech".into()),
-        ),
-        ("嗯。".into(), Some("zh".into()), Some("Speech".into())),
-    ]);
+    let asr = fake_stream(&["你好。", "Okay I see.", "嗯。"]);
     let translator = FakeTranslator::default();
     let metrics = translator.metrics.clone();
     let mut handle = Pipeline::start_with_bus(
         config,
-        Box::new(SyntheticWavSource::from_bytes(&wav(4))),
+        Box::new(SyntheticWavSource::from_bytes(&wav(3))),
         Box::new(FakeVad::from_energy(0.001)),
         Box::new(asr),
         Box::new(translator),
@@ -308,10 +301,7 @@ fn wav_replay_routes_chinese_english_other_and_drops_fillers_before_asr_final() 
             _ => None,
         })
         .collect();
-    assert_eq!(
-        classes,
-        [TextClass::Chinese, TextClass::English, TextClass::Other]
-    );
+    assert_eq!(classes, [TextClass::Chinese, TextClass::English]);
     assert_eq!(metrics.requests.load(Ordering::SeqCst), 1);
     assert!(recorded.iter().any(|event| matches!(
         event,
@@ -403,7 +393,7 @@ fn catch_up_skips_waiting_items_and_translates_the_newest_after_a_busy_request()
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(14))),
         Box::new(FakeVad::from_energy(0.001)),
-        Box::new(FakeAsr::new(phrases.clone())),
+        Box::new(FakeStream::new(phrases.clone(), PAUSE_S)),
         Box::new(translator),
         bus,
     )
@@ -452,7 +442,7 @@ fn pause_finishes_pending_translation_and_resume_preserves_ids_and_source_change
         config,
         Box::new(source),
         Box::new(FakeVad::from_energy(0.001)),
-        Box::new(FakeAsr::new(vec!["你好。".into(), "再见。".into()])),
+        Box::new(fake_stream(&["你好。", "再见。"])),
         Box::new(FakeTranslator::default()),
         bus,
     )
@@ -506,7 +496,7 @@ fn stop_joins_every_worker_while_translation_is_busy_and_settles_pending_lines()
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(4))),
         Box::new(FakeVad::from_energy(0.001)),
-        Box::new(FakeAsr::new(vec!["你好。".into(); 4])),
+        Box::new(FakeStream::new(vec!["你好。".into(); 4], PAUSE_S)),
         Box::new(translator),
         bus,
     )
@@ -544,7 +534,7 @@ fn saturated_translation_backpressures_asr_and_pause_stop_remain_responsive() {
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(300))),
         Box::new(FakeVad::from_energy(0.001)),
-        Box::new(FakeAsr::new(vec!["你好。".into(); 300])),
+        Box::new(FakeStream::new(vec!["你好。".into(); 300], PAUSE_S)),
         Box::new(translator),
         bus,
     )

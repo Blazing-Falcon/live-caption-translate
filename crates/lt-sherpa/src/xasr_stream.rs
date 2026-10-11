@@ -1,17 +1,11 @@
 //! Streaming X-ASR: sherpa's online zipformer transducer. It hears all audio continuously,
 //! keeps its state between pieces, and its emitted tokens never change.
 
-use crate::{
-    offline::{cstring, path_cstring, require_threads, OfflineEngine},
-    runtime::engine_error,
-    xasr::normalize_tokens,
-};
+use crate::runtime::{cstring, engine_error, path_cstring, prepare, require_threads};
 use lt_core::{
     config::AsrConfig,
-    engines::{mean_log_prob, SegmentAsr, StreamResult, StreamingAsr, TokenTranscript},
+    engines::{StreamResult, StreamingAsr, TokenTranscript},
     error::{Error, Result},
-    text::{classify, clean},
-    types::{Segment, StageTiming, TextClass, Transcript},
 };
 use serde::Deserialize;
 use sherpa_onnx_sys as sys;
@@ -19,7 +13,6 @@ use std::{
     ffi::{c_char, CStr},
     path::Path,
     ptr::NonNull,
-    time::Instant,
 };
 
 const NAME: &str = "X-ASR streaming";
@@ -61,7 +54,7 @@ impl XAsrStream {
         let decoder = dir.join("decoder.onnx");
         let joiner = dir.join("joiner.int8.onnx");
         let tokens = dir.join("tokens.txt");
-        OfflineEngine::prepare(NAME, None, &[&encoder, &decoder, &joiner, &tokens])?;
+        prepare(NAME, None, &[&encoder, &decoder, &joiner, &tokens])?;
         let encoder = path_cstring(&encoder, "X-ASR streaming encoder path")?;
         let decoder = path_cstring(&decoder, "X-ASR streaming decoder path")?;
         let joiner = path_cstring(&joiner, "X-ASR streaming joiner path")?;
@@ -197,8 +190,6 @@ fn parse_result(json: &str, lag_s: f32) -> Result<StreamResult> {
                 .iter()
                 .map(|time| (time - lag_s).max(0.0))
                 .collect(),
-            lang_tag: None,
-            event: None,
             log_probs: raw.ys_probs,
         },
     })
@@ -252,40 +243,6 @@ impl StreamingAsr for XAsrStream {
     }
 }
 
-impl SegmentAsr for XAsrStream {
-    fn stream(&mut self) -> Option<&mut dyn StreamingAsr> {
-        Some(self)
-    }
-
-    /// One whole segment through a fresh stream (bench and tools; the pipeline streams).
-    fn transcribe(&mut self, segment: &Segment) -> Result<Transcript> {
-        let started = Instant::now();
-        if self.stream.is_some() {
-            self.finish()?;
-        }
-        self.feed(&segment.samples)?;
-        let result = self.finish()?;
-        let text = result.tokens.tokens.concat().trim().to_owned();
-        let class = classify(&clean(&text, &[])).unwrap_or(TextClass::Chinese);
-        Ok(Transcript {
-            id: segment.id,
-            logprob: mean_log_prob(&result.tokens.log_probs),
-            text,
-            lang_tag: None,
-            class,
-            event: None,
-            timing: StageTiming {
-                start: segment.start,
-                end: segment.end,
-                asr_done_ms: 0,
-                asr_ms: started.elapsed().as_millis().min(u128::from(u32::MAX)) as u32,
-            },
-            absorbed: Vec::new(),
-            cut: segment.cut_reason,
-        })
-    }
-}
-
 impl Drop for XAsrStream {
     fn drop(&mut self) {
         // SAFETY: each uniquely owned handle is destroyed once, the stream first.
@@ -295,5 +252,54 @@ impl Drop for XAsrStream {
             }
             sys::SherpaOnnxDestroyOnlineRecognizer(self.recognizer.as_ptr());
         }
+    }
+}
+
+/// sherpa marks every BPE piece that starts a word with a space, Chinese characters and
+/// punctuation included. Keep the space only where the text has one (before an English word,
+/// and between English and Chinese), so the tokens concatenate to the result text and a
+/// punctuation mark is a one-character token for the commit rule.
+pub(crate) fn normalize_tokens(tokens: &mut [String]) {
+    let mut previous_ascii_word = false;
+    for token in tokens.iter_mut() {
+        let Some(first) = token.trim_start().chars().next() else {
+            previous_ascii_word = false;
+            continue;
+        };
+        let keep_space = first.is_ascii_alphanumeric()
+            || (!first.is_ascii() && previous_ascii_word && !is_punctuation(first));
+        if token.starts_with(' ') && !keep_space {
+            *token = token.trim_start().to_owned();
+        }
+        let last = token.chars().next_back().unwrap_or(' ');
+        previous_ascii_word = last.is_ascii_alphanumeric();
+    }
+}
+
+fn is_punctuation(character: char) -> bool {
+    !character.is_alphanumeric()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tokens_concatenate_to_the_native_text_and_marks_stand_alone() {
+        // Recorded from the model's test_wavs/0.wav with sherpa-onnx 1.13.8.
+        let mut tokens: Vec<String> = [
+            " 昨", " 天", " 是", " ", "M", "on", "da", "y", " ,", " today", " is", " 礼", " 拜",
+            " 二", " ，", " the", " day", " after", " to", "m", "or", "ro", "w", " 是", " 星",
+            " 期", " 三", " 。",
+        ]
+        .map(String::from)
+        .to_vec();
+        normalize_tokens(&mut tokens);
+        assert_eq!(
+            tokens.concat().trim(),
+            "昨天是 Monday, today is 礼拜二， the day after tomorrow 是星期三。"
+        );
+        assert_eq!(tokens.last().map(String::as_str), Some("。"));
+        assert!(tokens.contains(&"，".to_owned()));
     }
 }

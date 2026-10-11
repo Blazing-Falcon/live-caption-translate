@@ -89,7 +89,7 @@ export const draft = (id: number, text: string, rev = 1, end_ms = 1000): Pipelin
   text,
   end_ms,
 });
-export const dropped = (id: number): PipelineEvent => ({ type: "dropped", id, reason: "music" });
+export const dropped = (id: number): PipelineEvent => ({ type: "dropped", id, reason: "empty" });
 
 export const delta = (id: number, text: string): PipelineEvent => ({ type: "translation_delta", id, text_so_far: text });
 export const final = (id: number, text: string): PipelineEvent => ({

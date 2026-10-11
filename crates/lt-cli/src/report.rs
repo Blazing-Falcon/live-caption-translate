@@ -162,8 +162,6 @@ impl ReplayReport {
             segments: counts.total(),
             cuts: [
                 ("pause", counts.pause),
-                ("soft cut", counts.soft_cut),
-                ("hard cut", counts.hard_cut),
                 ("discontinuity", counts.discontinuity),
                 ("end", counts.end),
             ]

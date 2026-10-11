@@ -35,11 +35,11 @@ Enum values:
 | Enum | Values |
 |---|---|
 | `TextClass` | `chinese`, `mixed`, `english`, `other` |
-| `CutReason` | `pause`, `soft_cut`, `hard_cut`, `discontinuity`, `end`, `commit` |
+| `CutReason` | `pause`, `discontinuity`, `end`, `commit` |
 | `JoinKind` | `hold`, `queue` |
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
-| `DropReason` | `empty`, `music`, `single_char` |
+| `DropReason` | `empty`, `single_char` |
 | `EngineKind` | `vad`, `asr`, `translator`, `draft_translator` |
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |

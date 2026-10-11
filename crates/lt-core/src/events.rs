@@ -33,7 +33,6 @@ pub enum FailReason {
 #[serde(rename_all = "snake_case")]
 pub enum DropReason {
     Empty,
-    Music,
     SingleChar,
 }
 

@@ -74,15 +74,11 @@ config_table!(VadConfig {
     hard_cut_s: f32 = 10.0,
 });
 config_table!(AsrConfig {
-    engine: String = "xasr_stream".into(),
-    language: String = "auto".into(),
-    use_itn: bool = true,
     threads: u32 = 1,
     stream_chunk_ms: u32 = 480,
     stream_pause_s: f32 = 0.8,
 });
 config_table!(FilterConfig {
-    drop_music: bool = true,
     single_char_max_s: f32 = 0.6,
     single_char_allow: Vec<String> = ["对", "好", "是", "行", "不", "哦"].map(String::from).to_vec(),
     fillers: Vec<String> = ["呃", "嗯", "额", "uh", "um"].map(String::from).to_vec(),
@@ -330,9 +326,7 @@ impl Config {
         number!(vad, soft_cut_after_s, 3.0, hard_cut);
         let threshold = self.vad.threshold;
         number!(vad, soft_cut_prob, 0.05, threshold);
-        choice!(asr, language, &["auto", "zh", "en", "ja", "ko", "yue"]);
         number!(asr, threads, 1, 4);
-        choice!(asr, engine, &["xasr_stream", "sensevoice", "xasr"]);
         if ![160, 480, 960].contains(&self.asr.stream_chunk_ms) {
             messages.push(format!(
                 "asr.stream_chunk_ms: invalid value {}; using default {}",
@@ -393,7 +387,6 @@ impl Config {
         choice!(models, source, &["huggingface", "modelscope"]);
         for (name, engine, default) in [
             ("vad.engine", &mut self.vad.engine, &defaults.vad.engine),
-            ("asr.engine", &mut self.asr.engine, &defaults.asr.engine),
             (
                 "translate.engine",
                 &mut self.translate.engine,

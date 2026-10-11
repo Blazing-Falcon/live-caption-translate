@@ -102,9 +102,8 @@ pub fn latin_words(text: &str) -> usize {
     words
 }
 
-/// Apply the rules in order: empty text, music without enough word evidence, then
-/// brief single-character false triggers. The input may still contain markup
-/// or fillers; decisions always use its cleaned text.
+/// Apply the rules in order: empty text, then brief single-character false triggers. The input
+/// may still contain markup or fillers; decisions always use its cleaned text.
 pub fn drop_reason(
     transcript: &Transcript,
     duration_s: f64,
@@ -113,17 +112,6 @@ pub fn drop_reason(
     let text = clean(&transcript.text, &config.fillers);
     if classify_with_lang(&text, transcript.lang_tag.as_deref()).is_none() {
         return Some(DropReason::Empty);
-    }
-
-    if config.drop_music
-        && transcript
-            .event
-            .as_deref()
-            .is_some_and(|event| normalized_tag(event).eq_ignore_ascii_case("BGM"))
-        && chinese_chars(&text) < 2
-        && latin_words(&text) == 0
-    {
-        return Some(DropReason::Music);
     }
 
     let mut spoken_characters = text
@@ -363,59 +351,44 @@ mod tests {
     fn drop_precedence_and_duration_table() {
         let config = FilterConfig::default();
         let cases = [
-            ("", None, None, 1.0, Some(DropReason::Empty)),
-            ("123。", Some("en"), None, 1.0, Some(DropReason::Empty)),
-            (
-                "呃，嗯。",
-                None,
-                Some("<|BGM|>"),
-                0.4,
-                Some(DropReason::Empty),
-            ),
+            ("", None, 1.0, Some(DropReason::Empty)),
+            ("123。", Some("en"), 1.0, Some(DropReason::Empty)),
+            ("呃，嗯。", None, 0.4, Some(DropReason::Empty)),
             (
                 "<|zh|><|Speech|>[UNK]嗯。",
                 None,
-                None,
                 0.4,
                 Some(DropReason::Empty),
             ),
-            ("对。", None, None, 0.4, None),
-            ("好。", None, None, 0.4, None),
-            ("是。", None, None, 0.4, None),
-            ("行。", None, None, 0.4, None),
-            ("不。", None, None, 0.4, None),
-            ("哦。", None, None, 0.4, None),
-            ("那。", None, None, 0.4, Some(DropReason::SingleChar)),
-            ("那。", None, None, 0.6, None),
-            ("那。", None, None, 0.8, None),
-            ("那2。", None, None, 0.4, None),
-            ("啦。", None, Some("BGM"), 0.4, Some(DropReason::Music)),
-            // Two Chinese
-            // characters are sufficient word evidence even in BGM.
-            ("啦啦。", None, Some("<|BGM|>"), 0.4, None),
-            ("我们今天来聊一下", None, Some("BGM"), 1.0, None),
-            ("hello", None, Some("bgm"), 1.0, None),
-            ("が。", None, Some("BGM"), 1.0, Some(DropReason::Music)),
-            ("I", Some("en"), None, 0.4, Some(DropReason::SingleChar)),
-            ("I", Some("en"), None, 1.0, None),
-            ("I", None, None, 1.0, Some(DropReason::Empty)),
+            ("对。", None, 0.4, None),
+            ("好。", None, 0.4, None),
+            ("是。", None, 0.4, None),
+            ("行。", None, 0.4, None),
+            ("不。", None, 0.4, None),
+            ("哦。", None, 0.4, None),
+            ("那。", None, 0.4, Some(DropReason::SingleChar)),
+            ("那。", None, 0.6, None),
+            ("那。", None, 0.8, None),
+            ("那2。", None, 0.4, None),
+            ("I", Some("en"), 0.4, Some(DropReason::SingleChar)),
+            ("I", Some("en"), 1.0, None),
+            ("I", None, 1.0, Some(DropReason::Empty)),
         ];
-        for (text, lang, event, duration, expected) in cases {
+        for (text, lang, duration, expected) in cases {
             assert_eq!(
-                drop_reason(&transcript(text, lang, event), duration, &config),
+                drop_reason(&transcript(text, lang), duration, &config),
                 expected,
-                "{text:?}, {event:?}, {duration}"
+                "{text:?}, {duration}"
             );
         }
     }
 
-    fn transcript(text: &str, lang: Option<&str>, event: Option<&str>) -> Transcript {
+    fn transcript(text: &str, lang: Option<&str>) -> Transcript {
         Transcript {
             id: UtteranceId(1),
             text: text.into(),
             lang_tag: lang.map(String::from),
             class: TextClass::Chinese,
-            event: event.map(String::from),
             timing: StageTiming::default(),
             absorbed: Vec::new(),
             cut: crate::types::CutReason::Pause,

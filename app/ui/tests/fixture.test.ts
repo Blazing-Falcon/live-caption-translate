@@ -43,7 +43,7 @@ describe("lawful full-stream fixtures", () => {
       { type: "translation_failed", id: 15, reason: "timeout", message: "Translation took too long" },
       asrFinal(16, "OK, can you hear me?", "english", "en"),
       asrFinal(17, "みんな、ありがとう！", "other", "ja"),
-      { type: "dropped", id: 18, reason: "music" },
+      { type: "dropped", id: 18, reason: "empty" },
     );
     expect(get(controller).lines.map((line) => `${line.id}:${line.state}`)).toEqual([
       "12:final", "14:skipped", "15:failed", "16:english", "17:other",

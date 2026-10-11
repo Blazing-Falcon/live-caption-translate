@@ -52,15 +52,11 @@ soft_cut_prob = 0.35
 hard_cut_s = 10.0
 
 [asr]
-engine = "xasr_stream"          # live recognizer: "xasr_stream" | "sensevoice" | "xasr"
-language = "auto"               # keep "auto": "zh" gives worse English
-use_itn = true
 threads = 1
 stream_chunk_ms = 480           # xasr_stream: 160 | 480 | 960
 stream_pause_s = 0.8            # xasr_stream: silence that ends a line
 
 [filter]
-drop_music = true
 single_char_max_s = 0.6
 single_char_allow = ["对", "好", "是", "行", "不", "哦"]
 fillers = ["呃", "嗯", "额", "uh", "um"]
@@ -164,7 +160,7 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `normalize` | bool | pipeline | Slow automatic gain before the VAD |
+| `normalize` | bool | pipeline | Slow automatic gain before the recognizer |
 | `norm_attack_s` | 0.1–5 | pipeline | Time to decrease gain for loud input |
 | `norm_release_s` | 0.5–20 | pipeline | Time to increase gain for quiet input |
 | `norm_max_gain_db` | 0–30 | pipeline | Maximum gain |
@@ -188,18 +184,14 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `engine` | `xasr_stream`, `sensevoice`, `xasr` | pipeline | Live recognizer. It gives the live Chinese line, the commits and the drafts. `xasr_stream` is a streaming model: it hears all audio, and the `vad` keys do not apply. The other two decode each speech segment that the VAD finds again every `latency.decode_interval_s`. X-ASR has no language tag: the share of Latin letters and Chinese characters sets the language. |
-| `language` | `auto`, `zh`, `en`, `ja`, `ko`, `yue` | pipeline | SenseVoice language hint. Keep `auto`: `zh` gives worse English. |
-| `use_itn` | bool | pipeline | SenseVoice punctuation and number normalization |
 | `threads` | 1–4 | pipeline | ONNX Runtime threads for the live recognizer |
-| `stream_chunk_ms` | `160`, `480`, `960` | pipeline | `xasr_stream` model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
-| `stream_pause_s` | 0.3–3.0 | pipeline | `xasr_stream`: silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
+| `stream_chunk_ms` | `160`, `480`, `960` | pipeline | Streaming X-ASR model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
+| `stream_pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
 
 ### filter
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `drop_music` | bool | pipeline | Drop music results |
 | `single_char_max_s` | 0 or more | pipeline | Drop a one-character result from a segment shorter than this, unless the character is in `single_char_allow` |
 | `single_char_allow` | list of strings | pipeline | One-character results that the filter always keeps |
 | `fillers` | list of strings | pipeline | Words removed when they stand alone |

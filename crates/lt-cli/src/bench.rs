@@ -10,7 +10,6 @@ use std::sync::{atomic::AtomicBool, Arc};
 pub fn bench(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
     match args.engine {
         BenchEngine::Asr => asr(args, config, cancelled),
-        BenchEngine::Vad => vad(args, config, cancelled),
         BenchEngine::Mt => mt(args, config, cancelled),
     }
 }
@@ -29,31 +28,25 @@ fn registry(args: &BenchArgs, config: &Config) -> (lt_core::engines::EngineRegis
 
 #[cfg(feature = "sherpa")]
 fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
-    use lt_core::types::{CutReason, Segment, StreamTime, UtteranceId};
+    use lt_core::{engines::mean_log_prob, types::StreamTime};
     use std::time::Instant;
     engines::check_cancel(&cancelled)?;
     let (registry, config) = registry(&args, &config);
     let loading = Instant::now();
     let mut asr = registry.build_asr(&config)?;
     eprintln!("load_ms={}", loading.elapsed().as_millis());
-    for (id, path) in engines::wav_files(&args.input)?.into_iter().enumerate() {
+    for path in engines::wav_files(&args.input)? {
         engines::check_cancel(&cancelled)?;
         let samples = lt_audio::wav::read_wav_mono16(&path)?;
         let end = StreamTime(samples.len() as u64);
-        let segment = Segment {
-            id: UtteranceId(id as u64),
-            start: StreamTime::ZERO,
-            end,
-            samples: Arc::from(samples),
-            cut_reason: CutReason::End,
-        };
         let started = Instant::now();
-        let output = asr.transcribe(&segment)?;
-        let (text, lang, event, logprob) =
-            (output.text, output.lang_tag, output.event, output.logprob);
+        asr.accept(&samples)?;
+        let result = asr.finish()?;
+        let text = result.tokens.tokens.concat().trim().to_owned();
+        let logprob = mean_log_prob(&result.tokens.log_probs);
         println!(
             "{}",
-            serde_json::json!({"file":path,"text":text,"lang":lang,"event":event,"logprob":logprob,"asr_ms":started.elapsed().as_millis(),"audio_s":end.seconds()})
+            serde_json::json!({"file":path,"text":text,"logprob":logprob,"asr_ms":started.elapsed().as_millis(),"audio_s":end.seconds()})
         );
     }
     Ok(())
@@ -61,45 +54,6 @@ fn asr(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()
 #[cfg(not(feature = "sherpa"))]
 fn asr(_: BenchArgs, _: Config, _: Arc<AtomicBool>) -> Result<()> {
     bail!("ASR bench requires --features sherpa");
-}
-
-#[cfg(feature = "sherpa")]
-fn vad(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
-    use lt_core::segment::{FrameFlags, SegmentBuilder};
-    use std::time::Instant;
-    engines::check_cancel(&cancelled)?;
-    let (registry, config) = registry(&args, &config);
-    let mut vad = registry.build_vad(&config)?;
-    for path in engines::wav_files(&args.input)? {
-        engines::check_cancel(&cancelled)?;
-        let samples = lt_audio::wav::read_wav_mono16(&path)?;
-        let mut builder = SegmentBuilder::new(config.vad.clone());
-        vad.reset();
-        let started = Instant::now();
-        let mut segments = Vec::new();
-        for chunk in samples.chunks(512) {
-            engines::check_cancel(&cancelled)?;
-            let mut frame = [0.0; 512];
-            frame[..chunk.len()].copy_from_slice(chunk);
-            let probability = vad.speech_prob(&frame);
-            segments.extend(
-                builder
-                    .push(&frame, probability, FrameFlags::EMPTY)
-                    .segments,
-            );
-        }
-        segments.extend(builder.finish().segments);
-        let cuts: Vec<_> = segments.iter().map(|segment| serde_json::json!({"start":segment.start.seconds(),"end":segment.end.seconds(),"cut":segment.cut_reason})).collect();
-        println!(
-            "{}",
-            serde_json::json!({"file":path,"vad_ms":started.elapsed().as_millis(),"audio_s":samples.len() as f64 / 16_000.0,"segments":cuts})
-        );
-    }
-    Ok(())
-}
-#[cfg(not(feature = "sherpa"))]
-fn vad(_: BenchArgs, _: Config, _: Arc<AtomicBool>) -> Result<()> {
-    bail!("VAD bench requires --features sherpa");
 }
 
 #[cfg(feature = "llm")]

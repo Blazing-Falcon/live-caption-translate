@@ -6,7 +6,7 @@ export type CaptureMode = "system" | "apps";
 export type JoinKind = "hold" | "queue";
 export type SkipReason = "catch_up";
 export type FailReason = "timeout" | "server_unavailable" | "echo" | "runaway" | "error";
-export type DropReason = "empty" | "music" | "single_char";
+export type DropReason = "empty" | "single_char";
 export type EngineKind = "vad" | "asr" | "translator" | "draft_translator";
 export type EngineState = "loading" | "ready" | "restarting" | "failed";
 export type SourceStateKind =
@@ -64,7 +64,7 @@ export interface PipelineStats {
 
 export type EffectiveMode = "continuous" | "light" | "off";
 export type ModeReason = "user" | "auto" | "cpu" | "lag" | "draft_unavailable";
-export type CutReason = "pause" | "soft_cut" | "hard_cut" | "discontinuity" | "end" | "commit";
+export type CutReason = "pause" | "discontinuity" | "end" | "commit";
 
 export type PipelineEvent =
   | { type: "speech_started"; id: UtteranceId; at_ms: number }

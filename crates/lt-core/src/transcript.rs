@@ -75,6 +75,11 @@ impl From<&Config> for SessionConfig {
     }
 }
 
+/// The recognizer named in session headers and `asr_live` records.
+pub fn recognizer_name(config: &Config) -> String {
+    format!("xasr_stream_{}ms", config.asr.stream_chunk_ms)
+}
+
 fn readable_f32(value: f32) -> f64 {
     // f32's shortest decimal round-trips the setting without exposing binary
     // widening artifacts such as 0.4000000059604645 in the session header.

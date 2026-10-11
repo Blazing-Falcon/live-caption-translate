@@ -2,7 +2,7 @@
 //! No allocations occur while accepting packets or synthesizing zeros.
 use lt_core::{
     error::{Error, Result},
-    segment::FrameFlags,
+    source::FrameFlags,
 };
 
 pub const BLOCK_SAMPLES: usize = 512;
@@ -163,22 +163,16 @@ impl MonoTimeline {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lt_core::{config::VadConfig, segment::SegmentBuilder, types::CutReason};
 
+    /// A stalled device still advances the stream with silence, so the recognizer's pause rule
+    /// can end the open clause.
     #[test]
-    fn five_second_packet_hole_closes_speech_at_the_silence_deadline() {
+    fn five_second_packet_hole_is_filled_with_silence_up_to_the_deadline() {
         let mut timeline = MonoTimeline::new(16_000).unwrap();
-        let mut builder = SegmentBuilder::new(VadConfig::default());
-        let mut segments = Vec::new();
-        let mut closed_at = None;
+        let mut blocks = Vec::new();
         let mut emit = |block: MonoBlock| {
             assert_eq!(block.frames, 512);
-            let probability = if block.flags.gap_filled { 0.0 } else { 0.9 };
-            let update = builder.push(&block.samples, probability, block.flags);
-            if !update.segments.is_empty() {
-                closed_at = Some((block.t0 + block.frames as u64) as f64 / 16_000.0);
-            }
-            segments.extend(update.segments);
+            blocks.push(block);
             Ok(())
         };
         timeline
@@ -187,9 +181,16 @@ mod tests {
         timeline
             .timeout_until(16_384 + 5 * 16_000, &mut emit)
             .unwrap();
-        assert_eq!(segments.len(), 1);
-        assert_eq!(segments[0].cut_reason, CutReason::Pause);
-        assert!(closed_at.unwrap() - 1.024 <= 0.4 + 0.1);
+        let filled: Vec<_> = blocks
+            .iter()
+            .filter(|block| block.flags.gap_filled)
+            .collect();
+        assert_eq!(filled.first().map(|block| block.t0), Some(16_384));
+        assert!(filled
+            .iter()
+            .all(|block| block.samples.iter().all(|s| *s == 0.0)));
+        let end = blocks.last().map(|block| block.t0 + block.frames as u64);
+        assert!(end.is_some_and(|end| end + 512 > 16_384 + 5 * 16_000));
     }
 
     #[test]

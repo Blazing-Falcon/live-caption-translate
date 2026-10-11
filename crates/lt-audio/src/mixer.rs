@@ -1,8 +1,8 @@
 //! Bounded per-source frames mixed on one 16 kHz sample clock.
 use lt_core::{
     error::{Error, Result},
-    segment::FrameFlags,
     source::AudioFrame,
+    source::FrameFlags,
     types::StreamTime,
 };
 use std::collections::{BTreeMap, VecDeque};

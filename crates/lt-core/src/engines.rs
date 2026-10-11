@@ -1,7 +1,7 @@
 use crate::{
     config::Config,
     error::{Error, Result},
-    types::{Segment, Transcript, UtteranceId},
+    types::UtteranceId,
 };
 use std::{
     collections::BTreeMap,
@@ -17,33 +17,15 @@ pub trait Vad: Send {
     fn reset(&mut self);
 }
 
-pub trait SegmentAsr: Send {
-    fn transcribe(&mut self, segment: &Segment) -> Result<Transcript>;
-
-    /// The windowed decode used by the recognizer. Engines without it keep the segment behavior:
-    /// the pipeline falls back to Off mode.
-    fn window(&mut self) -> Option<&mut dyn WindowAsr> {
-        None
-    }
-
-    /// A streaming engine hears all audio continuously and finds its own clauses; the VAD and
-    /// the segment builder are not used.
-    fn stream(&mut self) -> Option<&mut dyn StreamingAsr> {
-        None
-    }
-}
-
-/// One recognizer run over a window of audio, with per-token start times.
+/// Recognized tokens with per-token start times.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct TokenTranscript {
-    /// The recognizer's full text for the window.
+    /// The recognizer's full text.
     pub text: String,
     /// In order; English word starts carry a leading space (" school").
     pub tokens: Vec<String>,
-    /// Token start times in seconds from the window start.
+    /// Token start times in seconds.
     pub timestamps: Vec<f32>,
-    pub lang_tag: Option<String>,
-    pub event: Option<String>,
     /// Per-token log-probabilities, parallel to `tokens`; empty when the engine gives none.
     pub log_probs: Vec<f32>,
 }
@@ -61,10 +43,6 @@ pub fn mean_log_prob(log_probs: &[f32]) -> Option<f32> {
         .filter(|p| p.is_finite())
         .collect();
     (!finite.is_empty()).then(|| finite.iter().sum::<f32>() / finite.len() as f32)
-}
-
-pub trait WindowAsr: Send {
-    fn decode_window(&mut self, samples: &[f32]) -> Result<TokenTranscript>;
 }
 
 /// What a streaming engine recognized since its last reset.
@@ -165,21 +143,21 @@ pub trait Translator: Send {
     ) -> Result<TranslationOut>;
 }
 
-type AsrFactory = fn(&Config) -> Result<Box<dyn SegmentAsr>>;
+type AsrFactory = fn(&Config) -> Result<Box<dyn StreamingAsr>>;
 type VadFactory = fn(&Config) -> Result<Box<dyn Vad>>;
 type TranslatorFactory = fn(&Config) -> Result<Box<dyn Translator>>;
 
 #[derive(Default)]
 pub struct EngineRegistry {
-    asr: BTreeMap<String, AsrFactory>,
+    asr: Option<AsrFactory>,
     vad: BTreeMap<String, VadFactory>,
     translators: BTreeMap<String, TranslatorFactory>,
     draft_translators: BTreeMap<String, TranslatorFactory>,
 }
 
 impl EngineRegistry {
-    pub fn register_asr(&mut self, name: &str, factory: AsrFactory) {
-        self.asr.insert(name.into(), factory);
+    pub fn register_asr(&mut self, factory: AsrFactory) {
+        self.asr = Some(factory);
     }
     pub fn register_vad(&mut self, name: &str, factory: VadFactory) {
         self.vad.insert(name.into(), factory);
@@ -190,13 +168,11 @@ impl EngineRegistry {
     pub fn register_draft_translator(&mut self, name: &str, factory: TranslatorFactory) {
         self.draft_translators.insert(name.into(), factory);
     }
-    pub fn build_asr(&self, config: &Config) -> Result<Box<dyn SegmentAsr>> {
-        self.asr
-            .get(&config.asr.engine)
-            .ok_or_else(|| Error::UnknownEngine {
-                kind: "ASR",
-                name: config.asr.engine.clone(),
-            })?(config)
+    pub fn build_asr(&self, config: &Config) -> Result<Box<dyn StreamingAsr>> {
+        self.asr.ok_or_else(|| Error::UnknownEngine {
+            kind: "ASR",
+            name: "xasr_stream".into(),
+        })?(config)
     }
     pub fn build_vad(&self, config: &Config) -> Result<Box<dyn Vad>> {
         self.vad

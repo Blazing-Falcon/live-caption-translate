@@ -1,9 +1,8 @@
 //! Clauses from a streaming recognizer that hears all audio continuously.
 //!
 //! The engine's text only grows. A clause opens at its first word and ends at a commit
-//! (punctuation or the wait cap, the same rule as the windowed recognizer), at the engine's
-//! pause rule, or at a break in the audio. Each clause gets an id, start and close notices and
-//! its audio, so the scheduler, joiner and second pass work as with the segment builder.
+//! (punctuation or the wait cap), at the engine's pause rule, or at a break in the audio. Each
+//! clause gets an id and start and close notices for the scheduler and joiner.
 //!
 //! `StreamRecognizer` is a plain state machine; the `lt-asr` thread only moves its inputs and
 //! outputs.
@@ -12,9 +11,9 @@ use crate::{
     commit::{cut_at, decide, is_word_token, join_tokens, CommitSettings, Decision, MIN_CLAUSE_S},
     config::Config,
     engines::{mean_log_prob, StreamResult, StreamingAsr, Vad},
-    recognizer::{finalize, AsrMessage},
-    text::{classify_with_lang, clean},
-    types::{CutReason, Segment, StageTiming, StreamTime, TextClass, Transcript, UtteranceId},
+    events::DropReason,
+    text::{chinese_chars, classify, clean, drop_reason},
+    types::{CutReason, StageTiming, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use std::{collections::VecDeque, time::Instant};
 
@@ -52,6 +51,30 @@ pub enum StreamInput {
     Audio { at: StreamTime, samples: Vec<f32> },
     /// The audio stops or jumps (pause, device change, end of file).
     Break { at: StreamTime, reason: CutReason },
+}
+
+#[derive(Debug)]
+pub enum AsrMessage {
+    Transcript(Transcript),
+    Dropped(UtteranceId, DropReason),
+    Failed(UtteranceId, String),
+    /// Live text of the open clause.
+    Partial {
+        id: UtteranceId,
+        text: String,
+        class: TextClass,
+        /// End of the decoded audio.
+        end: StreamTime,
+    },
+}
+
+impl AsrMessage {
+    pub fn id(&self) -> UtteranceId {
+        match self {
+            Self::Transcript(transcript) => transcript.id,
+            Self::Dropped(id, _) | Self::Failed(id, _) | Self::Partial { id, .. } => *id,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -284,7 +307,7 @@ impl StreamRecognizer {
         if text.is_empty() || text == clause.last_partial {
             return;
         }
-        let Some(class) = classify_with_lang(&text, None) else {
+        let Some(class) = classify(&text) else {
             return;
         };
         clause.last_partial.clone_from(&text);
@@ -309,35 +332,24 @@ impl StreamRecognizer {
             return;
         };
         let end = end.max(StreamTime(clause.start.0 + 1));
-        let samples = self.slice(clause.start, end);
-        let segment = Segment {
-            id: clause.id,
-            start: clause.start,
-            end,
-            samples: samples.into(),
-            cut_reason: cut,
-        };
         let log_probs = tokens.log_probs.get(range.clone()).unwrap_or_default();
         let transcript = Transcript {
             id: clause.id,
             text: join_tokens(&tokens.tokens[range]),
-            lang_tag: tokens.lang_tag.clone(),
+            lang_tag: None,
             class: TextClass::Chinese,
-            event: None,
-            timing: StageTiming::default(),
+            timing: StageTiming {
+                start: clause.start,
+                end,
+                asr_done_ms: self.end_of_audio().millis(),
+                asr_ms,
+            },
             absorbed: Vec::new(),
             cut,
             logprob: mean_log_prob(log_probs),
         };
-        let now = self.end_of_audio();
         out.push(StreamOutput::Closed(clause.id, end, cut));
-        out.push(StreamOutput::Message(finalize(
-            transcript,
-            &segment,
-            asr_ms,
-            now,
-            &self.config,
-        )));
+        out.push(StreamOutput::Message(finalize(transcript, &self.config)));
         // Later clauses start after this one.
         self.drop_audio_before(end);
     }
@@ -420,6 +432,58 @@ fn elapsed_ms(started: Instant) -> u32 {
     started.elapsed().as_millis().min(u128::from(u32::MAX)) as u32
 }
 
+/// Clean, classify and filter a closed clause.
+fn finalize(mut transcript: Transcript, config: &Config) -> AsrMessage {
+    transcript.text = clean(&transcript.text, &config.filter.fillers);
+    let Some(class) = classify(&transcript.text) else {
+        return AsrMessage::Dropped(transcript.id, DropReason::Empty);
+    };
+    transcript.class = class;
+    transcript.lang_tag = if class == TextClass::Other {
+        other_language(&transcript.text)
+    } else {
+        text_language(&transcript.text)
+    };
+    let duration = transcript
+        .timing
+        .end
+        .saturating_sub(transcript.timing.start);
+    match drop_reason(&transcript, duration.seconds(), &config.filter) {
+        Some(reason) => AsrMessage::Dropped(transcript.id, reason),
+        None => AsrMessage::Transcript(transcript),
+    }
+}
+
+/// Japanese or Korean, from the kana and Hangul in the text.
+fn other_language(text: &str) -> Option<String> {
+    let kana = text
+        .chars()
+        .filter(|character| matches!(character, '\u{3040}'..='\u{30ff}'))
+        .count();
+    let hangul = text
+        .chars()
+        .filter(|character| matches!(character, '\u{ac00}'..='\u{d7af}'))
+        .count();
+    if hangul > kana {
+        Some("ko".into())
+    } else if kana > 0 {
+        Some("ja".into())
+    } else {
+        None
+    }
+}
+
+/// Language from the share of Latin letters and CJK characters; the engine gives no tag.
+fn text_language(text: &str) -> Option<String> {
+    let latin = text.chars().filter(char::is_ascii_alphabetic).count();
+    let cjk = chinese_chars(text);
+    match (latin, cjk) {
+        (0, 0) => None,
+        _ if latin > cjk => Some("en".into()),
+        _ => Some("zh".into()),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -460,7 +524,6 @@ mod tests {
                         .map(|(_, at)| (at - self.part_start_s) as f32)
                         .collect(),
                     log_probs: vec![-0.1; part.len()],
-                    ..TokenTranscript::default()
                 },
             })
         }

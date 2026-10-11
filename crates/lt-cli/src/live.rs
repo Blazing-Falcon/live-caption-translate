@@ -84,7 +84,8 @@ fn run_session(
         events::PipelineEvent,
         pipeline::Pipeline,
         transcript::{
-            SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber, TranscriptWriter,
+            recognizer_name, SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber,
+            TranscriptWriter,
         },
     };
     use std::{
@@ -114,7 +115,7 @@ fn run_session(
                 mode,
                 label: label.into(),
             },
-            asr: config.asr.engine.clone(),
+            asr: recognizer_name(&config),
             translator: config.translate.engine.clone(),
             config: SessionConfig::from(&config).with_draft(engines.draft.is_some()),
         };

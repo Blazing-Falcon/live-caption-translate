@@ -4,8 +4,8 @@ use anyhow::{bail, Result};
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{SegmentAsr, Translator, Vad},
-    fakes::{FakeAsr, FakeTranslator, FakeVad},
+    engines::{StreamingAsr, Translator, Vad},
+    fakes::{FakeStream, FakeTranslator, FakeVad},
 };
 use std::path::PathBuf;
 use std::{
@@ -18,7 +18,7 @@ use std::{
 
 pub struct Engines {
     pub vad: Box<dyn Vad>,
-    pub asr: Box<dyn SegmentAsr>,
+    pub asr: Box<dyn StreamingAsr>,
     pub translator: Box<dyn Translator>,
     pub pid: Arc<AtomicU32>,
     /// The draft translator (Continuous mode) and its server's process id.
@@ -75,10 +75,10 @@ pub fn build(
     if fake {
         return Ok(Engines {
             vad: Box::new(FakeVad::from_energy(0.001)),
-            asr: Box::new(FakeAsr::new(vec![
-                "你好，这是测试语音。".into();
-                4096
-            ])),
+            asr: Box::new(FakeStream::new(
+                vec!["你好，这是测试语音。".into(); 4096],
+                f64::from(config.asr.stream_pause_s),
+            )),
             translator: Box::<FakeTranslator>::default(),
             pid: Arc::new(AtomicU32::new(0)),
             draft: None,

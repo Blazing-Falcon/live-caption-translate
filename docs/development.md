@@ -77,9 +77,8 @@ These tests skip if their variables are not set. `check.ps1` shows the skipped t
 
 | Test | Needs | Checks |
 |---|---|---|
-| `lt-sherpa` `vad`, `native` | `LT_MODELS_DIR`, test audio | Silero and SenseVoice against the parity fixtures; TEN VAD against the reference library's probabilities |
+| `lt-sherpa` `vad` | `LT_MODELS_DIR`, test audio | TEN VAD against the reference library's probabilities |
 | `lt-sherpa` `stream` | `LT_MODELS_DIR` with the 480 ms streaming model, test audio | Streaming X-ASR: emitted tokens never change, accuracy |
-| `lt-sherpa` Juan trace | Also `LT_JUAN_CLIP` (default `testdata/fetched/juan-clip-16k.wav`) | Windowed decodes of a recorded trace. The clip is private. |
 | `lt-llm` `real_server` | `LT_LLAMA_SERVER`, Hy-MT2 (`LT_MT_MODEL` or `LT_MODELS_DIR`) | 37 sentences against the fixture |
 | `lt-llm` drafts and mode switches | `LT_LLAMA_SERVER`, `LT_DRAFT_MODEL` | 40 draft sentences; servers start and stop correctly |
 
@@ -103,8 +102,7 @@ target\release\lt-cli.exe replay testdata\fetched\ramc\CTS-CN-F2F-2019-11-15-144
     --pace realtime --mode continuous --server .deps\llama-b11429\llama-server.exe --out out\conv.jsonl
 python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeats, expected text
 target\release\lt-cli.exe live --mode system --dur 600 --out out\live.jsonl
-target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.engine from --config
-target\release\lt-cli.exe bench vad testdata\fetched\leijun          # vad.engine from --config
+target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.stream_chunk_ms from --config
 ```
 
 `replay` writes the transcript, `<out>.events.jsonl` and `<out>.words.json`, and prints the per-word delays. When you report a number, also give the machine, the command and what else was running.

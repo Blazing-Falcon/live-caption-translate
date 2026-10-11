@@ -2,27 +2,6 @@
   "checked": "2026-10-08",
   "texts": [
     {
-      "file": "FunASR-MODEL-LICENSE-v1.1.txt",
-      "source": "https://raw.githubusercontent.com/modelscope/FunASR/66d7a4c264a5993a2a63ed00c1f402c296ee521a/MODEL_LICENSE",
-      "resolved_source": "https://raw.githubusercontent.com/modelscope/FunASR/66d7a4c264a5993a2a63ed00c1f402c296ee521a/MODEL_LICENSE",
-      "sha256": "7dba975a2069691db4992b0592d70828b330d2f8a30a71450f4e152a554e84f8",
-      "size": 5306
-    },
-    {
-      "file": "SenseVoice-ONNX-LICENSE.txt",
-      "source": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/2365baeacb507f821a0c8120fcee3d484dba7a07/LICENSE",
-      "resolved_source": "https://huggingface.co/api/resolve-cache/models/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/2365baeacb507f821a0c8120fcee3d484dba7a07/LICENSE?%2Fcsukuangfj%2Fsherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17%2Fresolve%2F2365baeacb507f821a0c8120fcee3d484dba7a07%2FLICENSE=&etag=%22b5aafcccf5cfd5f7293c710bd6588dc6544eef2b%22",
-      "sha256": "221c6df10b0931a5629adad671ea48fb7747e034c414b6d2bfa275bc3dd4ea17",
-      "size": 71
-    },
-    {
-      "file": "SenseVoice-source-MIT.txt",
-      "source": "https://raw.githubusercontent.com/QwenAudio/SenseVoice/586bbdb2b052f4fe19322581825228b6810a9fb3/LICENSE",
-      "resolved_source": "https://raw.githubusercontent.com/QwenAudio/SenseVoice/586bbdb2b052f4fe19322581825228b6810a9fb3/LICENSE",
-      "sha256": "4bc3bffe14ebe38cc67309991e04f92866835eac1c5e2e1abd37163f67c6de5f",
-      "size": 1062
-    },
-    {
       "file": "Hy-MT2-1.8B-LICENSE.txt",
       "source": "https://huggingface.co/tencent/Hy-MT2-1.8B/resolve/9a341cd1b679d3efd23b46e847b01745a71ed792/LICENSE.txt",
       "resolved_source": "https://huggingface.co/api/resolve-cache/models/tencent/Hy-MT2-1.8B/9a341cd1b679d3efd23b46e847b01745a71ed792/LICENSE.txt?%2Ftencent%2FHy-MT2-1.8B%2Fresolve%2F9a341cd1b679d3efd23b46e847b01745a71ed792%2FLICENSE.txt=&etag=%22360c110713e627c7dc239ce547ae466a734b30d7%22",

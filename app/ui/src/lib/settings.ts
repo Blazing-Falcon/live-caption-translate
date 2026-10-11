@@ -43,15 +43,11 @@ export interface Config extends ExtraFields {
     hard_cut_s: number;
   };
   asr: ExtraFields & {
-    engine: "xasr_stream" | "sensevoice" | "xasr";
-    language: "auto" | "zh" | "en" | "ja" | "ko" | "yue";
-    use_itn: boolean;
     threads: number;
     stream_chunk_ms: 160 | 480 | 960;
     stream_pause_s: number;
   };
   filter: ExtraFields & {
-    drop_music: boolean;
     single_char_max_s: number;
     single_char_allow: string[];
     fillers: string[];
@@ -334,13 +330,6 @@ export const VAD_ENGINES: readonly SpeechChoice<Config["vad"]["engine"]>[] = [
   { value: "ten", label: "TEN VAD", model: "ten-vad", help: "Different model, about 1.3x the CPU of Silero, still very little. Its license limits commercial use." },
 ];
 
-export const LIVE_MODELS: readonly SpeechChoice<Config["asr"]["engine"]>[] = [
-  // The streaming model depends on the chunk size; the chunk row shows its download state.
-  { value: "xasr_stream", label: "X-ASR streaming", model: null, help: "The default. Hears speech as it comes, so words appear about half a second after they are spoken. About a quarter of SenseVoice's CPU." },
-  { value: "sensevoice", label: "SenseVoice", model: "sensevoice-2024-07-17-int8", help: "Tags each line's language. Decodes each sentence again every half second." },
-  { value: "xasr", label: "X-ASR", model: "xasr-zh-en-int8-2026-06-03", help: "Fewer errors than SenseVoice with game noise and mixed English. Decodes each sentence again every half second." },
-];
-
 export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
   { value: "160", label: "160 ms", model: "xasr-stream-160ms-int8-2026-06-05", help: "Words appear about 0.15 s sooner than 480 ms. About twice the CPU and slightly more errors." },
   { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "The default. Fewest errors." },
@@ -393,15 +382,11 @@ export const DEFAULT_CONFIG: Config = {
     "hard_cut_s": 10.0
   },
   "asr": {
-    "engine": "xasr_stream",
-    "language": "auto",
-    "use_itn": true,
     "threads": 1,
     "stream_chunk_ms": 480,
     "stream_pause_s": 0.8
   },
   "filter": {
-    "drop_music": true,
     "single_char_max_s": 0.6,
     "single_char_allow": ["对", "好", "是", "行", "不", "哦"],
     "fillers": ["呃", "嗯", "额", "uh", "um"]

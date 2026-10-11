@@ -2,7 +2,7 @@
 
 use lt_core::error::{Error, Result};
 use std::{
-    ffi::CStr,
+    ffi::{CStr, CString},
     path::{Path, PathBuf},
     sync::Mutex,
 };
@@ -85,10 +85,6 @@ pub fn initialize_shared_runtime(path: impl AsRef<Path>) -> Result<()> {
 
 /// Check the linked native runtime before sherpa's C++ constructor can request
 /// an unsupported API and dereference its null result. This loads no model.
-pub fn verify_sensevoice_runtime() -> Result<()> {
-    verify_sherpa_runtime("SenseVoice")
-}
-
 pub(crate) fn verify_sherpa_runtime(engine: &str) -> Result<()> {
     let base = linked_api_base()?;
     // SAFETY: GetApi is a version negotiation entry point; unsupported versions
@@ -144,6 +140,50 @@ pub fn onnxruntime_version() -> String {
     unsafe { CStr::from_ptr(pointer) }
         .to_string_lossy()
         .into_owned()
+}
+
+/// Checks the runtime and opens every ONNX file once through ort, so a corrupt file is a
+/// Rust error instead of a native abort. The temporary sessions close before `create`.
+pub(crate) fn prepare(name: &str, runtime: Option<&Path>, models: &[&Path]) -> Result<()> {
+    let runtime = match runtime {
+        Some(path) => path.to_path_buf(),
+        None => default_runtime_path()?,
+    };
+    initialize_shared_runtime(runtime)?;
+    verify_sherpa_runtime(name)?;
+    for model in models {
+        require_file(model, name)?;
+        if model.extension().is_some_and(|ext| ext == "onnx") {
+            let preflight = ort::session::Session::builder()
+                .and_then(|builder| builder.with_intra_threads(1).map_err(Into::into))
+                .and_then(|builder| builder.with_inter_threads(1).map_err(Into::into))
+                .and_then(|mut builder| builder.commit_from_file(model))
+                .map_err(|error| engine_error(&format!("Cannot open the {name} model"), error))?;
+            drop(preflight);
+        }
+    }
+    Ok(())
+}
+
+pub(crate) fn path_cstring(path: &Path, description: &str) -> Result<CString> {
+    let path = path
+        .to_str()
+        .ok_or_else(|| Error::Engine(format!("{description} is not UTF-8")))?;
+    CString::new(path).map_err(|_| Error::Engine(format!("{description} contains a NUL character")))
+}
+
+pub(crate) fn cstring(value: &str) -> Result<CString> {
+    CString::new(value).map_err(|error| engine_error("Invalid native setting", error))
+}
+
+pub(crate) fn require_threads(name: &str, threads: u32) -> Result<()> {
+    if (1..=4).contains(&threads) {
+        Ok(())
+    } else {
+        Err(Error::Engine(format!(
+            "{name} needs between one and four CPU threads"
+        )))
+    }
 }
 
 pub(crate) fn require_file(path: &Path, description: &str) -> Result<()> {

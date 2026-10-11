@@ -132,9 +132,7 @@ apps = [{exe=42,name="Named App",new_field=true}]
 [audio]
 normalize = 123
 [asr]
-language = "es"
 threads = 2.5
-use_itn = false
 [filter]
 fillers = ["um", 4]
 [routing]
@@ -166,9 +164,7 @@ source = "elsewhere"
         Some(true)
     );
     assert!(config.audio.normalize);
-    assert_eq!(config.asr.language, "auto");
     assert_eq!(config.asr.threads, 1);
-    assert!(!config.asr.use_itn);
     assert_eq!(config.filter.fillers, Config::default().filter.fillers);
     assert_eq!(config.routing.english, "passthrough");
     assert!(config.routing.translate_other.is_empty());
@@ -179,7 +175,7 @@ source = "elsewhere"
     assert!(config.overlay.bar_rect.is_none());
     assert_eq!(config.logging.level, "info");
     assert_eq!(config.models.source, "huggingface");
-    assert_eq!(messages.len(), 18, "{messages:?}");
+    assert_eq!(messages.len(), 17, "{messages:?}");
 }
 
 #[test]

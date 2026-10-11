@@ -9,7 +9,7 @@ use lt_core::{
     config::AudioConfig,
     error::{Error, Result},
     events::{PipelineEvent, SourceStateKind},
-    segment::FrameFlags,
+    source::FrameFlags,
     source::{AudioFrame, AudioProducer, SourceEvents},
     types::{SourceInfo, StreamTime},
 };

@@ -108,4 +108,4 @@ The app writes nothing more. It has no installer and no registry entries.
 
 ## Licenses
 
-See `THIRD-PARTY-NOTICES.txt`. The speech model has the FunASR Model Open Source License. Read it before you use this app for more than personal use.
+See `THIRD-PARTY-NOTICES.txt`.
