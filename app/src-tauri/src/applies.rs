@@ -41,7 +41,7 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
         Applies::Restart,
         field(&capture_old, "autostart") != field(&capture_new, "autostart"),
     );
-    for name in ["audio", "asr", "filter", "translate", "latency"] {
+    for name in ["audio", "asr", "filter", "translate", "performance"] {
         raise(Applies::Pipeline, table(old, name) != table(new, name));
     }
     let (transcript_old, transcript_new) = (table(old, "transcript"), table(new, "transcript"));
@@ -68,8 +68,7 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
             config.translate.server_url,
             config.translate.threads,
             config.translate.ctx,
-            config.translate.engine,
-            config.latency.low_priority,
+            config.performance.low_priority,
         ])
     };
     key(old) != key(new)
@@ -108,7 +107,7 @@ mod tests {
             }]),
             Applies::Capture
         );
-        assert_eq!(changed(|c| c.asr.stream_pause_s = 0.6), Applies::Pipeline);
+        assert_eq!(changed(|c| c.asr.pause_s = 0.6), Applies::Pipeline);
         assert_eq!(changed(|c| c.translate.threads = 3), Applies::Pipeline);
         assert_eq!(changed(|c| c.overlay.live_source = false), Applies::Live);
         assert_eq!(changed(|c| c.capture.autostart = false), Applies::Restart);
@@ -121,7 +120,7 @@ mod tests {
         assert_eq!(
             changed(|c| {
                 c.capture.mode = "apps".into();
-                c.asr.stream_pause_s = 0.6;
+                c.asr.pause_s = 0.6;
             }),
             Applies::Pipeline
         );
@@ -136,7 +135,7 @@ mod tests {
         new.translate.ctx = 2048;
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
-        new.latency.low_priority = false;
+        new.performance.low_priority = false;
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
         new.translate.window_chars = 40;

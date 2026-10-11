@@ -34,9 +34,12 @@ impl From<&Config> for SessionConfig {
     }
 }
 
+/// The translation model named in session headers.
+pub const TRANSLATOR_NAME: &str = "hy-mt2-1.8b-q4_0";
+
 /// The recognizer named in session headers and `asr_live` records.
 pub fn recognizer_name(config: &Config) -> String {
-    format!("xasr_stream_{}ms", config.asr.stream_chunk_ms)
+    format!("xasr_stream_{}ms", config.asr.chunk_ms)
 }
 
 fn readable_f32(value: f32) -> f64 {

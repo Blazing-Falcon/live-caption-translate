@@ -98,7 +98,7 @@ target\release\lt-cli.exe replay testdata\fetched\ramc\CTS-CN-F2F-2019-11-15-144
     --pace realtime --server .deps\llama-b11429\llama-server.exe --out out\conv.jsonl
 python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeats, expected text
 target\release\lt-cli.exe live --mode system --dur 600 --out out\live.jsonl
-target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.stream_chunk_ms from --config
+target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.chunk_ms from --config
 ```
 
 `replay` writes the transcript, `<out>.events.jsonl` and `<out>.words.json`, and prints the per-word delays. The delays need speech instants: `--instants <file>` reads a JSON array of milliseconds from `--start` at which a word is spoken. Without it the delay values are empty. When you report a number, also give the machine, the command and what else was running.

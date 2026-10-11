@@ -54,7 +54,7 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 ## Engines
 
-**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.stream_pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
+**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
 
 **llama-server:** the supervisor starts the server with:
 
@@ -64,9 +64,9 @@ llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c 
 ```
 
 - `--override-kv` corrects the GGUF's end token (the correct id is 120020).
-- `<threads>` is 2 by default. `translate.threads` sets 1–4.
+- `<threads>` is `translate.threads` (2 by default), at most the PC's logical CPUs.
 - Do not add `--no-repack`. llama.cpp repacks Q4_0 for x86, and that makes Hy-MT2 much faster.
-- With `latency.low_priority`, the server runs at below-normal priority (not in Off mode).
+- With `performance.low_priority`, the server runs at below-normal priority.
 
 **Requests:**
 

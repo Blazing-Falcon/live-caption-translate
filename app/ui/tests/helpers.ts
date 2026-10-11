@@ -117,6 +117,7 @@ export function testState(patch: Partial<AppState> = {}): AppState {
     source: { mode: "system", label: "Speakers (Realtek)", sample_rate: 48000, channels: 2 },
     source_state: "playing",
     engines: { asr: "ready", translator: "ready" },
+    logical_cpus: 8,
     models_ready: true,
     overlay_moving: false,
     overlay_visible: true,

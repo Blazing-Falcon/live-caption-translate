@@ -13,9 +13,8 @@
   } from "../../lib/format";
   import {
     STREAM_CHUNKS,
-    TRANSLATE_THREADS_MAX,
     asrPatch,
-    latencyPatch,
+    performancePatch,
     transcriptPatch,
     translateThreadsPatch,
     translateWindowPatch,
@@ -28,14 +27,17 @@
   let { config }: { config: Config } = $props();
 
   const session = useSession();
-  const { stats, busy, models, config: liveConfig } = session;
+  const { stats, busy, appState, models, config: liveConfig } = session;
 
-  const threadOptions = Array.from({ length: TRANSLATE_THREADS_MAX }, (_, index) => index + 1);
+  // Up to the PC's logical CPUs; a larger saved value stays selectable.
+  const threadOptions = $derived(
+    Array.from({ length: Math.max($appState?.logical_cpus ?? 1, config.translate.threads) }, (_, index) => index + 1),
+  );
 
   async function toggleLowPriority(event: Event): Promise<void> {
     const input = event.currentTarget as HTMLInputElement;
-    await session.save("latency.low_priority", latencyPatch({ low_priority: input.checked }));
-    reconcileChecked(input, get(liveConfig)?.latency.low_priority ?? config.latency.low_priority);
+    await session.save("performance.low_priority", performancePatch({ low_priority: input.checked }));
+    reconcileChecked(input, get(liveConfig)?.performance.low_priority ?? config.performance.low_priority);
   }
 
   async function chooseThreads(event: Event): Promise<void> {
@@ -57,7 +59,7 @@
   }
 
   interface SpeechRow {
-    key: "asr.stream_chunk_ms";
+    key: "asr.chunk_ms";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -66,11 +68,11 @@
 
   const speechRows = $derived<SpeechRow[]>([
     {
-      key: "asr.stream_chunk_ms",
+      key: "asr.chunk_ms",
       label: "Streaming chunk",
-      value: String(config.asr.stream_chunk_ms),
+      value: String(config.asr.chunk_ms),
       choices: STREAM_CHUNKS,
-      patch: (value) => asrPatch({ stream_chunk_ms: Number(value) as Config["asr"]["stream_chunk_ms"] }),
+      patch: (value) => asrPatch({ chunk_ms: Number(value) as Config["asr"]["chunk_ms"] }),
     },
   ]);
 
@@ -147,7 +149,7 @@
       <label class="check-row">
         <input
           type="checkbox"
-          checked={config.latency.low_priority}
+          checked={config.performance.low_priority}
           aria-describedby="help-low-priority"
           onchange={toggleLowPriority}
         />
@@ -237,7 +239,6 @@
       value={String(config.translate.threads)}
       onchange={chooseThreads}
     >
-      <option value="0">Automatic</option>
       {#each threadOptions as count (count)}
         <option value={String(count)}>{count}</option>
       {/each}

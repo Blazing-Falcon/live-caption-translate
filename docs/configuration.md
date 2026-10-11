@@ -11,6 +11,7 @@ Rules:
 - An enum value that is not permitted gets the default value.
 - A file that is not valid TOML does not load.
 - The app writes `config.toml.tmp` and renames it, so a save is atomic.
+- A file with `config_version = 1` is migrated when it loads. Renamed keys keep their values (`asr.stream_chunk_ms` becomes `asr.chunk_ms`, `asr.stream_pause_s` becomes `asr.pause_s`, `latency.low_priority` becomes `performance.low_priority`). `translate.threads = 0` becomes `2`. Keys that version 2 does not have are removed, and the app logs one info line with their names. The next save writes version 2.
 
 **Applies** tells when a change has an effect:
 
@@ -18,13 +19,13 @@ Rules:
 |---|---|
 | `live` | Immediately |
 | `capture` | The capture sources open again. The pipeline continues. |
-| `pipeline` | The pipeline restarts. The llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads`, `translate.ctx`, `translate.engine` or `latency.low_priority`. |
+| `pipeline` | The pipeline restarts. The llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads`, `translate.ctx` or `performance.low_priority`. |
 | `restart` | At the next app start |
 
 ## Full Default File
 
 ```toml
-config_version = 1
+config_version = 2
 
 [capture]
 mode = "system"                 # "system" | "apps"
@@ -41,9 +42,9 @@ norm_max_gain_db = 20.0
 norm_gate_dbfs = -60.0
 
 [asr]
-threads = 1
-stream_chunk_ms = 480           # xasr_stream: 160 | 480 | 960
-stream_pause_s = 0.8            # xasr_stream: silence that ends a line
+chunk_ms = 480                  # 160 | 480 | 960
+threads = 1                     # 1 to the logical CPUs of the PC
+pause_s = 0.8                   # silence that ends a line
 
 [filter]
 single_char_max_s = 0.6
@@ -51,9 +52,8 @@ single_char_allow = ["对", "好", "是", "行", "不", "哦"]
 fillers = ["呃", "嗯", "额", "uh", "um"]
 
 [translate]
-engine = "hymt2"
 server_url = ""                 # "" = spawn the bundled llama-server; otherwise use this OpenAI-compatible base URL
-threads = 0                     # 0 = automatic: 2 per server
+threads = 2                     # 1 to the logical CPUs of the PC
 ctx = 1024
 temperature = 0.0
 repeat_penalty = 1.05
@@ -61,8 +61,7 @@ max_tokens_cap = 256
 timeout_s = 10.0
 queue_join_max_chars = 120
 skip_lag_s = 6.0
-window_chars = 0                # 0 = translate each line alone
-target = "en"
+window_chars = 30               # 0 = translate each line alone
 
 [overlay]
 visible = true
@@ -80,7 +79,7 @@ live_source = true              # show the Chinese of the clause being spoken
 # [overlay.panel_rect] monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 420, h = 600
 # [overlay.flow_rect]  monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 360
 
-[latency]
+[performance]
 low_priority = true             # below-normal priority for the translation server
 
 [hotkeys]
@@ -128,9 +127,9 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `threads` | 1–4 | pipeline | ONNX Runtime threads for the live recognizer |
-| `stream_chunk_ms` | `160`, `480`, `960` | pipeline | Streaming X-ASR model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
-| `stream_pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
+| `chunk_ms` | `160`, `480`, `960` | pipeline | Streaming X-ASR model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
+| `threads` | 1–64 | pipeline | ONNX Runtime threads for the recognizer. The app uses at most the PC's logical CPUs. |
+| `pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
 
 ### filter
 
@@ -144,9 +143,8 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `engine` | engine name | pipeline | Final translator |
 | `server_url` | URL | pipeline | Empty: start and supervise the bundled llama-server. Set: use this OpenAI-compatible server. |
-| `threads` | 0–16 | pipeline | Threads for each llama-server. `0`: 2 for each server. Other values are clamped to 1–4. |
+| `threads` | 1–64 | pipeline | llama-server threads. The app uses at most the PC's logical CPUs. |
 | `ctx` | 512–4096 | pipeline | Context size (`-c`) |
 | `temperature` | 0–1 | pipeline | Sampling temperature |
 | `repeat_penalty` | 1.0–1.3 | pipeline | Repeat penalty |
@@ -155,7 +153,6 @@ The default values are in the file above.
 | `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items |
 | `skip_lag_s` | 2–30 | pipeline | Lag at which the translator skips older items |
 | `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters. Their English is given as the start of the answer, so only the new line is translated. Whole lines only. `0`: off. |
-| `target` | `en` | pipeline | Target language |
 
 ### overlay
 
@@ -173,9 +170,9 @@ The default values are in the file above.
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
 | `bar_rect`, `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
 
-### latency
+### performance
 
-All keys have the `pipeline` value: any change in `[latency]` restarts the pipeline.
+All keys have the `pipeline` value: any change in `[performance]` restarts the pipeline.
 
 | Key | Range | Meaning |
 |---|---|---|

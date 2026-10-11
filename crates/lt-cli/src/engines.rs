@@ -70,7 +70,7 @@ pub fn build(
         return Ok(Engines {
             asr: Box::new(FakeStream::new(
                 vec!["你好，这是测试语音。".into(); 4096],
-                f64::from(config.asr.stream_pause_s),
+                f64::from(config.asr.pause_s),
             )),
             translator: Box::<FakeTranslator>::default(),
             pid: Arc::new(AtomicU32::new(0)),
@@ -116,9 +116,6 @@ pub fn translator(
     cancelled: &AtomicBool,
 ) -> Result<TranslationEngine> {
     check_cancel(cancelled)?;
-    if config.translate.engine != "hymt2" {
-        bail!("Unknown translator engine: {}", config.translate.engine);
-    }
     if !config.translate.server_url.is_empty() {
         let mut registry = lt_core::engines::EngineRegistry::default();
         lt_llm::register_engines(&mut registry);
@@ -134,7 +131,7 @@ pub fn translator(
         models.join("hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf"),
         &config.translate,
     )
-    .with_below_normal(config.latency.low_priority);
+    .with_below_normal(config.performance.low_priority);
     let supervisor = lt_llm::supervisor::Supervisor::start(options, bus.clone())?;
     supervisor
         .wait_ready_cancellable(std::time::Duration::from_secs(65), cancelled)

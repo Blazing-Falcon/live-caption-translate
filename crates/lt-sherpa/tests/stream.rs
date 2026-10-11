@@ -62,7 +62,7 @@ fn streaming_tokens_only_grow_and_the_text_stays_accurate() {
         serde_json::from_slice(&std::fs::read(audio.join("clips.json")).unwrap()).unwrap();
     let settings = AsrConfig::default();
     let mut engine = XAsrStream::new(
-        models.join(lt_sherpa::xasr_stream_model(settings.stream_chunk_ms)),
+        models.join(lt_sherpa::xasr_stream_model(settings.chunk_ms)),
         &settings,
     )
     .unwrap();

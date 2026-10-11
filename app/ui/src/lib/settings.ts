@@ -32,9 +32,9 @@ export interface Config extends ExtraFields {
     norm_gate_dbfs: number;
   };
   asr: ExtraFields & {
+    chunk_ms: 160 | 480 | 960;
     threads: number;
-    stream_chunk_ms: 160 | 480 | 960;
-    stream_pause_s: number;
+    pause_s: number;
   };
   filter: ExtraFields & {
     single_char_max_s: number;
@@ -42,7 +42,6 @@ export interface Config extends ExtraFields {
     fillers: string[];
   };
   translate: ExtraFields & {
-    engine: string;
     server_url: string;
     threads: number;
     ctx: number;
@@ -53,7 +52,6 @@ export interface Config extends ExtraFields {
     queue_join_max_chars: number;
     skip_lag_s: number;
     window_chars: number;
-    target: "en";
   };
   overlay: ExtraFields & {
     visible: boolean;
@@ -70,7 +68,7 @@ export interface Config extends ExtraFields {
     panel_rect?: OverlayRect;
     flow_rect?: OverlayRect;
   };
-  latency: ExtraFields & {
+  performance: ExtraFields & {
     low_priority: boolean;
   };
   hotkeys: ExtraFields & {
@@ -116,7 +114,8 @@ export const OVERLAY_LIMITS = {
   flow_lines: { min: 2, max: 6 },
 } as const;
 
-export const TRANSLATE_THREADS_MAX = 16;
+/** The most threads a setting accepts; the UI offers up to the PC's logical CPUs. */
+export const MAX_THREADS = 64;
 export const LOW_BACKGROUND_WARNING = 0.5;
 
 export const HOTKEY_ACTIONS = ["move_lock", "show_hide", "pause"] as const;
@@ -132,7 +131,7 @@ export function cloneConfig(config: Config): Config {
 
 const CONFIG_TABLES = [
   "capture", "audio", "asr", "filter", "translate",
-  "overlay", "latency", "hotkeys", "transcript", "logging", "models",
+  "overlay", "performance", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -228,7 +227,7 @@ export function hotkeyPatch(action: HotkeyAction, accelerator: string): ConfigPa
 }
 
 export function translateThreadsPatch(threads: number): ConfigPatch {
-  return { translate: { threads: clamp(Math.round(threads), 0, TRANSLATE_THREADS_MAX) } };
+  return { translate: { threads: clamp(Math.round(threads), 1, MAX_THREADS) } };
 }
 
 /** Characters of earlier lines translated with each new line when the switch is on. */
@@ -242,8 +241,8 @@ export function transcriptPatch(enabled: boolean): ConfigPatch {
   return { transcript: { enabled } };
 }
 
-export function latencyPatch(values: DeepPartial<Config["latency"]>): ConfigPatch {
-  return { latency: values };
+export function performancePatch(values: DeepPartial<Config["performance"]>): ConfigPatch {
+  return { performance: values };
 }
 
 export function asrPatch(values: DeepPartial<Config["asr"]>): ConfigPatch {
@@ -275,7 +274,7 @@ export function formatAccelerator(accelerator: string): string {
 
 /** Kept as a JSON initializer so the Rust parity test can read it directly. */
 export const DEFAULT_CONFIG: Config = {
-  "config_version": 1,
+  "config_version": 2,
   "capture": {
     "mode": "system",
     "device": "default",
@@ -290,9 +289,9 @@ export const DEFAULT_CONFIG: Config = {
     "norm_gate_dbfs": -60.0
   },
   "asr": {
+    "chunk_ms": 480,
     "threads": 1,
-    "stream_chunk_ms": 480,
-    "stream_pause_s": 0.8
+    "pause_s": 0.8
   },
   "filter": {
     "single_char_max_s": 0.6,
@@ -300,9 +299,8 @@ export const DEFAULT_CONFIG: Config = {
     "fillers": ["呃", "嗯", "额", "uh", "um"]
   },
   "translate": {
-    "engine": "hymt2",
     "server_url": "",
-    "threads": 0,
+    "threads": 2,
     "ctx": 1024,
     "temperature": 0.0,
     "repeat_penalty": 1.05,
@@ -310,8 +308,7 @@ export const DEFAULT_CONFIG: Config = {
     "timeout_s": 10.0,
     "queue_join_max_chars": 120,
     "skip_lag_s": 6.0,
-    "window_chars": 0,
-    "target": "en"
+    "window_chars": 30
   },
   "overlay": {
     "visible": true,
@@ -325,7 +322,7 @@ export const DEFAULT_CONFIG: Config = {
     "flow_lines": 3,
     "live_source": true
   },
-  "latency": {
+  "performance": {
     "low_priority": true
   },
   "hotkeys": {

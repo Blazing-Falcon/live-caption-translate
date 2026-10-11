@@ -234,7 +234,7 @@ impl Controller {
                 label: label.into(),
             },
             asr: lt_core::transcript::recognizer_name(config),
-            translator: config.translate.engine.clone(),
+            translator: lt_core::transcript::TRANSLATOR_NAME.into(),
             config: SessionConfig::from(config),
         };
         let writer =

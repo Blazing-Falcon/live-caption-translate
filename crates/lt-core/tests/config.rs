@@ -59,6 +59,7 @@ fn typescript_defaults_round_trip_through_rust_json_without_missing_or_unknown_k
 #[test]
 fn unknown_values_survive_nested_patches_and_disk_round_trips() {
     let input = r#"
+config_version = 2
 future = { nested = { flag = true, numbers = [1, 2, 3] } }
 [capture]
 future_capture = "saved"
@@ -69,10 +70,6 @@ future_audio = 2026-10-07T12:30:00Z
 future_asr = 2
 [filter]
 future_filter = "filter"
-[routing]
-future_routing = "routing"
-[join]
-future_join = false
 [translate]
 future_translate = {deep={value=42}}
 [overlay]
@@ -95,7 +92,7 @@ future_models = "model"
 "#;
     let temp = TempConfig::new();
     let (mut config, messages) = Config::from_toml(input).unwrap();
-    assert_eq!(messages.len(), 15, "{messages:?}");
+    assert_eq!(messages.len(), 13, "{messages:?}");
     assert!(config.audio.extra["future_audio"].is_datetime());
     config.merge_patch(json!({"translate":{"ctx":2048,"future_translate":{"deep":{"other":true}}},"overlay":{"bar_rect":{"x":-222.5}}})).unwrap();
     config.save(&temp.0).unwrap();
@@ -133,8 +130,6 @@ normalize = 123
 threads = 2.5
 [filter]
 fillers = ["um", 4]
-[translate]
-target = "fr"
 [overlay]
 style = "float"
 panel_edge = "top"
@@ -146,7 +141,7 @@ source = "elsewhere"
 "#,
     )
     .unwrap();
-    assert_eq!(config.config_version, 1);
+    assert_eq!(config.config_version, 2);
     assert_eq!(config.capture.mode, "system");
     assert!(config.capture.autostart);
     assert_eq!(config.capture.device, "selected-device");
@@ -159,13 +154,12 @@ source = "elsewhere"
     assert!(config.audio.normalize);
     assert_eq!(config.asr.threads, 1);
     assert_eq!(config.filter.fillers, Config::default().filter.fillers);
-    assert_eq!(config.translate.target, "en");
     assert_eq!(config.overlay.style, "bar");
     assert_eq!(config.overlay.panel_edge, "right");
     assert!(config.overlay.bar_rect.is_none());
     assert_eq!(config.logging.level, "info");
     assert_eq!(config.models.source, "huggingface");
-    assert_eq!(messages.len(), 14, "{messages:?}");
+    assert_eq!(messages.len(), 12, "{messages:?}");
 }
 
 #[test]
@@ -178,13 +172,13 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
         "overlay":{"font_px":0,"background":99,"expire_s":0,"panel_lines":0},
         "transcript":{"retention_days":-1},"logging":{"keep_files":-1}
     })).unwrap();
-    assert_eq!(config.config_version, 1);
+    assert_eq!(config.config_version, 2);
     assert_eq!(config.audio.norm_attack_s, 0.1);
     assert_eq!(config.audio.norm_release_s, 20.0);
     assert_eq!(config.audio.norm_max_gain_db, 30.0);
     assert_eq!(config.audio.norm_gate_dbfs, -90.0);
     assert_eq!(config.asr.threads, 1);
-    assert_eq!(config.translate.threads, 16);
+    assert_eq!(config.translate.threads, 64);
     assert_eq!(config.translate.ctx, 512);
     assert_eq!(config.translate.temperature, 1.0);
     assert_eq!(config.translate.repeat_penalty, 1.0);
@@ -222,4 +216,60 @@ fn failed_atomic_replace_preserves_existing_destination() {
     assert!(Config::default().save(&temp.0).is_err());
     assert_eq!(fs::read_to_string(temp.0.join("marker")).unwrap(), "keep");
     assert!(!temp.0.with_file_name("config.toml.tmp").exists());
+}
+
+/// A version 1 file keeps the values that still exist, under their new names, loses the removed
+/// keys without warnings, and keeps keys it did not know.
+#[test]
+fn version_1_settings_migrate_to_version_2() {
+    let (config, messages) = Config::from_toml(
+        r#"
+config_version = 1
+future = "kept"
+[vad]
+engine = "ten"
+[asr]
+engine = "xasr_stream"
+language = "auto"
+threads = 3
+second_pass = "off"
+stream_chunk_ms = 960
+stream_pause_s = 1.2
+[filter]
+drop_music = true
+fillers = ["呃"]
+[routing]
+translate_other = ["ja"]
+[join]
+hold_max_chars = 8
+[translate]
+engine = "hymt2"
+threads = 0
+window_chars = 0
+target = "en"
+[overlay]
+style = "flow"
+draft_display = "all"
+[latency]
+mode = "off"
+low_priority = false
+step_down = true
+"#,
+    )
+    .unwrap();
+    assert_eq!(config.config_version, 2);
+    assert_eq!(config.asr.chunk_ms, 960);
+    assert_eq!(config.asr.pause_s, 1.2);
+    assert_eq!(config.asr.threads, 3);
+    assert_eq!(config.filter.fillers, ["呃"]);
+    // Version 1 wrote 0 for automatic threads, which meant 2.
+    assert_eq!(config.translate.threads, 2);
+    assert_eq!(config.translate.window_chars, 0);
+    assert_eq!(config.overlay.style, "flow");
+    assert!(!config.performance.low_priority);
+    assert_eq!(config.extra.keys().collect::<Vec<_>>(), ["future"]);
+    assert!(config.asr.extra.is_empty() && config.overlay.extra.is_empty());
+    assert_eq!(messages, ["future: unknown key preserved"]);
+    let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
+    assert_eq!(saved["config_version"].as_integer(), Some(2));
 }

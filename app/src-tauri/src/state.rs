@@ -19,6 +19,8 @@ pub struct AppState {
     pub models_ready: bool,
     pub overlay_moving: bool,
     pub overlay_visible: bool,
+    /// Logical CPUs of this PC: the UI offers up to this many threads.
+    pub logical_cpus: u32,
 }
 
 impl Default for AppState {
@@ -36,6 +38,7 @@ impl Default for AppState {
             models_ready: false,
             overlay_moving: false,
             overlay_visible: true,
+            logical_cpus: lt_core::config::logical_cpus(),
         }
     }
 }

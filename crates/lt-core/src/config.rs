@@ -1,6 +1,7 @@
 //! Typed defaults, forgiving validation, and atomic persisted configuration.
 //!
-//! Unknown fields are retained at every table boundary for forward compatibility.
+//! Unknown fields are retained at every table boundary for forward compatibility. Version 1
+//! files are migrated to version 2 when they load.
 use crate::error::{Error, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
@@ -10,6 +11,9 @@ use std::io::Write;
 use std::path::Path;
 
 pub type ExtraFields = BTreeMap<String, toml::Value>;
+
+/// The most threads a setting accepts; engines also stay within the PC's logical CPUs.
+pub const MAX_THREADS: u32 = 64;
 
 macro_rules! config_table {
     ($name:ident { $($(#[$attribute:meta])* $field:ident: $ty:ty = $default:expr),* $(,)? }) => {
@@ -29,14 +33,14 @@ macro_rules! config_table {
 }
 
 config_table!(Config {
-    config_version: u32 = 1,
+    config_version: u32 = 2,
     capture: CaptureConfig = CaptureConfig::default(),
     audio: AudioConfig = AudioConfig::default(),
     asr: AsrConfig = AsrConfig::default(),
     filter: FilterConfig = FilterConfig::default(),
     translate: TranslateConfig = TranslateConfig::default(),
     overlay: OverlayConfig = OverlayConfig::default(),
-    latency: LatencyConfig = LatencyConfig::default(),
+    performance: PerformanceConfig = PerformanceConfig::default(),
     hotkeys: HotkeysConfig = HotkeysConfig::default(),
     transcript: TranscriptConfig = TranscriptConfig::default(),
     logging: LoggingConfig = LoggingConfig::default(),
@@ -60,9 +64,9 @@ config_table!(AudioConfig {
     norm_gate_dbfs: f32 = -60.0,
 });
 config_table!(AsrConfig {
+    chunk_ms: u32 = 480,
     threads: u32 = 1,
-    stream_chunk_ms: u32 = 480,
-    stream_pause_s: f32 = 0.8,
+    pause_s: f32 = 0.8,
 });
 config_table!(FilterConfig {
     single_char_max_s: f32 = 0.6,
@@ -70,9 +74,8 @@ config_table!(FilterConfig {
     fillers: Vec<String> = ["呃", "嗯", "额", "uh", "um"].map(String::from).to_vec(),
 });
 config_table!(TranslateConfig {
-    engine: String = "hymt2".into(),
     server_url: String = String::new(),
-    threads: u32 = 0,
+    threads: u32 = 2,
     ctx: u32 = 1024,
     temperature: f32 = 0.0,
     repeat_penalty: f32 = 1.05,
@@ -80,8 +83,7 @@ config_table!(TranslateConfig {
     timeout_s: f32 = 10.0,
     queue_join_max_chars: u32 = 120,
     skip_lag_s: f32 = 6.0,
-    window_chars: u32 = 0,
-    target: String = "en".into(),
+    window_chars: u32 = 30,
 });
 config_table!(OverlayConfig {
     visible: bool = true,
@@ -101,7 +103,7 @@ config_table!(OverlayConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     flow_rect: Option<OverlayRect> = None,
 });
-config_table!(LatencyConfig {
+config_table!(PerformanceConfig {
     low_priority: bool = true,
 });
 config_table!(OverlayRect {
@@ -129,14 +131,97 @@ config_table!(ModelsConfig {
     dir: String = String::new(),
 });
 
+/// The logical CPUs of this PC: the most threads an engine gets.
+pub fn logical_cpus() -> u32 {
+    std::thread::available_parallelism()
+        .map_or(1, |count| u32::try_from(count.get()).unwrap_or(u32::MAX))
+}
+
+impl AsrConfig {
+    /// Recognizer threads, at most the logical CPUs of this PC.
+    pub fn engine_threads(&self) -> u32 {
+        self.threads.clamp(1, logical_cpus())
+    }
+}
+
 impl TranslateConfig {
-    /// Threads for each llama-server: the user value clamped to 1 to 4, or 2 when automatic.
+    /// llama-server threads, at most the logical CPUs of this PC.
     pub fn server_threads(&self) -> u32 {
-        if self.threads == 0 {
-            2
-        } else {
-            self.threads.clamp(1, 4)
+        self.threads.clamp(1, logical_cpus())
+    }
+}
+
+/// Version 1 keys that version 2 keeps under a new name.
+const V1_RENAMED: [(&str, &str); 3] = [
+    ("asr.stream_chunk_ms", "asr.chunk_ms"),
+    ("asr.stream_pause_s", "asr.pause_s"),
+    ("latency.low_priority", "performance.low_priority"),
+];
+
+/// Version 1 keys and tables that version 2 does not have.
+const V1_REMOVED: [&str; 14] = [
+    "vad",
+    "routing",
+    "join",
+    "latency",
+    "asr.engine",
+    "asr.language",
+    "asr.use_itn",
+    "asr.second_pass",
+    "asr.second_pass_threads",
+    "asr.second_pass_timeout_s",
+    "filter.drop_music",
+    "translate.engine",
+    "translate.target",
+    "overlay.draft_display",
+];
+
+/// Turn a version 1 document into version 2: renamed keys keep their values, removed keys are
+/// dropped and logged once. Keys that version 1 did not know stay, as for any unknown key.
+fn migrate_v1(value: &mut toml::Value) {
+    let Some(root) = value.as_table_mut() else {
+        return;
+    };
+    let version = root
+        .get("config_version")
+        .and_then(toml::Value::as_integer)
+        .unwrap_or(1);
+    if version != 1 {
+        return;
+    }
+    for (from, to) in V1_RENAMED {
+        if let Some(moved) = take(root, from) {
+            let (table, key) = to.split_once('.').unwrap_or(("", to));
+            if let Some(target) = root
+                .entry(table)
+                .or_insert_with(|| toml::Value::Table(toml::Table::new()))
+                .as_table_mut()
+            {
+                target.insert(key.into(), moved);
+            }
         }
+    }
+    // Version 1 used 0 for "automatic", which meant 2 threads.
+    if let Some(threads) = root
+        .get_mut("translate")
+        .and_then(|translate| translate.get_mut("threads"))
+        .filter(|threads| threads.as_integer() == Some(0))
+    {
+        *threads = toml::Value::Integer(2);
+    }
+    let dropped: Vec<&str> = V1_REMOVED
+        .into_iter()
+        .filter(|path| take(root, path).is_some())
+        .collect();
+    root.insert("config_version".into(), toml::Value::Integer(2));
+    tracing::info!(?dropped, "settings migrated from version 1");
+}
+
+/// Remove `table.key` (or a whole top-level table) and return its value.
+fn take(root: &mut toml::Table, path: &str) -> Option<toml::Value> {
+    match path.split_once('.') {
+        Some((table, key)) => root.get_mut(table)?.as_table_mut()?.remove(key),
+        None => root.remove(path),
     }
 }
 
@@ -170,6 +255,7 @@ impl Config {
             ));
         }
         let mut messages = Vec::new();
+        migrate_v1(&mut value);
         let schema = schema()?;
         normalize_types(&mut value, &schema, "", &mut messages);
         let mut config: Self = value.clone().try_into().map_err(config_error)?;
@@ -260,9 +346,9 @@ impl Config {
         }
         clamp_number(
             &mut self.config_version,
-            1,
-            1,
-            1,
+            2,
+            2,
+            2,
             "config_version",
             &mut messages,
         );
@@ -271,18 +357,18 @@ impl Config {
         number!(audio, norm_release_s, 0.5, 20.0);
         number!(audio, norm_max_gain_db, 0.0, 30.0);
         number!(audio, norm_gate_dbfs, -90.0, -30.0);
-        number!(asr, threads, 1, 4);
-        if ![160, 480, 960].contains(&self.asr.stream_chunk_ms) {
+        if ![160, 480, 960].contains(&self.asr.chunk_ms) {
             messages.push(format!(
-                "asr.stream_chunk_ms: invalid value {}; using default {}",
-                self.asr.stream_chunk_ms, defaults.asr.stream_chunk_ms
+                "asr.chunk_ms: invalid value {}; using default {}",
+                self.asr.chunk_ms, defaults.asr.chunk_ms
             ));
-            self.asr.stream_chunk_ms = defaults.asr.stream_chunk_ms;
+            self.asr.chunk_ms = defaults.asr.chunk_ms;
         }
-        number!(asr, stream_pause_s, 0.3, 3.0);
+        number!(asr, threads, 1, MAX_THREADS);
+        number!(asr, pause_s, 0.3, 3.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
-        number!(translate, threads, 0, 16);
+        number!(translate, threads, 1, MAX_THREADS);
         number!(translate, ctx, 512, 4096);
         number!(translate, temperature, 0.0, 1.0);
         number!(translate, repeat_penalty, 1.0, 1.3);
@@ -291,7 +377,6 @@ impl Config {
         number!(translate, queue_join_max_chars, 20, 300);
         number!(translate, skip_lag_s, 2.0, 30.0);
         number!(translate, window_chars, 0, 60);
-        choice!(translate, target, &["en"]);
         number!(overlay, font_px, 18, 40);
         number!(overlay, background, 0.0, 1.0);
         number!(overlay, expire_s, 3.0, 60.0);
@@ -301,13 +386,6 @@ impl Config {
         choice!(overlay, panel_edge, &["left", "right"]);
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
         choice!(models, source, &["huggingface", "modelscope"]);
-        if self.translate.engine.trim().is_empty() {
-            self.translate.engine.clone_from(&defaults.translate.engine);
-            messages.push(format!(
-                "translate.engine: empty engine name; using default {:?}",
-                defaults.translate.engine
-            ));
-        }
         for (name, rect) in [
             ("overlay.bar_rect", &mut self.overlay.bar_rect),
             ("overlay.panel_rect", &mut self.overlay.panel_rect),
@@ -359,7 +437,16 @@ impl Config {
             ($($name:ident),* $(,)?) => { $(unknown_fields(&self.$name.extra, stringify!($name), messages);)* };
         }
         table!(
-            capture, audio, asr, filter, translate, overlay, latency, hotkeys, transcript, logging,
+            capture,
+            audio,
+            asr,
+            filter,
+            translate,
+            overlay,
+            performance,
+            hotkeys,
+            transcript,
+            logging,
             models
         );
         for (index, app) in self.capture.apps.iter().enumerate() {
@@ -386,7 +473,16 @@ impl Config {
             )* };
         }
         table!(
-            capture, audio, asr, filter, translate, overlay, latency, hotkeys, transcript, logging,
+            capture,
+            audio,
+            asr,
+            filter,
+            translate,
+            overlay,
+            performance,
+            hotkeys,
+            transcript,
+            logging,
             models
         );
         if let Some(apps) = value
@@ -556,9 +652,8 @@ fn normalize_float(
 
 fn integer_range(path: &str) -> (i64, i64) {
     match path {
-        "config_version" => (1, 1),
-        "asr.threads" => (1, 4),
-        "translate.threads" => (0, 16),
+        "config_version" => (2, 2),
+        "asr.threads" | "translate.threads" => (1, i64::from(MAX_THREADS)),
         "translate.ctx" => (512, 4096),
         "translate.max_tokens_cap" => (32, 1024),
         "translate.queue_join_max_chars" => (20, 300),

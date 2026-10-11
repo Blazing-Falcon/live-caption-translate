@@ -176,16 +176,6 @@ pub(crate) fn cstring(value: &str) -> Result<CString> {
     CString::new(value).map_err(|error| engine_error("Invalid native setting", error))
 }
 
-pub(crate) fn require_threads(name: &str, threads: u32) -> Result<()> {
-    if (1..=4).contains(&threads) {
-        Ok(())
-    } else {
-        Err(Error::Engine(format!(
-            "{name} needs between one and four CPU threads"
-        )))
-    }
-}
-
 pub(crate) fn require_file(path: &Path, description: &str) -> Result<()> {
     match path.metadata() {
         Ok(metadata) if metadata.is_file() && metadata.len() > 0 => Ok(()),

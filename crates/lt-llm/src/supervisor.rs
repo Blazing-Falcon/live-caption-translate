@@ -31,7 +31,7 @@ pub struct ServerOptions {
     pub context: u32,
     pub translate: TranslateConfig,
     pub load_timeout: Duration,
-    /// Run the child at below-normal priority (`latency.low_priority`).
+    /// Run the child at below-normal priority (`performance.low_priority`).
     pub below_normal: bool,
     #[cfg(test)]
     mock_directory: Option<PathBuf>,

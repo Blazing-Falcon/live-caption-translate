@@ -1,7 +1,7 @@
 //! Streaming X-ASR: sherpa's online zipformer transducer. It hears all audio continuously,
 //! keeps its state between pieces, and its emitted tokens never change.
 
-use crate::runtime::{cstring, engine_error, path_cstring, prepare, require_threads};
+use crate::runtime::{cstring, engine_error, path_cstring, prepare};
 use lt_core::{
     config::AsrConfig,
     engines::{StreamResult, StreamingAsr, TokenTranscript},
@@ -49,7 +49,6 @@ impl XAsrStream {
     /// `dir` holds the encoder, decoder, joiner and tokens of the manifest entry.
     pub fn new(dir: impl AsRef<Path>, settings: &AsrConfig) -> Result<Self> {
         let dir = dir.as_ref();
-        require_threads(NAME, settings.threads)?;
         let encoder = dir.join("encoder.int8.onnx");
         let decoder = dir.join("decoder.onnx");
         let joiner = dir.join("joiner.int8.onnx");
@@ -70,13 +69,13 @@ impl XAsrStream {
         config.model_config.transducer.decoder = decoder.as_ptr();
         config.model_config.transducer.joiner = joiner.as_ptr();
         config.model_config.tokens = tokens.as_ptr();
-        config.model_config.num_threads = settings.threads as i32;
+        config.model_config.num_threads = settings.engine_threads() as i32;
         config.model_config.provider = provider.as_ptr();
         config.decoding_method = decoding.as_ptr();
         config.max_active_paths = 4;
         config.enable_endpoint = 1;
         config.rule1_min_trailing_silence = IDLE_ENDPOINT_S;
-        config.rule2_min_trailing_silence = settings.stream_pause_s;
+        config.rule2_min_trailing_silence = settings.pause_s;
         config.rule3_min_utterance_length = MAX_UTTERANCE_S;
         // SAFETY: every pointer above is a live CString through this call; the native
         // constructor copies the strings.
@@ -86,12 +85,12 @@ impl XAsrStream {
                 "{NAME} could not initialize; check its model files"
             ))
         })?;
-        let chunk_s = f64::from(settings.stream_chunk_ms) / 1_000.0;
+        let chunk_s = f64::from(settings.chunk_ms) / 1_000.0;
         Ok(Self {
             recognizer,
             stream: None,
             tail: vec![0.0; ((2.0 * chunk_s + 0.5) * 16_000.0) as usize],
-            lag_s: token_lag_s(settings.stream_chunk_ms),
+            lag_s: token_lag_s(settings.chunk_ms),
         })
     }
 

@@ -130,7 +130,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `show_control_window` | | | Show the control window |
 | `quit` | | | Stop the pipeline and servers, then exit |
 
-`AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving` and `overlay_visible`.
+`AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible` and `logical_cpus` (the most threads a setting can use).
 
 `ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`), `optional` and `recommended`.
 

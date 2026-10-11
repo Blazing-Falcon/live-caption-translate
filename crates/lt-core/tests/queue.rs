@@ -1,7 +1,7 @@
 use lt_core::{
     bus::EventBus,
     clock::{Clock, ManualClock},
-    config::Config,
+    config::{Config, TranslateConfig},
     events::{EngineState, FailReason, PipelineEvent},
     fakes::FakeTranslator,
     queue::{
@@ -96,7 +96,10 @@ fn window_holds_whole_earlier_lines_and_restarts_after_a_gap_or_a_break() {
     assert!(next(&mut queue, 6, "到了。", 22.0).is_empty());
     assert_eq!(next(&mut queue, 7, "进去吧。", 23.0), ["到了。"]);
 
-    let mut off = TranslationQueue::new(Config::default().translate);
+    let mut off = TranslationQueue::new(TranslateConfig {
+        window_chars: 0,
+        ..TranslateConfig::default()
+    });
     next(&mut off, 1, "好的。", 1.0);
     assert!(next(&mut off, 2, "然后吃饭。", 2.0).is_empty());
 }

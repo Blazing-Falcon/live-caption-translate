@@ -91,6 +91,8 @@ export interface AppState {
   models_ready: boolean;
   overlay_moving: boolean;
   overlay_visible: boolean;
+  /** Logical CPUs of this PC: the most threads a setting can use. */
+  logical_cpus: number;
 }
 
 export interface AudioDevice {

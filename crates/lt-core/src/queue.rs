@@ -331,7 +331,7 @@ pub fn translate_one(
         id: source.id,
         text: &source.text,
         src: &source_language,
-        tgt: &config.target,
+        tgt: "en",
         terms: &[],
         context: if translator.caps().context {
             context
