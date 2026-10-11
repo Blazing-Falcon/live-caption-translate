@@ -95,12 +95,7 @@ pub struct StreamRecognizer {
 
 impl StreamRecognizer {
     /// `sentences`: cut at sentence ends and pauses; commas only after `SENTENCE_COMMA_S`.
-    pub fn new(config: &Config, sentences: bool) -> Self {
-        // Streaming tokens never change, so a commit needs no second look.
-        let commit = CommitSettings {
-            stability: false,
-            ..CommitSettings::from(&config.latency)
-        };
+    pub fn new(config: &Config, commit: CommitSettings, sentences: bool) -> Self {
         Self {
             sentence: sentences.then_some(CommitSettings {
                 comma_min_tokens: usize::MAX,
@@ -451,8 +446,11 @@ mod tests {
 
     /// Two sentences, a 2 s pause, and a last sentence that the end of the audio closes.
     fn run(sentences: bool) -> (Vec<Final>, Vec<u64>, usize) {
-        let mut config = Config::default();
-        config.latency.comma_min_tokens = 3;
+        let config = Config::default();
+        let commit = CommitSettings {
+            comma_min_tokens: 3,
+            ..CommitSettings::STREAMING
+        };
         let mut script = Vec::new();
         let mut at = 0.3;
         for token in [
@@ -473,7 +471,7 @@ mod tests {
             part_start_s: 0.0,
             part_first: 0,
         };
-        let mut recognizer = StreamRecognizer::new(&config, sentences);
+        let mut recognizer = StreamRecognizer::new(&config, commit, sentences);
         let mut out = Vec::new();
         let base = StreamTime::from_seconds(10.0);
         let total = (at * 16_000.0) as usize;

@@ -48,8 +48,7 @@ pub fn start_supervisor(
         models.join(TRANSLATOR_MODEL),
         &config.translate,
     )
-    // Off mode: the translator keeps normal priority.
-    .with_below_normal(config.latency.low_priority && config.latency.mode != "off");
+    .with_below_normal(config.latency.low_priority);
     let supervisor = Supervisor::start(options, bus.clone()).map_err(|e| e.to_string())?;
     supervisor
         .wait_ready_cancellable(Duration::from_secs(65), cancelled)

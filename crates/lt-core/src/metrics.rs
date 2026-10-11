@@ -139,11 +139,6 @@ impl Metrics {
             .map_or(0, |end| live.millis().saturating_sub(*end))
     }
 
-    /// Whole-PC CPU busy percent from the latest snapshot.
-    pub fn system_cpu_pct(&self) -> f32 {
-        self.resources.cpu_system_pct
-    }
-
     fn forget_clause(&mut self, id: &UtteranceId) {
         self.tracks.remove(id);
     }

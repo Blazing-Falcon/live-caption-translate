@@ -188,7 +188,6 @@ impl Controller {
             bus.clone(),
             PipelineOptions {
                 sampler: Some(Box::new(sampler)),
-                physical_cores: Some(num_cpus::get_physical()),
             },
         );
         match pipeline {

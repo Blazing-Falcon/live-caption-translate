@@ -31,7 +31,7 @@ All processing is on your computer. After the first download, the app does not u
 | **Capture** | Listen to the **whole system** (you can select an output device), or to **selected apps** such as Chrome and Discord. The app remembers apps by program name. |
 | **Overlay** | Style (subtitle bar at the bottom, caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
 | **Languages** | Chinese to English. English speech shows as heard. You can turn on translation for Japanese and Korean. Otherwise they show untranslated. |
-| **Performance** | **Caption speed**, "Translate with the previous lines", word delay ("Word to English", median for the last minute), memory, CPU, translator threads |
+| **Performance** | "Give games priority", "Translate with the previous lines", word delay ("Word to English", median for the last minute), memory, CPU, translator threads |
 
 When you close the control window, the app continues in the system tray. Right-click the tray icon for Pause, Hide overlay, Move overlay, Listen to, Open transcript folder, Settings and Quit.
 
@@ -49,22 +49,13 @@ You can change the hotkeys on the Overlay page.
 
 If a different program uses a hotkey, the Overlay page tells you. The other hotkeys continue to work.
 
-## Caption speed
+## How captions appear
 
-Set the **Caption speed** on the Performance page:
+1. The Chinese appears while the person speaks.
+2. The line ends at the end of a sentence (。？！) or when the person pauses. If a sentence runs on with commas, a comma can end the line after about 6 seconds. After 30 seconds, the app cuts the line at a gap between words.
+3. The English appears below the Chinese. The transcript keeps only the final text.
 
-| Setting | Result |
-|---|---|
-| Automatic (recommended) | Light. |
-| Continuous | Same as Light. |
-| Light | The app translates each phrase when it ends. |
-| Wait for full sentences | The app translates when the speaker pauses. |
-
-Three options on the Performance page change the CPU use:
-
-- **Give games priority** (on by default): the translator runs at low priority, so a game keeps its frame rate. If you turn it off, the translator restarts.
-- **Slow down when the PC is busy** (on by default): the app changes from Continuous to Light when the PC is busy, and back when it is free. The status line under Caption speed tells you when and why.
-- **Split long sentences** (on by default): the app translates a long sentence in parts when the speaker does not pause.
+**Give games priority** on the Performance page (on by default) runs the translator at low priority, so a game keeps its frame rate. If you turn it off, the translator restarts.
 
 ## Limitations
 
@@ -74,7 +65,7 @@ Three options on the Performance page change the CPU use:
 - The app recognizes English words in Chinese speech correctly only 55 to 66% of the time.
 - If a sentence is longer than 10 seconds, the cut can remove part of a character.
 - The translations are machine output. If the translator is more than 6 seconds late, it skips older lines to catch up. The Chinese of those lines stays visible.
-- In Light and Wait for full sentences, captions come after a phrase or sentence ends, usually in 1 to 3 seconds.
+- The English comes after a sentence or phrase ends, so it trails the speaker by a few seconds.
 
 ## Files
 

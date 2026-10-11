@@ -134,8 +134,7 @@ pub fn translator(
         models.join("hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf"),
         &config.translate,
     )
-    // Off mode: no priority change.
-    .with_below_normal(config.latency.low_priority && config.latency.mode != "off");
+    .with_below_normal(config.latency.low_priority);
     let supervisor = lt_llm::supervisor::Supervisor::start(options, bus.clone())?;
     supervisor
         .wait_ready_cancellable(std::time::Duration::from_secs(65), cancelled)

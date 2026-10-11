@@ -78,8 +78,6 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
             config.translate.ctx,
             config.translate.engine,
             config.latency.low_priority,
-            // A server started for Off mode runs at normal priority.
-            config.latency.mode == "off",
         ])
     };
     key(old) != key(new)
@@ -124,11 +122,6 @@ mod tests {
             Applies::Pipeline
         );
         assert_eq!(changed(|c| c.translate.threads = 3), Applies::Pipeline);
-        assert_eq!(
-            changed(|c| c.latency.mode = "light".into()),
-            Applies::Pipeline
-        );
-        assert_eq!(changed(|c| c.latency.step_down = false), Applies::Pipeline);
         assert_eq!(changed(|c| c.overlay.live_source = false), Applies::Live);
         assert_eq!(changed(|c| c.capture.autostart = false), Applies::Restart);
         assert_eq!(
@@ -158,7 +151,7 @@ mod tests {
         new.latency.low_priority = false;
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
-        new.latency.cap_tokens = 30;
+        new.translate.window_chars = 40;
         assert!(!server_changed(&old, &new));
     }
 }

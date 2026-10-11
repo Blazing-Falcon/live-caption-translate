@@ -149,7 +149,6 @@ pub enum PipelineEvent {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::types::{EffectiveMode, ModeReason};
 
     fn every_event_variant() -> Vec<PipelineEvent> {
         vec![
@@ -245,8 +244,6 @@ mod tests {
                 cpu_translator_pct: 150.0,
                 rss_app_mb: 520,
                 rss_translator_mb: 1_380,
-                mode: EffectiveMode::Continuous,
-                mode_reason: Some(ModeReason::Cpu),
                 cpu_system_pct: 41.5,
                 word_final_p50_ms: None,
             }),

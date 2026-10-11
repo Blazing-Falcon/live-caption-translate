@@ -17,7 +17,7 @@ use lt_core::{
     fakes::FakeTranslator,
     pipeline::{Pipeline, PipelineOptions},
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
-    types::{CaptureMode, CutReason, EffectiveMode, SourceInfo, StreamTime, UtteranceId},
+    types::{CaptureMode, CutReason, SourceInfo, StreamTime, UtteranceId},
 };
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -273,10 +273,7 @@ fn run(samples: Vec<f32>, config: Config, translator: Box<dyn Translator>) -> Ru
         Box::<AmplitudeStream>::default(),
         translator,
         bus,
-        PipelineOptions {
-            physical_cores: Some(8),
-            ..PipelineOptions::default()
-        },
+        PipelineOptions::default(),
     )
     .unwrap();
     let deadline = Instant::now() + Duration::from_secs(20);
@@ -290,11 +287,9 @@ fn run(samples: Vec<f32>, config: Config, translator: Box<dyn Translator>) -> Ru
     }
 }
 
-fn config(mode: &str) -> Config {
+fn config() -> Config {
     let mut config = Config::default();
     config.join.hold_max_chars = 0;
-    config.latency.mode = mode.into();
-    config.latency.step_down = false;
     config
 }
 
@@ -363,44 +358,14 @@ fn finals(events: &[PipelineEvent]) -> Vec<(UtteranceId, String, CutReason)> {
         .collect()
 }
 
+/// A clause ends at the sentence end and the pause, not at the early comma, and the Chinese
+/// shows while it is spoken.
 #[test]
-fn a_long_sentence_is_committed_into_clauses_that_add_up_to_the_whole_text() {
+fn clauses_end_at_sentence_ends_and_pauses_and_show_live_text() {
     let chars = sentence_chars();
     let run = run(
         speech(chars.len(), 1.0),
-        config("light"),
-        Box::<FakeTranslator>::default(),
-    );
-    assert_ordering(&run.events);
-    let clauses = finals(&run.events);
-    assert!(clauses.len() >= 2, "{clauses:?}");
-    assert!(
-        clauses.iter().any(|(_, _, cut)| *cut == CutReason::Commit),
-        "no early commit: {clauses:?}"
-    );
-    let joined: String = clauses.iter().map(|(_, text, _)| text.as_str()).collect();
-    assert_eq!(joined, SENTENCE);
-    assert!(clauses.windows(2).all(|pair| pair[0].0 < pair[1].0));
-    // The live Chinese line grew before the first final, and never after a clause's final.
-    assert!(run
-        .events
-        .iter()
-        .any(|event| matches!(event, PipelineEvent::AsrPartial { .. })));
-    let stats_mode = run.events.iter().find_map(|event| match event {
-        PipelineEvent::Stats(stats) => Some(stats.mode),
-        _ => None,
-    });
-    assert!(stats_mode.is_none_or(|mode| mode == EffectiveMode::Light));
-}
-
-/// Off cuts at the sentence end and the pause, not at the early comma, and still shows the
-/// Chinese while it is spoken.
-#[test]
-fn off_mode_cuts_at_sentence_ends_and_pauses_and_shows_live_text() {
-    let chars = sentence_chars();
-    let run = run(
-        speech(chars.len(), 1.0),
-        config("off"),
+        config(),
         Box::<FakeTranslator>::default(),
     );
     assert_ordering(&run.events);
@@ -428,49 +393,8 @@ fn many_seeds_keep_every_ordering_rule_with_random_delays_and_failures() {
             ));
         }
         let translator = SeededTranslator::new(seed, 30, 8);
-        let run = run(samples, config("light"), Box::new(translator));
+        let run = run(samples, config(), Box::new(translator));
         assert_ordering(&run.events);
         assert!(!finals(&run.events).is_empty(), "seed {seed}");
     }
-}
-
-#[test]
-fn mode_resolution_follows_the_decisions() {
-    use lt_core::{pipeline::resolve_mode, types::ModeReason};
-    let mut latency = lt_core::config::LatencyConfig::default();
-    let state = |latency: &lt_core::config::LatencyConfig, draft, cores| {
-        let resolved = resolve_mode(latency, draft, cores);
-        (resolved.mode, resolved.reason)
-    };
-    assert_eq!(
-        state(&latency, true, 8),
-        (EffectiveMode::Continuous, Some(ModeReason::Auto))
-    );
-    assert_eq!(
-        state(&latency, true, 4),
-        (EffectiveMode::Light, Some(ModeReason::Auto))
-    );
-    assert_eq!(
-        state(&latency, false, 16),
-        (EffectiveMode::Light, Some(ModeReason::Auto))
-    );
-    latency.mode = "continuous".into();
-    assert_eq!(
-        state(&latency, false, 2),
-        (EffectiveMode::Light, Some(ModeReason::DraftUnavailable))
-    );
-    assert_eq!(
-        state(&latency, true, 2),
-        (EffectiveMode::Continuous, Some(ModeReason::User))
-    );
-    latency.mode = "light".into();
-    assert_eq!(
-        state(&latency, true, 16),
-        (EffectiveMode::Light, Some(ModeReason::User))
-    );
-    latency.mode = "off".into();
-    assert_eq!(
-        state(&latency, true, 16),
-        (EffectiveMode::Off, Some(ModeReason::User))
-    );
 }

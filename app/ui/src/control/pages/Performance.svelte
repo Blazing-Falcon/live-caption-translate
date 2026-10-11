@@ -7,13 +7,11 @@
     formatBytes,
     formatMemory,
     formatSeconds,
-    modeStatusText,
     modelsPercent,
     totalCpu,
     totalMemoryMb,
   } from "../../lib/format";
   import {
-    CAPTION_SPEEDS,
     STREAM_CHUNKS,
     TRANSLATE_THREADS_MAX,
     asrPatch,
@@ -30,41 +28,14 @@
   let { config }: { config: Config } = $props();
 
   const session = useSession();
-  const { stats, busy, appState, models, config: liveConfig } = session;
+  const { stats, busy, models, config: liveConfig } = session;
 
   const threadOptions = Array.from({ length: TRANSLATE_THREADS_MAX }, (_, index) => index + 1);
 
-  const speed = $derived(CAPTION_SPEEDS.find((option) => option.value === config.latency.mode) ?? CAPTION_SPEEDS[0]);
-  // Stats arrive about once a second; until the first one the state snapshot already knows the mode.
-  const now = $derived(
-    $stats
-      ? { mode: $stats.mode, reason: $stats.mode_reason }
-      : $appState
-        ? { mode: $appState.mode, reason: $appState.mode_reason }
-        : null,
-  );
-  // Both switches mean nothing when the speed they belong to is not chosen.
-  const stepDownDisabled = $derived(config.latency.mode === "light" || config.latency.mode === "off");
-  const splitLongDisabled = $derived(config.latency.mode === "off");
-
-  async function chooseSpeed(event: Event): Promise<void> {
-    const select = event.currentTarget as HTMLSelectElement;
-    const chosen = CAPTION_SPEEDS.find((option) => option.value === select.value);
-    if (!chosen) {
-      select.value = config.latency.mode;
-      return;
-    }
-    const saved = await session.save("latency.mode", latencyPatch({ mode: chosen.value }));
-    if (!saved) select.value = config.latency.mode;
-  }
-
-  async function toggleLatency(
-    event: Event,
-    key: "low_priority" | "step_down" | "split_long",
-  ): Promise<void> {
+  async function toggleLowPriority(event: Event): Promise<void> {
     const input = event.currentTarget as HTMLInputElement;
-    await session.save(`latency.${key}`, latencyPatch({ [key]: input.checked }));
-    reconcileChecked(input, get(liveConfig)?.latency[key] ?? config.latency[key]);
+    await session.save("latency.low_priority", latencyPatch({ low_priority: input.checked }));
+    reconcileChecked(input, get(liveConfig)?.latency.low_priority ?? config.latency.low_priority);
   }
 
   async function chooseThreads(event: Event): Promise<void> {
@@ -172,60 +143,19 @@
   <h2 id="performance-title" class="section-title">Performance</h2>
 
   <div class="stack">
-    <label class="field">
-      <span>Caption speed</span>
-      <select class="select" value={config.latency.mode} aria-describedby="caption-speed-help" onchange={chooseSpeed}>
-        {#each CAPTION_SPEEDS as option (option.value)}
-          <option value={option.value}>{option.label}</option>
-        {/each}
-      </select>
-    </label>
-    <p id="caption-speed-help" class="help small" data-testid="caption-speed-help">{speed?.help}</p>
-    {#if now}
-      <p class="help" aria-live="polite" data-testid="mode-status">{modeStatusText(now.mode, now.reason)}</p>
-    {/if}
-  </div>
-
-  <div class="stack">
     <div class="option">
       <label class="check-row">
         <input
           type="checkbox"
           checked={config.latency.low_priority}
           aria-describedby="help-low-priority"
-          onchange={(event) => toggleLatency(event, "low_priority")}
+          onchange={toggleLowPriority}
         />
         <span>Give games priority</span>
       </label>
       <p id="help-low-priority" class="help small">
         Runs translation at low priority so games stay smooth. Off: English can appear slightly sooner, but uses more CPU.
       </p>
-    </div>
-    <div class="option">
-      <label class="check-row">
-        <input
-          type="checkbox"
-          checked={config.latency.step_down}
-          disabled={stepDownDisabled}
-          aria-describedby="help-step-down"
-          onchange={(event) => toggleLatency(event, "step_down")}
-        />
-        <span>Slow down when the PC is busy</span>
-      </label>
-      <p id="help-step-down" class="help small">Switches to Light while the PC is busy and back when it is free.</p>
-    </div>
-    <div class="option">
-      <label class="check-row">
-        <input
-          type="checkbox"
-          checked={config.latency.split_long}
-          disabled={splitLongDisabled}
-          aria-describedby="help-split-long"
-          onchange={(event) => toggleLatency(event, "split_long")}
-        />
-        <span>Split long sentences</span>
-      </label>
-      <p id="help-split-long" class="help small">Translates long sentences in parts when the speaker does not pause.</p>
     </div>
     <div class="option">
       <label class="check-row">

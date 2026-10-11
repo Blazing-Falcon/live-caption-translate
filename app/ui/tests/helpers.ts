@@ -121,8 +121,6 @@ export function testState(patch: Partial<AppState> = {}): AppState {
     models_ready: true,
     overlay_moving: false,
     overlay_visible: true,
-    mode: "off",
-    mode_reason: null,
     ...patch,
   };
 }
@@ -140,8 +138,6 @@ export const STATS: PipelineStats = {
   cpu_translator_pct: 38.4,
   rss_app_mb: 520,
   rss_translator_mb: 1380,
-  mode: "off",
-  mode_reason: null,
   cpu_system_pct: 20,
   word_final_p50_ms: null,
 };

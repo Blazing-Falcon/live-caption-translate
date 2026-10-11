@@ -28,7 +28,6 @@ pub struct WordMetrics {
     pub uncovered_final: usize,
     pub clauses_by_cut: BTreeMap<String, u64>,
     pub finals_skipped: u64,
-    pub step_downs: u64,
     pub cpu_cores_app: Option<f64>,
     pub cpu_cores_final: Option<f64>,
     pub cpu_cores_total: Option<f64>,
@@ -72,7 +71,6 @@ pub fn compute(events: &[TimedEvent], instants: &[u64]) -> WordMetrics {
         ..WordMetrics::default()
     };
     let (mut app, mut fin, mut system, mut stat_count) = (0.0, 0.0, 0.0, 0.0);
-    let mut last_mode = None;
     for timed in events {
         match &timed.event {
             PipelineEvent::AsrFinal {
@@ -102,12 +100,6 @@ pub fn compute(events: &[TimedEvent], instants: &[u64]) -> WordMetrics {
                 fin += f64::from(stats.cpu_translator_pct);
                 system += f64::from(stats.cpu_system_pct);
                 stat_count += 1.0;
-                if last_mode == Some(lt_core::types::EffectiveMode::Continuous)
-                    && stats.mode == lt_core::types::EffectiveMode::Light
-                {
-                    metrics.step_downs += 1;
-                }
-                last_mode = Some(stats.mode);
             }
             _ => {}
         }

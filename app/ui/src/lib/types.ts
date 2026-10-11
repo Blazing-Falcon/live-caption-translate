@@ -51,14 +51,10 @@ export interface PipelineStats {
   cpu_translator_pct: number;
   rss_app_mb: number;
   rss_translator_mb: number;
-  mode: EffectiveMode;
-  mode_reason: ModeReason | null;
   cpu_system_pct: number;
   word_final_p50_ms: number | null;
 }
 
-export type EffectiveMode = "continuous" | "light" | "off";
-export type ModeReason = "user" | "auto" | "cpu" | "lag" | "draft_unavailable";
 export type CutReason = "pause" | "discontinuity" | "end" | "commit";
 
 export type PipelineEvent =
@@ -97,8 +93,6 @@ export interface AppState {
   models_ready: boolean;
   overlay_moving: boolean;
   overlay_visible: boolean;
-  mode: EffectiveMode;
-  mode_reason: ModeReason | null;
 }
 
 export interface AudioDevice {

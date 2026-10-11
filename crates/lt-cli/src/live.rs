@@ -144,7 +144,6 @@ fn run_session(
         bus.clone(),
         lt_core::pipeline::PipelineOptions {
             sampler: Some(Box::new(sampler)),
-            physical_cores: Some(num_cpus::get_physical()),
         },
     )?;
     let started = Instant::now();

@@ -1,4 +1,4 @@
-import type { AudioApp, EffectiveMode, ListeningStateKind, ModeReason, ModelStatus, PipelineStats } from "./types";
+import type { AudioApp, ListeningStateKind, ModelStatus, PipelineStats } from "./types";
 
 const KB = 1024;
 const MB = KB * 1024;
@@ -36,24 +36,6 @@ export function totalCpu(stats: Pick<PipelineStats, "cpu_app_pct" | "cpu_transla
 
 export function totalMemoryMb(stats: Pick<PipelineStats, "rss_app_mb" | "rss_translator_mb">): number {
   return stats.rss_app_mb + stats.rss_translator_mb;
-}
-
-const MODE_NAMES: Record<EffectiveMode, string> = { continuous: "Continuous", light: "Light", off: "Off" };
-
-/** The Performance page status line. */
-export function modeStatusText(mode: EffectiveMode, reason: ModeReason | null): string {
-  const name = `Now: ${MODE_NAMES[mode]}`;
-  if (mode !== "light") return name;
-  switch (reason) {
-    case "cpu":
-      return `${name}, because the PC is busy`;
-    case "lag":
-      return `${name}, because translation fell behind`;
-    case "draft_unavailable":
-      return `${name}, because the draft model is not downloaded`;
-    default:
-      return name;
-  }
 }
 
 export function footerText(listening: ListeningStateKind | undefined, stats: PipelineStats | null): string {

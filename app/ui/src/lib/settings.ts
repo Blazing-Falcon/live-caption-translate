@@ -81,20 +81,7 @@ export interface Config extends ExtraFields {
     flow_rect?: OverlayRect;
   };
   latency: ExtraFields & {
-    mode: "auto" | "continuous" | "light" | "off";
-    decode_interval_s: number;
-    min_open_s: number;
-    comma_min_tokens: number;
-    stability: boolean;
-    split_long: boolean;
-    cap_tokens: number;
-    final_context_s: number;
     low_priority: boolean;
-    step_down: boolean;
-    step_down_cpu_pct: number;
-    step_up_cpu_pct: number;
-    step_down_lag_s: number;
-    auto_min_cores: number;
   };
   hotkeys: ExtraFields & {
     move_lock: string;
@@ -282,13 +269,6 @@ export function latencyPatch(values: DeepPartial<Config["latency"]>): ConfigPatc
   return { latency: values };
 }
 
-export const CAPTION_SPEEDS: readonly { value: Config["latency"]["mode"]; label: string; help: string }[] = [
-  { value: "auto", label: "Automatic (recommended)", help: "Uses Continuous on PCs with 6 or more cores, Light on smaller PCs." },
-  { value: "continuous", label: "Continuous", help: "English follows the speaker within about a second. Uses the most CPU." },
-  { value: "light", label: "Light", help: "Translates each phrase as soon as it ends. Uses less CPU." },
-  { value: "off", label: "Wait for full sentences", help: "Translates whole sentences, or longer phrases when the speaker runs on. English comes later, with fewer sentences cut in half. With X-ASR streaming the Chinese still appears as it is spoken." },
-];
-
 export function asrPatch(values: DeepPartial<Config["asr"]>): ConfigPatch {
   return { asr: values };
 }
@@ -379,20 +359,7 @@ export const DEFAULT_CONFIG: Config = {
     "live_source": true
   },
   "latency": {
-    "mode": "auto",
-    "decode_interval_s": 0.5,
-    "min_open_s": 1.0,
-    "comma_min_tokens": 8,
-    "stability": true,
-    "split_long": true,
-    "cap_tokens": 20,
-    "final_context_s": 10.0,
-    "low_priority": true,
-    "step_down": true,
-    "step_down_cpu_pct": 80.0,
-    "step_up_cpu_pct": 65.0,
-    "step_down_lag_s": 3.0,
-    "auto_min_cores": 6
+    "low_priority": true
   },
   "hotkeys": {
     "move_lock": "Ctrl+Shift+L",

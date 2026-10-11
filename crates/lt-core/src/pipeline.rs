@@ -6,7 +6,8 @@
 use crate::{
     bus::{EventBus, EventReceiver},
     clock::{Clock, ManualClock},
-    config::{Config, LatencyConfig, RoutingConfig},
+    commit::CommitSettings,
+    config::{Config, RoutingConfig},
     engines::{StreamingAsr, Translator},
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
@@ -14,12 +15,8 @@ use crate::{
     metrics::{canonical_language, Metrics, ResourceSample, ResourceSampler},
     queue::{TranslationQueue, TranslatorWorker},
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
-    stepdown::{ModeState, StepDown},
     stream::{AsrMessage, StreamInput, StreamOutput, StreamRecognizer},
-    types::{
-        CutReason, EffectiveMode, ModeReason, PipelineStats, StreamTime, TextClass, Transcript,
-        UtteranceId,
-    },
+    types::{CutReason, PipelineStats, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use crossbeam_channel::{bounded, Receiver, Sender, TryRecvError, TrySendError};
 use std::{
@@ -102,35 +99,12 @@ pub struct PipelineHandle {
     threads: Vec<JoinHandle<Result<()>>>,
     latest_stats: Arc<Mutex<PipelineStats>>,
     segment_counts: Arc<SegmentCounters>,
-    modes: Sender<EffectiveMode>,
-    initial_mode: ModeState,
 }
 
 /// Optional parts of a pipeline.
 #[derive(Default)]
 pub struct PipelineOptions {
     pub sampler: Option<Box<dyn ResourceSampler>>,
-    /// Physical cores, for `latency.mode = "auto"`. Unknown counts half the logical CPUs.
-    pub physical_cores: Option<usize>,
-}
-
-/// How `latency.mode` resolves for this engine set.
-pub fn resolve_mode(
-    config: &LatencyConfig,
-    draft_available: bool,
-    physical_cores: usize,
-) -> ModeState {
-    let (mode, reason) = match config.mode.as_str() {
-        "off" => (EffectiveMode::Off, Some(ModeReason::User)),
-        "light" => (EffectiveMode::Light, Some(ModeReason::User)),
-        "continuous" if draft_available => (EffectiveMode::Continuous, Some(ModeReason::User)),
-        "continuous" => (EffectiveMode::Light, Some(ModeReason::DraftUnavailable)),
-        _ if draft_available && physical_cores >= config.auto_min_cores as usize => {
-            (EffectiveMode::Continuous, Some(ModeReason::Auto))
-        }
-        _ => (EffectiveMode::Light, Some(ModeReason::Auto)),
-    };
-    ModeState { mode, reason }
 }
 
 impl Pipeline {
@@ -168,10 +142,7 @@ impl Pipeline {
             asr,
             translator,
             bus,
-            PipelineOptions {
-                sampler,
-                ..PipelineOptions::default()
-            },
+            PipelineOptions { sampler },
         )
     }
 
@@ -183,10 +154,7 @@ impl Pipeline {
         bus: EventBus,
         options: PipelineOptions,
     ) -> Result<PipelineHandle> {
-        let PipelineOptions {
-            sampler,
-            physical_cores,
-        } = options;
+        let PipelineOptions { sampler } = options;
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
         }
@@ -200,11 +168,7 @@ impl Pipeline {
         let (audio_tx, audio_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
         let (asr_tx, asr_rx) = bounded(ASR_CAPACITY);
-        let (mode_tx, mode_rx) = bounded(CONTROL_CAPACITY);
         let (ready_tx, ready_rx) = bounded(1);
-        let cores = physical_cores
-            .unwrap_or_else(|| thread::available_parallelism().map_or(1, |n| (n.get() / 2).max(1)));
-        let initial_mode = resolve_mode(&config.latency, false, cores);
         let mut handle = PipelineHandle {
             commands: command_tx,
             cancelled: cancelled.clone(),
@@ -213,13 +177,7 @@ impl Pipeline {
             threads: Vec::with_capacity(3),
             latest_stats: latest_stats.clone(),
             segment_counts: segment_counts.clone(),
-            modes: mode_tx,
-            initial_mode,
         };
-        if let Ok(mut stats) = latest_stats.lock() {
-            stats.mode = initial_mode.mode;
-            stats.mode_reason = initial_mode.reason;
-        }
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
         });
@@ -230,7 +188,6 @@ impl Pipeline {
         let asr_notices = AsrNotices {
             notices: front_tx.clone(),
             segment_counts: segment_counts.clone(),
-            sentences: initial_mode.mode == EffectiveMode::Off,
         };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())
@@ -269,8 +226,6 @@ impl Pipeline {
                         scheduler_listening,
                         scheduler_latest,
                         sampler,
-                        initial_mode,
-                        mode_rx,
                     )
                 })?;
         handle.threads.push(scheduler_thread);
@@ -327,24 +282,6 @@ impl PipelineHandle {
 
     pub fn segment_counts(&self) -> SegmentCounts {
         self.segment_counts.snapshot()
-    }
-
-    /// The mode the pipeline started in and why.
-    pub fn initial_mode(&self) -> ModeState {
-        self.initial_mode
-    }
-
-    /// Switch between Continuous and Light while running. Off needs a restart: it changes the
-    /// commit rules.
-    pub fn set_mode(&self, mode: EffectiveMode) -> Result<()> {
-        if mode == EffectiveMode::Off || self.initial_mode.mode == EffectiveMode::Off {
-            return Err(Error::Engine(
-                "Switching to or from Off restarts the pipeline".into(),
-            ));
-        }
-        self.modes
-            .try_send(mode)
-            .map_err(|_| Error::Engine("Mode change not accepted".into()))
     }
 
     pub fn pause(&self) -> Result<()> {
@@ -700,8 +637,6 @@ fn frontend_loop(
 struct AsrNotices {
     notices: Sender<FrontendNotice>,
     segment_counts: Arc<SegmentCounters>,
-    /// Off mode: clauses end only at sentence ends and pauses.
-    sentences: bool,
 }
 
 fn asr_loop(
@@ -718,7 +653,7 @@ fn asr_loop(
         state: EngineState::Ready,
         message: None,
     });
-    let mut recognizer = StreamRecognizer::new(config, stream.sentences);
+    let mut recognizer = StreamRecognizer::new(config, CommitSettings::STREAMING, true);
     let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
@@ -788,30 +723,18 @@ struct Scheduler {
     observed: BTreeSet<UtteranceId>,
     translating: BTreeSet<UtteranceId>,
     in_flight: bool,
-    /// Speech end of the final translation now in flight (the step-down's lag input).
-    final_end: Option<StreamTime>,
     started_through: Option<UtteranceId>,
     handled_through: Option<UtteranceId>,
     closed_through: Option<UtteranceId>,
     metrics: Metrics,
     latest_stats: Arc<Mutex<PipelineStats>>,
     asr_failed: bool,
-    mode: ModeState,
-    stepdown: StepDown,
 }
 
 impl Scheduler {
     fn publish(&mut self, event: PipelineEvent) {
         self.metrics.record(&event);
         self.bus.publish(event);
-    }
-
-    fn apply_mode(&mut self, state: ModeState) {
-        if state == self.mode {
-            return;
-        }
-        tracing::info!(mode = ?state.mode, reason = ?state.reason, "caption mode changed");
-        self.mode = state;
     }
 
     fn partial(&mut self, id: UtteranceId, text: String, class: TextClass, end: StreamTime) {
@@ -830,11 +753,9 @@ impl Scheduler {
             .len()
             .saturating_add(self.ready.len())
             .min(u32::MAX as usize) as u32;
-        let mut snapshot = self
+        let snapshot = self
             .metrics
             .snapshot(live, waiting, self.joiner.held_count());
-        snapshot.mode = self.mode.mode;
-        snapshot.mode_reason = self.mode.reason;
         if let Ok(mut latest) = self.latest_stats.lock() {
             *latest = snapshot;
         }
@@ -965,22 +886,6 @@ impl Scheduler {
         }
         self.publish(event);
         self.in_flight = false;
-        self.final_end = None;
-    }
-
-    /// How far the translation backlog trails the stream: the oldest final that is queued,
-    /// ready or in flight. Phrases the joiner holds do not count; waiting for the next phrase
-    /// is not the translator falling behind (the step-down must not react to it).
-    fn translation_lag_ms(&self, live: StreamTime) -> u64 {
-        [
-            self.final_end,
-            self.queue.oldest_end(),
-            self.ready.front().map(|t| t.timing.end),
-        ]
-        .into_iter()
-        .flatten()
-        .min()
-        .map_or(0, |end| live.millis().saturating_sub(end.millis()))
     }
 }
 
@@ -1015,8 +920,6 @@ fn scheduler_loop(
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
-    initial_mode: ModeState,
-    modes: Receiver<EffectiveMode>,
 ) -> Result<()> {
     // This clock advances only after ordered frontend notices are consumed.
     // Fast replay must not expire a hold using future frames whose speech start
@@ -1041,18 +944,13 @@ fn scheduler_loop(
         observed: BTreeSet::new(),
         translating: BTreeSet::new(),
         in_flight: false,
-        final_end: None,
         started_through: None,
         handled_through: None,
         closed_through: None,
         metrics,
         latest_stats,
         asr_failed: false,
-        mode: initial_mode,
-        stepdown: StepDown::new(&config.latency, initial_mode.mode, initial_mode.reason),
     };
-    let session_start = Instant::now();
-    let mut last_step = Instant::now();
     let mut worker = TranslatorWorker::start(
         translator,
         config.translate,
@@ -1090,14 +988,6 @@ fn scheduler_loop(
         for event in worker.completed.try_iter() {
             progressed = true;
             scheduler.completed(event);
-        }
-        for mode in modes.try_iter() {
-            if let Some(next) = scheduler
-                .stepdown
-                .choose(mode, session_start.elapsed().as_secs_f64())
-            {
-                scheduler.apply_mode(next);
-            }
         }
         while scheduler.queue.len() < TranslationQueue::CAPACITY {
             let Some(transcript) = scheduler.ready.pop_front() else {
@@ -1180,7 +1070,6 @@ fn scheduler_loop(
                 scheduler.publish(event);
             }
             if let Some(item) = batch.item {
-                scheduler.final_end = Some(item.transcript.timing.end);
                 send_cooperative(&worker.input, item, &cancelled)?;
                 scheduler.in_flight = true;
                 progressed = true;
@@ -1199,18 +1088,6 @@ fn scheduler_loop(
         if is_listening != was_listening {
             was_listening = is_listening;
             last_stats = Instant::now();
-        }
-        if is_listening && last_step.elapsed() >= Duration::from_secs(1) {
-            last_step = Instant::now();
-            let lag_s = scheduler.translation_lag_ms(clock.now()) as f64 / 1_000.0;
-            let cpu = scheduler.metrics.system_cpu_pct();
-            if let Some(next) =
-                scheduler
-                    .stepdown
-                    .sample(session_start.elapsed().as_secs_f64(), cpu, lag_s)
-            {
-                scheduler.apply_mode(next);
-            }
         }
         if is_listening && last_stats.elapsed() >= Duration::from_secs(1) {
             // Frontend clears listening under this lock before acknowledging

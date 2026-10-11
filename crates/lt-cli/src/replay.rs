@@ -35,10 +35,7 @@ fn sibling(out: &std::path::Path, suffix: &str) -> std::path::PathBuf {
     out.with_extension(suffix)
 }
 
-pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
-    if let Some(mode) = args.mode {
-        config.latency.mode = mode.config_name().into();
-    }
+pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
     let models = engines::models_dir(args.models.as_deref(), &config);
     let source = WavSource::new(
         &args.wav,
@@ -117,7 +114,6 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
         bus.clone(),
         PipelineOptions {
             sampler: Some(Box::new(sampler)),
-            physical_cores: Some(num_cpus::get_physical()),
         },
     )?;
     let session_start = Instant::now();

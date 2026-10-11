@@ -18,7 +18,7 @@ Rules:
 |---|---|
 | `live` | Immediately |
 | `capture` | The capture sources open again. The pipeline continues. |
-| `pipeline` | The pipeline restarts. A llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads`, `translate.ctx`, `translate.engine`, `latency.low_priority`, or `latency.mode` to or from `off`. |
+| `pipeline` | The pipeline restarts. The llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads`, `translate.ctx`, `translate.engine` or `latency.low_priority`. |
 | `restart` | At the next app start |
 
 ## Full Default File
@@ -91,20 +91,7 @@ live_source = true              # show the Chinese of the clause being spoken
 # [overlay.flow_rect]  monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 360
 
 [latency]
-mode = "auto"                   # "auto" | "continuous" | "light" | "off"
-decode_interval_s = 0.5
-min_open_s = 1.0
-comma_min_tokens = 8
-stability = true
-split_long = true               # wait cap on/off
-cap_tokens = 20
-final_context_s = 10.0
-low_priority = true             # below-normal priority for both servers
-step_down = true
-step_down_cpu_pct = 80.0
-step_up_cpu_pct = 65.0
-step_down_lag_s = 3.0
-auto_min_cores = 6
+low_priority = true             # below-normal priority for the translation server
 
 [hotkeys]
 move_lock = "Ctrl+Shift+L"
@@ -218,20 +205,7 @@ All keys have the `pipeline` value: any change in `[latency]` restarts the pipel
 
 | Key | Range | Meaning |
 |---|---|---|
-| `mode` | `auto`, `continuous`, `light`, `off` | Caption speed. See [architecture.md](architecture.md#caption-speeds). |
-| `decode_interval_s` | 0.3–2.0 | New audio between two decodes of the open clause |
-| `min_open_s` | 0.5–3.0 | Audio necessary before the first decode |
-| `comma_min_tokens` | 2–20 | Word tokens necessary before a comma can end a clause |
-| `stability` | bool | Commit only text that the previous decode also had |
-| `split_long` | bool | Enable the wait cap |
-| `cap_tokens` | 0, 10–60 | Wait cap in word tokens. `0` disables it. Values 1–9 become 10. |
-| `final_context_s` | 0–20 | Left context for the final decode after a commit |
-| `low_priority` | bool | Run both servers at below-normal priority |
-| `step_down` | bool | Enable automatic step-down |
-| `step_down_cpu_pct` | 50–100 | System CPU that starts a step-down (3 samples) |
-| `step_up_cpu_pct` | 30 to `step_down_cpu_pct` | System CPU below which step-up is possible (10 samples) |
-| `step_down_lag_s` | 1–10 | Translation lag that starts a step-down (2 samples) |
-| `auto_min_cores` | 2–64 | Physical cores necessary for `auto` to select Continuous |
+| `low_priority` | bool | Run the translation server at below-normal priority ("Give games priority") |
 
 ### hotkeys
 

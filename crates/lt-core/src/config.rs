@@ -114,20 +114,7 @@ config_table!(OverlayConfig {
     flow_rect: Option<OverlayRect> = None,
 });
 config_table!(LatencyConfig {
-    mode: String = "auto".into(),
-    decode_interval_s: f32 = 0.5,
-    min_open_s: f32 = 1.0,
-    comma_min_tokens: u32 = 8,
-    stability: bool = true,
-    split_long: bool = true,
-    cap_tokens: u32 = 20,
-    final_context_s: f32 = 10.0,
     low_priority: bool = true,
-    step_down: bool = true,
-    step_down_cpu_pct: f32 = 80.0,
-    step_up_cpu_pct: f32 = 65.0,
-    step_down_lag_s: f32 = 3.0,
-    auto_min_cores: u32 = 6,
 });
 config_table!(OverlayRect {
     monitor: String = String::new(),
@@ -327,23 +314,6 @@ impl Config {
         number!(overlay, expire_s, 3.0, 60.0);
         number!(overlay, panel_lines, 4, 6);
         number!(overlay, flow_lines, 2, 6);
-        number!(latency, decode_interval_s, 0.3, 2.0);
-        number!(latency, min_open_s, 0.5, 3.0);
-        number!(latency, comma_min_tokens, 2, 20);
-        number!(latency, cap_tokens, 0, 60);
-        if (1..10).contains(&self.latency.cap_tokens) {
-            self.latency.cap_tokens = 10;
-            messages.push(
-                "latency.cap_tokens: values 1 to 9 raised to 10 (0 turns the cap off)".into(),
-            );
-        }
-        number!(latency, final_context_s, 0.0, 20.0);
-        number!(latency, step_down_cpu_pct, 50.0, 100.0);
-        let step_down_cpu = self.latency.step_down_cpu_pct;
-        number!(latency, step_up_cpu_pct, 30.0, step_down_cpu);
-        number!(latency, step_down_lag_s, 1.0, 10.0);
-        number!(latency, auto_min_cores, 2, 64);
-        choice!(latency, mode, &["auto", "continuous", "light", "off"]);
         choice!(overlay, style, &["bar", "panel", "flow"]);
         choice!(overlay, panel_edge, &["left", "right"]);
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
@@ -586,12 +556,6 @@ fn normalize_float(
         "audio.norm_max_gain_db" => (0.0, 30.0),
         "audio.norm_gate_dbfs" => (-90.0, -30.0),
         "join.hold_window_s" => (0.2, 2.0),
-        "latency.decode_interval_s" => (0.3, 2.0),
-        "latency.min_open_s" => (0.5, 3.0),
-        "latency.final_context_s" => (0.0, 20.0),
-        "latency.step_down_cpu_pct" => (50.0, 100.0),
-        "latency.step_up_cpu_pct" => (30.0, 100.0),
-        "latency.step_down_lag_s" => (1.0, 10.0),
         "translate.temperature" | "overlay.background" => (0.0, 1.0),
         "translate.repeat_penalty" => (1.0, 1.3),
         "translate.timeout_s" => (2.0, 60.0),
@@ -623,9 +587,6 @@ fn integer_range(path: &str) -> (i64, i64) {
         "overlay.font_px" => (18, 40),
         "overlay.panel_lines" => (4, 6),
         "overlay.flow_lines" => (2, 6),
-        "latency.comma_min_tokens" => (2, 20),
-        "latency.cap_tokens" => (0, 60),
-        "latency.auto_min_cores" => (2, 64),
         _ => (0, i64::from(u32::MAX)),
     }
 }

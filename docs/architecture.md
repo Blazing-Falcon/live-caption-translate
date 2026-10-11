@@ -40,7 +40,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 
 1. **Capture.** The audio callback copies samples into a lock-free ring buffer.
 2. **Recognizer.** The frontend thread resamples to 16 kHz mono and sends all audio to the streaming X-ASR engine in pieces of about 100 ms. The engine keeps its state and decodes each piece once; its emitted words never change. A clause opens at its first word and gets its `UtteranceId` there. The text of the open clause is the live Chinese line.
-3. **Commit.** If a sentence mark is followed by two more words, the recognizer cuts the clause there. A comma can also end a clause after 8 word tokens. With no punctuation for 20 word tokens, it cuts at the widest gap. A clause also ends at a pause of `asr.stream_pause_s` (the engine's own rule) or when the audio stops. The engine reports each word late, so its token times are moved earlier by a fixed delay for each chunk size. At a commit the cut goes to just before the next word.
+3. **Commit.** The recognizer cuts a clause at a sentence mark (。？！) that two more words follow. It also cuts at a comma that 8 word tokens precede, but only after the clause is 6 s old: casual speech often runs on with commas. After 30 s, a clause with no punctuation for 20 word tokens is cut at the widest gap. A clause also ends at a pause of `asr.stream_pause_s` (the engine's own rule) or when the audio stops. The engine reports each word late, so its token times are moved earlier by a fixed delay for each chunk size. At a commit the cut goes to just before the next word.
 4. **Filter and joiner.** The filter removes tags and fillers, classifies the text, and drops empty text and one-character noise. The joiner holds short pause-closed phrases (8 Chinese characters or fewer) for up to 1 s and joins them to the next phrase. It does not hold committed clauses.
 5. **Translation.** One request at a time. If the oldest final is more than 6 s behind, the translator skips older items. English speech is shown as heard. With `translate.window_chars` set, a final is translated together with the earlier lines that fit in that many characters, joined by `<br>`. The answer is prefilled with the English already shown for those lines, so Hy-MT2 writes only the new line's English and stops at the next `<br>`. The window ends at a line that has no English (skipped or failed), and restarts after 10 s without lines and at a discontinuity. An empty answer is translated again without the window.
 6. **Events.** Each stage sends events to the bus. The bridge sends them to the windows. The transcript writer and the metrics read the same events. See [ipc.md](ipc.md).
@@ -52,7 +52,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 | `lt-wasapi-capture` and adapters | Capture |
 | `lt-frontend` | Resample, send audio to the recognizer |
 | `lt-asr` | Streaming recognizer, commit rule, clause start and end notices |
-| `lt-scheduler` | Filter, joiner, queue, step-down, stats |
+| `lt-scheduler` | Filter, joiner, queue, stats |
 | `lt-translator` | HTTP requests to the server |
 | `lt-transcript` | Transcript writer |
 | `lt-bridge`, `lt-controller`, `lt-models`, `lt-hover` | App: events, start and stop, downloads, panel hover |
@@ -60,33 +60,6 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 - Each engine has one owner thread.
 - The core has no async runtime. Stages use bounded channels, so a slow stage stops the stage before it.
 - Each sample has a position on one stream clock. Timestamps and latency use this clock.
-
-## Caption speeds
-
-`latency.mode` sets the caption speed:
-
-| Mode | Behavior | Servers |
-|---|---|---|
-| Continuous | Same as Light | 1 |
-| Light | Live Chinese, early commits, finals | 1 |
-| Off | Translate when the speaker pauses. With a streaming engine: live Chinese, and a clause ends at 。？！, a pause, or after 6 s at a comma | 1 |
-
-- `auto` and `continuous` run Light, with the reason `auto` or `draft_unavailable`.
-- In Off with a streaming engine, a clause still open after 30 s is also cut by the word-cap rule.
-- A change to a `latency` key restarts the pipeline.
-
-## Step-down
-
-In Continuous mode the scheduler takes one sample each second.
-
-| Change | Condition |
-|---|---|
-| Down to Light | System CPU ≥ 80% for 3 samples, or translation lag ≥ 3 s for 2 samples |
-| Up to Continuous | Only after an automatic step-down: CPU < 65% for 10 samples, lag < 1.5 s, and 10 s since the last change |
-| Lock in Light | 3 step-downs in 5 minutes. The lock stays until listening starts again. |
-
-- The lag counts only finals that wait for or are in translation. Phrases that the joiner holds do not count.
-- `latency.step_down = false` disables step-down.
 
 ## Data folders
 

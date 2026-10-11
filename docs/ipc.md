@@ -15,7 +15,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `type` | Fields | Sent when |
 |---|---|---|
 | `speech_started` | `id`, `at_ms` | A speech segment opens |
-| `asr_partial` | `id`, `text`, `class`, `end_ms` | Each decode of the open clause (not in Off mode) |
+| `asr_partial` | `id`, `text`, `class`, `end_ms` | The open clause's text grew |
 | `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`? | A clause is complete. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). |
 | `joined` | `id`, `absorbed[]`, `text`, `kind` | Clauses join into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
@@ -43,8 +43,6 @@ Enum values:
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |
 | `ListeningStateKind` | `starting`, `listening`, `paused` |
-| `EffectiveMode` | `continuous`, `light`, `off` |
-| `ModeReason` | `user`, `auto`, `cpu`, `lag`, `draft_unavailable` |
 
 `timing` contains `speech_end_ms`, `asr_done_ms`, `queued_ms`, `sent_ms`, `first_token_ms` (nullable), `done_ms`, `prompt_tokens`, `cached_tokens` and `generated_tokens`.
 
@@ -69,7 +67,6 @@ Notes:
 | `cpu_app_pct`, `cpu_translator_pct` | Percent of one core, last second |
 | `cpu_system_pct` | Whole-PC CPU, last second |
 | `rss_app_mb`, `rss_translator_mb` | Memory |
-| `mode`, `mode_reason` | Effective caption speed and the reason |
 
 ## Order of events
 
@@ -134,7 +131,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `show_control_window` | | | Show the control window |
 | `quit` | | | Stop the pipeline and servers, then exit |
 
-`AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible`, `mode` and `mode_reason`.
+`AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving` and `overlay_visible`.
 
 `ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`), `optional` and `recommended`.
 
@@ -163,7 +160,7 @@ Other rules:
 
 The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.jsonl`. `lt-cli replay` writes the same format.
 
-- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (main latency settings).
+- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (`hold_max_chars` and `skip_lag_s`).
 - Each other line is one `utterance` record. The writer writes it when the line becomes terminal.
 - The writer does not write dropped lines or partials.
 

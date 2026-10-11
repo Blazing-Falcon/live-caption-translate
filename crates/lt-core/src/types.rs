@@ -166,27 +166,6 @@ pub struct Timing {
     pub generated_tokens: u32,
 }
 
-/// The caption mode that is actually running, as opposed to the one the user chose.
-#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum EffectiveMode {
-    Continuous,
-    Light,
-    #[default]
-    Off,
-}
-
-/// Why the effective mode differs from the chosen one, or how `auto` resolved.
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum ModeReason {
-    User,
-    Auto,
-    Cpu,
-    Lag,
-    DraftUnavailable,
-}
-
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct PipelineStats {
     pub lag_ms: u64,
@@ -202,8 +181,6 @@ pub struct PipelineStats {
     pub cpu_translator_pct: f32,
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
-    pub mode: EffectiveMode,
-    pub mode_reason: Option<ModeReason>,
     /// Whole-PC CPU busy percent over the last second.
     pub cpu_system_pct: f32,
     /// Median delay from a spoken word to the English that covers it, last minute.
