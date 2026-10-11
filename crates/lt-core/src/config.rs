@@ -336,7 +336,7 @@ impl Config {
         choice!(asr, language, &["auto", "zh", "en", "ja", "ko", "yue"]);
         number!(asr, threads, 1, 4);
         choice!(asr, engine, &["xasr_stream", "sensevoice", "xasr"]);
-        if ![480, 960].contains(&self.asr.stream_chunk_ms) {
+        if ![160, 480, 960].contains(&self.asr.stream_chunk_ms) {
             messages.push(format!(
                 "asr.stream_chunk_ms: invalid value {}; using default {}",
                 self.asr.stream_chunk_ms, defaults.asr.stream_chunk_ms

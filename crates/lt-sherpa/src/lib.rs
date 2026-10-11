@@ -27,10 +27,10 @@ pub const QWEN3_ASR_MODEL: &str = "qwen3-asr-0.6b-int8-2026-03-25";
 
 /// The streaming X-ASR model for `asr.stream_chunk_ms`.
 pub fn xasr_stream_model(chunk_ms: u32) -> &'static str {
-    if chunk_ms == 960 {
-        "xasr-stream-960ms-int8-2026-06-05"
-    } else {
-        "xasr-stream-480ms-int8-2026-06-05"
+    match chunk_ms {
+        160 => "xasr-stream-160ms-int8-2026-06-05",
+        960 => "xasr-stream-960ms-int8-2026-06-05",
+        _ => "xasr-stream-480ms-int8-2026-06-05",
     }
 }
 

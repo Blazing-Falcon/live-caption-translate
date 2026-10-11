@@ -50,7 +50,7 @@ export interface Config extends ExtraFields {
     second_pass: "off" | "xasr" | "funasr_nano" | "qwen3_asr";
     second_pass_threads: number;
     second_pass_timeout_s: number;
-    stream_chunk_ms: 480 | 960;
+    stream_chunk_ms: 160 | 480 | 960;
     stream_pause_s: number;
   };
   filter: ExtraFields & {
@@ -344,8 +344,9 @@ export const LIVE_MODELS: readonly SpeechChoice<Config["asr"]["engine"]>[] = [
   { value: "xasr", label: "X-ASR", model: "xasr-zh-en-int8-2026-06-03", help: "Fewer errors than SenseVoice with game noise and mixed English. Decodes each sentence again every half second." },
 ];
 
-export const STREAM_CHUNKS: readonly SpeechChoice<"480" | "960">[] = [
-  { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "Words appear sooner and with fewer errors." },
+export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
+  { value: "160", label: "160 ms", model: "xasr-stream-160ms-int8-2026-06-05", help: "Words appear about 0.15 s sooner than 480 ms. About twice the CPU and slightly more errors." },
+  { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "The default. Fewest errors." },
   { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "About 30% less CPU. Words appear about 0.2 s later." },
 ];
 

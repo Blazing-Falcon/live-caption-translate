@@ -59,7 +59,7 @@ threads = 1
 second_pass = "off"             # "off" | "xasr" | "funasr_nano" | "qwen3_asr"
 second_pass_threads = 2
 second_pass_timeout_s = 2.0     # plus half the clause length
-stream_chunk_ms = 480           # xasr_stream: 480 | 960
+stream_chunk_ms = 480           # xasr_stream: 160 | 480 | 960
 stream_pause_s = 0.8            # xasr_stream: silence that ends a line
 
 [filter]
@@ -197,7 +197,7 @@ The default values are in the file above.
 | `threads` | 1–4 | pipeline | ONNX Runtime threads for the live recognizer |
 | `second_pass` | `off`, `xasr`, `funasr_nano`, `qwen3_asr` | pipeline | Recognize each final line again with this model. Its text replaces the live Chinese and goes to the translator. It cannot be the live recognizer: that value becomes `off`. |
 | `second_pass_threads` | 1–4 | pipeline | ONNX Runtime threads for the second pass. With `latency.low_priority`, its thread runs at below-normal priority. |
-| `stream_chunk_ms` | `480`, `960` | pipeline | `xasr_stream` model. 480: words appear sooner and fewer errors. 960: less CPU. |
+| `stream_chunk_ms` | `160`, `480`, `960` | pipeline | `xasr_stream` model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
 | `stream_pause_s` | 0.3–3.0 | pipeline | `xasr_stream`: silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
 | `second_pass_timeout_s` | 0.5–30 | pipeline | Time limit for one line, plus half the line's length. After it, the line keeps the live text. |
 

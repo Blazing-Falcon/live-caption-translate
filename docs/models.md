@@ -18,6 +18,7 @@
 | `funasr-nano-int8-2025-12-30` | Second pass (optional) | 6 files | 1,009,605,061 | in the manifest |
 | `qwen3-asr-0.6b-int8-2026-03-25` | Second pass (optional) | 6 files | 987,015,347 | in the manifest |
 | `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
+| `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
 Sources (Hugging Face):
 
@@ -26,7 +27,7 @@ Sources (Hugging Face):
 - Hy-MT2: `mradermacher/Hy-MT2-1.8B-i1-GGUF`
 - LMT-60: `mradermacher/LMT-60-0.6B-GGUF` (base model `NiuTrans/LMT-60-0.6B`)
 - X-ASR: `csukuangfj2/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03`
-- X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
+- X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
 - Fun-ASR-Nano: `csukuangfj/sherpa-onnx-funasr-nano-int8-2025-12-30` (tokenizer files from its `Qwen3-0.6B/` folder)
 - Qwen3-ASR: `csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25` (tokenizer files from its `tokenizer/` folder)
 - Silero VAD v6 and TEN VAD: GitHub release tags `snakers4/silero-vad` `v6.2.3` and `TEN-framework/ten-vad` `v1.0-ONNX`
