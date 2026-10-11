@@ -450,12 +450,17 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         return true;
       }
       case "joined": {
-        const leader = lines.get(event.id);
-        if (!leader || isTerminal(leader.state)) return false;
+        // Absorbed lines get no more events, so they go even when the leader was already evicted.
+        let changed = false;
         for (const absorbed of event.absorbed) {
           const line = lines.get(absorbed);
-          if (absorbed !== event.id && line !== undefined && !isTerminal(line.state)) lines.delete(absorbed);
+          if (absorbed !== event.id && line !== undefined && !isTerminal(line.state)) {
+            lines.delete(absorbed);
+            changed = true;
+          }
         }
+        const leader = lines.get(event.id);
+        if (!leader || isTerminal(leader.state)) return changed;
         update(event.id, { source: event.text });
         return true;
       }
