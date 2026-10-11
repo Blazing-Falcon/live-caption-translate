@@ -12,9 +12,6 @@ tracing.workspace = true
 crossbeam-channel.workspace = true
 serde.workspace = true
 
-[dev-dependencies]
-serde_json.workspace = true
-
 [target.'cfg(windows)'.dependencies]
 rtrb = "0.4.0"
 wasapi = "0.25.0"

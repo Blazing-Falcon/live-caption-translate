@@ -2400,7 +2400,6 @@ checksum = "11d3d7f243d5c5a8b9bb5d6dd2b1602c0cb0b9db1621bafc7ed66e35ff9fe092"
 name = "live-translation"
 version = "0.2.0"
 dependencies = [
- "anyhow",
  "chrono",
  "crossbeam-channel",
  "lt-audio",
@@ -2451,7 +2450,6 @@ dependencies = [
  "rtrb",
  "rubato",
  "serde",
- "serde_json",
  "tracing",
  "wasapi",
  "windows",
@@ -2473,7 +2471,6 @@ dependencies = [
  "lt-core",
  "lt-llm",
  "lt-sherpa",
- "num_cpus",
  "serde",
  "serde_json",
  "tracing",
@@ -2518,7 +2515,6 @@ dependencies = [
  "serde",
  "serde_json",
  "sherpa-onnx-sys",
- "tracing",
 ]
 
 [[package]]

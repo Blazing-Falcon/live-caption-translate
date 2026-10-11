@@ -28,7 +28,6 @@ lt-sherpa.workspace = true
 lt-llm.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-anyhow.workspace = true
 crossbeam-channel.workspace = true
 tracing.workspace = true
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }

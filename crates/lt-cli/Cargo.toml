@@ -19,7 +19,6 @@ serde_json.workspace = true
 anyhow.workspace = true
 clap = { version = "4", features = ["derive", "env"] }
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
-num_cpus = "1.17"
 tracing.workspace = true
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 hound = "3.5"
