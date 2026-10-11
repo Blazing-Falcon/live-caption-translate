@@ -15,10 +15,43 @@
 
   const flow = $derived(flowText(lines, showSource, liveSource));
   const streaming = $derived(flow.english.at(-1)?.kind === "streaming");
+
+  let section: HTMLElement | undefined = $state();
+  let viewportHeight = $state(0);
+  let fitted = $state<number | null>(null);
+  const shownLines = $derived(Math.min(flowLines, fitted ?? flowLines));
+
+  // A large font or many lines can make the box taller than the overlay window, which would
+  // cut its top edge and a line in half. Show only the whole lines that fit.
+  $effect(() => {
+    void flow;
+    void flowLines;
+    void viewportHeight;
+    const root = section?.closest<HTMLElement>(".overlay-root");
+    if (!section || !root) return;
+    let perLine = 0;
+    let content = 0;
+    for (const para of section.querySelectorAll<HTMLElement>(".para")) {
+      perLine += parseFloat(getComputedStyle(para).lineHeight);
+      content += para.offsetHeight;
+    }
+    if (perLine <= 0) return;
+    const chrome = section.offsetHeight - content;
+    const chip = root.querySelector<HTMLElement>(".chip-row")?.offsetHeight ?? 0;
+    fitted = Math.max(1, Math.floor((root.clientHeight - chip - chrome) / perLine));
+  });
 </script>
 
+<svelte:window bind:innerHeight={viewportHeight} />
+
 {#if status || flow.source.length > 0 || flow.english.length > 0}
-  <section class="flow" aria-label="Live captions" data-testid="flow-text" style:--flow-lines={flowLines}>
+  <section
+    bind:this={section}
+    class="flow"
+    aria-label="Live captions"
+    data-testid="flow-text"
+    style:--flow-lines={shownLines}
+  >
     {#if status}
       <CaptionLine {status} />
     {:else}
