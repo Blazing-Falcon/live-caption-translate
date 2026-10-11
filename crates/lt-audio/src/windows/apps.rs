@@ -251,10 +251,6 @@ impl Drop for ProcessHandle {
     }
 }
 
-pub fn process_snapshot() -> Result<Vec<ProcessInfo>> {
-    process_snapshot_cancellable(&AtomicBool::new(false), true)
-}
-
 fn check_cancel(cancelled: &AtomicBool) -> Result<()> {
     if cancelled.load(Ordering::Acquire) {
         Err(Error::Stopped)

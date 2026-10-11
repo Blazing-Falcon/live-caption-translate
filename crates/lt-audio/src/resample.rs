@@ -183,10 +183,6 @@ impl MonoResampler {
         })
     }
 
-    pub fn input_rate(&self) -> u32 {
-        self.rate
-    }
-
     pub fn push(&mut self, input: &[f32], output: &mut Vec<f32>) -> Result<()> {
         if self.finished {
             return Err(Error::Engine(

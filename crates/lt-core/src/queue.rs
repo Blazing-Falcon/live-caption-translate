@@ -121,9 +121,6 @@ impl TranslationQueue {
     pub fn is_empty(&self) -> bool {
         self.waiting.is_empty()
     }
-    pub fn oldest_end(&self) -> Option<StreamTime> {
-        self.waiting.front().map(|item| item.transcript.timing.end)
-    }
 
     pub fn take(&mut self, live: StreamTime) -> QueueBatch {
         let mut batch = QueueBatch::default();

@@ -29,14 +29,6 @@ pub enum Pace {
     AsFastAsPossible,
 }
 
-/// A missing-packet interval relative to the selected replay excerpt. Its audio
-/// is replaced by zeros, preserving the source timeline and setting GAP_FILLED.
-#[derive(Clone, Copy, Debug)]
-pub struct InjectedGap {
-    pub start: StreamTime,
-    pub duration: StreamTime,
-}
-
 pub struct WavSource {
     path: PathBuf,
     spec: WavSpec,
@@ -45,7 +37,6 @@ pub struct WavSource {
     end_frame: u32,
     pace: Pace,
     audio: AudioConfig,
-    gaps: Vec<InjectedGap>,
     position: Arc<AtomicU64>,
     error: Arc<Mutex<Option<String>>>,
     cancelled: Option<Arc<AtomicBool>>,
@@ -77,7 +68,6 @@ impl WavSource {
             end_frame: file_frames,
             pace,
             audio: AudioConfig::default(),
-            gaps: Vec::new(),
             position: Arc::new(AtomicU64::new(0)),
             error: Arc::new(Mutex::new(None)),
             cancelled: None,
@@ -107,16 +97,6 @@ impl WavSource {
                 .min(u64::from(self.file_frames)) as u32
         });
         self.position.store(0, Ordering::Release);
-        Ok(self)
-    }
-
-    pub fn with_gaps(mut self, gaps: Vec<InjectedGap>) -> Result<Self> {
-        if gaps.iter().any(|gap| gap.duration.samples() == 0) {
-            return Err(Error::Engine(
-                "Injected gaps must have a positive duration".into(),
-            ));
-        }
-        self.gaps = gaps;
         Ok(self)
     }
 
@@ -163,13 +143,11 @@ impl AudioSource for WavSource {
             output,
             events,
             normalizer: LevelNormalizer::new(self.audio.clone()),
-            gaps: self.gaps.clone(),
             position: Arc::clone(&self.position),
             relative: position,
             frame_start: StreamTime::ZERO,
             samples: [0.0; FRAME_SAMPLES],
             filled: 0,
-            all_gap: true,
             pace: self.pace,
             silent_samples: 0,
             source_state: None,
@@ -325,13 +303,11 @@ struct PreparedFrames {
     output: AudioProducer,
     events: SourceEvents,
     normalizer: LevelNormalizer,
-    gaps: Vec<InjectedGap>,
     position: Arc<AtomicU64>,
     relative: u64,
     frame_start: StreamTime,
     samples: [f32; FRAME_SAMPLES],
     filled: usize,
-    all_gap: bool,
     pace: Pace,
     silent_samples: u64,
     source_state: Option<SourceStateKind>,
@@ -340,13 +316,7 @@ struct PreparedFrames {
 impl PreparedFrames {
     fn push(&mut self, input: &[f32]) -> Result<()> {
         for sample in input {
-            let at = self.relative.saturating_add(self.filled as u64);
-            let gap = self.gaps.iter().any(|gap| {
-                at >= gap.start.samples()
-                    && at < gap.start.samples().saturating_add(gap.duration.samples())
-            });
-            self.samples[self.filled] = if gap { 0.0 } else { *sample };
-            self.all_gap &= gap;
+            self.samples[self.filled] = *sample;
             self.filled += 1;
             if self.filled == FRAME_SAMPLES {
                 self.emit(FRAME_SAMPLES)?;
@@ -369,15 +339,10 @@ impl PreparedFrames {
         if self.pace == Pace::RealTime {
             self.output.wait_until_frame_end(self.frame_start)?;
         }
-        let flags = if self.all_gap {
-            FrameFlags::GAP_FILLED
-        } else {
-            FrameFlags::EMPTY
-        };
         self.output.send(AudioFrame {
             t0: self.frame_start,
             samples: self.samples,
-            flags,
+            flags: FrameFlags::EMPTY,
         })?;
         self.relative = self.relative.saturating_add(valid as u64);
         self.position.store(self.relative, Ordering::Release);
@@ -403,7 +368,6 @@ impl PreparedFrames {
                 .saturating_add(FRAME_SAMPLES as u64),
         );
         self.filled = 0;
-        self.all_gap = true;
         Ok(())
     }
 }

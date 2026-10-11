@@ -61,13 +61,6 @@ impl Metrics {
         Self::default()
     }
 
-    pub fn with_sampler(sampler: Box<dyn ResourceSampler>) -> Self {
-        Self {
-            sampler: Some(sampler),
-            ..Self::default()
-        }
-    }
-
     /// Internal ASR seam; the wire events do not expose clause closure.
     pub fn clause_closed(&mut self, id: UtteranceId, end: StreamTime) {
         self.unfinished.insert(id, end.millis());

@@ -141,10 +141,6 @@ impl ClockMixer {
             },
         })
     }
-
-    pub fn current_time(&self) -> StreamTime {
-        self.cursor
-    }
 }
 
 fn soft_limit(sample: f32) -> f32 {
