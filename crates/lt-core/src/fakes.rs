@@ -117,8 +117,7 @@ pub struct FakeTranslatorMetrics {
 
 pub struct FakeTranslator {
     pub responses: BTreeMap<String, String>,
-    pub delay_per_character: Duration,
-    pub delta_delay: Duration,
+    /// A request with this text never returns by itself: it ends at the timeout or a cancel.
     pub timeout_text: Option<String>,
     pub metrics: Arc<FakeTranslatorMetrics>,
 }
@@ -127,25 +126,10 @@ impl Default for FakeTranslator {
     fn default() -> Self {
         Self {
             responses: BTreeMap::new(),
-            delay_per_character: Duration::ZERO,
-            delta_delay: Duration::ZERO,
             timeout_text: None,
             metrics: Arc::new(FakeTranslatorMetrics::default()),
         }
     }
-}
-
-fn cooperative_sleep(duration: Duration, control: &TranslationControl) -> Result<()> {
-    let deadline = std::time::Instant::now() + duration;
-    while std::time::Instant::now() < deadline {
-        control.check()?;
-        thread::sleep(
-            deadline
-                .saturating_duration_since(std::time::Instant::now())
-                .min(Duration::from_millis(5)),
-        );
-    }
-    control.check()
 }
 
 struct ActiveGuard(Arc<FakeTranslatorMetrics>);
@@ -182,11 +166,6 @@ impl Translator for FakeTranslator {
                 thread::sleep(Duration::from_millis(5));
             }
         }
-        cooperative_sleep(
-            self.delay_per_character
-                .saturating_mul(request.text.chars().count() as u32),
-            &request.control,
-        )?;
         let text = self
             .responses
             .get(request.text)
@@ -194,7 +173,7 @@ impl Translator for FakeTranslator {
             .unwrap_or_else(|| "Hello.".into());
         let mut accumulated = String::new();
         for (index, word) in text.split_whitespace().enumerate() {
-            cooperative_sleep(self.delta_delay, &request.control)?;
+            request.control.check()?;
             if index > 0 {
                 accumulated.push(' ');
             }

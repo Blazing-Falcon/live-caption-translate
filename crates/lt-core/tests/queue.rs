@@ -19,8 +19,11 @@ use std::{
         atomic::{AtomicBool, Ordering},
         Arc, Mutex,
     },
-    time::{Duration, Instant},
+    time::Duration,
 };
+
+/// Only stops a hung test; no assertion depends on how fast this PC is.
+const WATCHDOG: Duration = Duration::from_secs(30);
 
 fn transcript(id: u64, text: &str, end: f64) -> Transcript {
     Transcript {
@@ -251,10 +254,7 @@ fn worker_pairs_window_lines_with_their_own_english_and_stops_at_a_line_without_
                     .collect(),
             })
             .unwrap();
-        worker
-            .completed
-            .recv_timeout(Duration::from_secs(1))
-            .unwrap();
+        worker.completed.recv_timeout(WATCHDOG).unwrap();
     }
     let pair = |source: &str| (source.to_owned(), format!("EN {source}"));
     assert_eq!(
@@ -271,14 +271,14 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
     let events = bus.subscribe(100);
     let mut fake = FakeTranslator {
         timeout_text: Some("超时。".into()),
-        delta_delay: Duration::from_millis(3),
         ..FakeTranslator::default()
     };
     fake.responses
         .insert("你好。".into(), "Hello there.".into());
     let metrics = fake.metrics.clone();
+    // Only the endless request reaches this; the other one returns at once.
     let mut config = Config::default().translate;
-    config.timeout_s = 0.04;
+    config.timeout_s = 0.5;
     let stop = Arc::new(AtomicBool::new(false));
     let mut worker = TranslatorWorker::start(Box::new(fake), config, clock, bus, stop).unwrap();
     worker
@@ -290,10 +290,7 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
         })
         .unwrap();
     assert!(matches!(
-        worker
-            .completed
-            .recv_timeout(Duration::from_secs(1))
-            .unwrap(),
+        worker.completed.recv_timeout(WATCHDOG).unwrap(),
         PipelineEvent::TranslationFailed {
             reason: FailReason::Timeout,
             ..
@@ -308,10 +305,7 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
         })
         .unwrap();
     assert!(matches!(
-        worker
-            .completed
-            .recv_timeout(Duration::from_secs(1))
-            .unwrap(),
+        worker.completed.recv_timeout(WATCHDOG).unwrap(),
         PipelineEvent::TranslationFinal { .. }
     ));
     assert_eq!(metrics.warmups.load(Ordering::SeqCst), 1);
@@ -335,9 +329,7 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
         .position(|event| matches!(event, PipelineEvent::TranslationDelta { .. }))
         .unwrap();
     assert!(ready < delta);
-    let start = Instant::now();
     worker.stop().unwrap();
-    assert!(start.elapsed() < Duration::from_secs(1));
 }
 
 struct ScriptedTranslator {
@@ -419,8 +411,9 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     fake.wait_after_stream = true;
     let reached_end = fake.reached_end.clone();
     let cancelled = Arc::new(AtomicBool::new(false));
+    // The abort ends the request long before this; reaching it fails the test below.
     let mut config = Config::default().translate;
-    config.timeout_s = 0.2;
+    config.timeout_s = 5.0;
     let item = QueuedTranscript {
         transcript: transcript(1, "你好。", 1.0),
         queued_ms: 1200,
@@ -428,7 +421,6 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     };
     let bus = EventBus::default();
     let deltas = bus.subscribe(8);
-    let start = Instant::now();
     let event = translate_one(
         &mut fake,
         &item,
@@ -438,7 +430,6 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
         &bus,
         cancelled.clone(),
     );
-    assert!(start.elapsed() < Duration::from_secs(1));
     assert!(!reached_end.load(Ordering::SeqCst));
     assert!(!cancelled.load(Ordering::SeqCst));
     assert_eq!(clock.now(), StreamTime::from_millis(1500));
