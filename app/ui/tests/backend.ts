@@ -11,17 +11,14 @@ export interface Call {
 const PNG_PIXEL =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
-export const READY_MODELS: ModelStatus[] = [
-  { id: "vad", name: "Voice detection", bytes_total: 2 * 1024 ** 2, bytes_done: 2 * 1024 ** 2, optional: false, state: "ready" },
-  { id: "asr", name: "Speech recognition", bytes_total: 239 * 1024 ** 2, bytes_done: 239 * 1024 ** 2, optional: false, state: "ready" },
-  { id: "mt", name: "Translation", bytes_total: 1.08 * 1024 ** 3, bytes_done: 1.08 * 1024 ** 3, optional: false, state: "ready" },
-];
+const MB = 1024 ** 2;
 
-export const MISSING_MODELS: ModelStatus[] = READY_MODELS.map((model, index) => ({
-  ...model,
-  bytes_done: index === 0 ? model.bytes_total : 0,
-  state: index === 0 ? "ready" : "missing",
-}));
+export const READY_MODELS: ModelStatus[] = [
+  { id: "xasr-stream-480ms-int8-2026-06-05", name: "Speech recognition (480 ms)", bytes_total: 128 * MB, bytes_done: 128 * MB, optional: false, state: "ready" },
+  { id: "hy-mt2-1.8b-q4_0", name: "Translation", bytes_total: 1030 * MB, bytes_done: 1030 * MB, optional: false, state: "ready" },
+  { id: "xasr-stream-960ms-int8-2026-06-05", name: "Speech recognition (960 ms)", bytes_total: 128 * MB, bytes_done: 0, optional: true, state: "missing" },
+  { id: "xasr-stream-160ms-int8-2026-06-05", name: "Speech recognition (160 ms)", bytes_total: 128 * MB, bytes_done: 0, optional: true, state: "missing" },
+];
 
 /** In-process stand-in for the Rust side; every command the UI can call is answered here. */
 export class FakeBackend {

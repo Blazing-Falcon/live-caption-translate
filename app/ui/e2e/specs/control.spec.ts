@@ -3,9 +3,9 @@ import { calls, emitNamed, open } from "./support";
 
 const MB = 1024 * 1024;
 const MISSING = [
-  { id: "vad", name: "Voice detection", bytes_total: 2 * MB, bytes_done: 2 * MB, optional: false, state: "ready" },
-  { id: "asr", name: "Speech recognition", bytes_total: 239 * MB, bytes_done: 0, optional: false, state: "missing" },
-  { id: "mt", name: "Translation", bytes_total: 1105 * MB, bytes_done: 0, optional: false, state: "missing" },
+  { id: "hy-mt2-1.8b-q4_0", name: "Translation", bytes_total: 1030 * MB, bytes_done: 1030 * MB, optional: false, state: "ready" },
+  { id: "xasr-stream-480ms-int8-2026-06-05", name: "Speech recognition", bytes_total: 128 * MB, bytes_done: 0, optional: false, state: "missing" },
+  { id: "xasr-stream-160ms-int8-2026-06-05", name: "Speech recognition (160 ms)", bytes_total: 128 * MB, bytes_done: 0, optional: true, state: "missing" },
 ] as const;
 
 const expectPatch = (page: Page, patch: unknown): Promise<void> =>
@@ -51,17 +51,18 @@ test.describe("control window (browser simulation with mocked transport)", () =>
       { ...MISSING[1], bytes_done: done, state },
       MISSING[2],
     ];
-    await emitNamed(page, "models://progress", progress("downloading", 152 * MB));
-    await expect(page.locator(".model").nth(1)).toContainText("152 MB / 239 MB");
+    await emitNamed(page, "models://progress", progress("downloading", 82 * MB));
+    await expect(page.locator(".model").nth(1)).toContainText("82 MB / 128 MB");
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "64");
     await page.getByRole("button", { name: "Pause" }).click();
     await expectCalls(page, "models_pause", 1);
-    await emitNamed(page, "models://progress", progress("paused", 152 * MB));
+    await emitNamed(page, "models://progress", progress("paused", 82 * MB));
     await page.getByRole("button", { name: "Resume" }).click();
-    await emitNamed(page, "models://progress", [MISSING[0], { ...MISSING[1], bytes_done: 239 * MB, state: "corrupt" }, MISSING[2]]);
+    await emitNamed(page, "models://progress", [MISSING[0], { ...MISSING[1], bytes_done: 128 * MB, state: "corrupt" }, MISSING[2]]);
     await expect(page.locator(".model").nth(1)).toContainText("Damaged");
     await page.getByRole("button", { name: "Retry" }).click();
-    const ready = MISSING.map((model) => ({ ...model, bytes_done: model.bytes_total, state: "ready" }));
+    // A missing optional model must not block the start.
+    const ready = MISSING.map((model) => (model.optional ? model : { ...model, bytes_done: model.bytes_total, state: "ready" }));
     await emitNamed(page, "models://progress", ready);
     await expect(page.getByRole("tab", { name: "Capture" })).toHaveAttribute("aria-selected", "true");
     await emitNamed(page, "models://progress", ready);
