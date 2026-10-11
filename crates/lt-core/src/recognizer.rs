@@ -133,7 +133,7 @@ impl Recognizer {
             RecognizerInput::Audio { at, samples } => {
                 if self.origin.is_none() {
                     self.origin = Some(at);
-                    self.floor = at;
+                    self.floor = self.floor.max(at);
                 }
                 self.heard = StreamTime(at.0 + samples.len() as u64);
                 let started = Instant::now();
@@ -148,7 +148,15 @@ impl Recognizer {
                             self.consumed = 0;
                         }
                     }
-                    Err(error) => self.fail(&error.to_string(), out),
+                    Err(error) => {
+                        // Start the engine over like a break: the failed text would otherwise
+                        // come back in a new clause over the same audio, and audio it rejected
+                        // would shift every later token time.
+                        self.fail(&error.to_string(), out);
+                        let _ = engine.finish();
+                        self.origin = None;
+                        self.consumed = 0;
+                    }
                 }
             }
             RecognizerInput::Break { reason, .. } => {
@@ -330,6 +338,7 @@ impl Recognizer {
                 clause.id,
                 message.to_owned(),
             )));
+            self.floor = self.floor.max(end);
         }
     }
 }
@@ -568,5 +577,95 @@ mod tests {
                 ("然后回家".to_owned(), CutReason::End)
             ]
         );
+    }
+
+    /// Each part's first piece shows its words; the second piece of the first part fails.
+    struct FailsOnce {
+        parts: Vec<&'static [&'static str]>,
+        part: usize,
+        pieces: usize,
+    }
+
+    impl StreamingAsr for FailsOnce {
+        fn accept(&mut self, _: &[f32]) -> Result<()> {
+            self.pieces += 1;
+            if self.part == 0 && self.pieces == 2 {
+                return Err(crate::error::Error::Engine("decode failed".into()));
+            }
+            Ok(())
+        }
+        fn result(&mut self) -> Result<StreamResult> {
+            let words = self.parts[self.part];
+            Ok(StreamResult {
+                start_s: 0.0,
+                tokens: TokenTranscript {
+                    text: words.concat(),
+                    tokens: words.iter().map(|w| (*w).to_owned()).collect(),
+                    timestamps: (0..words.len()).map(|i| 0.05 * i as f32).collect(),
+                    log_probs: Vec::new(),
+                },
+            })
+        }
+        fn is_endpoint(&mut self) -> bool {
+            false
+        }
+        fn reset(&mut self) {}
+        fn finish(&mut self) -> Result<StreamResult> {
+            let result = self.result();
+            self.part += 1;
+            self.pieces = 0;
+            result
+        }
+    }
+
+    /// After an engine error the failed words do not come back in a new clause, and the next
+    /// clause starts after the failed one.
+    #[test]
+    fn an_engine_error_fails_the_clause_and_the_next_clause_starts_after_it() {
+        let mut engine = FailsOnce {
+            parts: vec![&["你", "好"], &["再", "见"]],
+            part: 0,
+            pieces: 0,
+        };
+        let mut recognizer = Recognizer::new(&Config::default());
+        let mut out = Vec::new();
+        for (index, at) in [0_u64, 1_600, 3_200].into_iter().enumerate() {
+            let input = RecognizerInput::Audio {
+                at: StreamTime(at),
+                samples: vec![0.0; 1_600],
+            };
+            recognizer.handle(&mut engine, input, &mut out);
+            if index == 1 {
+                assert!(out.iter().any(|item| matches!(
+                    item,
+                    RecognizerOutput::Message(AsrMessage::Failed(UtteranceId(0), _))
+                )));
+            }
+        }
+        recognizer.handle(
+            &mut engine,
+            RecognizerInput::Break {
+                at: StreamTime(4_800),
+                reason: CutReason::End,
+            },
+            &mut out,
+        );
+        let failed_end = out
+            .iter()
+            .find_map(|item| match item {
+                RecognizerOutput::Closed(UtteranceId(0), end, _) => Some(*end),
+                _ => None,
+            })
+            .unwrap();
+        let finals: Vec<_> = out
+            .iter()
+            .filter_map(|item| match item {
+                RecognizerOutput::Message(AsrMessage::Transcript(t)) => Some(t),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(finals.len(), 1);
+        assert_eq!(finals[0].text, "再见");
+        assert!(finals[0].timing.start >= failed_end);
     }
 }
