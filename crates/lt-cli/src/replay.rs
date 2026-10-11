@@ -14,7 +14,7 @@ use lt_core::{
     bus::EventBus,
     config::Config,
     events::PipelineEvent,
-    pipeline::{Pipeline, PipelineOptions},
+    pipeline::Pipeline,
     transcript::{
         recognizer_name, SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber,
         TranscriptWriter,
@@ -106,15 +106,13 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         File::create(&events_path)
             .with_context(|| format!("Creating {}", events_path.display()))?,
     );
-    let mut pipeline = Pipeline::start_with_options(
+    let mut pipeline = Pipeline::start(
         config.clone(),
         Box::new(source),
         engines.asr,
         engines.translator,
         bus.clone(),
-        PipelineOptions {
-            sampler: Some(Box::new(sampler)),
-        },
+        Some(Box::new(sampler)),
     )?;
     let session_start = Instant::now();
     let mut record = |event: PipelineEvent, report: &mut ReplayReport| -> Result<()> {

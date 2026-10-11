@@ -15,7 +15,7 @@ use lt_core::{
     error::{Error, Result},
     events::{FailReason, PipelineEvent},
     fakes::FakeTranslator,
-    pipeline::{Pipeline, PipelineOptions},
+    pipeline::Pipeline,
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
     types::{CaptureMode, CutReason, SourceInfo, StreamTime, UtteranceId},
 };
@@ -267,13 +267,13 @@ struct Run {
 fn run(samples: Vec<f32>, config: Config, translator: Box<dyn Translator>) -> Run {
     let bus = EventBus::default();
     let receiver = bus.subscribe(8192);
-    let mut pipeline = Pipeline::start_with_options(
+    let mut pipeline = Pipeline::start(
         config,
         Box::new(VecSource::new(samples, Duration::from_millis(1))),
         Box::<AmplitudeStream>::default(),
         translator,
         bus,
-        PipelineOptions::default(),
+        None,
     )
     .unwrap();
     let deadline = Instant::now() + Duration::from_secs(20);

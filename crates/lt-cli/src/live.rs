@@ -135,15 +135,13 @@ fn run_session(
     };
     let mut report = ReplayReport::new();
     let sampler = ProcessSampler::new(engines.pid.clone())?;
-    let mut pipeline = Pipeline::start_with_options(
+    let mut pipeline = Pipeline::start(
         config,
         source,
         engines.asr,
         engines.translator,
         bus.clone(),
-        lt_core::pipeline::PipelineOptions {
-            sampler: Some(Box::new(sampler)),
-        },
+        Some(Box::new(sampler)),
     )?;
     let started = Instant::now();
     while !pipeline.is_finished() {

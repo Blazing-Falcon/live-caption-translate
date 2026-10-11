@@ -282,12 +282,13 @@ fn wav_replay_translates_chinese_passes_english_and_drops_fillers_before_asr_fin
     let asr = fake_stream(&["你好。", "Okay I see.", "嗯。"]);
     let translator = FakeTranslator::default();
     let metrics = translator.metrics.clone();
-    let mut handle = Pipeline::start_with_bus(
+    let mut handle = Pipeline::start(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(3))),
         Box::new(asr),
         Box::new(translator),
         bus,
+        None,
     )
     .unwrap();
     finish(&mut handle);
@@ -386,12 +387,13 @@ fn catch_up_skips_waiting_items_and_translates_the_newest_after_a_busy_request()
     let phrases: Vec<String> = (0..14)
         .map(|index| format!("我们说第{index}句话。"))
         .collect();
-    let mut handle = Pipeline::start_with_bus(
+    let mut handle = Pipeline::start(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(14))),
         Box::new(FakeStream::new(phrases.clone(), PAUSE_S)),
         Box::new(translator),
         bus,
+        None,
     )
     .unwrap();
     started.recv_timeout(Duration::from_secs(1)).unwrap();
@@ -433,12 +435,13 @@ fn pause_finishes_pending_translation_and_resume_preserves_ids_and_source_change
     let config = Config::default();
     let mut source = SyntheticWavSource::from_bytes(&wav(10));
     source.frame_delay = Duration::from_millis(3);
-    let mut handle = Pipeline::start_with_bus(
+    let mut handle = Pipeline::start(
         config,
         Box::new(source),
         Box::new(fake_stream(&["你好。", "再见。"])),
         Box::new(FakeTranslator::default()),
         bus,
+        None,
     )
     .unwrap();
     let mut recorded = Vec::new();
@@ -485,12 +488,13 @@ fn stop_joins_every_worker_while_translation_is_busy_and_settles_pending_lines()
     let events = bus.subscribe(512);
     let config = Config::default();
     let (translator, _release, started, _) = gated();
-    let mut handle = Pipeline::start_with_bus(
+    let mut handle = Pipeline::start(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(4))),
         Box::new(FakeStream::new(vec!["你好。".into(); 4], PAUSE_S)),
         Box::new(translator),
         bus,
+        None,
     )
     .unwrap();
     started.recv_timeout(Duration::from_secs(1)).unwrap();
@@ -520,12 +524,13 @@ fn saturated_translation_backpressures_asr_and_pause_stop_remain_responsive() {
     let events = bus.subscribe(2048);
     let config = Config::default();
     let (translator, _release, started, requests) = gated();
-    let mut handle = Pipeline::start_with_bus(
+    let mut handle = Pipeline::start(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(300))),
         Box::new(FakeStream::new(vec!["你好。".into(); 300], PAUSE_S)),
         Box::new(translator),
         bus,
+        None,
     )
     .unwrap();
     started.recv_timeout(Duration::from_secs(1)).unwrap();

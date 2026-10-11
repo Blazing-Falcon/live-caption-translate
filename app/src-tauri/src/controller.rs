@@ -14,7 +14,7 @@ use lt_audio::{
 use lt_core::{
     config::Config,
     events::{EngineKind, EngineState, ListeningStateKind, PipelineEvent, SourceStateKind},
-    pipeline::{Pipeline, PipelineHandle, PipelineOptions},
+    pipeline::{Pipeline, PipelineHandle},
     source::AudioSource,
     transcript::{
         SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber, TranscriptWriter,
@@ -180,15 +180,13 @@ impl Controller {
         let (source, mode, label) = make_source(&config)?;
         let transcript = self.start_transcript(&config, mode, &label)?;
         let sampler = ProcessSampler::new(pid).map_err(|e| e.to_string())?;
-        let pipeline = Pipeline::start_with_options(
+        let pipeline = Pipeline::start(
             config.clone(),
             source,
             asr,
             translator,
             bus.clone(),
-            PipelineOptions {
-                sampler: Some(Box::new(sampler)),
-            },
+            Some(Box::new(sampler)),
         );
         match pipeline {
             Ok(pipeline) => {

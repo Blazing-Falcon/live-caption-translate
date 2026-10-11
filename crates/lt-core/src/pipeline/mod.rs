@@ -54,60 +54,17 @@ enum FrontendNotice {
 
 pub struct Pipeline;
 
-/// Optional parts of a pipeline.
-#[derive(Default)]
-pub struct PipelineOptions {
-    pub sampler: Option<Box<dyn ResourceSampler>>,
-}
-
 impl Pipeline {
+    /// Subscribe to `bus` before this call: a short replay can finish before it returns.
+    /// `sampler` adds process CPU and memory to the stats.
     pub fn start(
-        config: Config,
-        source: Box<dyn AudioSource>,
-        asr: Box<dyn StreamingAsr>,
-        translator: Box<dyn Translator>,
-    ) -> Result<PipelineHandle> {
-        Self::start_with_bus(config, source, asr, translator, EventBus::default())
-    }
-
-    /// Subscribe before calling this method when replay can finish immediately.
-    pub fn start_with_bus(
-        config: Config,
-        source: Box<dyn AudioSource>,
-        asr: Box<dyn StreamingAsr>,
-        translator: Box<dyn Translator>,
-        bus: EventBus,
-    ) -> Result<PipelineHandle> {
-        Self::start_with_bus_and_sampler(config, source, asr, translator, bus, None)
-    }
-
-    pub fn start_with_bus_and_sampler(
-        config: Config,
+        mut config: Config,
         source: Box<dyn AudioSource>,
         asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
         sampler: Option<Box<dyn ResourceSampler>>,
     ) -> Result<PipelineHandle> {
-        Self::start_with_options(
-            config,
-            source,
-            asr,
-            translator,
-            bus,
-            PipelineOptions { sampler },
-        )
-    }
-
-    pub fn start_with_options(
-        mut config: Config,
-        source: Box<dyn AudioSource>,
-        asr: Box<dyn StreamingAsr>,
-        translator: Box<dyn Translator>,
-        bus: EventBus,
-        options: PipelineOptions,
-    ) -> Result<PipelineHandle> {
-        let PipelineOptions { sampler } = options;
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
         }

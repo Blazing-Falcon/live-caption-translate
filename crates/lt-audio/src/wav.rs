@@ -487,7 +487,7 @@ mod tests {
         let errors = source.error_handle();
         let bus = EventBus::default();
         let events = bus.subscribe(128);
-        let mut pipeline = Pipeline::start_with_bus(
+        let mut pipeline = Pipeline::start(
             Config::default(),
             Box::new(source),
             Box::new(FakeStream::new(
@@ -496,6 +496,7 @@ mod tests {
             )),
             Box::new(FakeTranslator::default()),
             bus,
+            None,
         )
         .unwrap();
         pipeline.wait().unwrap();
