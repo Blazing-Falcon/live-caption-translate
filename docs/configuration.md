@@ -40,17 +40,6 @@ norm_release_s = 5.0
 norm_max_gain_db = 20.0
 norm_gate_dbfs = -60.0
 
-[vad]
-engine = "silero"              # "silero" (v5) | "silero_v6" | "ten"
-threshold = 0.5
-min_speech_s = 0.25
-min_silence_s = 0.4
-pre_roll_s = 0.3
-post_roll_s = 0.1
-soft_cut_after_s = 7.0
-soft_cut_prob = 0.35
-hard_cut_s = 10.0
-
 [asr]
 threads = 1
 stream_chunk_ms = 480           # xasr_stream: 160 | 480 | 960
@@ -165,20 +154,6 @@ The default values are in the file above.
 | `norm_release_s` | 0.5–20 | pipeline | Time to increase gain for quiet input |
 | `norm_max_gain_db` | 0–30 | pipeline | Maximum gain |
 | `norm_gate_dbfs` | -90 to -30 | pipeline | No gain below this level. Silence stays silent. |
-
-### vad
-
-| Key | Range | Applies | Meaning |
-|---|---|---|---|
-| `engine` | `silero`, `silero_v6`, `ten` | pipeline | Voice detection model: Silero v5, Silero v6 or TEN VAD. All three give a speech probability, so the other `vad` keys apply to each. With `xasr_stream` it only places the cut between two lines. |
-| `threshold` | 0.2–0.9 | pipeline | Speech probability that counts as speech |
-| `min_speech_s` | 0.05–1.0 | pipeline | Speech necessary to open a segment |
-| `min_silence_s` | 0.15–1.5 | pipeline | Pause that closes a segment. This is the main latency setting. |
-| `pre_roll_s` | 0–1.0 | pipeline | Audio kept before speech starts |
-| `post_roll_s` | 0–0.5 | pipeline | Audio kept after the last speech frame |
-| `soft_cut_after_s` | 3 to `hard_cut_s` | pipeline | After this time, cut at the next breath |
-| `soft_cut_prob` | 0.05 to `threshold` | pipeline | A frame below this probability is a breath |
-| `hard_cut_s` | 5–20 | pipeline | Cut at this time, also during speech |
 
 ### asr
 

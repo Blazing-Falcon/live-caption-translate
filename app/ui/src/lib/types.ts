@@ -7,7 +7,7 @@ export type JoinKind = "hold" | "queue";
 export type SkipReason = "catch_up";
 export type FailReason = "timeout" | "server_unavailable" | "echo" | "runaway" | "error";
 export type DropReason = "empty" | "single_char";
-export type EngineKind = "vad" | "asr" | "translator" | "draft_translator";
+export type EngineKind = "asr" | "translator" | "draft_translator";
 export type EngineState = "loading" | "ready" | "restarting" | "failed";
 export type SourceStateKind =
   | "playing"

@@ -65,8 +65,6 @@ future_capture = "saved"
 apps = [{exe="chrome.exe",name="Chrome", future_app={revision=7}}]
 [audio]
 future_audio = 2026-10-07T12:30:00Z
-[vad]
-future_vad = 1
 [asr]
 future_asr = 2
 [filter]
@@ -97,7 +95,7 @@ future_models = "model"
 "#;
     let temp = TempConfig::new();
     let (mut config, messages) = Config::from_toml(input).unwrap();
-    assert_eq!(messages.len(), 16, "{messages:?}");
+    assert_eq!(messages.len(), 15, "{messages:?}");
     assert!(config.audio.extra["future_audio"].is_datetime());
     config.merge_patch(json!({"translate":{"ctx":2048,"future_translate":{"deep":{"other":true}}},"overlay":{"bar_rect":{"x":-222.5}}})).unwrap();
     config.save(&temp.0).unwrap();
@@ -183,7 +181,6 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     let (config, messages) = Config::from_json(json!({
         "config_version":100,
         "audio":{"norm_attack_s":-1,"norm_release_s":99,"norm_max_gain_db":99,"norm_gate_dbfs":-100},
-        "vad":{"threshold":0.1,"min_speech_s":0,"min_silence_s":99,"pre_roll_s":-1,"post_roll_s":99,"hard_cut_s":4,"soft_cut_after_s":19,"soft_cut_prob":0.8},
         "asr":{"threads":-10},
         "join":{"hold_max_chars":99,"hold_window_s":0,"max_segments":99,"max_chars":0},
         "translate":{"threads":99,"ctx":0,"temperature":99,"repeat_penalty":0,"max_tokens_cap":99_999,"timeout_s":0,"queue_join_max_chars":0,"skip_lag_s":0},
@@ -195,14 +192,6 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     assert_eq!(config.audio.norm_release_s, 20.0);
     assert_eq!(config.audio.norm_max_gain_db, 30.0);
     assert_eq!(config.audio.norm_gate_dbfs, -90.0);
-    assert_eq!(config.vad.threshold, 0.2);
-    assert_eq!(config.vad.min_speech_s, 0.05);
-    assert_eq!(config.vad.min_silence_s, 1.5);
-    assert_eq!(config.vad.pre_roll_s, 0.0);
-    assert_eq!(config.vad.post_roll_s, 0.5);
-    assert_eq!(config.vad.hard_cut_s, 5.0);
-    assert_eq!(config.vad.soft_cut_after_s, 5.0);
-    assert_eq!(config.vad.soft_cut_prob, 0.2);
     assert_eq!(config.asr.threads, 1);
     assert_eq!(config.join.hold_max_chars, 20);
     assert_eq!(config.join.hold_window_s, 0.2);
@@ -222,7 +211,7 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     assert_eq!(config.overlay.panel_lines, 4);
     assert_eq!(config.transcript.retention_days, 0);
     assert_eq!(config.logging.keep_files, 0);
-    assert_eq!(messages.len(), 32, "{messages:?}");
+    assert_eq!(messages.len(), 24, "{messages:?}");
 }
 
 #[test]

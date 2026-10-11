@@ -32,7 +32,6 @@ config_table!(Config {
     config_version: u32 = 1,
     capture: CaptureConfig = CaptureConfig::default(),
     audio: AudioConfig = AudioConfig::default(),
-    vad: VadConfig = VadConfig::default(),
     asr: AsrConfig = AsrConfig::default(),
     filter: FilterConfig = FilterConfig::default(),
     routing: RoutingConfig = RoutingConfig::default(),
@@ -61,17 +60,6 @@ config_table!(AudioConfig {
     norm_release_s: f32 = 5.0,
     norm_max_gain_db: f32 = 20.0,
     norm_gate_dbfs: f32 = -60.0,
-});
-config_table!(VadConfig {
-    engine: String = "silero".into(),
-    threshold: f32 = 0.5,
-    min_speech_s: f32 = 0.25,
-    min_silence_s: f32 = 0.4,
-    pre_roll_s: f32 = 0.3,
-    post_roll_s: f32 = 0.1,
-    soft_cut_after_s: f32 = 7.0,
-    soft_cut_prob: f32 = 0.35,
-    hard_cut_s: f32 = 10.0,
 });
 config_table!(AsrConfig {
     threads: u32 = 1,
@@ -316,16 +304,6 @@ impl Config {
         number!(audio, norm_release_s, 0.5, 20.0);
         number!(audio, norm_max_gain_db, 0.0, 30.0);
         number!(audio, norm_gate_dbfs, -90.0, -30.0);
-        number!(vad, threshold, 0.2, 0.9);
-        number!(vad, min_speech_s, 0.05, 1.0);
-        number!(vad, min_silence_s, 0.15, 1.5);
-        number!(vad, pre_roll_s, 0.0, 1.0);
-        number!(vad, post_roll_s, 0.0, 0.5);
-        number!(vad, hard_cut_s, 5.0, 20.0);
-        let hard_cut = self.vad.hard_cut_s;
-        number!(vad, soft_cut_after_s, 3.0, hard_cut);
-        let threshold = self.vad.threshold;
-        number!(vad, soft_cut_prob, 0.05, threshold);
         number!(asr, threads, 1, 4);
         if ![160, 480, 960].contains(&self.asr.stream_chunk_ms) {
             messages.push(format!(
@@ -335,7 +313,6 @@ impl Config {
             self.asr.stream_chunk_ms = defaults.asr.stream_chunk_ms;
         }
         number!(asr, stream_pause_s, 0.3, 3.0);
-        choice!(vad, engine, &["silero", "silero_v6", "ten"]);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
         choice!(routing, english, &["passthrough"]);
@@ -386,7 +363,6 @@ impl Config {
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
         choice!(models, source, &["huggingface", "modelscope"]);
         for (name, engine, default) in [
-            ("vad.engine", &mut self.vad.engine, &defaults.vad.engine),
             (
                 "translate.engine",
                 &mut self.translate.engine,
@@ -456,7 +432,7 @@ impl Config {
             ($($name:ident),* $(,)?) => { $(unknown_fields(&self.$name.extra, stringify!($name), messages);)* };
         }
         table!(
-            capture, audio, vad, asr, filter, routing, join, translate, overlay, latency, hotkeys,
+            capture, audio, asr, filter, routing, join, translate, overlay, latency, hotkeys,
             transcript, logging, models
         );
         for (index, app) in self.capture.apps.iter().enumerate() {
@@ -483,7 +459,7 @@ impl Config {
             )* };
         }
         table!(
-            capture, audio, vad, asr, filter, routing, join, translate, overlay, latency, hotkeys,
+            capture, audio, asr, filter, routing, join, translate, overlay, latency, hotkeys,
             transcript, logging, models
         );
         if let Some(apps) = value
@@ -635,14 +611,6 @@ fn normalize_float(
         "audio.norm_release_s" => (0.5, 20.0),
         "audio.norm_max_gain_db" => (0.0, 30.0),
         "audio.norm_gate_dbfs" => (-90.0, -30.0),
-        "vad.threshold" => (0.2, 0.9),
-        "vad.min_speech_s" => (0.05, 1.0),
-        "vad.min_silence_s" => (0.15, 1.5),
-        "vad.pre_roll_s" => (0.0, 1.0),
-        "vad.post_roll_s" => (0.0, 0.5),
-        "vad.hard_cut_s" => (5.0, 20.0),
-        "vad.soft_cut_after_s" => (3.0, 20.0),
-        "vad.soft_cut_prob" => (0.05, 0.9),
         "join.hold_window_s" => (0.2, 2.0),
         "latency.decode_interval_s" => (0.3, 2.0),
         "latency.min_open_s" => (0.5, 3.0),

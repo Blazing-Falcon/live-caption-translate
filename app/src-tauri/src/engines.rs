@@ -2,7 +2,7 @@
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{EngineRegistry, StreamingAsr, Translator, Vad},
+    engines::{EngineRegistry, StreamingAsr, Translator},
     events::{EngineKind, EngineState, PipelineEvent},
 };
 use lt_llm::supervisor::{ServerOptions, ServerRole, Supervisor};
@@ -14,8 +14,6 @@ use std::{
     },
     time::Duration,
 };
-
-pub type SpeechEngines = (Box<dyn Vad>, Box<dyn StreamingAsr>);
 
 pub const TRANSLATOR_MODEL: &str = "hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf";
 pub const DRAFT_MODEL: &str = "lmt-60-0.6b-q4_k_m/LMT-60-0.6B.Q4_K_M.gguf";
@@ -29,18 +27,14 @@ pub fn wants_drafts(config: &Config) -> bool {
     }
 }
 
-pub fn speech(config: &Config, models: &Path) -> Result<SpeechEngines, String> {
+pub fn speech(config: &Config, models: &Path) -> Result<Box<dyn StreamingAsr>, String> {
     let mut registry = EngineRegistry::default();
     lt_sherpa::register_engines(&mut registry);
     let mut engine_config = config.clone();
     engine_config.models.dir = models.to_string_lossy().into_owned();
-    let vad = registry
-        .build_vad(&engine_config)
-        .map_err(|e| e.to_string())?;
-    let asr = registry
+    registry
         .build_asr(&engine_config)
-        .map_err(|e| e.to_string())?;
-    Ok((vad, asr))
+        .map_err(|e| e.to_string())
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {

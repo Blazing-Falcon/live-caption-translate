@@ -47,6 +47,9 @@ pub struct ReplayArgs {
     /// Use fake engines for terminal-only pipeline diagnostics.
     #[arg(long)]
     pub fake: bool,
+    /// Speech instants for the per-word delays: a JSON array of milliseconds from `--start`.
+    #[arg(long)]
+    pub instants: Option<PathBuf>,
     /// Caption speed for this run (overrides `latency.mode`).
     #[arg(long, value_enum)]
     pub mode: Option<ModeArg>,
@@ -96,7 +99,7 @@ pub enum DownloadSource {
 pub struct BenchArgs {
     #[arg(value_enum)]
     pub engine: BenchEngine,
-    /// WAV file/folder for ASR/VAD, or sentence JSON for MT.
+    /// WAV file/folder for ASR, or sentence JSON for MT.
     #[arg(default_value = "testdata/fetched/ascend")]
     pub input: PathBuf,
     #[arg(long, env = "LT_MODELS_DIR")]

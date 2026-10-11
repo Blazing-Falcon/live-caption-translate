@@ -4,8 +4,8 @@ use anyhow::{bail, Result};
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{StreamingAsr, Translator, Vad},
-    fakes::{FakeStream, FakeTranslator, FakeVad},
+    engines::{StreamingAsr, Translator},
+    fakes::{FakeStream, FakeTranslator},
 };
 use std::path::PathBuf;
 use std::{
@@ -17,7 +17,6 @@ use std::{
 };
 
 pub struct Engines {
-    pub vad: Box<dyn Vad>,
     pub asr: Box<dyn StreamingAsr>,
     pub translator: Box<dyn Translator>,
     pub pid: Arc<AtomicU32>,
@@ -74,7 +73,6 @@ pub fn build(
     check_cancel(cancelled)?;
     if fake {
         return Ok(Engines {
-            vad: Box::new(FakeVad::from_energy(0.001)),
             asr: Box::new(FakeStream::new(
                 vec!["你好，这是测试语音。".into(); 4096],
                 f64::from(config.asr.stream_pause_s),
@@ -95,7 +93,6 @@ pub fn build(
         lt_sherpa::register_engines(&mut registry);
         let mut engine_config = config.clone();
         engine_config.models.dir = models.to_string_lossy().into_owned();
-        let vad = registry.build_vad(&engine_config)?;
         let asr = registry.build_asr(&engine_config)?;
         let (translator, supervisor, pid) = translator(config, models, binary, bus, cancelled)?;
         let (draft, draft_supervisor, draft_pid) =
@@ -104,7 +101,6 @@ pub fn build(
                 None => (None, None, Arc::new(AtomicU32::new(0))),
             };
         Ok(Engines {
-            vad,
             asr,
             translator,
             supervisor,

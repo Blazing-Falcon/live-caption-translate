@@ -149,14 +149,12 @@ impl Controller {
         }
         self.cancelled.store(false, Ordering::Release);
         let bus = self.shared.bus.clone();
-        for engine in [EngineKind::Vad, EngineKind::Asr] {
-            bus.publish(PipelineEvent::EngineStatus {
-                engine,
-                state: EngineState::Loading,
-                message: None,
-            });
-        }
-        let (vad, asr) = match engines::speech(&config, &models) {
+        bus.publish(PipelineEvent::EngineStatus {
+            engine: EngineKind::Asr,
+            state: EngineState::Loading,
+            message: None,
+        });
+        let asr = match engines::speech(&config, &models) {
             Ok(loaded) => loaded,
             Err(message) => {
                 engines::fail(&bus, EngineKind::Asr, &message);
@@ -193,7 +191,6 @@ impl Controller {
         let pipeline = Pipeline::start_with_options(
             config.clone(),
             source,
-            vad,
             asr,
             translator,
             bus.clone(),

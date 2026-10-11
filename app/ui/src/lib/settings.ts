@@ -31,17 +31,6 @@ export interface Config extends ExtraFields {
     norm_max_gain_db: number;
     norm_gate_dbfs: number;
   };
-  vad: ExtraFields & {
-    engine: "silero" | "silero_v6" | "ten";
-    threshold: number;
-    min_speech_s: number;
-    min_silence_s: number;
-    pre_roll_s: number;
-    post_roll_s: number;
-    soft_cut_after_s: number;
-    soft_cut_prob: number;
-    hard_cut_s: number;
-  };
   asr: ExtraFields & {
     threads: number;
     stream_chunk_ms: 160 | 480 | 960;
@@ -173,7 +162,7 @@ export function cloneConfig(config: Config): Config {
 }
 
 const CONFIG_TABLES = [
-  "capture", "audio", "vad", "asr", "filter", "routing", "join", "translate",
+  "capture", "audio", "asr", "filter", "routing", "join", "translate",
   "overlay", "latency", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
@@ -312,10 +301,6 @@ export function asrPatch(values: DeepPartial<Config["asr"]>): ConfigPatch {
   return { asr: values };
 }
 
-export function vadPatch(values: DeepPartial<Config["vad"]>): ConfigPatch {
-  return { vad: values };
-}
-
 /** A speech model choice; `model` is its manifest id, `null` when nothing is downloaded. */
 export interface SpeechChoice<T extends string> {
   value: T;
@@ -323,12 +308,6 @@ export interface SpeechChoice<T extends string> {
   model: string | null;
   help: string;
 }
-
-export const VAD_ENGINES: readonly SpeechChoice<Config["vad"]["engine"]>[] = [
-  { value: "silero", label: "Silero v5", model: "silero-vad-v5", help: "The default. Very little CPU." },
-  { value: "silero_v6", label: "Silero v6", model: "silero-vad-v6", help: "Newer Silero model. Same CPU as v5." },
-  { value: "ten", label: "TEN VAD", model: "ten-vad", help: "Different model, about 1.3x the CPU of Silero, still very little. Its license limits commercial use." },
-];
 
 export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
   { value: "160", label: "160 ms", model: "xasr-stream-160ms-int8-2026-06-05", help: "Words appear about 0.15 s sooner than 480 ms. About twice the CPU and slightly more errors." },
@@ -369,17 +348,6 @@ export const DEFAULT_CONFIG: Config = {
     "norm_release_s": 5.0,
     "norm_max_gain_db": 20.0,
     "norm_gate_dbfs": -60.0
-  },
-  "vad": {
-    "engine": "silero",
-    "threshold": 0.5,
-    "min_speech_s": 0.25,
-    "min_silence_s": 0.4,
-    "pre_roll_s": 0.3,
-    "post_roll_s": 0.1,
-    "soft_cut_after_s": 7.0,
-    "soft_cut_prob": 0.35,
-    "hard_cut_s": 10.0
   },
   "asr": {
     "threads": 1,

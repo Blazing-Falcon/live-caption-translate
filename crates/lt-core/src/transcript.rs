@@ -24,7 +24,6 @@ pub struct SessionSource {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SessionConfig {
-    pub min_silence_s: f64,
     pub hold_max_chars: u32,
     pub skip_lag_s: f64,
     // Later fields (older transcripts lack these)
@@ -40,8 +39,6 @@ pub struct SessionConfig {
     /// The draft model in use, or `null` when the session runs without drafts.
     #[serde(default)]
     pub draft_model: Option<String>,
-    #[serde(default)]
-    pub vad_engine: String,
 }
 
 /// Manifest id of the draft model, recorded in the session header when drafts run.
@@ -58,7 +55,6 @@ impl SessionConfig {
 impl From<&Config> for SessionConfig {
     fn from(config: &Config) -> Self {
         Self {
-            min_silence_s: readable_f32(config.vad.min_silence_s),
             hold_max_chars: config.join.hold_max_chars,
             skip_lag_s: readable_f32(config.translate.skip_lag_s),
             mode: config.latency.mode.clone(),
@@ -70,7 +66,6 @@ impl From<&Config> for SessionConfig {
             },
             decode_interval_s: readable_f32(config.latency.decode_interval_s),
             draft_model: None,
-            vad_engine: config.vad.engine.clone(),
         }
     }
 }
@@ -547,7 +542,7 @@ mod tests {
 
     const WALL: &str = "2026-10-07T21:14:51+07:00";
     const GOLDEN: &str = concat!(
-        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"min_silence_s\":0.4,\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5,\"draft_model\":null,\"vad_engine\":\"silero\"}}\n",
+        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5,\"draft_model\":null}}\n",
         "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null}}\n",
         "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"こんにちは。\",\"logprob\":null}}\n",
         "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null}}\n",
@@ -565,7 +560,6 @@ mod tests {
             asr: "sensevoice-2024-07-17-int8".into(),
             translator: "hy-mt2-1.8b-q4_0".into(),
             config: SessionConfig {
-                min_silence_s: 0.4,
                 hold_max_chars: 8,
                 skip_lag_s: 6.0,
                 mode: "auto".into(),
@@ -573,7 +567,6 @@ mod tests {
                 cap_tokens: 20,
                 decode_interval_s: 0.5,
                 draft_model: None,
-                vad_engine: "silero".into(),
             },
         }
     }

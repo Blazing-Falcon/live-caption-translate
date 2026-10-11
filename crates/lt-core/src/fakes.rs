@@ -2,7 +2,7 @@
 use crate::{
     engines::{
         StreamResult, StreamingAsr, TokenTranscript, TranslateRequest, TranslationControl,
-        TranslationOut, Translator, TranslatorCaps, Vad,
+        TranslationOut, Translator, TranslatorCaps,
     },
     error::Result,
 };
@@ -15,52 +15,6 @@ use std::{
     thread,
     time::Duration,
 };
-
-pub struct FakeVad {
-    probabilities: Vec<f32>,
-    index: usize,
-    threshold_energy: f32,
-}
-
-impl FakeVad {
-    pub fn from_probabilities(probabilities: Vec<f32>) -> Self {
-        Self {
-            probabilities,
-            index: 0,
-            threshold_energy: 0.001,
-        }
-    }
-    pub fn from_energy(threshold_energy: f32) -> Self {
-        Self {
-            probabilities: Vec::new(),
-            index: 0,
-            threshold_energy,
-        }
-    }
-}
-
-impl Vad for FakeVad {
-    fn speech_prob(&mut self, frame: &[f32; 512]) -> f32 {
-        let prob = self
-            .probabilities
-            .get(self.index)
-            .copied()
-            .unwrap_or_else(|| {
-                if frame.iter().map(|sample| sample * sample).sum::<f32>() / 512.0
-                    > self.threshold_energy
-                {
-                    0.9
-                } else {
-                    0.0
-                }
-            });
-        self.index += 1;
-        prob
-    }
-    fn reset(&mut self) {
-        self.index = 0;
-    }
-}
 
 /// A streaming recognizer that hears loud audio as speech. Each burst of speech adds the next
 /// text of its list, one token per character, all timed at the burst's first loud piece. Its

@@ -66,7 +66,7 @@ pub fn initialize_shared_runtime(path: impl AsRef<Path>) -> Result<()> {
     // SAFETY: the linked library owns this static API base. An unsupported
     // version returns null and is checked before any API table dereference.
     let linked_api = unsafe { (base.GetApi)(ort::sys::ORT_API_VERSION) };
-    require_api(linked_api, ort::sys::ORT_API_VERSION, "Silero VAD")?;
+    require_api(linked_api, ort::sys::ORT_API_VERSION, "ONNX model check")?;
     // A different absolute DLL path may load a second runtime on Windows.
     // Environments/telemetry are shared only when both wrappers use the exact
     // same static API table, not merely the same reported version number.

@@ -139,7 +139,6 @@ fn run_session(
     let mut pipeline = Pipeline::start_with_options(
         config,
         source,
-        engines.vad,
         engines.asr,
         engines.translator,
         bus.clone(),

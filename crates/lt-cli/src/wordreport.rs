@@ -6,35 +6,16 @@
 
 use lt_core::{
     draft::{visible_words, DisplayPolicy},
-    engines::Vad,
     events::PipelineEvent,
     types::{EffectiveMode, UtteranceId},
 };
 use serde::Serialize;
 use std::collections::BTreeMap;
 
-/// Frames of the pipeline's VAD input.
-const FRAME_SAMPLES: usize = 512;
-/// One instant every third 32 ms frame (about 0.1 s), as the Python kit does.
-const INSTANT_EVERY_FRAMES: usize = 3;
-const SPEECH_PROBABILITY: f32 = 0.5;
-
 pub struct TimedEvent {
     /// Session time in milliseconds when the event was published.
     pub t_ms: u64,
     pub event: PipelineEvent,
-}
-
-/// Speech instants (stream milliseconds) of 16 kHz audio, using the pipeline's VAD.
-pub fn speech_instants(samples: &[f32], vad: &mut dyn Vad) -> Vec<u64> {
-    let mut instants = Vec::new();
-    for (index, frame) in samples.as_chunks::<FRAME_SAMPLES>().0.iter().enumerate() {
-        let probability = vad.speech_prob(frame);
-        if index % INSTANT_EVERY_FRAMES == 0 && probability >= SPEECH_PROBABILITY {
-            instants.push((index * FRAME_SAMPLES) as u64 * 1_000 / 16_000);
-        }
-    }
-    instants
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]

@@ -11,7 +11,7 @@ use crate::{
         DraftOutcome, DraftResult, DraftState, DraftWorker, PublishedDraft, WORKER_FAILED,
         WORKER_READY,
     },
-    engines::{StreamingAsr, Translator, Vad},
+    engines::{StreamingAsr, Translator},
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     join::{JoinResult, Joiner},
@@ -143,29 +143,26 @@ impl Pipeline {
     pub fn start(
         config: Config,
         source: Box<dyn AudioSource>,
-        vad: Box<dyn Vad>,
         asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
     ) -> Result<PipelineHandle> {
-        Self::start_with_bus(config, source, vad, asr, translator, EventBus::default())
+        Self::start_with_bus(config, source, asr, translator, EventBus::default())
     }
 
     /// Subscribe before calling this method when replay can finish immediately.
     pub fn start_with_bus(
         config: Config,
         source: Box<dyn AudioSource>,
-        vad: Box<dyn Vad>,
         asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
     ) -> Result<PipelineHandle> {
-        Self::start_with_bus_and_sampler(config, source, vad, asr, translator, bus, None)
+        Self::start_with_bus_and_sampler(config, source, asr, translator, bus, None)
     }
 
     pub fn start_with_bus_and_sampler(
         config: Config,
         source: Box<dyn AudioSource>,
-        vad: Box<dyn Vad>,
         asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
@@ -174,7 +171,6 @@ impl Pipeline {
         Self::start_with_options(
             config,
             source,
-            vad,
             asr,
             translator,
             bus,
@@ -188,7 +184,6 @@ impl Pipeline {
     pub fn start_with_options(
         mut config: Config,
         source: Box<dyn AudioSource>,
-        vad: Box<dyn Vad>,
         asr: Box<dyn StreamingAsr>,
         translator: Box<dyn Translator>,
         bus: EventBus,
@@ -243,7 +238,6 @@ impl Pipeline {
             notices: front_tx.clone(),
             segment_counts: segment_counts.clone(),
             sentences: initial_mode.mode == EffectiveMode::Off,
-            vad,
         };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())
@@ -637,11 +631,6 @@ fn frontend_loop(
         cancelled.store(true, Ordering::Release);
         return Err(error);
     }
-    frontend.bus.publish(PipelineEvent::EngineStatus {
-        engine: EngineKind::Vad,
-        state: EngineState::Ready,
-        message: None,
-    });
     let _ = ready.try_send(Ok(()));
     while !cancelled.load(Ordering::Acquire) {
         // Commands stay responsive even if audio is backpressured by ASR.
@@ -721,7 +710,6 @@ struct AsrNotices {
     segment_counts: Arc<SegmentCounters>,
     /// Off mode: clauses end only at sentence ends and pauses.
     sentences: bool,
-    vad: Box<dyn Vad>,
 }
 
 fn asr_loop(
@@ -738,7 +726,7 @@ fn asr_loop(
         state: EngineState::Ready,
         message: None,
     });
-    let mut recognizer = StreamRecognizer::new(config, stream.sentences, Some(stream.vad));
+    let mut recognizer = StreamRecognizer::new(config, stream.sentences);
     let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {

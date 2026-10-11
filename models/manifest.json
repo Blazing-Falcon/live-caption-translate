@@ -42,23 +42,6 @@
       "optional": false
     },
     {
-      "id": "silero-vad-v5",
-      "name": "Voice activity detection (Silero VAD v5)",
-      "role": "vad",
-      "license": "MIT",
-      "page": "https://github.com/snakers4/silero-vad",
-      "files": [
-        {
-          "name": "silero_vad_v5.onnx",
-          "size": 2313101,
-          "sha256": "6b99cbfd39246b6706f98ec13c7c50c6b299181f2474fa05cbc8046acc274396",
-          "url": "https://huggingface.co/csukuangfj/vad/resolve/main/silero_vad_v5.onnx",
-          "mirror": ""
-        }
-      ],
-      "optional": false
-    },
-    {
       "id": "hy-mt2-1.8b-q4_0",
       "name": "Translation (Hy-MT2 1.8B, Q4_0)",
       "role": "translator",
@@ -114,40 +97,6 @@
           "mirror": ""
         }
       ]
-    },
-    {
-      "id": "silero-vad-v6",
-      "name": "Voice activity detection (Silero VAD v6.2.3)",
-      "role": "vad",
-      "license": "MIT (snakers4/silero-vad LICENSE, checked 2026-10-10)",
-      "page": "https://github.com/snakers4/silero-vad",
-      "files": [
-        {
-          "name": "silero_vad_v6.onnx",
-          "size": 2327524,
-          "sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
-          "url": "https://github.com/snakers4/silero-vad/raw/v6.2.3/src/silero_vad/data/silero_vad.onnx",
-          "mirror": ""
-        }
-      ],
-      "optional": true
-    },
-    {
-      "id": "ten-vad",
-      "name": "Voice activity detection (TEN VAD 1.0)",
-      "role": "vad",
-      "license": "Apache-2.0 with Agora's additional conditions: no use that competes with Agora's offerings, deploy only for your own application and its direct end users (TEN-framework/ten-vad LICENSE, checked 2026-10-10)",
-      "page": "https://github.com/TEN-framework/ten-vad",
-      "files": [
-        {
-          "name": "ten-vad.onnx",
-          "size": 315449,
-          "sha256": "e10b98a0cab1c98e847fbdda14cb3d45a38336d47535a3f63a0fb6c4e0f4cdf4",
-          "url": "https://github.com/TEN-framework/ten-vad/raw/v1.0-ONNX/src/onnx_model/ten-vad.onnx",
-          "mirror": ""
-        }
-      ],
-      "optional": true
     },
     {
       "id": "xasr-stream-960ms-int8-2026-06-05",

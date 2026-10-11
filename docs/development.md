@@ -77,7 +77,6 @@ These tests skip if their variables are not set. `check.ps1` shows the skipped t
 
 | Test | Needs | Checks |
 |---|---|---|
-| `lt-sherpa` `vad` | `LT_MODELS_DIR`, test audio | TEN VAD against the reference library's probabilities |
 | `lt-sherpa` `stream` | `LT_MODELS_DIR` with the 480 ms streaming model, test audio | Streaming X-ASR: emitted tokens never change, accuracy |
 | `lt-llm` `real_server` | `LT_LLAMA_SERVER`, Hy-MT2 (`LT_MT_MODEL` or `LT_MODELS_DIR`) | 37 sentences against the fixture |
 | `lt-llm` drafts and mode switches | `LT_LLAMA_SERVER`, `LT_DRAFT_MODEL` | 40 draft sentences; servers start and stop correctly |
@@ -105,7 +104,7 @@ target\release\lt-cli.exe live --mode system --dur 600 --out out\live.jsonl
 target\release\lt-cli.exe bench asr testdata\fetched\ascend          # asr.stream_chunk_ms from --config
 ```
 
-`replay` writes the transcript, `<out>.events.jsonl` and `<out>.words.json`, and prints the per-word delays. When you report a number, also give the machine, the command and what else was running.
+`replay` writes the transcript, `<out>.events.jsonl` and `<out>.words.json`, and prints the per-word delays. The delays need speech instants: `--instants <file>` reads a JSON array of milliseconds from `--start` at which a word is spoken. Without it the delay values are empty. When you report a number, also give the machine, the command and what else was running.
 
 ## Package
 

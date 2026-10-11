@@ -39,7 +39,6 @@ pub enum DropReason {
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum EngineKind {
-    Vad,
     Asr,
     Translator,
     DraftTranslator,

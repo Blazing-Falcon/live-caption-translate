@@ -79,7 +79,7 @@ export interface StatusInput {
   pauseHotkey: string;
 }
 
-const ENGINE_ORDER: readonly EngineKind[] = ["vad", "asr", "translator"];
+const ENGINE_ORDER: readonly EngineKind[] = ["asr", "translator"];
 
 export function isTerminal(state: CaptionLine["state"]): boolean {
   return state !== "live" && state !== "pending" && state !== "streaming";

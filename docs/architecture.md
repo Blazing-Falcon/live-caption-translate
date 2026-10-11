@@ -8,7 +8,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 |---|---|
 | `crates/lt-core` | Pipeline, types, config, event bus, metrics, transcripts. No OS code and no engine code. |
 | `crates/lt-audio` | WASAPI capture (system mix or selected apps), WAV replay, resampling, normalization |
-| `crates/lt-sherpa` | Streaming speech recognition (X-ASR) and voice detection (Silero v5 and v6, TEN VAD) |
+| `crates/lt-sherpa` | Streaming speech recognition (X-ASR) |
 | `crates/lt-llm` | llama-server clients, the server supervisor, model downloads |
 | `crates/lt-cli` | Headless runner: `replay`, `live`, `bench`, `models fetch` |
 | `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge |
@@ -23,7 +23,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 ```
 +------------------------- live-translation.exe ---------------------------+
 |  Tauri shell: overlay, control window, tray, hotkeys                     |
-|  lt-core pipeline: capture -> VAD -> recognizer -> scheduler             |
+|  lt-core pipeline: capture -> recognizer -> scheduler                    |
 +-------------------------|---------------------------|--------------------+
                           | HTTP 127.0.0.1            | HTTP 127.0.0.1
              +------------v------------+  +-----------v-------------+
@@ -41,7 +41,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 
 1. **Capture.** The audio callback copies samples into a lock-free ring buffer.
 2. **Recognizer.** The frontend thread resamples to 16 kHz mono and sends all audio to the streaming X-ASR engine in pieces of about 100 ms. The engine keeps its state and decodes each piece once; its emitted words never change. A clause opens at its first word and gets its `UtteranceId` there. The text of the open clause is the live Chinese line.
-3. **Commit.** If a sentence mark is followed by two more words, the recognizer cuts the clause there. A comma can also end a clause after 8 word tokens. With no punctuation for 20 word tokens, it cuts at the widest gap. A clause also ends at a pause of `asr.stream_pause_s` (the engine's own rule) or when the audio stops. The engine reports each word late, so its token times are moved earlier by a fixed delay for each chunk size. At a commit the cut goes to the first gap that the voice detector hears between the last word and the next word; without a gap, to just before the next word.
+3. **Commit.** If a sentence mark is followed by two more words, the recognizer cuts the clause there. A comma can also end a clause after 8 word tokens. With no punctuation for 20 word tokens, it cuts at the widest gap. A clause also ends at a pause of `asr.stream_pause_s` (the engine's own rule) or when the audio stops. The engine reports each word late, so its token times are moved earlier by a fixed delay for each chunk size. At a commit the cut goes to just before the next word.
 4. **Filter and joiner.** The filter removes tags and fillers, classifies the text, and drops empty text and one-character noise. The joiner holds short pause-closed phrases (8 Chinese characters or fewer) for up to 1 s and joins them to the next phrase. It does not hold committed clauses.
 5. **Translation.** Finals and drafts share one slot: one request at a time, finals first, and only the newest draft waits. If the oldest final is more than 6 s behind, the translator skips older items. English speech is shown as heard. With `translate.window_chars` set, a final is translated together with the earlier lines that fit in that many characters, joined by `<br>`. The answer is prefilled with the English already shown for those lines, so Hy-MT2 writes only the new line's English and stops at the next `<br>`. The window ends at a line that has no English (skipped or failed), and restarts after 10 s without lines and at a discontinuity. An empty answer is translated again without the window.
 6. **Drafts.** In Continuous mode, LMT-60 translates each longer Chinese prefix into a dimmed draft. The final translation replaces the draft.

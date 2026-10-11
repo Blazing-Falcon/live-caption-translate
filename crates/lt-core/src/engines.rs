@@ -12,11 +12,6 @@ use std::{
     time::Instant,
 };
 
-pub trait Vad: Send {
-    fn speech_prob(&mut self, frame: &[f32; 512]) -> f32;
-    fn reset(&mut self);
-}
-
 /// Recognized tokens with per-token start times.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct TokenTranscript {
@@ -144,13 +139,11 @@ pub trait Translator: Send {
 }
 
 type AsrFactory = fn(&Config) -> Result<Box<dyn StreamingAsr>>;
-type VadFactory = fn(&Config) -> Result<Box<dyn Vad>>;
 type TranslatorFactory = fn(&Config) -> Result<Box<dyn Translator>>;
 
 #[derive(Default)]
 pub struct EngineRegistry {
     asr: Option<AsrFactory>,
-    vad: BTreeMap<String, VadFactory>,
     translators: BTreeMap<String, TranslatorFactory>,
     draft_translators: BTreeMap<String, TranslatorFactory>,
 }
@@ -158,9 +151,6 @@ pub struct EngineRegistry {
 impl EngineRegistry {
     pub fn register_asr(&mut self, factory: AsrFactory) {
         self.asr = Some(factory);
-    }
-    pub fn register_vad(&mut self, name: &str, factory: VadFactory) {
-        self.vad.insert(name.into(), factory);
     }
     pub fn register_translator(&mut self, name: &str, factory: TranslatorFactory) {
         self.translators.insert(name.into(), factory);
@@ -173,14 +163,6 @@ impl EngineRegistry {
             kind: "ASR",
             name: "xasr_stream".into(),
         })?(config)
-    }
-    pub fn build_vad(&self, config: &Config) -> Result<Box<dyn Vad>> {
-        self.vad
-            .get(&config.vad.engine)
-            .ok_or_else(|| Error::UnknownEngine {
-                kind: "VAD",
-                name: config.vad.engine.clone(),
-            })?(config)
     }
     pub fn build_translator(&self, config: &Config) -> Result<Box<dyn Translator>> {
         self.translators

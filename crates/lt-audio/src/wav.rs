@@ -414,7 +414,7 @@ mod tests {
     use lt_core::{
         bus::EventBus,
         config::Config,
-        fakes::{FakeStream, FakeTranslator, FakeVad},
+        fakes::{FakeStream, FakeTranslator},
         pipeline::Pipeline,
     };
     use std::{fs, sync::atomic::AtomicUsize};
@@ -497,7 +497,6 @@ mod tests {
         let mut pipeline = Pipeline::start_with_bus(
             config,
             Box::new(source),
-            Box::new(FakeVad::from_energy(0.005)),
             Box::new(FakeStream::new(
                 vec!["我们今天一起谈论这个问题。".into()],
                 0.8,

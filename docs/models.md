@@ -7,21 +7,16 @@
 | Id | Use | File | Bytes | SHA-256 |
 |---|---|---|---|---|
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition (default) | archive, 4 files | 133,895,136 | in the manifest |
-| `silero-vad-v5` | Voice activity | `silero_vad_v5.onnx` | 2,313,101 | `6b99cbfd39246b6706f98ec13c7c50c6b299181f2474fa05cbc8046acc274396` |
 | `hy-mt2-1.8b-q4_0` | Final translation | `Hy-MT2-1.8B.i1-Q4_0.gguf` | 1,079,997,440 | `77b7db506ed5dddd79b30553d346af1bfbed5999838441964ade98c970512087` |
 | `lmt-60-0.6b-q4_k_m` | Drafts (optional) | `LMT-60-0.6B.Q4_K_M.gguf` | 484,220,000 | `743c6cdc13294b5c470ec0e89e79d64f96ef0cab94ce1285c78da4dc0f56be5c` |
-| `silero-vad-v6` | Voice activity (optional) | `silero_vad_v6.onnx` | 2,327,524 | `1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3` |
-| `ten-vad` | Voice activity (optional) | `ten-vad.onnx` | 315,449 | `e10b98a0cab1c98e847fbdda14cb3d45a38336d47535a3f63a0fb6c4e0f4cdf4` |
 | `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
 | `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
 Sources (Hugging Face):
 
-- Silero VAD: `csukuangfj/vad`
 - Hy-MT2: `mradermacher/Hy-MT2-1.8B-i1-GGUF`
 - LMT-60: `mradermacher/LMT-60-0.6B-GGUF` (base model `NiuTrans/LMT-60-0.6B`)
 - X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
-- Silero VAD v6 and TEN VAD: GitHub release tags `snakers4/silero-vad` `v6.2.3` and `TEN-framework/ten-vad` `v1.0-ONNX`
 
 Rules:
 
@@ -38,8 +33,6 @@ Rules:
 
 | Component | License |
 |---|---|
-| Silero VAD v5 and v6 | MIT |
-| TEN VAD 1.0 | Apache-2.0 with Agora's conditions: no use that competes with Agora's offerings; deploy only for your own application and its direct end users; derivative works keep these terms. `crates/lt-sherpa/src/ten.rs` is such a derivative work. |
 | X-ASR | Apache-2.0 (upstream `Gilgamesh-J/X-ASR`) |
 | Hy-MT2 1.8B | Apache-2.0 (recorded; confirm on the `tencent/Hy-MT2-1.8B` model card) |
 | LMT-60 0.6B | Apache-2.0 |
@@ -65,11 +58,7 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 ## Engines
 
-**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.stream_pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after Silero's speech onset (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
-
-**Silero VAD (v5, v6):** runs directly on ONNX Runtime, because the sherpa VAD does not give a probability for each frame. Frames are 512 samples with 64 samples of context. Speech opens and closes at probability 0.5. A soft cut uses 0.35. v6 has the same inputs and outputs as v5.
-
-**TEN VAD:** runs on ONNX Runtime with a port of the reference feature frontend: 0.97 pre-emphasis, a 768-sample Hann window every 256 samples, a 1024-point FFT, 40 mel bands, the reference mean and deviation, and 3 frames of context. The recurrent state resets every 1,875 hops (30 s), as in the reference. The reference also gives the model a pitch estimate; the port gives 0 Hz, as sherpa-onnx does. A 512-sample frame is two hops; its probability is the larger one. The same thresholds apply as for Silero. They were not tuned for TEN VAD.
+**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.stream_pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
 
 **llama-server:** one binary, two processes. The supervisor starts each server with:
 

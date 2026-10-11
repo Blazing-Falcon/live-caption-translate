@@ -40,7 +40,7 @@ Enum values:
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
 | `DropReason` | `empty`, `single_char` |
-| `EngineKind` | `vad`, `asr`, `translator`, `draft_translator` |
+| `EngineKind` | `asr`, `translator`, `draft_translator` |
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |
 | `ListeningStateKind` | `starting`, `listening`, `paused` |
@@ -136,7 +136,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `show_control_window` | | | Show the control window |
 | `quit` | | | Stop the pipeline and servers, then exit |
 
-`AppState` contains `listening`, `source`, `source_state`, `engines` (`vad`, `asr`, `translator`, `draft_translator`), `models_ready`, `overlay_moving`, `overlay_visible`, `mode` and `mode_reason`.
+`AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`, `draft_translator`), `models_ready`, `overlay_moving`, `overlay_visible`, `mode` and `mode_reason`.
 
 `ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`), `optional` and `recommended`.
 
@@ -174,7 +174,7 @@ Other rules:
 
 The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.jsonl`. `lt-cli replay` writes the same format.
 
-- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (main latency settings, the draft model id and `vad_engine`).
+- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (main latency settings and the draft model id).
 - Each other line is one `utterance` record. The writer writes it when the line becomes terminal.
 - The writer does not write dropped lines, partials or drafts.
 

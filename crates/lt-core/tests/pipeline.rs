@@ -5,7 +5,7 @@ use lt_core::{
     engines::{TranslateRequest, TranslationControl, TranslationOut, Translator, TranslatorCaps},
     error::{Error, Result},
     events::{DropReason, ListeningStateKind, PipelineEvent, SourceStateKind},
-    fakes::{FakeStream, FakeTranslator, FakeVad},
+    fakes::{FakeStream, FakeTranslator},
     pipeline::{Pipeline, PipelineHandle},
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
     types::{CaptureMode, SourceInfo, StreamTime, TextClass, UtteranceId},
@@ -286,7 +286,6 @@ fn wav_replay_translates_chinese_passes_english_and_drops_fillers_before_asr_fin
     let mut handle = Pipeline::start_with_bus(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(3))),
-        Box::new(FakeVad::from_energy(0.001)),
         Box::new(asr),
         Box::new(translator),
         bus,
@@ -392,7 +391,6 @@ fn catch_up_skips_waiting_items_and_translates_the_newest_after_a_busy_request()
     let mut handle = Pipeline::start_with_bus(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(14))),
-        Box::new(FakeVad::from_energy(0.001)),
         Box::new(FakeStream::new(phrases.clone(), PAUSE_S)),
         Box::new(translator),
         bus,
@@ -441,7 +439,6 @@ fn pause_finishes_pending_translation_and_resume_preserves_ids_and_source_change
     let mut handle = Pipeline::start_with_bus(
         config,
         Box::new(source),
-        Box::new(FakeVad::from_energy(0.001)),
         Box::new(fake_stream(&["你好。", "再见。"])),
         Box::new(FakeTranslator::default()),
         bus,
@@ -495,7 +492,6 @@ fn stop_joins_every_worker_while_translation_is_busy_and_settles_pending_lines()
     let mut handle = Pipeline::start_with_bus(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(4))),
-        Box::new(FakeVad::from_energy(0.001)),
         Box::new(FakeStream::new(vec!["你好。".into(); 4], PAUSE_S)),
         Box::new(translator),
         bus,
@@ -533,7 +529,6 @@ fn saturated_translation_backpressures_asr_and_pause_stop_remain_responsive() {
     let mut handle = Pipeline::start_with_bus(
         config,
         Box::new(SyntheticWavSource::from_bytes(&wav(300))),
-        Box::new(FakeVad::from_energy(0.001)),
         Box::new(FakeStream::new(vec!["你好。".into(); 300], PAUSE_S)),
         Box::new(translator),
         bus,

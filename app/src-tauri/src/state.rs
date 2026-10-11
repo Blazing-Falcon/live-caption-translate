@@ -7,7 +7,6 @@ use serde::Serialize;
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize)]
 pub struct EngineMap {
-    pub vad: EngineState,
     pub asr: EngineState,
     pub translator: EngineState,
     pub draft_translator: EngineState,
@@ -36,7 +35,6 @@ impl Default for AppState {
             source: None,
             source_state: SourceStateKind::Playing,
             engines: EngineMap {
-                vad: EngineState::Ready,
                 asr: EngineState::Ready,
                 translator: EngineState::Ready,
                 draft_translator: EngineState::Ready,
@@ -59,7 +57,6 @@ impl AppState {
             PipelineEvent::SourceChanged { info } => self.source = Some(info.clone()),
             PipelineEvent::SourceState { state, .. } => self.source_state = *state,
             PipelineEvent::EngineStatus { engine, state, .. } => match engine {
-                EngineKind::Vad => self.engines.vad = *state,
                 EngineKind::Asr => self.engines.asr = *state,
                 EngineKind::Translator => self.engines.translator = *state,
                 EngineKind::DraftTranslator => self.engines.draft_translator = *state,

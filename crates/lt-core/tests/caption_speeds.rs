@@ -14,7 +14,7 @@ use lt_core::{
     },
     error::{Error, Result},
     events::{FailReason, PipelineEvent},
-    fakes::{FakeTranslator, FakeVad},
+    fakes::FakeTranslator,
     pipeline::{Pipeline, PipelineOptions},
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
     types::{CaptureMode, CutReason, EffectiveMode, SourceInfo, StreamTime, UtteranceId},
@@ -277,7 +277,6 @@ fn run(samples: Vec<f32>, config: Config, draft: Option<ScriptedDraft>, final_de
     let mut pipeline = Pipeline::start_with_options(
         config,
         Box::new(VecSource::new(samples, Duration::from_millis(1))),
-        Box::new(FakeVad::from_energy(0.001)),
         Box::<AmplitudeStream>::default(),
         Box::new(translator),
         bus,

@@ -112,7 +112,6 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
     let mut pipeline = Pipeline::start_with_options(
         config.clone(),
         Box::new(source),
-        engines.vad,
         engines.asr,
         engines.translator,
         bus.clone(),
@@ -166,7 +165,7 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
         bail!("WAV replay failed: {error}");
     }
     events_log.flush()?;
-    let words = word_metrics(&args, &config, &models, &timed, args.fake);
+    let words = word_metrics(&args, &timed)?;
     let words_path = sibling(&args.out, "words.json");
     fs::write(&words_path, serde_json::to_vec_pretty(&words)?)
         .with_context(|| format!("Writing {}", words_path.display()))?;
@@ -189,53 +188,16 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
     Ok(())
 }
 
-/// Speech instants come from the pipeline's VAD over the replayed range, so the delays are
-/// measured from when words are spoken. Without a real VAD (fake engines) there are none.
-#[cfg(feature = "sherpa")]
-fn word_metrics(
-    args: &ReplayArgs,
-    config: &Config,
-    models: &std::path::Path,
-    timed: &[TimedEvent],
-    fake: bool,
-) -> wordreport::WordMetrics {
-    let instants = if fake {
-        Vec::new()
-    } else {
-        (|| -> Result<Vec<u64>> {
-            let mut registry = lt_core::engines::EngineRegistry::default();
-            lt_sherpa::register_engines(&mut registry);
-            let mut engine_config = config.clone();
-            engine_config.models.dir = models.to_string_lossy().into_owned();
-            let mut vad = registry.build_vad(&engine_config)?;
-            let samples = lt_audio::wav::read_wav_mono16(&args.wav)?;
-            let from = (args.start * 16_000.0) as usize;
-            let to = args
-                .dur
-                .map_or(samples.len(), |d| from + (d * 16_000.0) as usize)
-                .min(samples.len());
-            Ok(wordreport::speech_instants(
-                &samples[from.min(to)..to],
-                vad.as_mut(),
-            ))
-        })()
-        .unwrap_or_else(|error| {
-            eprintln!("Speech instants unavailable: {error}");
-            Vec::new()
-        })
+/// Per-word delays from the speech instants in `--instants`; without them there are none.
+fn word_metrics(args: &ReplayArgs, timed: &[TimedEvent]) -> Result<wordreport::WordMetrics> {
+    let instants: Vec<u64> = match &args.instants {
+        Some(path) => serde_json::from_slice(
+            &fs::read(path).with_context(|| format!("Reading {}", path.display()))?,
+        )
+        .with_context(|| format!("Parsing {}", path.display()))?,
+        None => Vec::new(),
     };
-    wordreport::compute(timed, &instants)
-}
-
-#[cfg(not(feature = "sherpa"))]
-fn word_metrics(
-    _: &ReplayArgs,
-    _: &Config,
-    _: &std::path::Path,
-    timed: &[TimedEvent],
-    _: bool,
-) -> wordreport::WordMetrics {
-    wordreport::compute(timed, &[])
+    Ok(wordreport::compute(timed, &instants))
 }
 
 pub(crate) fn observe(report: &mut ReplayReport, event: &PipelineEvent) {

@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet, VecDeque};
 const WINDOW_SIZE: usize = 50;
 /// Per-word delay medians cover clauses that finished within this long.
 const WORD_WINDOW_MS: u64 = 60_000;
-/// Instants sampled inside each clause (an approximation of VAD-detected speech).
+/// Instants sampled inside each clause (an approximation of when words are spoken).
 const WORD_STEP_MS: u64 = 100;
 
 /// Shared routing for event subscribers: Other is terminal only if untranslated.

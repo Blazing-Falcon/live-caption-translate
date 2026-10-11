@@ -16,13 +16,11 @@
     CAPTION_SPEEDS,
     STREAM_CHUNKS,
     TRANSLATE_THREADS_MAX,
-    VAD_ENGINES,
     asrPatch,
     latencyPatch,
     transcriptPatch,
     translateThreadsPatch,
     translateWindowPatch,
-    vadPatch,
     type Config,
     type ConfigPatch,
     type SpeechChoice,
@@ -96,7 +94,7 @@
   }
 
   interface SpeechRow {
-    key: "vad.engine" | "asr.stream_chunk_ms";
+    key: "asr.stream_chunk_ms";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -104,13 +102,6 @@
   }
 
   const speechRows = $derived<SpeechRow[]>([
-    {
-      key: "vad.engine",
-      label: "Voice detection",
-      value: config.vad.engine,
-      choices: VAD_ENGINES,
-      patch: (value) => vadPatch({ engine: value as Config["vad"]["engine"] }),
-    },
     {
       key: "asr.stream_chunk_ms",
       label: "Streaming chunk",
@@ -171,9 +162,6 @@
         return { text: `Downloading ${name}: ${modelsPercent(model)}%. It is used when the download is done.`, download: null };
       }
       return { text: `${name} is not downloaded.`, download: waiting.model };
-    }
-    if (row.key === "vad.engine") {
-      return { text: "X-ASR streaming finds the pauses itself. Voice detection only places the cut between two lines.", download: null };
     }
     const current = row.choices.find((choice) => choice.value === row.value);
     if (current && !ready(current) && current.model !== null) {

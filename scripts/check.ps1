@@ -30,7 +30,7 @@ try {
     Step 'Copy native DLLs next to test binaries' { & "$PSScriptRoot/install-native-runtime.ps1"; $global:LASTEXITCODE = 0 }
 
     $ltRealModel = [ordered]@{
-        'ASR and VAD parity (lt-sherpa)' = @('LT_MODELS_DIR')
+        'Streaming ASR (lt-sherpa)'      = @('LT_MODELS_DIR')
         'Translation fixtures (lt-llm)'  = @('LT_LLAMA_SERVER')
         'Draft fixtures (lt-llm)'        = @('LT_LLAMA_SERVER', 'LT_DRAFT_MODEL')
     }

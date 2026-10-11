@@ -43,7 +43,6 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
     );
     for name in [
         "audio",
-        "vad",
         "asr",
         "filter",
         "routing",
@@ -121,7 +120,7 @@ mod tests {
             }]),
             Applies::Capture
         );
-        assert_eq!(changed(|c| c.vad.min_silence_s = 0.6), Applies::Pipeline);
+        assert_eq!(changed(|c| c.asr.stream_pause_s = 0.6), Applies::Pipeline);
         assert_eq!(
             changed(|c| c.routing.translate_other = vec!["ja".into()]),
             Applies::Pipeline
@@ -147,7 +146,7 @@ mod tests {
         assert_eq!(
             changed(|c| {
                 c.capture.mode = "apps".into();
-                c.vad.threshold = 0.6;
+                c.asr.stream_pause_s = 0.6;
             }),
             Applies::Pipeline
         );
