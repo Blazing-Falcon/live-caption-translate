@@ -105,12 +105,9 @@ pub struct ProcessSampler {
     app_pid: u32,
     /// Zero means no supervised translator; the supervisor replaces this on restart.
     child_pid: Arc<AtomicU32>,
-    /// The draft translator's server; zero when there is none.
-    draft_pid: Arc<AtomicU32>,
     backend: platform::Backend,
     app_cpu: CpuHistory,
     child_cpu: CpuHistory,
-    draft_cpu: CpuHistory,
     system_cpu: SystemCpu,
 }
 
@@ -126,19 +123,11 @@ impl ProcessSampler {
         Ok(Self {
             app_pid,
             child_pid,
-            draft_pid: Arc::new(AtomicU32::new(0)),
             backend,
             app_cpu: CpuHistory::default(),
             child_cpu: CpuHistory::default(),
-            draft_cpu: CpuHistory::default(),
             system_cpu: SystemCpu::default(),
         })
-    }
-
-    /// Also sample the draft translator's server process.
-    pub fn with_draft(mut self, draft_pid: Arc<AtomicU32>) -> Self {
-        self.draft_pid = draft_pid;
-        self
     }
 }
 
@@ -153,16 +142,9 @@ impl ResourceSampler for ProcessSampler {
         } else {
             self.backend.read(child_pid)
         };
-        let draft_pid = self.draft_pid.load(Ordering::Acquire);
-        let draft = if draft_pid == 0 {
-            None
-        } else {
-            self.backend.read(draft_pid)
-        };
         let now = Instant::now();
         let (cpu_app_pct, rss_app_mb) = self.app_cpu.observe(self.app_pid, app, now);
         let (cpu_translator_pct, rss_translator_mb) = self.child_cpu.observe(child_pid, child, now);
-        let (cpu_draft_pct, rss_draft_mb) = self.draft_cpu.observe(draft_pid, draft, now);
         let cpu_system_pct = self.system_cpu.observe(self.backend.system_times());
         ResourceSample {
             cpu_app_pct,
@@ -170,8 +152,6 @@ impl ResourceSampler for ProcessSampler {
             rss_app_mb,
             rss_translator_mb,
             cpu_system_pct,
-            cpu_draft_pct,
-            rss_draft_mb,
         }
     }
 }

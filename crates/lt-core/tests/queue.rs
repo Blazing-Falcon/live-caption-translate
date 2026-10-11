@@ -198,7 +198,6 @@ impl Translator for ContextRecorder {
             streaming: false,
             glossary: false,
             context: true,
-            prefill: false,
             max_input_chars: 300,
             pairs: vec![("zh".into(), "en".into())],
         }
@@ -378,7 +377,6 @@ impl Translator for ScriptedTranslator {
             streaming: true,
             glossary: false,
             context: false,
-            prefill: false,
             max_input_chars: 300,
             pairs: vec![("zh".into(), "en".into())],
         }

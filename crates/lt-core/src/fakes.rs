@@ -161,7 +161,6 @@ impl Translator for FakeTranslator {
             streaming: true,
             glossary: false,
             context: false,
-            prefill: false,
             max_input_chars: 300,
             pairs: vec![("zh".into(), "en".into())],
         }

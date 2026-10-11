@@ -1,5 +1,5 @@
-//! End-to-end behavior with fake engines and no models: early commit, live partials,
-//! drafts, and the event ordering rules.
+//! End-to-end behavior with fake engines and no models: early commit, live partials and the
+//! event ordering rules.
 //!
 //! The fake recognizer reads its text from the audio itself: every 200 ms of speech is one
 //! token whose amplitude encodes its position in a fixed sentence, so its tokens follow the
@@ -193,22 +193,20 @@ impl Drop for VecSource {
     }
 }
 
-/// A draft translator with seeded delays and failures. It answers `d<chars>` so each draft is
-/// distinct text, and appends to whatever prefill it is given.
-struct ScriptedDraft {
+/// A translator with seeded delays and failures, so translations finish and fail at varied
+/// times relative to the recognizer.
+struct SeededTranslator {
     state: u64,
     fail_percent: u64,
     max_delay_ms: u64,
-    prefills: Arc<std::sync::Mutex<Vec<String>>>,
 }
 
-impl ScriptedDraft {
+impl SeededTranslator {
     fn new(seed: u64, fail_percent: u64, max_delay_ms: u64) -> Self {
         Self {
             state: seed.wrapping_mul(0x9E37_79B9_7F4A_7C15) | 1,
             fail_percent,
             max_delay_ms,
-            prefills: Arc::default(),
         }
     }
     fn next(&mut self) -> u64 {
@@ -220,13 +218,12 @@ impl ScriptedDraft {
     }
 }
 
-impl Translator for ScriptedDraft {
+impl Translator for SeededTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            streaming: false,
+            streaming: true,
             glossary: false,
             context: false,
-            prefill: true,
             max_input_chars: 300,
             pairs: vec![("zh".into(), "en".into())],
         }
@@ -237,9 +234,8 @@ impl Translator for ScriptedDraft {
     fn translate(
         &mut self,
         request: &TranslateRequest<'_>,
-        _: &mut dyn FnMut(&str),
+        on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut> {
-        self.prefills.lock().unwrap().push(request.prefill.into());
         let roll = self.next();
         if self.max_delay_ms > 0 {
             thread::sleep(Duration::from_millis(roll % (self.max_delay_ms + 1)));
@@ -250,14 +246,15 @@ impl Translator for ScriptedDraft {
                 message: "scripted failure".into(),
             });
         }
-        // A growing English sentence, one word per two Chinese characters; with a prefill the
-        // reply is only the continuation, as the real draft client returns it.
-        let words: Vec<String> = (0..request.text.chars().count() / 2 + 3)
+        // One English word per two Chinese characters, streamed word by word.
+        let words: Vec<String> = (0..request.text.chars().count() / 2 + 1)
             .map(|i| format!("w{i}"))
             .collect();
-        let done = request.prefill.split_whitespace().count();
+        for count in 1..=words.len() {
+            on_delta(&words[..count].join(" "));
+        }
         Ok(TranslationOut {
-            text: words[done.min(words.len())..].join(" "),
+            text: words.join(" "),
             ..TranslationOut::default()
         })
     }
@@ -267,21 +264,16 @@ struct Run {
     events: Vec<PipelineEvent>,
 }
 
-fn run(samples: Vec<f32>, config: Config, draft: Option<ScriptedDraft>, final_delay: u32) -> Run {
+fn run(samples: Vec<f32>, config: Config, translator: Box<dyn Translator>) -> Run {
     let bus = EventBus::default();
     let receiver = bus.subscribe(8192);
-    let translator = FakeTranslator {
-        delay_per_character: Duration::from_millis(u64::from(final_delay)),
-        ..FakeTranslator::default()
-    };
     let mut pipeline = Pipeline::start_with_options(
         config,
         Box::new(VecSource::new(samples, Duration::from_millis(1))),
         Box::<AmplitudeStream>::default(),
-        Box::new(translator),
+        translator,
         bus,
         PipelineOptions {
-            draft: draft.map(|d| Box::new(d) as Box<dyn Translator>),
             physical_cores: Some(8),
             ..PipelineOptions::default()
         },
@@ -314,8 +306,6 @@ fn assert_ordering(events: &[PipelineEvent]) {
         dropped: bool,
         terminal: bool,
         absorbed: bool,
-        drafts_after_final: u32,
-        last_rev: u32,
     }
     let mut lines: BTreeMap<UtteranceId, Line> = BTreeMap::new();
     let mut seen_ids: BTreeSet<UtteranceId> = BTreeSet::new();
@@ -331,27 +321,6 @@ fn assert_ordering(events: &[PipelineEvent]) {
                     !line.asr_final && !line.dropped,
                     "partial after the final: {id:?}"
                 );
-            }
-            PipelineEvent::TranslationDraft { id, rev, .. } => {
-                let line = lines.entry(*id).or_default();
-                assert!(
-                    !line.terminal && !line.absorbed,
-                    "draft after a terminal: {id:?}"
-                );
-                assert!(*rev > line.last_rev, "rev must increase: {id:?}");
-                assert_eq!(
-                    line.last_rev + 1,
-                    *rev,
-                    "rev counts published drafts: {id:?}"
-                );
-                line.last_rev = *rev;
-                if line.asr_final {
-                    line.drafts_after_final += 1;
-                    assert!(
-                        line.drafts_after_final <= 1,
-                        "more than one draft after the final: {id:?}"
-                    );
-                }
             }
             PipelineEvent::AsrFinal { id, .. } => {
                 let line = lines.entry(*id).or_default();
@@ -397,7 +366,11 @@ fn finals(events: &[PipelineEvent]) -> Vec<(UtteranceId, String, CutReason)> {
 #[test]
 fn a_long_sentence_is_committed_into_clauses_that_add_up_to_the_whole_text() {
     let chars = sentence_chars();
-    let run = run(speech(chars.len(), 1.0), config("light"), None, 0);
+    let run = run(
+        speech(chars.len(), 1.0),
+        config("light"),
+        Box::<FakeTranslator>::default(),
+    );
     assert_ordering(&run.events);
     let clauses = finals(&run.events);
     assert!(clauses.len() >= 2, "{clauses:?}");
@@ -425,51 +398,22 @@ fn a_long_sentence_is_committed_into_clauses_that_add_up_to_the_whole_text() {
 #[test]
 fn off_mode_cuts_at_sentence_ends_and_pauses_and_shows_live_text() {
     let chars = sentence_chars();
-    let run = run(speech(chars.len(), 1.0), config("off"), None, 0);
+    let run = run(
+        speech(chars.len(), 1.0),
+        config("off"),
+        Box::<FakeTranslator>::default(),
+    );
     assert_ordering(&run.events);
     assert!(run
         .events
         .iter()
         .any(|event| matches!(event, PipelineEvent::AsrPartial { .. })));
-    assert!(!run
-        .events
-        .iter()
-        .any(|event| matches!(event, PipelineEvent::TranslationDraft { .. })));
     let clauses = finals(&run.events);
     let texts: Vec<_> = clauses.iter().map(|(_, text, _)| text.as_str()).collect();
     let (sentence, rest) = SENTENCE.split_at(SENTENCE.find('。').unwrap() + '。'.len_utf8());
     assert_eq!(texts, [sentence, rest]);
     let cuts: Vec<_> = clauses.iter().map(|(_, _, cut)| *cut).collect();
     assert_eq!(cuts, [CutReason::Commit, CutReason::Pause]);
-}
-
-#[test]
-fn continuous_mode_publishes_drafts_that_continue_each_other_and_stop_at_the_final() {
-    let chars = sentence_chars();
-    let draft = ScriptedDraft::new(7, 0, 4);
-    let prefills = draft.prefills.clone();
-    let run = run(speech(chars.len(), 1.0), config("auto"), Some(draft), 10);
-    assert_ordering(&run.events);
-    let drafts: Vec<_> = run
-        .events
-        .iter()
-        .filter_map(|event| match event {
-            PipelineEvent::TranslationDraft { id, rev, text, .. } => {
-                Some((*id, *rev, text.clone()))
-            }
-            _ => None,
-        })
-        .collect();
-    assert!(drafts.len() >= 3, "{drafts:?}");
-    assert!(drafts.iter().any(|(_, rev, _)| *rev >= 2));
-    // Later drafts of one clause are prefilled with the earlier English.
-    assert!(
-        prefills.lock().unwrap().iter().any(|p| !p.is_empty()),
-        "no prefilled request"
-    );
-    for (_, _, text) in &drafts {
-        assert!(!text.contains("  "), "double space in {text:?}");
-    }
 }
 
 #[test]
@@ -483,13 +427,8 @@ fn many_seeds_keep_every_ordering_rule_with_random_delays_and_failures() {
                 0.5 + 0.1 * round as f32,
             ));
         }
-        let draft = ScriptedDraft::new(seed, 30, 8);
-        let run = run(
-            samples,
-            config("continuous"),
-            Some(draft),
-            (seed % 4) as u32 * 3,
-        );
+        let translator = SeededTranslator::new(seed, 30, 8);
+        let run = run(samples, config("light"), Box::new(translator));
         assert_ordering(&run.events);
         assert!(!finals(&run.events).is_empty(), "seed {seed}");
     }

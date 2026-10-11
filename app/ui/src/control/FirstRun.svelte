@@ -2,7 +2,7 @@
   import { get } from "svelte/store";
   import * as api from "../lib/api";
   import { useSession } from "../lib/context";
-  import { formatBytes, modelTitle, modelsAllReady, modelsPercent } from "../lib/format";
+  import { formatBytes, modelsAllReady, modelsPercent } from "../lib/format";
   import { modelSourcePatch, type Config } from "../lib/settings";
   import type { ModelSource, ModelStatus } from "../lib/types";
   import Notices from "./Notices.svelte";
@@ -18,13 +18,10 @@
   const { models, busy } = session;
 
   let fired = false;
-  // Optional models that are not recommended for this PC download only when ticked.
-  let ticked = $state<string[]>([]);
 
   // Speech model choices download from the Performance page, not here.
-  const rows = $derived(($models ?? []).filter((row) => !row.optional || row.id === api.DRAFT_MODEL_ID));
-  const wanted = (row: ModelStatus): boolean => !row.optional || row.recommended || ticked.includes(row.id);
-  const totalBytes = $derived(rows.filter(wanted).reduce((sum, row) => sum + row.bytes_total, 0));
+  const rows = $derived(($models ?? []).filter((row) => !row.optional));
+  const totalBytes = $derived(rows.reduce((sum, row) => sum + row.bytes_total, 0));
   const downloading = $derived(rows.some((row) => row.state === "downloading"));
   const paused = $derived(rows.some((row) => row.state === "paused"));
   const needsDownload = $derived(rows.some((row) => row.state === "missing" || row.state === "corrupt"));
@@ -44,7 +41,7 @@
   function statusText(row: ModelStatus): string {
     switch (row.state) {
       case "missing":
-        return waitingText(row);
+        return "Waiting";
       case "downloading":
         return `${modelsPercent(row)}%`;
       case "paused":
@@ -62,28 +59,12 @@
     if (row.state === "downloading" || row.state === "paused") {
       return `${formatBytes(row.bytes_done)} / ${formatBytes(row.bytes_total)}`;
     }
-    // The draft model's title already carries its size.
-    return row.id === api.DRAFT_MODEL_ID ? "" : formatBytes(row.bytes_total);
-  }
-
-  function waitingText(row: ModelStatus): string {
-    return row.optional && !wanted(row) ? "Optional" : "Waiting";
-  }
-
-  function toggleOptional(row: ModelStatus, checked: boolean): void {
-    ticked = checked ? [...ticked.filter((id) => id !== row.id), row.id] : ticked.filter((id) => id !== row.id);
+    return formatBytes(row.bytes_total);
   }
 
   async function start(): Promise<void> {
     if (get(busy).has("models.download")) return;
-    // Without ids the app downloads every missing required model and the recommended optional ones.
-    // A ticked optional model needs the whole list spelled out.
-    const picked = rows.filter((row) => row.optional && !row.recommended && ticked.includes(row.id));
-    const ids =
-      picked.length === 0
-        ? undefined
-        : rows.filter((row) => wanted(row) && row.state !== "ready").map((row) => row.id);
-    await session.act("models.download", () => api.modelsDownload(source, ids));
+    await session.act("models.download", () => api.modelsDownload(source));
   }
 
   async function pause(): Promise<void> {
@@ -127,22 +108,7 @@
     {#each rows as row (row.id)}
       <li class="model" data-state={row.state}>
         <div class="grow">
-          <div class="names">
-            {#if row.optional && !row.recommended}
-              <label class="optional">
-                <input
-                  type="checkbox"
-                  aria-label={`Download ${modelTitle(row)}`}
-                  checked={ticked.includes(row.id)}
-                  disabled={row.state !== "missing"}
-                  onchange={(event) => toggleOptional(row, event.currentTarget.checked)}
-                />
-                <span class="title">{modelTitle(row)}</span>
-              </label>
-            {:else}
-              <span class="title">{modelTitle(row)}</span>
-            {/if}
-          </div>
+          <span class="title">{row.name}</span>
           {#if row.state === "downloading" || row.state === "paused"}
             <div
               class="track"
@@ -255,13 +221,6 @@
 
   .title {
     font-weight: 500;
-  }
-
-  .optional {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
   }
 
   .size {

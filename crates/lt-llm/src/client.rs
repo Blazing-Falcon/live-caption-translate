@@ -39,11 +39,6 @@ pub(crate) struct Endpoint {
 }
 
 impl Endpoint {
-    /// llama-server's raw completion endpoint (draft prefill).
-    pub(crate) fn completion_url(&self) -> String {
-        format!("http://{}/completion", self.address)
-    }
-
     pub(crate) fn new(base_url: &str) -> Result<Self> {
         if base_url.contains('#') {
             return Err(Error::Config(
@@ -329,7 +324,6 @@ impl Translator for OpenAiCompatTranslator {
             streaming: true,
             glossary: false,
             context: true,
-            prefill: false,
             max_input_chars: 300,
             pairs: ["zh", "yue", "ja", "ko"]
                 .map(|source| (source.into(), "en".into()))
@@ -345,7 +339,6 @@ impl Translator for OpenAiCompatTranslator {
             tgt: "en",
             terms: &[],
             context: &[],
-            prefill: "",
             max_tokens: None,
             control: control.clone(),
         };

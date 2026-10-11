@@ -1,7 +1,7 @@
 //! Owns the local translator process and its crash-recovery budget.
 use lt_core::{
     bus::EventBus,
-    config::{LatencyConfig, TranslateConfig},
+    config::TranslateConfig,
     engines::{TranslationControl, Translator},
     error::{Error, Result},
     events::{EngineKind, EngineState, PipelineEvent},
@@ -20,35 +20,11 @@ use std::{
     time::{Duration, Instant},
 };
 
-/// Which model a llama-server child runs.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum ServerRole {
-    /// Hy-MT2: the accurate translator whose text is never rewritten.
-    Final,
-    /// LMT-60: quick drafts that the final replaces.
-    Draft,
-}
-
-impl ServerRole {
-    pub fn engine(self) -> EngineKind {
-        match self {
-            Self::Final => EngineKind::Translator,
-            Self::Draft => EngineKind::DraftTranslator,
-        }
-    }
-
-    /// Model-specific arguments; `models/manifest.json` lists the same ones (tested).
-    pub fn model_args(self) -> &'static [&'static str] {
-        match self {
-            Self::Final => &["--override-kv", "tokenizer.ggml.eos_token_id=int:120020"],
-            Self::Draft => &[],
-        }
-    }
-}
+/// Hy-MT2's GGUF has an incorrect end token; `models/manifest.json` lists the same arguments.
+const MODEL_ARGS: [&str; 2] = ["--override-kv", "tokenizer.ggml.eos_token_id=int:120020"];
 
 #[derive(Clone, Debug)]
 pub struct ServerOptions {
-    pub role: ServerRole,
     pub binary: PathBuf,
     pub model: PathBuf,
     pub threads: u32,
@@ -62,16 +38,9 @@ pub struct ServerOptions {
 }
 
 impl ServerOptions {
-    /// A Hy-MT2 server. `_physical_cores` is unused: automatic threads mean 2 for
-    /// each server.
-    pub fn new(
-        binary: PathBuf,
-        model: PathBuf,
-        config: &TranslateConfig,
-        _physical_cores: usize,
-    ) -> Self {
+    /// A Hy-MT2 server.
+    pub fn new(binary: PathBuf, model: PathBuf, config: &TranslateConfig) -> Self {
         Self {
-            role: ServerRole::Final,
             binary,
             model,
             threads: config.server_threads(),
@@ -82,11 +51,6 @@ impl ServerOptions {
             #[cfg(test)]
             mock_directory: None,
         }
-    }
-
-    pub fn with_role(mut self, role: ServerRole) -> Self {
-        self.role = role;
-        self
     }
 
     pub fn with_below_normal(mut self, below_normal: bool) -> Self {
@@ -104,7 +68,7 @@ impl ServerOptions {
         args.push(self.context.to_string());
         args.extend(["-t".into(), self.threads.to_string()]);
         args.extend(["-tb".into(), self.threads.to_string()]);
-        args.extend(self.role.model_args().iter().map(|arg| (*arg).to_owned()));
+        args.extend(MODEL_ARGS.map(String::from));
         args.push("--no-webui".into());
         args
     }
@@ -146,7 +110,7 @@ impl Supervisor {
             let message = format!("Translator binary is missing: {}", options.binary.display());
             status(
                 &bus,
-                options.role.engine(),
+                EngineKind::Translator,
                 EngineState::Failed,
                 Some(message.clone()),
             );
@@ -156,7 +120,7 @@ impl Supervisor {
             let message = format!("Translation model is missing: {}", options.model.display());
             status(
                 &bus,
-                options.role.engine(),
+                EngineKind::Translator,
                 EngineState::Failed,
                 Some(message.clone()),
             );
@@ -168,7 +132,7 @@ impl Supervisor {
         let ready = Arc::new(AtomicBool::new(false));
         let cancelled = Arc::new(AtomicBool::new(false));
         let state = WorkerState {
-            engine: options.role.engine(),
+            engine: EngineKind::Translator,
             url: url.clone(),
             pid: pid.clone(),
             ready: ready.clone(),
@@ -365,16 +329,8 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         &state.cancelled,
         Duration::from_secs_f64(f64::from(options.translate.timeout_s)),
     );
-    match options.role {
-        ServerRole::Final => {
-            crate::client::OpenAiCompatTranslator::new(&state.url, options.translate.clone())?
-                .warm_up(&warm_up_control)?;
-        }
-        ServerRole::Draft => {
-            crate::draft::LmtDraftTranslator::new(&state.url, &LatencyConfig::default())?
-                .warm_up(&warm_up_control)?;
-        }
-    }
+    crate::client::OpenAiCompatTranslator::new(&state.url, options.translate.clone())?
+        .warm_up(&warm_up_control)?;
     state.ready.store(true, Ordering::Release);
     status(&state.bus, state.engine, EngineState::Ready, None);
     let mut unhealthy = 0;
@@ -661,7 +617,6 @@ mod tests {
                 std::env::current_exe().unwrap(),
                 model,
                 &TranslateConfig::default(),
-                4,
             );
             options.load_timeout = Duration::from_secs(3);
             options.mock_directory = Some(self.path.clone());
@@ -679,31 +634,16 @@ mod tests {
         }
     }
 
-    fn options_for(role: ServerRole, threads: u32) -> ServerOptions {
-        let config = TranslateConfig {
-            threads,
-            ..TranslateConfig::default()
-        };
-        ServerOptions::new(
+    #[test]
+    fn the_server_gets_the_expected_argument_list() {
+        let options = ServerOptions::new(
             PathBuf::from("llama-server"),
             PathBuf::from("model.gguf"),
-            &config,
-            8,
-        )
-        .with_role(role)
-    }
-
-    #[test]
-    fn both_roles_build_the_expected_argument_lists() {
-        let final_args = options_for(ServerRole::Final, 0).arguments(8081);
-        assert_eq!(
-            final_args.join(" "),
-            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 2 -tb 2 --override-kv tokenizer.ggml.eos_token_id=int:120020 --no-webui"
+            &TranslateConfig::default(),
         );
-        let draft_args = options_for(ServerRole::Draft, 0).arguments(8082);
         assert_eq!(
-            draft_args.join(" "),
-            "-m model.gguf --host 127.0.0.1 --port 8082 --jinja -np 1 -c 1024 -t 2 -tb 2 --no-webui"
+            options.arguments(8081).join(" "),
+            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 2 -tb 2 --override-kv tokenizer.ggml.eos_token_id=int:120020 --no-webui"
         );
     }
 
@@ -767,7 +707,6 @@ mod tests {
             tgt: "en",
             terms: &[],
             context: &[],
-            prefill: "",
             max_tokens: None,
             control: control(&Arc::new(AtomicBool::new(false)), Duration::from_secs(2)),
         };

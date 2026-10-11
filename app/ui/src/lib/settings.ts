@@ -76,7 +76,6 @@ export interface Config extends ExtraFields {
     panel_lines: number;
     flow_lines: number;
     live_source: boolean;
-    draft_display: "hold2" | "settled" | "all";
     bar_rect?: OverlayRect;
     panel_rect?: OverlayRect;
     flow_rect?: OverlayRect;
@@ -89,14 +88,7 @@ export interface Config extends ExtraFields {
     stability: boolean;
     split_long: boolean;
     cap_tokens: number;
-    draft_context_s: number;
     final_context_s: number;
-    draft_min_chars: number;
-    draft_grow_chars: number;
-    draft_keep_back_words: number;
-    draft_timeout_s: number;
-    draft_engine: string;
-    draft_server_url: string;
     low_priority: boolean;
     step_down: boolean;
     step_down_cpu_pct: number;
@@ -293,7 +285,7 @@ export function latencyPatch(values: DeepPartial<Config["latency"]>): ConfigPatc
 export const CAPTION_SPEEDS: readonly { value: Config["latency"]["mode"]; label: string; help: string }[] = [
   { value: "auto", label: "Automatic (recommended)", help: "Uses Continuous on PCs with 6 or more cores, Light on smaller PCs." },
   { value: "continuous", label: "Continuous", help: "English follows the speaker within about a second. Uses the most CPU." },
-  { value: "light", label: "Light", help: "Translates each phrase as soon as it ends. Less CPU, no draft text." },
+  { value: "light", label: "Light", help: "Translates each phrase as soon as it ends. Uses less CPU." },
   { value: "off", label: "Wait for full sentences", help: "Translates whole sentences, or longer phrases when the speaker runs on. English comes later, with fewer sentences cut in half. With X-ASR streaming the Chinese still appears as it is spoken." },
 ];
 
@@ -314,15 +306,6 @@ export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
   { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "The default. Fewest errors." },
   { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "About 30% less CPU. Words appear about 0.2 s later." },
 ];
-
-export const DRAFT_DISPLAYS: readonly { value: Config["overlay"]["draft_display"]; label: string }[] = [
-  { value: "hold2", label: "Hold back the newest words" },
-  { value: "settled", label: "Show only settled words" },
-  { value: "all", label: "Show everything" },
-];
-
-export const DRAFT_DISPLAY_HELP =
-  "Drafts are quick translations shown in a dimmer color until the final translation replaces them.";
 
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
   return { models: { source } };
@@ -393,8 +376,7 @@ export const DEFAULT_CONFIG: Config = {
     "panel_edge": "right",
     "panel_lines": 5,
     "flow_lines": 3,
-    "live_source": true,
-    "draft_display": "hold2"
+    "live_source": true
   },
   "latency": {
     "mode": "auto",
@@ -404,14 +386,7 @@ export const DEFAULT_CONFIG: Config = {
     "stability": true,
     "split_long": true,
     "cap_tokens": 20,
-    "draft_context_s": 1.5,
     "final_context_s": 10.0,
-    "draft_min_chars": 3,
-    "draft_grow_chars": 3,
-    "draft_keep_back_words": 2,
-    "draft_timeout_s": 3.0,
-    "draft_engine": "lmt60",
-    "draft_server_url": "",
     "low_priority": true,
     "step_down": true,
     "step_down_cpu_pct": 80.0,

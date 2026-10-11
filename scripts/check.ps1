@@ -32,7 +32,6 @@ try {
     $ltRealModel = [ordered]@{
         'Streaming ASR (lt-sherpa)'      = @('LT_MODELS_DIR')
         'Translation fixtures (lt-llm)'  = @('LT_LLAMA_SERVER')
-        'Draft fixtures (lt-llm)'        = @('LT_LLAMA_SERVER', 'LT_DRAFT_MODEL')
     }
     foreach ($ltTest in $ltRealModel.GetEnumerator()) {
         $ltMissing = @($ltTest.Value | Where-Object { -not [Environment]::GetEnvironmentVariable($_) })

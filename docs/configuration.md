@@ -18,7 +18,7 @@ Rules:
 |---|---|
 | `live` | Immediately |
 | `capture` | The capture sources open again. The pipeline continues. |
-| `pipeline` | The pipeline restarts. A llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads`, `translate.ctx`, `translate.engine`, `latency.low_priority`, `latency.draft_server_url`, `latency.draft_engine`, or `latency.mode` to or from `off`. |
+| `pipeline` | The pipeline restarts. A llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads`, `translate.ctx`, `translate.engine`, `latency.low_priority`, or `latency.mode` to or from `off`. |
 | `restart` | At the next app start |
 
 ## Full Default File
@@ -85,7 +85,6 @@ panel_edge = "right"            # "left" | "right"
 panel_lines = 5
 flow_lines = 3
 live_source = true              # show the Chinese of the clause being spoken
-draft_display = "hold2"         # "hold2" | "settled" | "all"
 # Saved positions, written by the app after move mode. Absent = default placement.
 # [overlay.bar_rect]   monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 140   (device-independent pixels)
 # [overlay.panel_rect] monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 420, h = 600
@@ -99,14 +98,7 @@ comma_min_tokens = 8
 stability = true
 split_long = true               # wait cap on/off
 cap_tokens = 20
-draft_context_s = 1.5
 final_context_s = 10.0
-draft_min_chars = 3
-draft_grow_chars = 3
-draft_keep_back_words = 2
-draft_timeout_s = 3.0
-draft_engine = "lmt60"
-draft_server_url = ""           # "" = spawn the bundled draft server
 low_priority = true             # below-normal priority for both servers
 step_down = true
 step_down_cpu_pct = 80.0
@@ -218,7 +210,6 @@ The default values are in the file above.
 | `panel_lines` | 4–6 | live | Lines in the panel |
 | `flow_lines` | 2–6 | live | Wrapped lines kept of each running-text paragraph. Older text scrolls out at the top. |
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
-| `draft_display` | `hold2`, `settled`, `all` | live | Draft words to show. `hold2`: all words except the newest two. `settled`: words that the last two drafts agree on. `all`: all words. |
 | `bar_rect`, `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
 
 ### latency
@@ -234,14 +225,7 @@ All keys have the `pipeline` value: any change in `[latency]` restarts the pipel
 | `stability` | bool | Commit only text that the previous decode also had |
 | `split_long` | bool | Enable the wait cap |
 | `cap_tokens` | 0, 10–60 | Wait cap in word tokens. `0` disables it. Values 1–9 become 10. |
-| `draft_context_s` | 0–5 | Left context for decodes after a commit |
 | `final_context_s` | 0–20 | Left context for the final decode after a commit |
-| `draft_min_chars` | 1–10 | Word characters necessary before the first draft |
-| `draft_grow_chars` | 1–20 | New word characters necessary before the next draft |
-| `draft_keep_back_words` | 0–5 | Words removed from the previous draft to make the prefill |
-| `draft_timeout_s` | 1–10 | Time limit for one draft request |
-| `draft_engine` | engine name | Draft translator |
-| `draft_server_url` | URL | Empty: start and supervise the draft server. Set: use this server. |
 | `low_priority` | bool | Run both servers at below-normal priority |
 | `step_down` | bool | Enable automatic step-down |
 | `step_down_cpu_pct` | 50–100 | System CPU that starts a step-down (3 samples) |

@@ -76,12 +76,9 @@ export const getStats = (): Promise<PipelineStats> => call<PipelineStats>(COMMAN
 export const listAudioDevices = (): Promise<AudioDevice[]> => call<AudioDevice[]>(COMMANDS.listAudioDevices);
 export const listAudioApps = (): Promise<AudioAppList> => call<AudioAppList>(COMMANDS.listAudioApps);
 export const modelsStatus = (): Promise<ModelStatus[]> => call<ModelStatus[]>(COMMANDS.modelsStatus);
-/** Id of the optional draft model in models/manifest.json (the Performance page's Download button). */
-export const DRAFT_MODEL_ID = "lmt-60-0.6b-q4_k_m";
-
 /**
- * Without `ids`: every missing required model plus the recommended optional ones (first run).
- * With `ids`: exactly those models.
+ * Without `ids`: every missing required model (first run).
+ * With `ids`: exactly those models (the Performance page's speech model choices).
  */
 export const modelsDownload = (source: ModelSource, ids?: readonly string[]): Promise<void> =>
   call<void>(COMMANDS.modelsDownload, ids === undefined ? { source } : { source, ids: [...ids] });

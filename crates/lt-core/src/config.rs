@@ -106,7 +106,6 @@ config_table!(OverlayConfig {
     panel_lines: u32 = 5,
     flow_lines: u32 = 3,
     live_source: bool = true,
-    draft_display: String = "hold2".into(),
     #[serde(skip_serializing_if = "Option::is_none")]
     bar_rect: Option<OverlayRect> = None,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -122,14 +121,7 @@ config_table!(LatencyConfig {
     stability: bool = true,
     split_long: bool = true,
     cap_tokens: u32 = 20,
-    draft_context_s: f32 = 1.5,
     final_context_s: f32 = 10.0,
-    draft_min_chars: u32 = 3,
-    draft_grow_chars: u32 = 3,
-    draft_keep_back_words: u32 = 2,
-    draft_timeout_s: f32 = 3.0,
-    draft_engine: String = "lmt60".into(),
-    draft_server_url: String = String::new(),
     low_priority: bool = true,
     step_down: bool = true,
     step_down_cpu_pct: f32 = 80.0,
@@ -345,41 +337,23 @@ impl Config {
                 "latency.cap_tokens: values 1 to 9 raised to 10 (0 turns the cap off)".into(),
             );
         }
-        number!(latency, draft_context_s, 0.0, 5.0);
         number!(latency, final_context_s, 0.0, 20.0);
-        number!(latency, draft_min_chars, 1, 10);
-        number!(latency, draft_grow_chars, 1, 20);
-        number!(latency, draft_keep_back_words, 0, 5);
-        number!(latency, draft_timeout_s, 1.0, 10.0);
         number!(latency, step_down_cpu_pct, 50.0, 100.0);
         let step_down_cpu = self.latency.step_down_cpu_pct;
         number!(latency, step_up_cpu_pct, 30.0, step_down_cpu);
         number!(latency, step_down_lag_s, 1.0, 10.0);
         number!(latency, auto_min_cores, 2, 64);
         choice!(latency, mode, &["auto", "continuous", "light", "off"]);
-        choice!(overlay, draft_display, &["hold2", "settled", "all"]);
         choice!(overlay, style, &["bar", "panel", "flow"]);
         choice!(overlay, panel_edge, &["left", "right"]);
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
         choice!(models, source, &["huggingface", "modelscope"]);
-        for (name, engine, default) in [
-            (
-                "translate.engine",
-                &mut self.translate.engine,
-                &defaults.translate.engine,
-            ),
-            (
-                "latency.draft_engine",
-                &mut self.latency.draft_engine,
-                &defaults.latency.draft_engine,
-            ),
-        ] {
-            if engine.trim().is_empty() {
-                *engine = default.clone();
-                messages.push(format!(
-                    "{name}: empty engine name; using default {default:?}"
-                ));
-            }
+        if self.translate.engine.trim().is_empty() {
+            self.translate.engine.clone_from(&defaults.translate.engine);
+            messages.push(format!(
+                "translate.engine: empty engine name; using default {:?}",
+                defaults.translate.engine
+            ));
         }
         for (name, rect) in [
             ("overlay.bar_rect", &mut self.overlay.bar_rect),
@@ -614,9 +588,7 @@ fn normalize_float(
         "join.hold_window_s" => (0.2, 2.0),
         "latency.decode_interval_s" => (0.3, 2.0),
         "latency.min_open_s" => (0.5, 3.0),
-        "latency.draft_context_s" => (0.0, 5.0),
         "latency.final_context_s" => (0.0, 20.0),
-        "latency.draft_timeout_s" => (1.0, 10.0),
         "latency.step_down_cpu_pct" => (50.0, 100.0),
         "latency.step_up_cpu_pct" => (30.0, 100.0),
         "latency.step_down_lag_s" => (1.0, 10.0),
@@ -653,9 +625,6 @@ fn integer_range(path: &str) -> (i64, i64) {
         "overlay.flow_lines" => (2, 6),
         "latency.comma_min_tokens" => (2, 20),
         "latency.cap_tokens" => (0, 60),
-        "latency.draft_min_chars" => (1, 10),
-        "latency.draft_grow_chars" => (1, 20),
-        "latency.draft_keep_back_words" => (0, 5),
         "latency.auto_min_cores" => (2, 64),
         _ => (0, i64::from(u32::MAX)),
     }

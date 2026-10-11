@@ -72,33 +72,6 @@
       "optional": false
     },
     {
-      "id": "lmt-60-0.6b-q4_k_m",
-      "name": "Faster captions (LMT-60 0.6B, Q4_K_M)",
-      "role": "draft_translator",
-      "optional": true,
-      "recommended_min_physical_cores": 6,
-      "license": "Apache-2.0 (Hugging Face card of NiuTrans/LMT-60-0.6B and the GGUF repo, checked 2026-10-09)",
-      "page": "https://huggingface.co/mradermacher/LMT-60-0.6B-GGUF",
-      "runtime": {
-        "server_args": [
-          "--jinja",
-          "-np",
-          "1",
-          "-c",
-          "1024"
-        ]
-      },
-      "files": [
-        {
-          "name": "LMT-60-0.6B.Q4_K_M.gguf",
-          "size": 484220000,
-          "sha256": "743c6cdc13294b5c470ec0e89e79d64f96ef0cab94ce1285c78da4dc0f56be5c",
-          "url": "https://huggingface.co/mradermacher/LMT-60-0.6B-GGUF/resolve/main/LMT-60-0.6B.Q4_K_M.gguf",
-          "mirror": ""
-        }
-      ]
-    },
-    {
       "id": "xasr-stream-960ms-int8-2026-06-05",
       "name": "Speech recognition (X-ASR streaming zh-en, 960 ms, int8)",
       "role": "asr",

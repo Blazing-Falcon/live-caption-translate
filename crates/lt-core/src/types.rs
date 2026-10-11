@@ -206,13 +206,8 @@ pub struct PipelineStats {
     pub mode_reason: Option<ModeReason>,
     /// Whole-PC CPU busy percent over the last second.
     pub cpu_system_pct: f32,
-    /// Draft server, percent of one core.
-    pub cpu_draft_pct: f32,
-    pub rss_draft_mb: u32,
-    pub word_first_p50_ms: Option<u32>,
+    /// Median delay from a spoken word to the English that covers it, last minute.
     pub word_final_p50_ms: Option<u32>,
-    pub drafts_total: u32,
-    pub drafts_failed: u32,
 }
 
 #[cfg(test)]

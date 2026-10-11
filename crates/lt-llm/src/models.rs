@@ -33,12 +33,9 @@ pub struct Manifest {
 pub struct ModelEntry {
     pub id: String,
     pub name: String,
-    /// Optional models (the draft model) are not needed to start listening.
+    /// Optional models (other chunk sizes) are not needed to start listening.
     #[serde(default)]
     pub optional: bool,
-    /// Optional models are recommended on PCs with at least this many physical cores.
-    #[serde(default)]
-    pub recommended_min_physical_cores: Option<u32>,
     pub files: Vec<FileEntry>,
 }
 
@@ -108,19 +105,9 @@ pub struct ModelStatus {
     pub bytes_total: u64,
     pub bytes_done: u64,
     pub state: ModelState,
-    /// Not needed to start listening (the draft model).
+    /// Not needed to start listening (the other chunk sizes).
     #[serde(default)]
     pub optional: bool,
-    /// Included in the first-run download on this PC.
-    #[serde(default)]
-    pub recommended: bool,
-}
-
-fn recommended(model: &ModelEntry, physical_cores: usize) -> bool {
-    !model.optional
-        || model
-            .recommended_min_physical_cores
-            .is_some_and(|min| physical_cores >= min as usize)
 }
 
 pub fn embedded_manifest() -> Result<Manifest> {
@@ -175,34 +162,21 @@ impl ModelManager {
                 .all(|file| !file.mirror.is_empty())
     }
 
-    /// Every model, required first; `physical_cores` decides which optional ones are
-    /// recommended.
-    pub fn status_for_cores(
-        &self,
-        dir: impl AsRef<Path>,
-        physical_cores: usize,
-    ) -> Result<Vec<ModelStatus>> {
+    /// Every model, required first.
+    pub fn status(&self, dir: impl AsRef<Path>) -> Result<Vec<ModelStatus>> {
         self.manifest
             .models
             .iter()
-            .map(|model| {
-                let mut status = model_status(dir.as_ref(), model)?;
-                status.recommended = recommended(model, physical_cores);
-                Ok(status)
-            })
+            .map(|model| model_status(dir.as_ref(), model))
             .collect()
     }
 
-    pub fn status(&self, dir: impl AsRef<Path>) -> Result<Vec<ModelStatus>> {
-        self.status_for_cores(dir, usize::MAX)
-    }
-
-    /// Ids downloaded by default: every required model plus the recommended optional ones.
-    pub fn default_ids(&self, physical_cores: usize) -> Vec<String> {
+    /// Ids downloaded by default: every required model.
+    pub fn default_ids(&self) -> Vec<String> {
         self.manifest
             .models
             .iter()
-            .filter(|model| recommended(model, physical_cores))
+            .filter(|model| !model.optional)
             .map(|model| model.id.clone())
             .collect()
     }
@@ -713,7 +687,6 @@ fn model_status(dir: &Path, model: &ModelEntry) -> Result<ModelStatus> {
         bytes_done: done,
         state,
         optional: model.optional,
-        recommended: !model.optional,
     })
 }
 
@@ -1044,27 +1017,16 @@ mod tests {
     #[test]
     fn embedded_manifest_is_valid_and_sizes_are_known() {
         let manifest = embedded_manifest().unwrap();
-        assert_eq!(manifest.models.len(), 5);
+        assert_eq!(manifest.models.len(), 4);
         let required: Vec<_> = manifest.models.iter().filter(|m| !m.optional).collect();
         assert_eq!(required.len(), 2);
         assert_eq!(required.iter().flat_map(|model| &model.files).count(), 2);
         let manager = ModelManager::new().unwrap();
         let missing = std::env::temp_dir().join("lt-no-such-models");
-        let statuses = manager.status_for_cores(&missing, 8).unwrap();
-        assert_eq!(statuses.len(), 5);
-        let draft = statuses
-            .iter()
-            .find(|s| s.id == "lmt-60-0.6b-q4_k_m")
-            .unwrap();
-        assert!(
-            draft.recommended,
-            "8 physical cores recommend the draft model"
-        );
-        let small = manager.status_for_cores(&missing, 4).unwrap();
-        assert!(!small.iter().any(|s| s.optional && s.recommended));
-        // The speech model choices download only when the user selects them.
-        assert_eq!(manager.default_ids(8).len(), 3);
-        assert_eq!(manager.default_ids(4).len(), 2);
+        let statuses = manager.status(&missing).unwrap();
+        assert_eq!(statuses.len(), 4);
+        // The other chunk sizes download only when the user selects them.
+        assert_eq!(manager.default_ids().len(), 2);
         assert!(!ModelManager::new()
             .unwrap()
             .source_supported(ModelSource::Modelscope));

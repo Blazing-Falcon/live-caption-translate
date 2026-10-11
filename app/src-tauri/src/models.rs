@@ -12,7 +12,7 @@ use std::{
 };
 use tauri::Emitter;
 
-/// Every model needed to listen is on disk and verified (the draft model is optional).
+/// Every model needed to listen is on disk and verified (other chunk sizes are optional).
 pub fn all_ready(dir: &Path) -> bool {
     lt_llm::models::status(dir)
         .map(|models| {
@@ -67,7 +67,7 @@ impl Models {
     pub fn status(&self, shared: &Shared) -> Result<Vec<ModelStatus>, String> {
         let dir = shared.paths.models(&shared.config());
         let disk = ModelManager::new()
-            .and_then(|manager| manager.status_for_cores(dir, num_cpus::get_physical()))
+            .and_then(|manager| manager.status(dir))
             .map_err(|e| e.to_string())?;
         Ok(merge(disk, &lock(&self.live)))
     }
@@ -110,8 +110,7 @@ impl Models {
     }
 
     /// Starts or resumes missing models on a worker thread. Without `ids` that is every required
-    /// model plus the optional ones recommended for this PC (first run); with `ids`, exactly
-    /// those (the Performance page's draft-model button).
+    /// model (first run); with `ids`, exactly those (the Performance page's chunk choices).
     pub fn download(
         &self,
         shared: &Arc<Shared>,
@@ -136,8 +135,7 @@ impl Models {
                     .map_err(|e| e.to_string())
                     .and_then(|manager| {
                         let dir = shared.paths.models(&shared.config());
-                        let ids =
-                            ids.unwrap_or_else(|| manager.default_ids(num_cpus::get_physical()));
+                        let ids = ids.unwrap_or_else(|| manager.default_ids());
                         manager
                             .fetch_ids(source, dir, &ids, &models.cancel, &mut |status| {
                                 models.record(&shared, status);
@@ -208,18 +206,17 @@ mod tests {
             bytes_done: 5,
             state,
             optional: false,
-            recommended: true,
         }
     }
 
     #[test]
-    fn the_optional_draft_model_does_not_block_listening() {
+    fn an_optional_model_does_not_block_listening() {
         // all_ready consults the real manifest: with nothing on disk it is false, and an
         // optional model alone never decides the answer.
         assert!(!all_ready(Path::new("definitely/not/here")));
         let optional = ModelStatus {
             optional: true,
-            ..status("draft", ModelState::Missing)
+            ..status("chunk160", ModelState::Missing)
         };
         let required = status("asr", ModelState::Ready);
         let ready = [required, optional]

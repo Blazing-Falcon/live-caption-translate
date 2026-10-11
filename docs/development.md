@@ -50,7 +50,6 @@ cargo run -p lt-cli --all-features -- --help    # the CLI
 | `LT_CONFIG` | Config file |
 | `LT_MODELS_DIR` | Model folder (CLI default: `models/`) |
 | `LT_LLAMA_SERVER` | `llama-server.exe` to use, for example `.deps/llama-b11429/llama-server.exe` |
-| `LT_DRAFT_MODEL` | Draft model file |
 | `LT_ONNXRUNTIME` | ONNX Runtime library to use |
 | `LT_REPLAY` | The app plays this WAV file instead of the capture |
 | `LT_LOG` | Log filter, for example `debug`. Logs are in `%LOCALAPPDATA%\app.livetranslation.desktop\logs`. |
@@ -79,7 +78,6 @@ These tests skip if their variables are not set. `check.ps1` shows the skipped t
 |---|---|---|
 | `lt-sherpa` `stream` | `LT_MODELS_DIR` with the 480 ms streaming model, test audio | Streaming X-ASR: emitted tokens never change, accuracy |
 | `lt-llm` `real_server` | `LT_LLAMA_SERVER`, Hy-MT2 (`LT_MT_MODEL` or `LT_MODELS_DIR`) | 37 sentences against the fixture |
-| `lt-llm` drafts and mode switches | `LT_LLAMA_SERVER`, `LT_DRAFT_MODEL` | 40 draft sentences; servers start and stop correctly |
 
 `LT_REFERENCE_AUDIO` sets the test audio folder (default `testdata/fetched`).
 
@@ -87,7 +85,6 @@ These tests skip if their variables are not set. `check.ps1` shows the skipped t
 . ./scripts/env.ps1
 $env:LT_MODELS_DIR = "$PWD/models"
 $env:LT_LLAMA_SERVER = "$PWD/.deps/llama-b11429/llama-server.exe"
-$env:LT_DRAFT_MODEL = "$PWD/models/lmt-60-0.6b-q4_k_m/LMT-60-0.6B.Q4_K_M.gguf"
 cargo test --workspace --all-features
 ```
 

@@ -9,7 +9,6 @@ use serde::Serialize;
 pub struct EngineMap {
     pub asr: EngineState,
     pub translator: EngineState,
-    pub draft_translator: EngineState,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -37,7 +36,6 @@ impl Default for AppState {
             engines: EngineMap {
                 asr: EngineState::Ready,
                 translator: EngineState::Ready,
-                draft_translator: EngineState::Ready,
             },
             models_ready: false,
             overlay_moving: false,
@@ -59,7 +57,6 @@ impl AppState {
             PipelineEvent::EngineStatus { engine, state, .. } => match engine {
                 EngineKind::Asr => self.engines.asr = *state,
                 EngineKind::Translator => self.engines.translator = *state,
-                EngineKind::DraftTranslator => self.engines.draft_translator = *state,
             },
             PipelineEvent::Stats(stats) => {
                 self.mode = stats.mode;
@@ -84,6 +81,5 @@ mod tests {
         assert_eq!(json["models_ready"], false);
         assert_eq!(json["mode"], "off");
         assert!(json["mode_reason"].is_null());
-        assert_eq!(json["engines"]["draft_translator"], "ready");
     }
 }

@@ -18,6 +18,7 @@ import {
   STATS,
   asrFinal,
   delta,
+  dropped,
   failed,
   final,
   joined,
@@ -85,6 +86,17 @@ describe("caption reducer", () => {
     expect(failReasonText(reason, message)).toBe(expected);
   });
 
+  it("dropped removes a live line and does nothing for any other id", () => {
+    const { lines, run, view, warn } = setup();
+    run(partial(1, "哈哈"), asrFinal(2, "二"));
+    run(dropped(1));
+    expect(summary(lines())).toEqual(["2:pending"]);
+    const before = view();
+    run(dropped(2), dropped(99));
+    expect(view()).toBe(before);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
 });
 
 describe("running text", () => {
@@ -139,6 +151,21 @@ describe("expiry", () => {
     expect(c.lines()).toHaveLength(0);
   });
 
+  it("never expires a live line, and a partial resets the expiry clock", () => {
+    const c = setup();
+    c.run(asrFinal(1, "一"), final(1, "One"), partial(2, "二"));
+    c.clock.advance(5000);
+    c.run(partial(2, "二二"));
+    c.clock.advance(7999);
+    expect(c.view().fadingIds.size).toBe(0);
+    c.clock.advance(1);
+    expect([...c.view().fadingIds]).toEqual([1]);
+    c.clock.advance(FADE_MS);
+    expect(summary(c.lines())).toEqual(["2:live"]);
+    c.clock.advance(600_000);
+    expect(summary(c.lines())).toEqual(["2:live"]);
+  });
+
   it("bounds history and outstanding rows during an hour of continuous speech", () => {
     const c = setup();
     let peak = 0;
@@ -157,3 +184,98 @@ describe("expiry", () => {
 });
 
 
+
+/** Small deterministic generator (mulberry32). */
+function rng(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+describe("long synthetic event log", () => {
+  const ENGLISH = "This time the company released the whole family of new phones and a few more things".split(" ");
+
+  it.each([1, 2, 3])("drives the store lawfully for thousands of events without warnings (seed %i)", (seed) => {
+    const random = rng(seed);
+    const pick = (n: number) => Math.floor(random() * n);
+    const s = setup();
+    const open = new Set<number>();
+    const awaiting = new Set<number>();
+    let nextId = 1;
+    let events = 0;
+    const emit = (event: PipelineEvent) => {
+      s.controller.dispatch(event);
+      events += 1;
+    };
+    const text = (n: number) => ENGLISH.slice(0, 1 + (n % ENGLISH.length)).join(" ");
+
+    for (let step = 0; step < 6000; step += 1) {
+      const roll = random();
+      if (roll < 0.2 && open.size < 3) {
+        const id = nextId++;
+        open.add(id);
+        emit(partial(id, `句子${id}`));
+      } else if (roll < 0.6 && open.size > 0) {
+        const id = [...open][pick(open.size)] as number;
+        const action = random();
+        if (action < 0.6) {
+          emit(partial(id, `句子${id}，更多的话`));
+        } else if (action < 0.9) {
+          open.delete(id);
+          const kind = random();
+          if (kind < 0.1) emit(asrFinal(id, "OK, hello", "english", "en"));
+          else if (kind < 0.2) emit(asrFinal(id, "みんな", "other", "ja"));
+          else {
+            emit(asrFinal(id, `句子${id}。`, "chinese", "zh", random() < 0.5 ? "commit" : "pause"));
+            awaiting.add(id);
+          }
+        } else {
+          open.delete(id);
+          emit(dropped(id));
+        }
+      } else if (awaiting.size > 0) {
+        const ids = [...awaiting];
+        const id = ids[pick(ids.length)] as number;
+        const action = random();
+        if (action < 0.4) {
+          emit(delta(id, text(pick(10))));
+        } else if (action < 0.55 && ids.length > 1) {
+          const other = ids.find((candidate) => candidate > id);
+          if (other !== undefined) {
+            awaiting.delete(other);
+            emit(joined(id, [other], `合并${id}`));
+          }
+        } else if (action < 0.85) {
+          awaiting.delete(id);
+          emit(final(id, text(pick(40))));
+        } else if (action < 0.93) {
+          awaiting.delete(id);
+          emit(skipped(id));
+        } else {
+          awaiting.delete(id);
+          emit(failed(id, "timeout"));
+        }
+      }
+      s.clock.advance(pick(1500));
+
+      const lines = s.lines();
+      const live = lines.filter((l) => l.state === "live").map((l) => l.id).sort((a, b) => a - b);
+      expect(live).toEqual([...open].sort((a, b) => a - b));
+      const active = lines.filter((l) => l.state === "pending" || l.state === "streaming").map((l) => l.id);
+      expect(new Set(active)).toEqual(awaiting);
+      expect(lines.length).toBeLessThanOrEqual(MAX_HISTORY_LINES + open.size + awaiting.size);
+      for (const l of lines) {
+        if (l.state === "live") expect(s.view().fadingIds.has(l.id)).toBe(false);
+      }
+    }
+    expect(s.warn).not.toHaveBeenCalled();
+    expect(events).toBeGreaterThan(2000);
+    s.controller.dispose();
+    expect(s.clock.pending()).toBe(0);
+  });
+});

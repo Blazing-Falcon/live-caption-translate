@@ -8,20 +8,17 @@
 |---|---|---|---|---|
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition (default) | archive, 4 files | 133,895,136 | in the manifest |
 | `hy-mt2-1.8b-q4_0` | Final translation | `Hy-MT2-1.8B.i1-Q4_0.gguf` | 1,079,997,440 | `77b7db506ed5dddd79b30553d346af1bfbed5999838441964ade98c970512087` |
-| `lmt-60-0.6b-q4_k_m` | Drafts (optional) | `LMT-60-0.6B.Q4_K_M.gguf` | 484,220,000 | `743c6cdc13294b5c470ec0e89e79d64f96ef0cab94ce1285c78da4dc0f56be5c` |
 | `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
 | `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
 Sources (Hugging Face):
 
 - Hy-MT2: `mradermacher/Hy-MT2-1.8B-i1-GGUF`
-- LMT-60: `mradermacher/LMT-60-0.6B-GGUF` (base model `NiuTrans/LMT-60-0.6B`)
 - X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
 
 Rules:
 
-- The first-run download includes the draft model on PCs with 6 or more physical cores. On other PCs the app offers it when the user selects Continuous.
-- The other optional models download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
+- The first-run download takes the required models. The optional models (other chunk sizes) download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
 - Files go to `<models dir>/<id>/<file>`.
 - Downloads continue from `<file>.part` with HTTP range requests. The app checks the SHA-256 and then renames the file.
 - A file with an `extract` list is a `.tar.bz2` archive. After its SHA-256 check, the app takes the listed files from it by file name, checks each file's size and SHA-256, and deletes the archive.
@@ -35,7 +32,6 @@ Rules:
 |---|---|
 | X-ASR | Apache-2.0 (upstream `Gilgamesh-J/X-ASR`) |
 | Hy-MT2 1.8B | Apache-2.0 (recorded; confirm on the `tencent/Hy-MT2-1.8B` model card) |
-| LMT-60 0.6B | Apache-2.0 |
 | sherpa-onnx 1.13.8 | Apache-2.0 |
 | ONNX Runtime 1.30.0 | MIT |
 | llama.cpp b11429 | MIT (includes LLVM OpenMP) |
@@ -60,26 +56,26 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 **X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.stream_pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
 
-**llama-server:** one binary, two processes. The supervisor starts each server with:
+**llama-server:** the supervisor starts the server with:
 
 ```
 llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c <ctx>
                  -t <threads> -tb <threads> [--override-kv tokenizer.ggml.eos_token_id=int:120020] --no-webui
 ```
 
-- Only the Hy-MT2 server gets `--override-kv`. The GGUF has an incorrect end token (the correct id is 120020).
-- `<threads>` is 2 for each server by default. `translate.threads` sets 1–4.
+- `--override-kv` corrects the GGUF's end token (the correct id is 120020).
+- `<threads>` is 2 by default. `translate.threads` sets 1–4.
 - Do not add `--no-repack`. llama.cpp repacks Q4_0 for x86, and that makes Hy-MT2 much faster.
-- With `latency.low_priority`, the servers run at below-normal priority (not in Off mode).
+- With `latency.low_priority`, the server runs at below-normal priority (not in Off mode).
 
 **Requests:**
 
-| | Final | Draft |
-|---|---|---|
-| Endpoint | `/v1/chat/completions` | `/completion` |
-| Streaming | Yes | No |
-| `max_tokens` | `min(256, 4 × characters + 16)` | `min(64, 3 × characters + 8)` |
-| Timeout | 10 s | 3 s |
-| Other | temperature 0, repeat penalty 1.05, prompt cache, identical instruction text each time | Fixed `Chinese: … English:` prompt. A prefill continues from the previous draft. |
+| | |
+|---|---|
+| Endpoint | `/v1/chat/completions` |
+| Streaming | Yes |
+| `max_tokens` | `min(256, 4 × characters + 16)` |
+| Timeout | 10 s |
+| Other | temperature 0, repeat penalty 1.05, prompt cache, identical instruction text each time |
 
-`translate.server_url`, `latency.draft_server_url` or `LT_LLAMA_SERVER` select a different server.
+`translate.server_url` or `LT_LLAMA_SERVER` select a different server.

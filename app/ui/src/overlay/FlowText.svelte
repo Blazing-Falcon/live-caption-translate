@@ -82,7 +82,7 @@
   }
 
   .dim {
-    color: var(--ov-draft);
+    color: var(--ov-dim);
   }
 
   .pending {

@@ -96,13 +96,13 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
             "hy-mt2-1.8b-q4_0"
         }
         .into(),
-        config: SessionConfig::from(&config).with_draft(engines.draft.is_some()),
+        config: SessionConfig::from(&config),
     };
     let writer = TranscriptWriter::with_routing(output, header, &config.routing.translate_other)?;
     let subscriber =
         TranscriptSubscriber::start(&bus, writer, Arc::new(|| Local::now().to_rfc3339()))?;
     let mut report = ReplayReport::new(&config.routing);
-    let sampler = ProcessSampler::new(engines.pid.clone())?.with_draft(engines.draft_pid.clone());
+    let sampler = ProcessSampler::new(engines.pid.clone())?;
     let mut timed: Vec<TimedEvent> = Vec::new();
     let events_path = sibling(&args.out, "events.jsonl");
     let mut events_log = BufWriter::new(
@@ -117,7 +117,6 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
         bus.clone(),
         PipelineOptions {
             sampler: Some(Box::new(sampler)),
-            draft: engines.draft,
             physical_cores: Some(num_cpus::get_physical()),
         },
     )?;
@@ -179,9 +178,6 @@ pub fn replay(args: ReplayArgs, mut config: Config, cancelled: Arc<AtomicBool>) 
     #[cfg(feature = "llm")]
     {
         if let Some(mut supervisor) = engines.supervisor {
-            supervisor.stop()?;
-        }
-        if let Some(mut supervisor) = engines.draft_supervisor {
             supervisor.stop()?;
         }
     }

@@ -85,47 +85,6 @@ export function isTerminal(state: CaptionLine["state"]): boolean {
   return state !== "live" && state !== "pending" && state !== "streaming";
 }
 
-export type DraftDisplay = Config["overlay"]["draft_display"];
-
-/** Same as Python's str.split(): runs of whitespace separate words. */
-function words(text: string): string[] {
-  return text.split(/\s+/).filter((word) => word !== "");
-}
-
-/**
- * What the overlay shows for a line whose newest draft is drafts[drafts.length - 1].
- * `shown` is the words currently displayed (null before the first draft); `heldOnce` is true when the previous
- * update was suppressed by the shrink rule. `held` in the result is true when this update was suppressed.
- */
-export function visibleWords(
-  policy: DraftDisplay,
-  drafts: readonly string[],
-  committed: boolean,
-  shown: readonly string[] | null,
-  heldOnce: boolean,
-): { words: string[]; held: boolean } {
-  const newest = words(drafts[drafts.length - 1] ?? "");
-  let target: string[];
-  if (committed || policy === "all") {
-    target = newest;
-  } else if (policy === "hold2") {
-    target = newest.slice(0, Math.max(Math.min(newest.length, 2), newest.length - 2));
-  } else {
-    // settled: the longest common word prefix of the last two drafts.
-    const previous = drafts.length < 2 ? null : words(drafts[drafts.length - 2] ?? "");
-    let common = 0;
-    if (previous !== null) {
-      while (common < Math.min(previous.length, newest.length) && previous[common] === newest[common]) common += 1;
-    }
-    target = newest.slice(0, common);
-  }
-  // A draft that would shrink the line to less than half is held for one update.
-  if (shown !== null && shown.length > 0 && !heldOnce && !committed && target.length * 2 < shown.length) {
-    return { words: [...shown], held: true };
-  }
-  return { words: target, held: false };
-}
-
 export function failReasonText(reason: FailReason, message: string): string {
   switch (reason) {
     case "timeout":
@@ -212,9 +171,9 @@ export function ageOpacity(style: OverlayStyle, age: number): number {
   return steps[Math.min(Math.max(age, 0), steps.length - 1)] ?? 1;
 }
 
-/** A live line with nothing to show yet (Chinese hidden, no draft) takes no place and no space. */
+/** A live line with its Chinese hidden has nothing to show, so it takes no place and no space. */
 export function isHiddenLive(line: CaptionLine, liveSource: boolean): boolean {
-  return line.state === "live" && !liveSource && line.shown === "";
+  return line.state === "live" && !liveSource;
 }
 
 export function visibleLines(
@@ -230,7 +189,7 @@ export function visibleLines(
 export interface FlowPiece {
   id: UtteranceId;
   text: string;
-  /** "dim" is a draft or text that will not be translated; "live" is Chinese still being spoken. */
+  /** "dim" is text that will not be translated; "live" is Chinese still being spoken. */
   kind: "final" | "streaming" | "dim" | "live" | "pending";
 }
 
@@ -240,7 +199,7 @@ export interface FlowText {
 }
 
 /** The lines as two running paragraphs, oldest first. Every line keeps its place, so a
- * line's text appears where its Chinese was and later English replaces its draft in place. */
+ * line's English appears where its Chinese was and replaces its pending dots in place. */
 export function flowText(lines: readonly CaptionLine[], showSource: boolean, liveSource: boolean): FlowText {
   const source: FlowPiece[] = [];
   const english: FlowPiece[] = [];
@@ -261,8 +220,6 @@ export function flowText(lines: readonly CaptionLine[], showSource: boolean, liv
     }
     if (line.state === "final" || line.state === "streaming") {
       if (line.english !== "" || line.state === "streaming") english.push({ id, text: line.english, kind: line.state });
-    } else if (line.shown !== "") {
-      english.push({ id, text: line.shown, kind: "dim" });
     } else if (line.state === "pending") {
       english.push({ id, text: "···", kind: "pending" });
     }
@@ -284,7 +241,6 @@ interface SettingsSlice {
   pauseHotkey: string;
   expireMs: number;
   appNames: string[];
-  draftDisplay: DraftDisplay;
 }
 
 export interface CaptionControllerOptions {
@@ -332,7 +288,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     pauseHotkey: "",
     expireMs: 8000,
     appNames: [],
-    draftDisplay: "hold2",
   };
 
   const store = writable<CaptionView>({
@@ -452,11 +407,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       state,
       source,
       english: "",
-      draft: "",
-      drafts: [],
-      shown: "",
-      heldOnce: false,
-      committed: false,
       lang,
       reason: null,
     };
@@ -465,11 +415,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   function isActive(id: number): boolean {
     const line = lines.get(id);
     return line !== undefined && !isTerminal(line.state);
-  }
-
-  /** A live line, or a pending one that has not been told its draft yet, may still receive drafts. */
-  function acceptsDraft(line: CaptionLine | undefined): line is CaptionLine {
-    return line !== undefined && (line.state === "live" || line.state === "pending");
   }
 
   function applyLineEvent(event: PipelineEvent): boolean {
@@ -488,20 +433,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         update(event.id, { source: event.text });
         return true;
       }
-      case "translation_draft": {
-        const line = lines.get(event.id);
-        if (!acceptsDraft(line)) return false;
-        const drafts = [...line.drafts, event.text].slice(-2);
-        const next = visibleWords(
-          settings.draftDisplay,
-          drafts,
-          line.committed,
-          line.shown === "" ? null : words(line.shown),
-          line.heldOnce,
-        );
-        update(event.id, { draft: event.text, drafts, shown: next.words.join(" "), heldOnce: next.held });
-        return true;
-      }
       case "asr_final": {
         const existing = lines.get(event.id);
         if (existing !== undefined && existing.state !== "live") return false;
@@ -518,18 +449,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           state = translated ? "pending" : "other";
           if (!translated) announcement = event.text;
         }
-        // The whole newest draft is shown once the clause is committed (no more drafts except one in flight).
-        const shown = base.draft === "" ? base.shown : base.draft;
-        lines.set(event.id, {
-          ...base,
-          state,
-          source: event.text,
-          lang,
-          committed: true,
-          shown,
-          heldOnce: false,
-          updatedAt: clock.now(),
-        });
+        lines.set(event.id, { ...base, state, source: event.text, lang, updatedAt: clock.now() });
         return true;
       }
       case "joined": {
@@ -545,8 +465,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       case "translation_delta": {
         const line = lines.get(event.id);
         if (!line || line.state === "live" || isTerminal(line.state)) return false;
-        // With a draft the draft stays visible and the line stays pending (no caret).
-        update(event.id, { state: line.draft === "" ? "streaming" : "pending", english: event.text_so_far });
+        update(event.id, { state: "streaming", english: event.text_so_far });
         return true;
       }
       case "translation_final":
@@ -583,7 +502,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         emit();
         return;
       case "asr_partial":
-      case "translation_draft":
       case "asr_final":
       case "joined":
       case "translation_delta":
@@ -639,26 +557,14 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     emit();
   }
 
-  /** The policy changed: show each open line's drafts under the new rule, without the shrink hold. */
-  function redisplayDrafts(): void {
-    for (const line of [...lines.values()]) {
-      if (line.drafts.length === 0 || line.state === "final") continue;
-      const next = visibleWords(settings.draftDisplay, line.drafts, line.committed, null, false);
-      update(line.id, { shown: next.words.join(" "), heldOnce: false });
-    }
-  }
-
   function setConfig(config: CaptionConfig): void {
     if (disposed) return;
-    const previousDisplay = settings.draftDisplay;
     settings = {
       translateOther: [...config.routing.translate_other],
       pauseHotkey: config.hotkeys.pause,
       expireMs: Math.max(0, config.overlay.expire_s * 1000),
       appNames: config.capture.apps.map((entry) => entry.name),
-      draftDisplay: config.overlay.draft_display,
     };
-    if (settings.draftDisplay !== previousDisplay) redisplayDrafts();
     armExpiry();
     emit();
   }

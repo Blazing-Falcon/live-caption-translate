@@ -7,10 +7,6 @@ use crate::{
     bus::{EventBus, EventReceiver},
     clock::{Clock, ManualClock},
     config::{Config, LatencyConfig, RoutingConfig},
-    drafts::{
-        DraftOutcome, DraftResult, DraftState, DraftWorker, PublishedDraft, WORKER_FAILED,
-        WORKER_READY,
-    },
     engines::{StreamingAsr, Translator},
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
@@ -114,8 +110,6 @@ pub struct PipelineHandle {
 #[derive(Default)]
 pub struct PipelineOptions {
     pub sampler: Option<Box<dyn ResourceSampler>>,
-    /// The draft translator (Continuous mode). Without it the pipeline runs Light at most.
-    pub draft: Option<Box<dyn Translator>>,
     /// Physical cores, for `latency.mode = "auto"`. Unknown counts half the logical CPUs.
     pub physical_cores: Option<usize>,
 }
@@ -191,7 +185,6 @@ impl Pipeline {
     ) -> Result<PipelineHandle> {
         let PipelineOptions {
             sampler,
-            draft,
             physical_cores,
         } = options;
         for message in config.validate() {
@@ -211,7 +204,7 @@ impl Pipeline {
         let (ready_tx, ready_rx) = bounded(1);
         let cores = physical_cores
             .unwrap_or_else(|| thread::available_parallelism().map_or(1, |n| (n.get() / 2).max(1)));
-        let initial_mode = resolve_mode(&config.latency, draft.is_some(), cores);
+        let initial_mode = resolve_mode(&config.latency, false, cores);
         let mut handle = PipelineHandle {
             commands: command_tx,
             cancelled: cancelled.clone(),
@@ -276,7 +269,6 @@ impl Pipeline {
                         scheduler_listening,
                         scheduler_latest,
                         sampler,
-                        draft,
                         initial_mode,
                         mode_rx,
                     )
@@ -804,78 +796,32 @@ struct Scheduler {
     metrics: Metrics,
     latest_stats: Arc<Mutex<PipelineStats>>,
     asr_failed: bool,
-    clock: Arc<SessionClock>,
     mode: ModeState,
     stepdown: StepDown,
-    drafts: DraftState,
-    /// The draft worker's warm-up result; drafts run only while it is ready.
-    draft_ready: bool,
-    /// A draft request is out (counts as the single request in flight).
-    draft_in_flight: bool,
 }
 
 impl Scheduler {
     fn publish(&mut self, event: PipelineEvent) {
-        self.metrics.record_at(&event, self.clock.now().millis());
+        self.metrics.record(&event);
         self.bus.publish(event);
     }
 
-    /// Apply a new effective mode: leaving Continuous drops the waiting draft.
     fn apply_mode(&mut self, state: ModeState) {
         if state == self.mode {
             return;
         }
         tracing::info!(mode = ?state.mode, reason = ?state.reason, "caption mode changed");
         self.mode = state;
-        if state.mode != EffectiveMode::Continuous {
-            self.drafts.clear_slot();
-        }
-    }
-
-    fn drafts_on(&self) -> bool {
-        self.mode.mode == EffectiveMode::Continuous && self.draft_ready
     }
 
     fn partial(&mut self, id: UtteranceId, text: String, class: TextClass, end: StreamTime) {
         let end_ms = end.millis();
-        if self.drafts_on() && matches!(class, TextClass::Chinese | TextClass::Mixed) {
-            self.drafts.partial(id, &text, "zh", end_ms);
-        }
         self.publish(PipelineEvent::AsrPartial {
             id,
             text,
             class,
             end_ms,
         });
-    }
-
-    fn draft_completed(&mut self, outcome: DraftOutcome) {
-        self.draft_in_flight = false;
-        self.in_flight = false;
-        match &outcome.result {
-            DraftResult::Failed(_) => {
-                if let Some(state) = self.stepdown.draft_failed() {
-                    self.apply_mode(state);
-                }
-                self.metrics.draft_failed();
-            }
-            DraftResult::Text(_) => self.stepdown.draft_succeeded(),
-            DraftResult::Rejected => {}
-        }
-        if let Some(PublishedDraft {
-            id,
-            rev,
-            text,
-            end_ms,
-        }) = self.drafts.completed(outcome)
-        {
-            self.publish(PipelineEvent::TranslationDraft {
-                id,
-                rev,
-                text,
-                end_ms,
-            });
-        }
     }
 
     fn refresh_stats(&mut self, live: StreamTime) {
@@ -889,8 +835,6 @@ impl Scheduler {
             .snapshot(live, waiting, self.joiner.held_count());
         snapshot.mode = self.mode.mode;
         snapshot.mode_reason = self.mode.reason;
-        snapshot.drafts_total = self.drafts.published_total();
-        snapshot.drafts_failed = self.drafts.failed_total();
         if let Ok(mut latest) = self.latest_stats.lock() {
             *latest = snapshot;
         }
@@ -902,7 +846,6 @@ impl Scheduler {
                 for id in absorbed {
                     self.observed.remove(id);
                     self.translating.remove(id);
-                    self.drafts.terminal(*id);
                 }
             }
             self.publish(event);
@@ -978,7 +921,6 @@ impl Scheduler {
                     cut: transcript.cut,
                     logprob: transcript.logprob,
                 });
-                self.drafts.final_arrived(transcript.id);
                 if translates(&transcript, &self.config.routing) {
                     self.translating.insert(transcript.id);
                 } else {
@@ -989,7 +931,6 @@ impl Scheduler {
             }
             AsrMessage::Dropped(id, reason) => {
                 self.observed.remove(&id);
-                self.drafts.terminal(id);
                 self.publish(PipelineEvent::Dropped { id, reason });
                 let result = self.joiner.dropped(id);
                 self.joined(result);
@@ -999,7 +940,6 @@ impl Scheduler {
                 // There is no ASR-failure line type in the wire contract; the
                 // engine error is explicit and no nonexistent ASR text is sent.
                 self.observed.remove(&id);
-                self.drafts.terminal(id);
                 self.asr_failed = true;
                 self.publish(PipelineEvent::EngineStatus {
                     engine: EngineKind::Asr,
@@ -1022,7 +962,6 @@ impl Scheduler {
         {
             self.observed.remove(id);
             self.translating.remove(id);
-            self.drafts.terminal(*id);
         }
         self.publish(event);
         self.in_flight = false;
@@ -1076,7 +1015,6 @@ fn scheduler_loop(
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
-    draft: Option<Box<dyn Translator>>,
     initial_mode: ModeState,
     modes: Receiver<EffectiveMode>,
 ) -> Result<()> {
@@ -1110,25 +1048,11 @@ fn scheduler_loop(
         metrics,
         latest_stats,
         asr_failed: false,
-        clock: clock.clone(),
         mode: initial_mode,
         stepdown: StepDown::new(&config.latency, initial_mode.mode, initial_mode.reason),
-        drafts: DraftState::new(&config.latency),
-        draft_ready: false,
-        draft_in_flight: false,
-    };
-    let mut draft_worker = match draft {
-        Some(translator) if initial_mode.mode != EffectiveMode::Off => Some(DraftWorker::start(
-            translator,
-            config.latency.clone(),
-            bus.clone(),
-            cancelled.clone(),
-        )?),
-        _ => None,
     };
     let session_start = Instant::now();
     let mut last_step = Instant::now();
-    let mut draft_known = None;
     let mut worker = TranslatorWorker::start(
         translator,
         config.translate,
@@ -1167,34 +1091,12 @@ fn scheduler_loop(
             progressed = true;
             scheduler.completed(event);
         }
-        if let Some(draft_worker) = draft_worker.as_ref() {
-            for outcome in draft_worker.completed.try_iter() {
-                progressed = true;
-                scheduler.draft_completed(outcome);
-            }
-            let state = draft_worker.state.load(Ordering::Acquire);
-            if draft_known != Some(state) {
-                draft_known = Some(state);
-                scheduler.draft_ready = state == WORKER_READY;
-                if state == WORKER_READY || state == WORKER_FAILED {
-                    if let Some(next) = scheduler.stepdown.draft_server(state == WORKER_READY) {
-                        scheduler.apply_mode(next);
-                    }
-                }
-            }
-        }
         for mode in modes.try_iter() {
             if let Some(next) = scheduler
                 .stepdown
                 .choose(mode, session_start.elapsed().as_secs_f64())
             {
                 scheduler.apply_mode(next);
-            }
-            // Choosing Continuous without a ready draft server falls back to Light.
-            if mode == EffectiveMode::Continuous {
-                if let Some(next) = scheduler.stepdown.draft_server(scheduler.draft_ready) {
-                    scheduler.apply_mode(next);
-                }
             }
         }
         while scheduler.queue.len() < TranslationQueue::CAPACITY {
@@ -1258,21 +1160,6 @@ fn scheduler_loop(
             scheduler.joined(result);
             holds_finished = true;
             progressed = true;
-        }
-        if !scheduler.in_flight
-            && scheduler.queue.is_empty()
-            && scheduler.drafts_on()
-            && scheduler.drafts.has_job()
-        {
-            // Finals first (the branch below); a draft only takes an idle translator slot.
-            if let (Some(draft_worker), Some(request)) =
-                (draft_worker.as_ref(), scheduler.drafts.take_request())
-            {
-                send_cooperative(&draft_worker.input, request, &cancelled)?;
-                scheduler.in_flight = true;
-                scheduler.draft_in_flight = true;
-                progressed = true;
-            }
         }
         if !scheduler.in_flight && !scheduler.queue.is_empty() {
             let batch = scheduler.queue.take(clock.now());
@@ -1342,9 +1229,6 @@ fn scheduler_loop(
         }
     }
     worker.stop()?;
-    if let Some(draft_worker) = draft_worker.as_mut() {
-        draft_worker.stop()?;
-    }
     // Wait for producers to close before publishing shutdown terminals. This
     // prevents a racing SpeechStarted or delta from appearing after a terminal.
     while !front_done || !asr_done {
@@ -1374,7 +1258,6 @@ fn scheduler_loop(
     for event in worker.completed.try_iter() {
         scheduler.completed(event);
     }
-    scheduler.drafts.clear_slot();
     let unfinished: Vec<_> = scheduler.observed.iter().copied().collect();
     for id in unfinished {
         scheduler.publish(if scheduler.translating.contains(&id) {

@@ -78,8 +78,6 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
             config.translate.ctx,
             config.translate.engine,
             config.latency.low_priority,
-            config.latency.draft_server_url,
-            config.latency.draft_engine,
             // A server started for Off mode runs at normal priority.
             config.latency.mode == "off",
         ])
@@ -132,10 +130,6 @@ mod tests {
         );
         assert_eq!(changed(|c| c.latency.step_down = false), Applies::Pipeline);
         assert_eq!(changed(|c| c.overlay.live_source = false), Applies::Live);
-        assert_eq!(
-            changed(|c| c.overlay.draft_display = "all".into()),
-            Applies::Live
-        );
         assert_eq!(changed(|c| c.capture.autostart = false), Applies::Restart);
         assert_eq!(
             changed(|c| c.logging.level = "debug".into()),

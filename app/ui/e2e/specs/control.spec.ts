@@ -3,9 +3,9 @@ import { calls, emitNamed, open } from "./support";
 
 const MB = 1024 * 1024;
 const MISSING = [
-  { id: "vad", name: "Voice detection", bytes_total: 2 * MB, bytes_done: 2 * MB, optional: false, recommended: false, state: "ready" },
-  { id: "asr", name: "Speech recognition", bytes_total: 239 * MB, bytes_done: 0, optional: false, recommended: false, state: "missing" },
-  { id: "mt", name: "Translation", bytes_total: 1105 * MB, bytes_done: 0, optional: false, recommended: false, state: "missing" },
+  { id: "vad", name: "Voice detection", bytes_total: 2 * MB, bytes_done: 2 * MB, optional: false, state: "ready" },
+  { id: "asr", name: "Speech recognition", bytes_total: 239 * MB, bytes_done: 0, optional: false, state: "missing" },
+  { id: "mt", name: "Translation", bytes_total: 1105 * MB, bytes_done: 0, optional: false, state: "missing" },
 ] as const;
 
 const expectPatch = (page: Page, patch: unknown): Promise<void> =>

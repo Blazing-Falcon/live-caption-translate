@@ -7,7 +7,7 @@ export type JoinKind = "hold" | "queue";
 export type SkipReason = "catch_up";
 export type FailReason = "timeout" | "server_unavailable" | "echo" | "runaway" | "error";
 export type DropReason = "empty" | "single_char";
-export type EngineKind = "asr" | "translator" | "draft_translator";
+export type EngineKind = "asr" | "translator";
 export type EngineState = "loading" | "ready" | "restarting" | "failed";
 export type SourceStateKind =
   | "playing"
@@ -54,12 +54,7 @@ export interface PipelineStats {
   mode: EffectiveMode;
   mode_reason: ModeReason | null;
   cpu_system_pct: number;
-  cpu_draft_pct: number;
-  rss_draft_mb: number;
-  word_first_p50_ms: number | null;
   word_final_p50_ms: number | null;
-  drafts_total: number;
-  drafts_failed: number;
 }
 
 export type EffectiveMode = "continuous" | "light" | "off";
@@ -84,7 +79,6 @@ export type PipelineEvent =
     }
   | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string; kind: JoinKind }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }
-  | { type: "translation_draft"; id: UtteranceId; rev: number; text: string; end_ms: number }
   | { type: "translation_final"; id: UtteranceId; text: string; timing: Timing }
   | { type: "skipped"; id: UtteranceId; reason: SkipReason }
   | { type: "translation_failed"; id: UtteranceId; reason: FailReason; message: string }
@@ -139,10 +133,8 @@ export interface ModelStatus {
   bytes_total: number;
   bytes_done: number;
   state: ModelState;
-  /** Not needed to listen (the draft model). */
+  /** Not needed to listen: a speech model that downloads only when picked on the Performance page. */
   optional: boolean;
-  /** Optional and recommended for this PC: included in the first-run download. */
-  recommended: boolean;
 }
 
 /** Payload of `models://progress`: the same rows as models_status. */
@@ -169,18 +161,8 @@ export interface CaptionLine {
   state: LineState;
   /** Chinese so far (live), then the committed Chinese. */
   source: string;
-  /** Final translation text, or streamed deltas in Light/Off mode. */
+  /** Streamed translation so far, then the final translation. */
   english: string;
-  /** Newest cleaned draft ("" if none). */
-  draft: string;
-  /** The last two drafts, for the "settled" policy. */
-  drafts: string[];
-  /** Draft text currently displayed, after the display policy. */
-  shown: string;
-  /** The previous draft update was held back by the shrink rule. */
-  heldOnce: boolean;
-  /** AsrFinal received. */
-  committed: boolean;
   lang: string | null;
   reason: string | null;
   updatedAt: number;

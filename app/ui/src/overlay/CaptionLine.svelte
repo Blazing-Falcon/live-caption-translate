@@ -34,7 +34,6 @@
       ? `${langName} · Turn on in settings to translate`
       : `${langName} · Not translated`,
   );
-  const hasShown = $derived(line !== null && line.shown !== "");
   // A live line with nothing to show yet is not rendered at all, so it reserves no space.
   const hidden = $derived(line !== null && isHiddenLive(line, liveSource));
   const sourceVisible = $derived(
@@ -43,14 +42,8 @@
         ? liveSource && line.source !== ""
         : line.state === "pending" || line.state === "skipped" || line.state === "failed" || showSource),
   );
-  // Drafts are shown in the draft color until the final replaces them in the same element.
-  const isDraft = $derived(
-    line !== null &&
-      hasShown &&
-      (line.state === "live" || line.state === "pending" || line.state === "skipped" || line.state === "failed"),
-  );
   const englishText = $derived(
-    line === null ? "" : isDraft ? line.shown : line.state === "final" || line.state === "streaming" ? line.english : "",
+    line !== null && (line.state === "final" || line.state === "streaming") ? line.english : "",
   );
   const showEnglish = $derived(line !== null && (englishText !== "" || line.state === "streaming"));
 </script>
@@ -66,7 +59,6 @@
     class:older={age > 0}
     class:fading
     class:skipped={line.state === "skipped"}
-    class:dimmed={line.state === "failed" && hasShown}
     data-id={line.id}
     data-state={line.state}
     style:--age-opacity={ageOpacity(variant, age)}
@@ -82,12 +74,12 @@
         <p class="source" lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
       {/if}
       {#if showEnglish}
-        <p class="english" class:draft={isDraft}>{englishText}{#if line.state === "streaming"}<span class="caret" aria-hidden="true"></span>{/if}</p>
+        <p class="english">{englishText}{#if line.state === "streaming"}<span class="caret" aria-hidden="true"></span>{/if}</p>
       {:else if line.state === "pending"}
         <p class="english dots" aria-hidden="true">···</p>
         <span class="sr-only">Translating</span>
       {/if}
-      {#if line.state === "skipped" && !hasShown}
+      {#if line.state === "skipped"}
         <p class="label">Skipped to catch up</p>
       {:else if line.state === "failed"}
         <p class="label warning">Translation failed · {line.reason ?? "Could not translate this line"}</p>
@@ -112,8 +104,7 @@
     --line-scale: var(--older-scale);
   }
 
-  .line.skipped,
-  .line.dimmed {
+  .line.skipped {
     opacity: calc(var(--age-opacity, 1) * 0.6);
   }
 
@@ -131,11 +122,6 @@
     font-weight: 500;
     line-height: 1.3;
     color: var(--ov-text);
-    transition: color var(--recolor-ms) linear;
-  }
-
-  .english.draft {
-    color: var(--ov-draft);
   }
 
   .other {

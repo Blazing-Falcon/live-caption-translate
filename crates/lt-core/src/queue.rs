@@ -329,7 +329,6 @@ pub fn translate_one(
         } else {
             &[]
         },
-        prefill: "",
         max_tokens: None,
         control: control.clone(),
     };

@@ -82,13 +82,6 @@ export const partial = (id: number, text: string, cls: TextClass = "chinese", en
   class: cls,
   end_ms,
 });
-export const draft = (id: number, text: string, rev = 1, end_ms = 1000): PipelineEvent => ({
-  type: "translation_draft",
-  id,
-  rev,
-  text,
-  end_ms,
-});
 export const dropped = (id: number): PipelineEvent => ({ type: "dropped", id, reason: "empty" });
 
 export const delta = (id: number, text: string): PipelineEvent => ({ type: "translation_delta", id, text_so_far: text });
@@ -124,7 +117,7 @@ export function testState(patch: Partial<AppState> = {}): AppState {
     listening: "listening",
     source: { mode: "system", label: "Speakers (Realtek)", sample_rate: 48000, channels: 2 },
     source_state: "playing",
-    engines: { asr: "ready", translator: "ready", draft_translator: "ready" },
+    engines: { asr: "ready", translator: "ready" },
     models_ready: true,
     overlay_moving: false,
     overlay_visible: true,
@@ -150,10 +143,5 @@ export const STATS: PipelineStats = {
   mode: "off",
   mode_reason: null,
   cpu_system_pct: 20,
-  cpu_draft_pct: 0,
-  rss_draft_mb: 0,
-  word_first_p50_ms: null,
   word_final_p50_ms: null,
-  drafts_total: 0,
-  drafts_failed: 0,
 };

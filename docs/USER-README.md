@@ -10,14 +10,14 @@ All processing is on your computer. After the first download, the app does not u
 
 - Windows 10 or Windows 11, 64-bit.
 - A CPU with AVX2, 4 cores or more, and 8 GB of RAM. We recommend 6 cores and 16 GB. On slower PCs the captions come later.
-- Approximately 3 GB of free disk space for the models. The optional "Faster captions" model needs 480 MB more.
+- Approximately 3 GB of free disk space for the models.
 - The Microsoft Edge WebView2 Runtime. Windows 11 and most Windows 10 PCs have it. If it is missing, the app starts its setup.
 - "Selected apps" capture needs Windows 10 build 20348 or later (usually Windows 11). Whole-system capture works on all supported versions.
 
 ## First run
 
 1. Unzip the folder to a location where you can write. Start `live-translation.exe`. The app has no code signature, so Windows SmartScreen can ask you to confirm.
-2. The first-run screen shows the models and downloads them one time. On PCs with 6 or more cores, the list includes "Faster captions" (480 MB). This model is optional. Without it, the app uses the Light caption speed.
+2. The first-run screen shows the models and downloads them one time.
    - Select Hugging Face or ModelScope as the source.
    - You can pause and resume the download.
    - "Use files I already have" uses model files that are on your PC.
@@ -29,9 +29,9 @@ All processing is on your computer. After the first download, the app does not u
 | Page | Settings |
 |---|---|
 | **Capture** | Listen to the **whole system** (you can select an output device), or to **selected apps** such as Chrome and Discord. The app remembers apps by program name. |
-| **Overlay** | Style (subtitle bar at the bottom, caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking", "Draft text" |
+| **Overlay** | Style (subtitle bar at the bottom, caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
 | **Languages** | Chinese to English. English speech shows as heard. You can turn on translation for Japanese and Korean. Otherwise they show untranslated. |
-| **Performance** | **Caption speed**, "Translate with the previous lines", word delay ("Word to first English", "Word to final English", medians for the last minute), memory, CPU, translator threads |
+| **Performance** | **Caption speed**, "Translate with the previous lines", word delay ("Word to English", median for the last minute), memory, CPU, translator threads |
 
 When you close the control window, the app continues in the system tray. Right-click the tray icon for Pause, Hide overlay, Move overlay, Listen to, Open transcript folder, Settings and Quit.
 
@@ -49,32 +49,22 @@ You can change the hotkeys on the Overlay page.
 
 If a different program uses a hotkey, the Overlay page tells you. The other hotkeys continue to work.
 
-## Caption speed and draft text
+## Caption speed
 
 Set the **Caption speed** on the Performance page:
 
 | Setting | Result |
 |---|---|
-| Automatic (recommended) | Continuous on PCs with 6 or more cores and the Faster captions model. Light on other PCs. |
-| Continuous | The English follows the speaker in approximately one second. This uses the most CPU (approximately two cores in our test). |
-| Light | The app translates each phrase when it ends. No draft text. Less CPU. |
+| Automatic (recommended) | Light. |
+| Continuous | Same as Light. |
+| Light | The app translates each phrase when it ends. |
 | Wait for full sentences | The app translates when the speaker pauses. |
-
-In Continuous mode, a line has three steps:
-
-1. The Chinese appears while the app recognizes it.
-2. A dimmed English draft grows below it. The draft can change while the person speaks.
-3. The final translation replaces the draft. The transcript keeps only the final text.
-
-**Draft text** on the Overlay page sets how much of the draft you see: all words except the newest (default, least flicker), only words that do not change, or all words.
 
 Three options on the Performance page change the CPU use:
 
-- **Give games priority** (on by default): both translators run at low priority, so a game keeps its frame rate. If you turn it off, the translators restart.
+- **Give games priority** (on by default): the translator runs at low priority, so a game keeps its frame rate. If you turn it off, the translator restarts.
 - **Slow down when the PC is busy** (on by default): the app changes from Continuous to Light when the PC is busy, and back when it is free. The status line under Caption speed tells you when and why.
 - **Split long sentences** (on by default): the app translates a long sentence in parts when the speaker does not pause.
-
-If you select Continuous and the Faster captions model is missing, the status line tells you and shows a **Download (480 MB)** button. Captions continue in Light mode until the download is complete.
 
 ## Limitations
 
@@ -84,7 +74,6 @@ If you select Continuous and the Faster captions model is missing, the status li
 - The app recognizes English words in Chinese speech correctly only 55 to 66% of the time.
 - If a sentence is longer than 10 seconds, the cut can remove part of a character.
 - The translations are machine output. If the translator is more than 6 seconds late, it skips older lines to catch up. The Chinese of those lines stays visible.
-- Draft English comes from a small model (0.6B). It can be wrong or change before the final text comes. If you want only final text, use Light or Wait for full sentences.
 - In Light and Wait for full sentences, captions come after a phrase or sentence ends, usually in 1 to 3 seconds.
 
 ## Files
@@ -96,7 +85,7 @@ If you select Continuous and the Faster captions model is missing, the status li
 | Transcripts (one `.jsonl` file for each session, kept 30 days) | `%LOCALAPPDATA%\app.livetranslation.desktop\transcripts` |
 | Logs | `%LOCALAPPDATA%\app.livetranslation.desktop\logs` |
 
-Transcripts contain only final text, never drafts or live Chinese. They contain what other persons said. To stop them, turn them off on the Performance page, or delete the folder. At the default level, logs do not contain caption text.
+Transcripts contain only final text, never live Chinese. They contain what other persons said. To stop them, turn them off on the Performance page, or delete the folder. At the default level, logs do not contain caption text.
 
 ## Remove the app
 

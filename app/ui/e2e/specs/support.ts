@@ -47,7 +47,6 @@ export const NOW = {
   partial: (id: number, text: string, cls: "chinese" | "mixed" | "english" | "other" = "chinese"): PipelineEvent => ({
     type: "asr_partial", id, text, class: cls, end_ms: 1000,
   }),
-  draft: (id: number, text: string, rev = 1): PipelineEvent => ({ type: "translation_draft", id, rev, text, end_ms: 1000 }),
   skipped: (id: number): PipelineEvent => ({ type: "skipped", id, reason: "catch_up" }),
   delta: (id: number, text_so_far: string): PipelineEvent => ({ type: "translation_delta", id, text_so_far }),
   final: (id: number, text: string): PipelineEvent => ({

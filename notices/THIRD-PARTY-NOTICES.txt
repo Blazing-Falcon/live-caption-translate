@@ -26,15 +26,6 @@ upstream card https://huggingface.co/GilgameshWind/X-ASR-zh-en declares apache-2
 The conversion states no license of its own. The Apache License 2.0
 text reproduced below for Hy-MT2 applies.
 
-LMT-60-0.6B — NiuTrans (optional "Faster captions" draft model)
-Upstream: https://huggingface.co/NiuTrans/LMT-60-0.6B
-Used quantization: LMT-60-0.6B.Q4_K_M.gguf by mradermacher.
-Quantization page: https://huggingface.co/mradermacher/LMT-60-0.6B-GGUF
-License: Apache-2.0 as declared on the upstream card and the quantization card
-(checked 2026-10-09, recorded in models/manifest.json). The Apache License 2.0
-text reproduced below for Hy-MT2 applies. The model is downloaded on request or
-on PCs with six or more physical cores and is not part of the zip.
-
 NATIVE RUNTIMES
 
 sherpa-onnx 1.13.8 — k2-fsa contributors

@@ -41,7 +41,6 @@ pub enum DropReason {
 pub enum EngineKind {
     Asr,
     Translator,
-    DraftTranslator,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -109,14 +108,6 @@ pub enum PipelineEvent {
     TranslationDelta {
         id: UtteranceId,
         text_so_far: String,
-    },
-    /// A quick provisional translation of the open clause. `rev` counts from 1 per id.
-    TranslationDraft {
-        id: UtteranceId,
-        rev: u32,
-        text: String,
-        /// `end_ms` of the partial this draft translated.
-        end_ms: u64,
     },
     TranslationFinal {
         id: UtteranceId,
@@ -193,12 +184,6 @@ mod tests {
                 id: UtteranceId(12),
                 text_so_far: "I also want to run".into(),
             },
-            PipelineEvent::TranslationDraft {
-                id: UtteranceId(12),
-                rev: 2,
-                text: "I also want to run".into(),
-                end_ms: 45_900,
-            },
             PipelineEvent::TranslationFinal {
                 id: UtteranceId(12),
                 text: "I also want to run a great company.".into(),
@@ -263,12 +248,7 @@ mod tests {
                 mode: EffectiveMode::Continuous,
                 mode_reason: Some(ModeReason::Cpu),
                 cpu_system_pct: 41.5,
-                cpu_draft_pct: 55.0,
-                rss_draft_mb: 610,
-                word_first_p50_ms: Some(1_040),
                 word_final_p50_ms: None,
-                drafts_total: 48,
-                drafts_failed: 1,
             }),
         ]
     }
@@ -282,7 +262,7 @@ mod tests {
         ))
         .unwrap();
         let events = every_event_variant();
-        assert_eq!(events.len(), 15);
+        assert_eq!(events.len(), 14);
         assert_eq!(serde_json::to_value(&events).unwrap(), rust_fixture);
         assert_eq!(rust_fixture, frontend_fixture);
         assert_eq!(

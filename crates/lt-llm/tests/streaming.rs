@@ -172,7 +172,6 @@ fn request<'a>(text: &'a str, control: TranslationControl) -> TranslateRequest<'
         tgt: "en",
         terms: &[],
         context: &[],
-        prefill: "",
         max_tokens: None,
         control,
     }

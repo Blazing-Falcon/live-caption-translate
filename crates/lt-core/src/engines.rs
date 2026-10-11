@@ -68,8 +68,6 @@ pub struct TranslatorCaps {
     pub streaming: bool,
     pub glossary: bool,
     pub context: bool,
-    /// Accepts an answer prefix (`TranslateRequest::prefill`), used for drafts.
-    pub prefill: bool,
     pub max_input_chars: usize,
     pub pairs: Vec<(String, String)>,
 }
@@ -113,8 +111,6 @@ pub struct TranslateRequest<'a> {
     /// Earlier lines as (source, English shown), oldest first. Engines
     /// without `caps().context` get none.
     pub context: &'a [(String, String)],
-    /// English the answer must start with; "" for none. Only draft engines honor it.
-    pub prefill: &'a str,
     /// Overrides the engine's default output budget.
     pub max_tokens: Option<u32>,
     pub control: TranslationControl,
@@ -145,7 +141,6 @@ type TranslatorFactory = fn(&Config) -> Result<Box<dyn Translator>>;
 pub struct EngineRegistry {
     asr: Option<AsrFactory>,
     translators: BTreeMap<String, TranslatorFactory>,
-    draft_translators: BTreeMap<String, TranslatorFactory>,
 }
 
 impl EngineRegistry {
@@ -154,9 +149,6 @@ impl EngineRegistry {
     }
     pub fn register_translator(&mut self, name: &str, factory: TranslatorFactory) {
         self.translators.insert(name.into(), factory);
-    }
-    pub fn register_draft_translator(&mut self, name: &str, factory: TranslatorFactory) {
-        self.draft_translators.insert(name.into(), factory);
     }
     pub fn build_asr(&self, config: &Config) -> Result<Box<dyn StreamingAsr>> {
         self.asr.ok_or_else(|| Error::UnknownEngine {
@@ -170,14 +162,6 @@ impl EngineRegistry {
             .ok_or_else(|| Error::UnknownEngine {
                 kind: "translator",
                 name: config.translate.engine.clone(),
-            })?(config)
-    }
-    pub fn build_draft_translator(&self, config: &Config) -> Result<Box<dyn Translator>> {
-        self.draft_translators
-            .get(&config.latency.draft_engine)
-            .ok_or_else(|| Error::UnknownEngine {
-                kind: "draft translator",
-                name: config.latency.draft_engine.clone(),
             })?(config)
     }
 }

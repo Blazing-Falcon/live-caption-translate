@@ -2,11 +2,11 @@
 
 Live English captions for Chinese speech on Windows. All processing is on the PC.
 
-The app captures the audio that the PC plays (all audio, or only selected apps). It recognizes the Chinese with a streaming X-ASR model and translates it with two local llama.cpp models. The Chinese and a dimmed draft translation appear in approximately one second. The final translation then replaces the draft.
+The app captures the audio that the PC plays (all audio, or only selected apps). It recognizes the Chinese with a streaming X-ASR model and translates it with a local llama.cpp model. The Chinese appears while it is spoken. The English follows when the sentence or phrase ends.
 
-![Subtitle bar with live Chinese and a dimmed draft](docs/images/overlay.png)
+![Subtitle bar with Chinese and English captions](docs/images/overlay.png)
 
-Rust core, Tauri 2 shell, Svelte UI. Translation: Hy-MT2 1.8B for finals, LMT-60 0.6B for drafts.
+Rust core, Tauri 2 shell, Svelte UI. Translation: Hy-MT2 1.8B.
 
 ## Requirements
 

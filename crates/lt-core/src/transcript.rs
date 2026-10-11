@@ -36,20 +36,6 @@ pub struct SessionConfig {
     pub cap_tokens: u32,
     #[serde(default)]
     pub decode_interval_s: f64,
-    /// The draft model in use, or `null` when the session runs without drafts.
-    #[serde(default)]
-    pub draft_model: Option<String>,
-}
-
-/// Manifest id of the draft model, recorded in the session header when drafts run.
-pub const DRAFT_MODEL_ID: &str = "lmt-60-0.6b-q4_k_m";
-
-impl SessionConfig {
-    /// Record whether a draft translator is running in this session.
-    pub fn with_draft(mut self, running: bool) -> Self {
-        self.draft_model = running.then(|| DRAFT_MODEL_ID.to_owned());
-        self
-    }
 }
 
 impl From<&Config> for SessionConfig {
@@ -65,7 +51,6 @@ impl From<&Config> for SessionConfig {
                 0
             },
             decode_interval_s: readable_f32(config.latency.decode_interval_s),
-            draft_model: None,
         }
     }
 }
@@ -542,7 +527,7 @@ mod tests {
 
     const WALL: &str = "2026-10-07T21:14:51+07:00";
     const GOLDEN: &str = concat!(
-        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5,\"draft_model\":null}}\n",
+        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"hold_max_chars\":8,\"skip_lag_s\":6.0,\"mode\":\"auto\",\"comma_min_tokens\":8,\"cap_tokens\":20,\"decode_interval_s\":0.5}}\n",
         "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null}}\n",
         "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"こんにちは。\",\"logprob\":null}}\n",
         "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null}}\n",
@@ -566,7 +551,6 @@ mod tests {
                 comma_min_tokens: 8,
                 cap_tokens: 20,
                 decode_interval_s: 0.5,
-                draft_model: None,
             },
         }
     }
@@ -644,7 +628,7 @@ mod tests {
     }
 
     #[test]
-    fn partials_and_drafts_are_never_written_and_commit_clauses_record_their_cut() {
+    fn partials_are_never_written_and_commit_clauses_record_their_cut() {
         let mut writer = TranscriptWriter::new(Vec::new(), header()).unwrap();
         let id = UtteranceId(5);
         writer
@@ -653,17 +637,6 @@ mod tests {
                     id,
                     text: "这次华为".into(),
                     class: TextClass::Chinese,
-                    end_ms: 1_000,
-                },
-                WALL,
-            )
-            .unwrap();
-        writer
-            .on_event(
-                &PipelineEvent::TranslationDraft {
-                    id,
-                    rev: 1,
-                    text: "This time Huawei".into(),
                     end_ms: 1_000,
                 },
                 WALL,

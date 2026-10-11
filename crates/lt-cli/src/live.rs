@@ -117,7 +117,7 @@ fn run_session(
             },
             asr: recognizer_name(&config),
             translator: config.translate.engine.clone(),
-            config: SessionConfig::from(&config).with_draft(engines.draft.is_some()),
+            config: SessionConfig::from(&config),
         };
         let writer = TranscriptWriter::with_routing(
             BufWriter::new(
@@ -135,7 +135,7 @@ fn run_session(
         None
     };
     let mut report = ReplayReport::new(&config.routing);
-    let sampler = ProcessSampler::new(engines.pid.clone())?.with_draft(engines.draft_pid.clone());
+    let sampler = ProcessSampler::new(engines.pid.clone())?;
     let mut pipeline = Pipeline::start_with_options(
         config,
         source,
@@ -144,7 +144,6 @@ fn run_session(
         bus.clone(),
         lt_core::pipeline::PipelineOptions {
             sampler: Some(Box::new(sampler)),
-            draft: engines.draft,
             physical_cores: Some(num_cpus::get_physical()),
         },
     )?;
@@ -200,9 +199,6 @@ fn run_session(
     #[cfg(feature = "llm")]
     {
         if let Some(mut supervisor) = engines.supervisor {
-            supervisor.stop()?;
-        }
-        if let Some(mut supervisor) = engines.draft_supervisor {
             supervisor.stop()?;
         }
     }

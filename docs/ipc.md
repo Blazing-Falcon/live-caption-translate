@@ -17,7 +17,6 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `speech_started` | `id`, `at_ms` | A speech segment opens |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | Each decode of the open clause (not in Off mode) |
 | `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`? | A clause is complete. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). |
-| `translation_draft` | `id`, `rev`, `text`, `end_ms` | A draft is ready (Continuous mode, Chinese or mixed text only). `rev` starts at 1. |
 | `joined` | `id`, `absorbed[]`, `text`, `kind` | Clauses join into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
@@ -40,7 +39,7 @@ Enum values:
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
 | `DropReason` | `empty`, `single_char` |
-| `EngineKind` | `asr`, `translator`, `draft_translator` |
+| `EngineKind` | `asr`, `translator` |
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |
 | `ListeningStateKind` | `starting`, `listening`, `paused` |
@@ -65,11 +64,11 @@ Notes:
 | `lag_ms` | Live position minus the end of the oldest unfinished clause |
 | `queue_depth`, `held` | Waiting translation items; segments that the joiner holds |
 | `done_p50_ms`, `done_p95_ms`, `first_p50_ms` | Speech end to final and to first delta, last 50 finals |
-| `word_first_p50_ms`, `word_final_p50_ms` | Median word delay to first and to final English, last 60 s |
-| `skipped_total`, `failed_total`, `drafts_total`, `drafts_failed` | Session counters |
-| `cpu_app_pct`, `cpu_translator_pct`, `cpu_draft_pct` | Percent of one core, last second |
+| `word_final_p50_ms` | Median delay from a spoken word to its English, last 60 s |
+| `skipped_total`, `failed_total` | Session counters |
+| `cpu_app_pct`, `cpu_translator_pct` | Percent of one core, last second |
 | `cpu_system_pct` | Whole-PC CPU, last second |
-| `rss_app_mb`, `rss_translator_mb`, `rss_draft_mb` | Memory |
+| `rss_app_mb`, `rss_translator_mb` | Memory |
 | `mode`, `mode_reason` | Effective caption speed and the reason |
 
 ## Order of events
@@ -77,16 +76,15 @@ Notes:
 These rules apply to each id. `crates/lt-core/tests/caption_speeds.rs` checks them with random delays and failures.
 
 ```
-speech_started? -> (asr_partial | translation_draft)* -> dropped                     (end)
-speech_started? -> (asr_partial | translation_draft)* -> asr_final -> ...
+speech_started? -> asr_partial* -> dropped                                           (end)
+speech_started? -> asr_partial* -> asr_final -> ...
 asr_final (english, or other not translated)                                         (end)
 asr_final -> joined (as absorbed)                                                    (end)
-asr_final -> joined (as leader)* -> translation_draft?
+asr_final -> joined (as leader)*
           -> translation_delta* -> translation_final | translation_failed | skipped   (end)
 ```
 
 - No event follows a terminal event.
-- `translation_draft.rev` increases by 1 each time.
 - `joined` comes after the `asr_final` of each id that it names. A leader can get more than one `joined`.
 - Absorbed ids get no translation events.
 
@@ -136,7 +134,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `show_control_window` | | | Show the control window |
 | `quit` | | | Stop the pipeline and servers, then exit |
 
-`AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`, `draft_translator`), `models_ready`, `overlay_moving`, `overlay_visible`, `mode` and `mode_reason`.
+`AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible`, `mode` and `mode_reason`.
 
 `ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`), `optional` and `recommended`.
 
@@ -147,22 +145,13 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | Event | Effect on the line |
 |---|---|
 | `asr_partial` | New id: add a `live` line. `live` line: update the Chinese. |
-| `translation_draft` | `live` or `pending` line: keep the last two drafts and update the shown words |
-| `asr_final` | `english` or `other` (terminal), else `pending`. Show the full newest draft. |
+| `asr_final` | `english` or `other` (terminal), else `pending` |
 | `joined` | Remove the absorbed lines. The leader gets the joined text. |
-| `translation_delta` | `pending` if the line has a draft, else `streaming` |
+| `translation_delta` | `streaming` |
 | `translation_final` | `final` |
 | `translation_failed` | `failed`, with a short reason text |
-| `skipped` | `skipped` (the draft stays, dimmed) |
+| `skipped` | `skipped` |
 | `dropped` | Remove the line if it is `live` |
-
-Draft display (`overlay.draft_display`):
-
-- `all`: all words of the newest draft.
-- `hold2`: all words except the last two.
-- `settled`: the common word prefix of the last two drafts.
-- After `asr_final`, all policies show the full draft.
-- If a new draft would show less than half of the current words, the old words stay for one update.
 
 Other rules:
 
@@ -174,9 +163,9 @@ Other rules:
 
 The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.jsonl`. `lt-cli replay` writes the same format.
 
-- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (main latency settings and the draft model id).
+- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (main latency settings).
 - Each other line is one `utterance` record. The writer writes it when the line becomes terminal.
-- The writer does not write dropped lines, partials or drafts.
+- The writer does not write dropped lines or partials.
 
 ```json
 {"type":"utterance","id":12,"joined":[13],"start_ms":45210,"end_ms":47980,"cut":"commit","wall":"2026-10-07T21:14:51+08:00","class":"chinese","lang":"zh","source":"我也想办一个，伟大的公司。","english":"I also want to run a great company.","status":"final","timing":{...},"asr_live":{"engine":"xasr_stream","text":"我也想办一个。伟大的公司。","logprob":-0.12}}

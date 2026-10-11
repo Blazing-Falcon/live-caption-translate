@@ -104,7 +104,6 @@ fn mt(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()>
                 tgt: "en",
                 terms: &[],
                 context: &[],
-                prefill: "",
                 max_tokens: None,
                 control: control(),
             },

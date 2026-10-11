@@ -177,7 +177,6 @@ fn manifest(url: String, data: &[u8]) -> Manifest {
             id: "test-model".into(),
             name: "Test model".into(),
             optional: false,
-            recommended_min_physical_cores: None,
             files: vec![file("model.bin", url, data)],
         }],
     }
