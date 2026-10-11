@@ -6,7 +6,6 @@
 use crate::{
     bus::{EventBus, EventReceiver},
     clock::{Clock, ManualClock},
-    commit::CommitSettings,
     config::Config,
     engines::{StreamingAsr, Translator},
     error::{Error, Result},
@@ -653,7 +652,7 @@ fn asr_loop(
         state: EngineState::Ready,
         message: None,
     });
-    let mut recognizer = StreamRecognizer::new(config, CommitSettings::STREAMING, true);
+    let mut recognizer = StreamRecognizer::new(config);
     let mut produced = Vec::new();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {

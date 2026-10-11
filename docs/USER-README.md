@@ -51,7 +51,7 @@ If a different program uses a hotkey, the Overlay page tells you. The other hotk
 ## How captions appear
 
 1. The Chinese appears while the person speaks.
-2. The line ends at the end of a sentence (。？！) or when the person pauses. If a sentence runs on with commas, a comma can end the line after about 6 seconds. After 30 seconds, the app cuts the line at a gap between words.
+2. The line ends at the end of a sentence (。？！) or when the person pauses. If a sentence runs on with commas, a comma can end the line after about 2 seconds. After 30 seconds, the app cuts the line at a gap between words.
 3. The English appears below the Chinese. The transcript keeps only the final text.
 
 English speech shows as heard. It is not translated.

@@ -358,10 +358,10 @@ fn finals(events: &[PipelineEvent]) -> Vec<(UtteranceId, String, CutReason)> {
         .collect()
 }
 
-/// A clause ends at the sentence end and the pause, not at the early comma, and the Chinese
-/// shows while it is spoken.
+/// The sentence (one token each 200 ms) is cut at its comma once the clause is old enough, at
+/// its sentence end and at the pause, and the Chinese shows while it is spoken.
 #[test]
-fn clauses_end_at_sentence_ends_and_pauses_and_show_live_text() {
+fn clauses_end_at_commas_sentence_ends_and_pauses_and_show_live_text() {
     let chars = sentence_chars();
     let run = run(
         speech(chars.len(), 1.0),
@@ -375,10 +375,20 @@ fn clauses_end_at_sentence_ends_and_pauses_and_show_live_text() {
         .any(|event| matches!(event, PipelineEvent::AsrPartial { .. })));
     let clauses = finals(&run.events);
     let texts: Vec<_> = clauses.iter().map(|(_, text, _)| text.as_str()).collect();
-    let (sentence, rest) = SENTENCE.split_at(SENTENCE.find('。').unwrap() + '。'.len_utf8());
-    assert_eq!(texts, [sentence, rest]);
+    assert_eq!(
+        texts,
+        [
+            "今天天气很好我们一起去公园玩，",
+            "然后回家吃饭再看电影。",
+            "接着继续聊天说话吧"
+        ]
+    );
+    assert_eq!(texts.concat(), SENTENCE);
     let cuts: Vec<_> = clauses.iter().map(|(_, _, cut)| *cut).collect();
-    assert_eq!(cuts, [CutReason::Commit, CutReason::Pause]);
+    assert_eq!(
+        cuts,
+        [CutReason::Commit, CutReason::Commit, CutReason::Pause]
+    );
 }
 
 #[test]
