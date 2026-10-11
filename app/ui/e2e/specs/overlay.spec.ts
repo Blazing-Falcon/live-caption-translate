@@ -9,7 +9,8 @@ test.describe("overlay (browser simulation with mocked transport)", () => {
     await expect(page.locator('[data-state="live"] .source')).toHaveText("这次华为发布的呢是整个");
     await expect(page.locator(".english")).toHaveCount(0);
     await expect(page.locator(".dots")).toHaveCount(0);
-    await page.waitForTimeout(250);
+    // Let the line's entry animation end, so only later animations are counted below.
+    await page.locator("article").evaluate((el) => Promise.all(el.getAnimations().map((animation) => animation.finished)));
     await page.locator("article").evaluate((el) => {
       (el as HTMLElement & { __tag?: string }).__tag = "article";
     });
