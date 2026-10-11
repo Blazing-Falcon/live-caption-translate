@@ -226,15 +226,16 @@ export function hotkeyPatch(action: HotkeyAction, accelerator: string): ConfigPa
   return { hotkeys: { [action]: accelerator.trim() } };
 }
 
-export function translateThreadsPatch(threads: number): ConfigPatch {
-  return { translate: { threads: clamp(Math.round(threads), 1, MAX_THREADS) } };
+export function threadsPatch(table: "asr" | "translate", threads: number): ConfigPatch {
+  return { [table]: { threads: clamp(Math.round(threads), 1, MAX_THREADS) } };
 }
 
-/** Characters of earlier lines translated with each new line when the switch is on. */
-export const WINDOW_CHARS = 30;
+/** Characters of earlier lines translated together with each new line; 0 turns it off. */
+export const WINDOW_LIMITS = { min: 0, max: 60 } as const;
 
-export function translateWindowPatch(enabled: boolean): ConfigPatch {
-  return { translate: { window_chars: enabled ? WINDOW_CHARS : 0 } };
+export function windowCharsPatch(chars: number): ConfigPatch {
+  const value = Number.isFinite(chars) ? Math.round(chars) : 0;
+  return { translate: { window_chars: clamp(value, WINDOW_LIMITS.min, WINDOW_LIMITS.max) } };
 }
 
 export function transcriptPatch(enabled: boolean): ConfigPatch {
@@ -258,9 +259,9 @@ export interface SpeechChoice<T extends string> {
 }
 
 export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
-  { value: "160", label: "160 ms", model: "xasr-stream-160ms-int8-2026-06-05", help: "Words appear about 0.15 s sooner than 480 ms. About twice the CPU and slightly more errors." },
-  { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "The default. Fewest errors." },
-  { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "About 30% less CPU. Words appear about 0.2 s later." },
+  { value: "160", label: "160 ms", model: "xasr-stream-160ms-int8-2026-06-05", help: "Words appear soonest, about 0.15 s before 480 ms. About twice the CPU and slightly more errors." },
+  { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "The default. Fewest errors, medium CPU." },
+  { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "Least CPU, about 30% less than 480 ms. Words appear about 0.2 s later." },
 ];
 
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {

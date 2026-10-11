@@ -14,10 +14,11 @@
   import {
     STREAM_CHUNKS,
     asrPatch,
+    WINDOW_LIMITS,
     performancePatch,
+    threadsPatch,
     transcriptPatch,
-    translateThreadsPatch,
-    translateWindowPatch,
+    windowCharsPatch,
     type Config,
     type ConfigPatch,
     type SpeechChoice,
@@ -30,9 +31,8 @@
   const { stats, busy, appState, models, config: liveConfig } = session;
 
   // Up to the PC's logical CPUs; a larger saved value stays selectable.
-  const threadOptions = $derived(
-    Array.from({ length: Math.max($appState?.logical_cpus ?? 1, config.translate.threads) }, (_, index) => index + 1),
-  );
+  const threadOptions = (current: number): number[] =>
+    Array.from({ length: Math.max($appState?.logical_cpus ?? 1, current) }, (_, index) => index + 1);
 
   async function toggleLowPriority(event: Event): Promise<void> {
     const input = event.currentTarget as HTMLInputElement;
@@ -40,16 +40,18 @@
     reconcileChecked(input, get(liveConfig)?.performance.low_priority ?? config.performance.low_priority);
   }
 
-  async function chooseThreads(event: Event): Promise<void> {
+  async function chooseThreads(event: Event, table: "asr" | "translate"): Promise<void> {
     const select = event.currentTarget as HTMLSelectElement;
-    const saved = await session.save("translate.threads", translateThreadsPatch(Number(select.value)));
-    if (!saved) select.value = String(config.translate.threads);
+    const saved = await session.save(`${table}.threads`, threadsPatch(table, Number(select.value)));
+    if (!saved) select.value = String(config[table].threads);
   }
 
-  async function toggleWindow(event: Event): Promise<void> {
+  async function chooseWindow(event: Event): Promise<void> {
     const input = event.currentTarget as HTMLInputElement;
-    await session.save("translate.window_chars", translateWindowPatch(input.checked));
-    reconcileChecked(input, (get(liveConfig)?.translate.window_chars ?? config.translate.window_chars) > 0);
+    const patch = windowCharsPatch(Number(input.value));
+    await session.save("translate.window_chars", patch);
+    // Show what was saved: a clamped value, or the old one after a failed save.
+    input.value = String(get(liveConfig)?.translate.window_chars ?? config.translate.window_chars);
   }
 
   async function toggleTranscript(event: Event): Promise<void> {
@@ -69,7 +71,7 @@
   const speechRows = $derived<SpeechRow[]>([
     {
       key: "asr.chunk_ms",
-      label: "Streaming chunk",
+      label: "Chunk size",
       value: String(config.asr.chunk_ms),
       choices: STREAM_CHUNKS,
       patch: (value) => asrPatch({ chunk_ms: Number(value) as Config["asr"]["chunk_ms"] }),
@@ -145,38 +147,6 @@
   <h2 id="performance-title" class="section-title">Performance</h2>
 
   <div class="stack">
-    <div class="option">
-      <label class="check-row">
-        <input
-          type="checkbox"
-          checked={config.performance.low_priority}
-          aria-describedby="help-low-priority"
-          onchange={toggleLowPriority}
-        />
-        <span>Give games priority</span>
-      </label>
-      <p id="help-low-priority" class="help small">
-        Runs translation at low priority so games stay smooth. Off: English can appear slightly sooner, but uses more CPU.
-      </p>
-    </div>
-    <div class="option">
-      <label class="check-row">
-        <input
-          type="checkbox"
-          checked={config.translate.window_chars > 0}
-          aria-describedby="help-window"
-          data-testid="translate-window"
-          onchange={toggleWindow}
-        />
-        <span>Translate with the previous lines</span>
-      </label>
-      <p id="help-window" class="help small">
-        Translates each line together with the line or two before it, so the translator knows what came before. Only the new line's English is shown. Each line's English appears a little later.
-      </p>
-    </div>
-  </div>
-
-  <div class="stack">
     <h3 class="section-title">Speech recognition</h3>
     {#each speechRows as row (row.key)}
       {@const status = speechStatus(row)}
@@ -210,6 +180,69 @@
         </div>
       </div>
     {/each}
+    <label class="field">
+      <span>Recognizer threads</span>
+      <select
+        class="select"
+        value={String(config.asr.threads)}
+        data-testid="asr-threads"
+        onchange={(event) => chooseThreads(event, "asr")}
+      >
+        {#each threadOptions(config.asr.threads) as count (count)}
+          <option value={String(count)}>{count}</option>
+        {/each}
+      </select>
+    </label>
+  </div>
+
+  <div class="stack">
+    <h3 class="section-title">Translation</h3>
+    <label class="field">
+      <span>Translator threads</span>
+      <select
+        class="select"
+        value={String(config.translate.threads)}
+        data-testid="translate-threads"
+        onchange={(event) => chooseThreads(event, "translate")}
+      >
+        {#each threadOptions(config.translate.threads) as count (count)}
+          <option value={String(count)}>{count}</option>
+        {/each}
+      </select>
+    </label>
+    <div class="option">
+      <label class="field">
+        <span>Translate with earlier lines (characters)</span>
+        <input
+          class="input window"
+          type="number"
+          min={WINDOW_LIMITS.min}
+          max={WINDOW_LIMITS.max}
+          step="1"
+          value={config.translate.window_chars}
+          aria-describedby="help-window"
+          data-testid="translate-window"
+          onchange={chooseWindow}
+        />
+      </label>
+      <p id="help-window" class="help small">
+        Each line is translated together with the earlier lines that fit in this many characters, so the translator knows what came before. Only the new line's English is shown. 0 translates each line alone; more characters make the English appear a little later.
+      </p>
+    </div>
+    <div class="option">
+      <label class="check-row">
+        <input
+          type="checkbox"
+          checked={config.performance.low_priority}
+          aria-describedby="help-low-priority"
+          onchange={toggleLowPriority}
+        />
+        <span>Give games priority</span>
+      </label>
+      <p id="help-low-priority" class="help small">
+        Runs translation at low priority so games stay smooth. Off: English can appear slightly sooner, but uses more CPU.
+      </p>
+    </div>
   </div>
 
   <dl class="stat-grid">
@@ -231,19 +264,6 @@
       </span>
     </div>
   </dl>
-
-  <label class="field">
-    <span>Translator threads</span>
-    <select
-      class="select"
-      value={String(config.translate.threads)}
-      onchange={chooseThreads}
-    >
-      {#each threadOptions as count (count)}
-        <option value={String(count)}>{count}</option>
-      {/each}
-    </select>
-  </label>
 
   <div class="stack">
     <label class="check-row">
@@ -275,7 +295,11 @@
     flex-direction: column;
   }
 
-  .option .help {
+  .option .check-row + .help {
     padding-left: 26px;
+  }
+
+  .window {
+    width: 96px;
   }
 </style>

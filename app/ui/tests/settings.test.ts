@@ -14,7 +14,6 @@ import {
   overlayPatch,
   parseConfig,
   toggledApps,
-  translateThreadsPatch,
 } from "../src/lib/settings";
 
 function parseDefaultToml(): Record<string, unknown> {
