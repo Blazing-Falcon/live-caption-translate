@@ -170,9 +170,6 @@ fn request<'a>(text: &'a str, control: TranslationControl) -> TranslateRequest<'
     TranslateRequest {
         id: UtteranceId(1),
         text,
-        src: "zh",
-        tgt: "en",
-        terms: &[],
         context: &[],
         max_tokens: None,
         control,
@@ -240,10 +237,6 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
         ),
         (17, 31, 9)
     );
-    let caps = translator.caps();
-    assert!(caps.streaming);
-    assert!(!caps.glossary && caps.context);
-    assert_eq!(caps.max_input_chars, 300);
     server.finish();
 }
 

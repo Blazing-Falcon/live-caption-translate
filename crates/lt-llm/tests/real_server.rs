@@ -65,9 +65,6 @@ fn frozen_translation_sentences_against_configured_llama_server() {
         let request = TranslateRequest {
             id: UtteranceId(index as u64 + 1),
             text: source,
-            src: "zh",
-            tgt: "en",
-            terms: &[],
             context: &[],
             max_tokens: None,
             control: TranslationControl {

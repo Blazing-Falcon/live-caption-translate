@@ -239,19 +239,6 @@ fn strip_streaming_wrappers(text: &str) -> &str {
     }
 }
 
-fn source_language(tag: Option<&str>) -> String {
-    let tag = tag.unwrap_or("zh").trim();
-    let tag = tag
-        .strip_prefix("<|")
-        .and_then(|tag| tag.strip_suffix("|>"))
-        .unwrap_or(tag);
-    if tag.is_empty() {
-        "zh".into()
-    } else {
-        tag.to_ascii_lowercase()
-    }
-}
-
 /// Return the prefix before a consecutive threefold repeat of a 1–3 word n-gram.
 pub fn stop_runaway(text: &str) -> Option<String> {
     let mut words = Vec::new();
@@ -326,13 +313,9 @@ pub fn translate_one(
         cancelled,
         abort: Arc::new(AtomicBool::new(false)),
     };
-    let source_language = source_language(source.lang_tag.as_deref());
     let request = TranslateRequest {
         id: source.id,
         text: &source.text,
-        src: &source_language,
-        tgt: "en",
-        terms: &[],
         context: if translator.caps().context {
             context
         } else {

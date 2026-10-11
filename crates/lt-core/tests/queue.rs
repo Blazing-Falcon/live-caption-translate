@@ -192,11 +192,8 @@ struct ContextRecorder {
 impl Translator for ContextRecorder {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            streaming: false,
-            glossary: false,
             context: true,
             max_input_chars: 300,
-            pairs: vec![("zh".into(), "en".into())],
         }
     }
 
@@ -347,7 +344,6 @@ struct ScriptedTranslator {
     clock: ManualClock,
     fragments: Vec<String>,
     final_text: String,
-    expected_source: String,
     wait_after_stream: bool,
     reached_end: Arc<AtomicBool>,
 }
@@ -361,7 +357,6 @@ impl ScriptedTranslator {
                 .map(|fragment| (*fragment).into())
                 .collect(),
             final_text: final_text.into(),
-            expected_source: "zh".into(),
             wait_after_stream: false,
             reached_end: Arc::new(AtomicBool::new(false)),
         }
@@ -371,11 +366,8 @@ impl ScriptedTranslator {
 impl Translator for ScriptedTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            streaming: true,
-            glossary: false,
             context: false,
             max_input_chars: 300,
-            pairs: vec![("zh".into(), "en".into())],
         }
     }
 
@@ -388,7 +380,6 @@ impl Translator for ScriptedTranslator {
         request: &TranslateRequest<'_>,
         on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut> {
-        assert_eq!(request.src, self.expected_source);
         let mut text = String::new();
         for fragment in &self.fragments {
             request.control.check()?;

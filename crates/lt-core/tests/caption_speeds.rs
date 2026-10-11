@@ -221,11 +221,8 @@ impl SeededTranslator {
 impl Translator for SeededTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            streaming: true,
-            glossary: false,
             context: false,
             max_input_chars: 300,
-            pairs: vec![("zh".into(), "en".into())],
         }
     }
     fn warm_up(&mut self, _: &TranslationControl) -> Result<()> {

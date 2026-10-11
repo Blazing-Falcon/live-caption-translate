@@ -64,11 +64,9 @@ pub trait StreamingAsr: Send {
 
 #[derive(Clone, Debug)]
 pub struct TranslatorCaps {
-    pub streaming: bool,
-    pub glossary: bool,
+    /// Accepts earlier lines in `TranslateRequest::context`.
     pub context: bool,
     pub max_input_chars: usize,
-    pub pairs: Vec<(String, String)>,
 }
 
 /// Built-in translators must check this on each blocking/streaming step.
@@ -103,10 +101,8 @@ impl TranslationControl {
 
 pub struct TranslateRequest<'a> {
     pub id: UtteranceId,
+    /// Chinese or mixed source text; the output is English.
     pub text: &'a str,
-    pub src: &'a str,
-    pub tgt: &'a str,
-    pub terms: &'a [(String, String)],
     /// Earlier lines as (source, English shown), oldest first. Engines
     /// without `caps().context` get none.
     pub context: &'a [(String, String)],

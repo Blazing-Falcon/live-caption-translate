@@ -158,11 +158,8 @@ impl Drop for ActiveGuard {
 impl Translator for FakeTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            streaming: true,
-            glossary: false,
             context: false,
             max_input_chars: 300,
-            pairs: vec![("zh".into(), "en".into())],
         }
     }
     fn warm_up(&mut self, control: &TranslationControl) -> Result<()> {

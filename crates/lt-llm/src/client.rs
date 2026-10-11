@@ -159,9 +159,6 @@ impl OpenAiCompatTranslator {
         request: &TranslateRequest<'_>,
         on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut> {
-        if request.tgt != "en" {
-            return Err(translation_error("Hy-MT2 v1 supports English output only"));
-        }
         if request.text.chars().count() > 300 {
             return Err(translation_error(
                 "Translation input exceeds the 300 character limit",
@@ -321,13 +318,8 @@ impl OpenAiCompatTranslator {
 impl Translator for OpenAiCompatTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            streaming: true,
-            glossary: false,
             context: true,
             max_input_chars: 300,
-            pairs: ["zh", "yue", "ja", "ko"]
-                .map(|source| (source.into(), "en".into()))
-                .to_vec(),
         }
     }
 
@@ -335,9 +327,6 @@ impl Translator for OpenAiCompatTranslator {
         let request = TranslateRequest {
             id: UtteranceId(0),
             text: "你好。",
-            src: "zh",
-            tgt: "en",
-            terms: &[],
             context: &[],
             max_tokens: None,
             control: control.clone(),
