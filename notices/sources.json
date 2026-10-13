@@ -143,6 +143,12 @@
       "source": "https://raw.githubusercontent.com/mborgerding/kissfft/febd4caeed32e33ad8b2e0bb5ea77542c40f18ec/LICENSES/BSD-3-Clause",
       "size": 1830,
       "sha256": "4d6bcab46f27d6d0c878e8305d4bdcfe040d52bf6656b9771f04c9fb9902c0ed"
+    },
+    {
+      "file": "FunASR-MODEL_LICENSE-v1.1.txt",
+      "source": "https://raw.githubusercontent.com/modelscope/FunASR/66d7a4c264a5993a2a63ed00c1f402c296ee521a/MODEL_LICENSE",
+      "size": 5306,
+      "sha256": "7dba975a2069691db4992b0592d70828b330d2f8a30a71450f4e152a554e84f8"
     }
   ]
 }
