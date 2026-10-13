@@ -30,7 +30,7 @@ try {
     Step 'Copy native DLLs next to test binaries' { & "$PSScriptRoot/install-native-runtime.ps1"; $global:LASTEXITCODE = 0 }
 
     $ltRealModel = [ordered]@{
-        'Streaming ASR (lt-sherpa)'      = @('LT_MODELS_DIR')
+        'Speech recognition (lt-sherpa)' = @('LT_MODELS_DIR')
         'Translation fixtures (lt-llm)'  = @('LT_LLAMA_SERVER')
     }
     foreach ($ltTest in $ltRealModel.GetEnumerator()) {
