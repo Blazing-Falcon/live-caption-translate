@@ -1,0 +1,30 @@
+{
+  "about": "Live clause texts (streaming X-ASR, 480 ms) and SenseVoice texts of a window around them, decoded from the same recording. expected is the part of the window that belongs to the clause, or null when the live text stays.",
+  "cases": [
+    {
+      "live": "游戏对方还是我们正在争取的合作伙伴",
+      "window": "忘了你是律师，偷拍别人照片，涉嫌侵犯隐私，尤其对方还是我们正在争取的合作伙伴。",
+      "expected": "尤其对方还是我们正在争取的合作伙伴。"
+    },
+    {
+      "live": "偷拍别人照片涉嫌侵犯隐私，",
+      "window": "忘了你是律师，偷拍别人照片，涉嫌侵犯隐私，尤其对方还是我们正在争取的合作伙伴。",
+      "expected": "偷拍别人照片，涉嫌侵犯隐私，"
+    },
+    {
+      "live": "卓远的补充协议，卓总不满意，",
+      "window": "卓远的补充协议，卓总不满意，要我么重新做了。我要跟卓总出差几天去做数据线露调查。",
+      "expected": "卓远的补充协议，卓总不满意，"
+    },
+    {
+      "live": "要么重新做了。",
+      "window": "卓远的补充协议，卓总不满意，要我么重新做了。我要跟卓总出差几天去做数据线露调查。",
+      "expected": "要我么重新做了。"
+    },
+    {
+      "live": "还有竞标事项，千万别出什么披露啊。",
+      "window": "这段时间你一定要好好准备案件报告，还有竞标事项，千万别出什么纰漏啊，听我们律所脸知道了。",
+      "expected": "还有竞标事项，千万别出什么纰漏啊，"
+    }
+  ]
+}
