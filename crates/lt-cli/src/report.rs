@@ -1,7 +1,7 @@
 use lt_core::{
     events::PipelineEvent,
     pipeline::ClauseCounts,
-    types::{TextClass, UtteranceId},
+    types::{SecondPass, SecondPassOutcome, TextClass, UtteranceId},
 };
 use serde::Serialize;
 use std::collections::BTreeMap;
@@ -14,6 +14,19 @@ pub struct ReplayReport {
     first: Vec<f64>,
     done: Vec<f64>,
     joins: u64,
+    second_pass: Vec<SecondPass>,
+}
+
+/// How the second pass went for the lines that reached a final.
+#[derive(Serialize)]
+pub struct SecondPassSummary {
+    pub outcomes: BTreeMap<&'static str, u64>,
+    /// Lines whose final text differs from the live text.
+    pub changed: u64,
+    pub refine_ms_p50: Option<f64>,
+    pub refine_ms_p90: Option<f64>,
+    pub decode_ms_p50: Option<f64>,
+    pub decode_ms_p90: Option<f64>,
 }
 
 #[derive(Serialize)]
@@ -31,6 +44,8 @@ pub struct Summary<'a> {
     pub lag_done_p90: Option<f64>,
     /// Lines the translation queue joined into an earlier one.
     pub joins: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub second_pass: Option<SecondPassSummary>,
 }
 
 impl ReplayReport {
@@ -52,6 +67,7 @@ impl ReplayReport {
             first: Vec::new(),
             done: Vec::new(),
             joins: 0,
+            second_pass: Vec::new(),
         }
     }
     fn terminal(&mut self, id: UtteranceId, state: &'static str) -> u64 {
@@ -60,6 +76,13 @@ impl ReplayReport {
         count
     }
     pub fn on_event(&mut self, event: &PipelineEvent) {
+        if let PipelineEvent::AsrFinal {
+            second_pass: Some(pass),
+            ..
+        } = event
+        {
+            self.second_pass.push(pass.clone());
+        }
         match event {
             PipelineEvent::Joined { id, absorbed, .. } => {
                 self.joins += absorbed.len() as u64;
@@ -151,8 +174,46 @@ impl ReplayReport {
             lag_done_median: percentile(self.done.clone(), 0.5),
             lag_done_p90: percentile(self.done, 0.9),
             joins: self.joins,
+            second_pass: second_pass_summary(&self.second_pass),
         }
     }
+}
+
+fn second_pass_summary(passes: &[SecondPass]) -> Option<SecondPassSummary> {
+    if passes.is_empty() {
+        return None;
+    }
+    let mut outcomes: BTreeMap<&'static str, u64> = ["used", "mismatch", "late", "failed"]
+        .map(|key| (key, 0))
+        .into();
+    for pass in passes {
+        let key = match pass.outcome {
+            SecondPassOutcome::Used => "used",
+            SecondPassOutcome::Mismatch => "mismatch",
+            SecondPassOutcome::Late => "late",
+            SecondPassOutcome::Failed => "failed",
+        };
+        *outcomes.entry(key).or_default() += 1;
+    }
+    let refine: Vec<f64> = passes
+        .iter()
+        .map(|pass| f64::from(pass.refine_ms))
+        .collect();
+    let decode: Vec<f64> = passes
+        .iter()
+        .filter_map(|pass| pass.decode_ms.map(f64::from))
+        .collect();
+    Some(SecondPassSummary {
+        outcomes,
+        changed: passes
+            .iter()
+            .filter(|pass| pass.live_text.is_some())
+            .count() as u64,
+        refine_ms_p50: percentile(refine.clone(), 0.5),
+        refine_ms_p90: percentile(refine, 0.9),
+        decode_ms_p50: percentile(decode.clone(), 0.5),
+        decode_ms_p90: percentile(decode, 0.9),
+    })
 }
 
 fn percentile(mut samples: Vec<f64>, fraction: f64) -> Option<f64> {

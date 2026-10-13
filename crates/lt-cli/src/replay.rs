@@ -199,7 +199,18 @@ fn word_metrics(args: &ReplayArgs, timed: &[TimedEvent]) -> Result<wordreport::W
 pub(crate) fn observe(report: &mut ReplayReport, event: &PipelineEvent) {
     report.on_event(event);
     match event {
-        PipelineEvent::AsrFinal { id, text, .. } => eprintln!("{} source: {text}", id.0),
+        PipelineEvent::AsrFinal {
+            id,
+            text,
+            second_pass,
+            ..
+        } => match second_pass
+            .as_ref()
+            .and_then(|pass| pass.live_text.as_ref())
+        {
+            Some(live) => eprintln!("{} source: {text} (live: {live})", id.0),
+            None => eprintln!("{} source: {text}", id.0),
+        },
         PipelineEvent::TranslationFinal { id, text, .. } => eprintln!("{} English: {text}", id.0),
         PipelineEvent::TranslationFailed {
             id,
