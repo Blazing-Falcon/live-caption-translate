@@ -40,6 +40,12 @@
     reconcileChecked(input, get(liveConfig)?.performance.low_priority ?? config.performance.low_priority);
   }
 
+  async function toggleSecondPass(event: Event): Promise<void> {
+    const input = event.currentTarget as HTMLInputElement;
+    await session.save("asr.second_pass", asrPatch({ second_pass: input.checked ? "sensevoice" : "off" }));
+    reconcileChecked(input, (get(liveConfig)?.asr.second_pass ?? config.asr.second_pass) !== "off");
+  }
+
   async function chooseThreads(event: Event, table: "asr" | "translate"): Promise<void> {
     const select = event.currentTarget as HTMLSelectElement;
     const saved = await session.save(`${table}.threads`, threadsPatch(table, Number(select.value)));
@@ -199,6 +205,21 @@
         {/each}
       </select>
     </label>
+    <div class="option">
+      <label class="check-row">
+        <input
+          type="checkbox"
+          checked={config.asr.second_pass !== "off"}
+          aria-describedby="help-second-pass"
+          data-testid="asr-second-pass"
+          onchange={toggleSecondPass}
+        />
+        <span>Correct lines after they end</span>
+      </label>
+      <p id="help-second-pass" class="help small">
+        When a line ends, a second model reads its audio again, and its Chinese can replace the live text before translation. The English appears a little later and listening uses more memory.
+      </p>
+    </div>
   </div>
 
   <div class="stack">
