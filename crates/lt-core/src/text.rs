@@ -393,6 +393,7 @@ mod tests {
             absorbed: Vec::new(),
             cut: crate::types::CutReason::Pause,
             logprob: None,
+            second_pass: None,
         }
     }
 }

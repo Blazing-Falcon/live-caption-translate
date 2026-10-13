@@ -287,6 +287,7 @@ mod tests {
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
             logprob: None,
+            second_pass: None,
         }
     }
     fn final_event(id: u64, done: u64, first: Option<u64>) -> PipelineEvent {

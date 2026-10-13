@@ -87,6 +87,11 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         } else {
             recognizer_name(&config)
         },
+        asr_second: if args.fake {
+            None
+        } else {
+            lt_core::transcript::second_pass_name(&config)
+        },
         translator: if args.fake {
             "fake"
         } else {
@@ -110,6 +115,7 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         config.clone(),
         Box::new(source),
         engines.asr,
+        engines.second_pass,
         engines.translator,
         bus.clone(),
         Some(Box::new(sampler)),

@@ -12,7 +12,7 @@ use crate::{
     config::Config,
     engines::{mean_log_prob, StreamResult, StreamingAsr},
     events::DropReason,
-    text::{chinese_chars, classify, clean, drop_reason},
+    text::{classify, clean},
     types::{CutReason, StageTiming, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use std::time::Instant;
@@ -61,6 +61,8 @@ pub enum RecognizerInput {
 
 #[derive(Debug)]
 pub enum AsrMessage {
+    /// A closed clause. The recognizer gives its raw text; the filter runs after the second
+    /// pass, so a line is kept or dropped on its final text.
     Transcript(Transcript),
     Dropped(UtteranceId, DropReason),
     Failed(UtteranceId, String),
@@ -316,11 +318,11 @@ impl Recognizer {
             absorbed: Vec::new(),
             cut,
             logprob: mean_log_prob(log_probs),
+            second_pass: None,
         };
         out.push(RecognizerOutput::Closed(clause.id, end, cut));
-        out.push(RecognizerOutput::Message(finalize(
+        out.push(RecognizerOutput::Message(AsrMessage::Transcript(
             transcript,
-            &self.config,
         )));
         // Later clauses start after this one.
         self.floor = self.floor.max(end);
@@ -345,58 +347,6 @@ impl Recognizer {
 
 fn elapsed_ms(started: Instant) -> u32 {
     started.elapsed().as_millis().min(u128::from(u32::MAX)) as u32
-}
-
-/// Clean, classify and filter a closed clause.
-fn finalize(mut transcript: Transcript, config: &Config) -> AsrMessage {
-    transcript.text = clean(&transcript.text, &config.filter.fillers);
-    let Some(class) = classify(&transcript.text) else {
-        return AsrMessage::Dropped(transcript.id, DropReason::Empty);
-    };
-    transcript.class = class;
-    transcript.lang_tag = if class == TextClass::Other {
-        other_language(&transcript.text)
-    } else {
-        text_language(&transcript.text)
-    };
-    let duration = transcript
-        .timing
-        .end
-        .saturating_sub(transcript.timing.start);
-    match drop_reason(&transcript, duration.seconds(), &config.filter) {
-        Some(reason) => AsrMessage::Dropped(transcript.id, reason),
-        None => AsrMessage::Transcript(transcript),
-    }
-}
-
-/// Japanese or Korean, from the kana and Hangul in the text.
-fn other_language(text: &str) -> Option<String> {
-    let kana = text
-        .chars()
-        .filter(|character| matches!(character, '\u{3040}'..='\u{30ff}'))
-        .count();
-    let hangul = text
-        .chars()
-        .filter(|character| matches!(character, '\u{ac00}'..='\u{d7af}'))
-        .count();
-    if hangul > kana {
-        Some("ko".into())
-    } else if kana > 0 {
-        Some("ja".into())
-    } else {
-        None
-    }
-}
-
-/// Language from the share of Latin letters and CJK characters; the engine gives no tag.
-fn text_language(text: &str) -> Option<String> {
-    let latin = text.chars().filter(char::is_ascii_alphabetic).count();
-    let cjk = chinese_chars(text);
-    match (latin, cjk) {
-        (0, 0) => None,
-        _ if latin > cjk => Some("en".into()),
-        _ => Some("zh".into()),
-    }
 }
 
 #[cfg(test)]

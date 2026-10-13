@@ -4,12 +4,14 @@
 //! worker each; source cancellation and whole-pipeline shutdown are separate.
 //!
 //! Threads: `lt-frontend` turns capture frames into recognizer input, `lt-asr`
-//! owns the recognizer, and `lt-scheduler` owns the translation queue, the
-//! translator worker and the stats.
+//! owns the recognizer, `lt-refine` owns the second-pass recognizer and the filter,
+//! and `lt-scheduler` owns the translation queue, the translator worker and the
+//! stats.
 
 mod asr;
 mod frontend;
 mod handle;
+mod refine;
 mod scheduler;
 
 pub use handle::{ClauseCounts, PipelineHandle};
@@ -17,7 +19,7 @@ pub use handle::{ClauseCounts, PipelineHandle};
 use crate::{
     bus::EventBus,
     config::Config,
-    engines::{StreamingAsr, Translator},
+    engines::{OfflineAsr, StreamingAsr, Translator},
     error::{Error, Result},
     events::{ListeningStateKind, PipelineEvent},
     metrics::ResourceSampler,
@@ -38,6 +40,9 @@ use std::{
 const POLL: Duration = Duration::from_millis(5);
 const CONTROL_CAPACITY: usize = 16;
 const ASR_CAPACITY: usize = 4;
+/// Closed clauses waiting for the second pass. A clause that waits too long skips its decode,
+/// so a full queue empties quickly and holds the recognizer only briefly.
+const REFINE_CAPACITY: usize = 8;
 
 enum Command {
     Pause(Sender<Result<()>>),
@@ -56,11 +61,13 @@ pub struct Pipeline;
 
 impl Pipeline {
     /// Subscribe to `bus` before this call: a short replay can finish before it returns.
+    /// `second_pass` reads each closed clause again; `None` keeps the live text.
     /// `sampler` adds process CPU and memory to the stats.
     pub fn start(
         mut config: Config,
         source: Box<dyn AudioSource>,
         asr: Box<dyn StreamingAsr>,
+        second_pass: Option<Box<dyn OfflineAsr>>,
         translator: Box<dyn Translator>,
         bus: EventBus,
         sampler: Option<Box<dyn ResourceSampler>>,
@@ -78,13 +85,14 @@ impl Pipeline {
         let (audio_tx, audio_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
         let (asr_tx, asr_rx) = bounded(ASR_CAPACITY);
+        let (refine_tx, refine_rx) = bounded(REFINE_CAPACITY);
         let (ready_tx, ready_rx) = bounded(1);
         let mut handle = PipelineHandle {
             commands: command_tx,
             cancelled: cancelled.clone(),
             finished: finished.clone(),
             bus: bus.clone(),
-            threads: Vec::with_capacity(3),
+            threads: Vec::with_capacity(4),
             latest_stats: latest_stats.clone(),
             clause_counts: clause_counts.clone(),
         };
@@ -99,6 +107,11 @@ impl Pipeline {
             notices: front_tx.clone(),
             clause_counts: clause_counts.clone(),
         };
+        let asr_outputs = asr::AsrOutputs {
+            partials: asr_tx.clone(),
+            clauses: refine_tx,
+            keep_audio: second_pass.is_some(),
+        };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())
             .spawn(move || {
@@ -106,13 +119,28 @@ impl Pipeline {
                     asr,
                     &asr_config,
                     audio_rx,
-                    asr_tx,
+                    asr_outputs,
                     &asr_bus,
                     &asr_cancel,
                     asr_notices,
                 )
             })?;
         handle.threads.push(asr_thread);
+
+        let refine_cancel = cancelled.clone();
+        let refine_config = config.clone();
+        let refine_thread = thread::Builder::new()
+            .name("lt-refine".into())
+            .spawn(move || {
+                refine::refine_loop(
+                    second_pass,
+                    &refine_config,
+                    refine_rx,
+                    asr_tx,
+                    &refine_cancel,
+                )
+            })?;
+        handle.threads.push(refine_thread);
 
         let scheduler_cancel = cancelled.clone();
         let scheduler_clock = clock.clone();

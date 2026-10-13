@@ -128,6 +128,42 @@ pub struct StageTiming {
     pub asr_ms: u32,
 }
 
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SecondPassOutcome {
+    /// The final text comes from the second pass.
+    Used,
+    /// No part of the second pass's text matched the live text closely enough.
+    Mismatch,
+    /// The line waited too long for the second pass.
+    Late,
+    /// The second pass failed.
+    Failed,
+}
+
+/// How the second pass read a closed clause. The line keeps the live text unless `outcome` is
+/// `used`.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct SecondPass {
+    pub outcome: SecondPassOutcome,
+    /// The live text, when the final text differs from it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub live_text: Option<String>,
+    /// The second pass's text for the whole window, when it decoded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window_text: Option<String>,
+    /// Stream times of the decoded audio: the clause with a margin on both sides.
+    pub window_start_ms: u64,
+    pub window_end_ms: u64,
+    /// Edit distance from the chosen part to the live text, over letters and digits.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub distance: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub decode_ms: Option<u32>,
+    /// From the clause's close to the final text, waiting included.
+    pub refine_ms: u32,
+}
+
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Transcript {
     pub id: UtteranceId,
@@ -143,6 +179,9 @@ pub struct Transcript {
     /// Mean token log-probability, when the engine gives one.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logprob: Option<f32>,
+    /// Absent when the second pass is off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub second_pass: Option<SecondPass>,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]

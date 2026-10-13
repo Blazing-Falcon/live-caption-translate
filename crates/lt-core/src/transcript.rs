@@ -3,7 +3,7 @@ use crate::bus::{EventBus, EventReceiver};
 use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::events::{FailReason, PipelineEvent};
-use crate::types::{CaptureMode, CutReason, TextClass, Timing, UtteranceId};
+use crate::types::{CaptureMode, CutReason, SecondPass, TextClass, Timing, UtteranceId};
 use crossbeam_channel::{RecvTimeoutError, TryRecvError};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -42,6 +42,11 @@ pub fn recognizer_name(config: &Config) -> String {
     format!("xasr_stream_{}ms", config.asr.chunk_ms)
 }
 
+/// The second-pass recognizer named in session headers, if it is on.
+pub fn second_pass_name(config: &Config) -> Option<String> {
+    (config.asr.second_pass != "off").then(|| config.asr.second_pass.clone())
+}
+
 fn readable_f32(value: f32) -> f64 {
     // f32's shortest decimal round-trips the setting without exposing binary
     // widening artifacts such as 0.4000000059604645 in the session header.
@@ -57,6 +62,9 @@ pub struct SessionHeader {
     pub started_at: String,
     pub source: SessionSource,
     pub asr: String,
+    /// The second-pass recognizer; absent when it is off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub asr_second: Option<String>,
     pub translator: String,
     pub config: SessionConfig,
 }
@@ -79,6 +87,16 @@ struct Pending {
     source: String,
     cut: CutReason,
     live: LiveRecord,
+    /// One record for each clause of the line, in order.
+    second: Vec<SecondRecord>,
+}
+
+/// The second pass of one clause. `text` is the clause's final text.
+#[derive(Clone, Serialize)]
+struct SecondRecord {
+    text: String,
+    #[serde(flatten)]
+    pass: SecondPass,
 }
 
 /// The live recognizer's text. A joined line concatenates its parts.
@@ -125,6 +143,8 @@ struct UtteranceRecord<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     message: Option<&'a str>,
     asr_live: &'a LiveRecord,
+    #[serde(skip_serializing_if = "<[SecondRecord]>::is_empty")]
+    asr_second: &'a [SecondRecord],
 }
 
 impl Pending {
@@ -146,6 +166,7 @@ impl Pending {
             reason: None,
             message: None,
             asr_live: &self.live,
+            asr_second: &self.second,
         }
     }
 }
@@ -189,6 +210,7 @@ impl<W: Write> TranscriptWriter<W> {
                 end_ms,
                 cut,
                 logprob,
+                second_pass,
                 ..
             } => {
                 let pending_translation = class.is_translated();
@@ -209,10 +231,20 @@ impl<W: Write> TranscriptWriter<W> {
                     cut: *cut,
                     live: LiveRecord {
                         engine: self.live_engine.clone(),
-                        text: text.clone(),
+                        text: second_pass
+                            .as_ref()
+                            .and_then(|pass| pass.live_text.clone())
+                            .unwrap_or_else(|| text.clone()),
                         logprob: *logprob,
                         logprobs: logprob.iter().copied().collect(),
                     },
+                    second: second_pass
+                        .iter()
+                        .map(|pass| SecondRecord {
+                            text: text.clone(),
+                            pass: pass.clone(),
+                        })
+                        .collect(),
                 };
                 match class {
                     TextClass::Chinese | TextClass::Mixed => {
@@ -239,6 +271,7 @@ impl<W: Write> TranscriptWriter<W> {
                                 leader.class = TextClass::Mixed;
                             }
                             leader.live.absorb(incoming.live);
+                            leader.second.extend(incoming.second);
                             for child in incoming.joined {
                                 append_id(&mut leader.joined, leader.id, child);
                             }
@@ -504,6 +537,7 @@ mod tests {
                 label: "Chrome".into(),
             },
             asr: "sensevoice-2024-07-17-int8".into(),
+            asr_second: None,
             translator: "hy-mt2-1.8b-q4_0".into(),
             config: SessionConfig { skip_lag_s: 6.0 },
         }
@@ -527,6 +561,7 @@ mod tests {
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
             logprob: None,
+            second_pass: None,
         }
     }
 
@@ -607,6 +642,7 @@ mod tests {
                     asr_ms: 100,
                     cut: CutReason::Commit,
                     logprob: None,
+                    second_pass: None,
                 },
                 WALL,
             )

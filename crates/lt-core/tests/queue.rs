@@ -40,6 +40,7 @@ fn transcript(id: u64, text: &str, end: f64) -> Transcript {
         absorbed: Vec::new(),
         cut: lt_core::types::CutReason::Pause,
         logprob: None,
+        second_pass: None,
     }
 }
 

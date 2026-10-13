@@ -2,7 +2,7 @@
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{EngineRegistry, StreamingAsr, Translator},
+    engines::{EngineRegistry, OfflineAsr, StreamingAsr, Translator},
     events::{EngineKind, EngineState, PipelineEvent},
 };
 use lt_llm::supervisor::{ServerOptions, Supervisor};
@@ -17,14 +17,21 @@ use std::{
 
 pub const TRANSLATOR_MODEL: &str = "hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf";
 
-pub fn speech(config: &Config, models: &Path) -> Result<Box<dyn StreamingAsr>, String> {
+/// The live recognizer and, unless it is off, the second-pass recognizer.
+pub type Speech = (Box<dyn StreamingAsr>, Option<Box<dyn OfflineAsr>>);
+
+pub fn speech(config: &Config, models: &Path) -> Result<Speech, String> {
     let mut registry = EngineRegistry::default();
     lt_sherpa::register_engines(&mut registry);
     let mut engine_config = config.clone();
     engine_config.models.dir = models.to_string_lossy().into_owned();
-    registry
+    let asr = registry
         .build_asr(&engine_config)
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    let second_pass = registry
+        .build_second_pass(&engine_config)
+        .map_err(|e| format!("Second pass: {e}"))?;
+    Ok((asr, second_pass))
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {

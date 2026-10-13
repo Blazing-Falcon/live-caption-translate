@@ -127,6 +127,7 @@ impl Scheduler {
                     asr_ms: transcript.timing.asr_ms,
                     cut: transcript.cut,
                     logprob: transcript.logprob,
+                    second_pass: transcript.second_pass.clone(),
                 });
                 if translates(&transcript) {
                     self.translating.insert(transcript.id);

@@ -143,7 +143,7 @@ impl Controller {
             state: EngineState::Loading,
             message: None,
         });
-        let asr = match engines::speech(&config, &models) {
+        let (asr, second_pass) = match engines::speech(&config, &models) {
             Ok(loaded) => loaded,
             Err(message) => {
                 engines::fail(&bus, EngineKind::Asr, &message);
@@ -188,6 +188,7 @@ impl Controller {
             config.clone(),
             source,
             asr,
+            second_pass,
             translator,
             bus.clone(),
             Some(Box::new(sampler)),
@@ -236,6 +237,7 @@ impl Controller {
                 label: label.into(),
             },
             asr: lt_core::transcript::recognizer_name(config),
+            asr_second: lt_core::transcript::second_pass_name(config),
             translator: lt_core::transcript::TRANSLATOR_NAME.into(),
             config: SessionConfig::from(config),
         };

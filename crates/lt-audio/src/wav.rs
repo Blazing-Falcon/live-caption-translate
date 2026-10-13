@@ -458,6 +458,7 @@ mod tests {
                 vec!["我们今天一起谈论这个问题。".into()],
                 0.8,
             )),
+            None,
             Box::new(FakeTranslator::default()),
             bus,
             None,

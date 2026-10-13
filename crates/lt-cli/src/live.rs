@@ -116,6 +116,7 @@ fn run_session(
                 label: label.into(),
             },
             asr: recognizer_name(&config),
+            asr_second: lt_core::transcript::second_pass_name(&config),
             translator: lt_core::transcript::TRANSLATOR_NAME.into(),
             config: SessionConfig::from(&config),
         };
@@ -139,6 +140,7 @@ fn run_session(
         config,
         source,
         engines.asr,
+        engines.second_pass,
         engines.translator,
         bus.clone(),
         Some(Box::new(sampler)),

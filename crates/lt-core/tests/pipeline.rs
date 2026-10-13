@@ -1,14 +1,14 @@
 //! End-to-end behavior of the pipeline threads with fake engines and no models: clause cuts,
-//! live text, translation, skipping, pause and resume, shutdown, backpressure and the per-id
-//! event order.
+//! live text, the second pass, translation, skipping, pause and resume, shutdown, backpressure
+//! and the per-id event order.
 
 use crossbeam_channel::{bounded, Receiver, Sender};
 use lt_core::{
     bus::{EventBus, EventReceiver},
     config::Config,
     engines::{
-        StreamResult, StreamingAsr, TokenTranscript, TranslateRequest, TranslationControl,
-        TranslationOut, Translator, TranslatorCaps,
+        OfflineAsr, OfflineText, StreamResult, StreamingAsr, TokenTranscript, TranslateRequest,
+        TranslationControl, TranslationOut, Translator, TranslatorCaps,
     },
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
@@ -16,10 +16,12 @@ use lt_core::{
     pipeline::{Pipeline, PipelineHandle},
     queue::TranslationQueue,
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
-    types::{CaptureMode, CutReason, SourceInfo, StreamTime, TextClass, UtteranceId},
+    types::{
+        CaptureMode, CutReason, SecondPassOutcome, SourceInfo, StreamTime, TextClass, UtteranceId,
+    },
 };
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, VecDeque},
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc, Mutex,
@@ -354,18 +356,74 @@ fn start(
     asr: impl StreamingAsr + 'static,
     translator: impl Translator + 'static,
 ) -> (PipelineHandle, EventReceiver) {
+    start_with(Config::default(), source, asr, None, translator)
+}
+
+fn start_with(
+    config: Config,
+    source: VecSource,
+    asr: impl StreamingAsr + 'static,
+    second_pass: Option<Box<dyn OfflineAsr>>,
+    translator: impl Translator + 'static,
+) -> (PipelineHandle, EventReceiver) {
     let bus = EventBus::default();
     let events = bus.subscribe(4096);
     let handle = Pipeline::start(
-        Config::default(),
+        config,
         Box::new(source),
         Box::new(asr),
+        second_pass,
         Box::new(translator),
         bus,
         None,
     )
     .unwrap();
     (handle, events)
+}
+
+enum Reply {
+    Fail,
+    Text(&'static str),
+    /// The text after this long.
+    Slow(&'static str, Duration),
+}
+
+/// A second pass that gives its replies in call order. Each call reports its start.
+struct ScriptedSecondPass {
+    replies: VecDeque<Reply>,
+    started: Sender<()>,
+}
+
+impl OfflineAsr for ScriptedSecondPass {
+    fn decode(&mut self, samples: &[f32], _language: Option<&str>) -> Result<OfflineText> {
+        assert!(!samples.is_empty(), "a window without audio");
+        let _ = self.started.try_send(());
+        let text = match self.replies.pop_front() {
+            Some(Reply::Fail) => return Err(Error::Engine("decode failed".into())),
+            Some(Reply::Text(text)) => text,
+            Some(Reply::Slow(text, after)) => {
+                thread::sleep(after);
+                text
+            }
+            None => "",
+        };
+        Ok(OfflineText {
+            text: text.into(),
+            lang: Some("zh".into()),
+        })
+    }
+}
+
+fn second_pass_outcomes(events: &[PipelineEvent]) -> Vec<(String, Option<SecondPassOutcome>)> {
+    events
+        .iter()
+        .filter_map(|event| match event {
+            PipelineEvent::AsrFinal {
+                text, second_pass, ..
+            } => Some((text.clone(), second_pass.as_ref().map(|pass| pass.outcome))),
+            _ => None,
+        })
+        .collect()
 }
 
 /// Waits until a finite source has been heard and every line has settled.
@@ -680,6 +738,109 @@ fn stop_settles_every_line_while_translation_is_busy() {
     assert_eq!(stats.lag_ms, 0);
     assert_eq!(stats.queue_depth, 0);
     assert!(stats.failed_total > 0);
+}
+
+/// Whatever the second pass does (fail, hear nothing, correct a word, take too long), every
+/// line reaches the translator once and in order, and keeps the live text unless the second
+/// pass's text is used.
+#[test]
+fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_does() {
+    let live = [
+        "你好世界。",
+        "我们走吧。",
+        "他们来了。",
+        "天气很好。",
+        "明天见面。",
+        "晚上吃饭。",
+    ];
+    let (started, _) = bounded(16);
+    let second_pass = ScriptedSecondPass {
+        replies: VecDeque::from([
+            Reply::Fail,
+            Reply::Text(""),
+            Reply::Text("前面。他们来啦。后面"),
+            // The lines behind this decode wait longer than the 0.5 s limit.
+            Reply::Slow("天气很好。", Duration::from_millis(1_500)),
+        ]),
+        started,
+    };
+    let mut config = Config::default();
+    config.asr.second_pass_max_wait_s = 0.5;
+    let (mut handle, events) = start_with(
+        config,
+        VecSource::new(tones(live.len())),
+        fake_stream(&live),
+        Some(Box::new(second_pass)),
+        FakeTranslator::default(),
+    );
+    finish(&mut handle);
+    let events: Vec<_> = events.try_iter().collect();
+    assert_order(&events);
+    let ids: Vec<_> = finals(&events).iter().map(|(id, ..)| id.0).collect();
+    assert_eq!(ids, [0, 1, 2, 3, 4, 5]);
+    let expected = [
+        ("你好世界。", SecondPassOutcome::Failed),
+        ("我们走吧。", SecondPassOutcome::Mismatch),
+        ("他们来啦。", SecondPassOutcome::Used),
+        ("天气很好。", SecondPassOutcome::Used),
+        ("明天见面。", SecondPassOutcome::Late),
+        ("晚上吃饭。", SecondPassOutcome::Late),
+    ];
+    for (index, ((text, outcome), (expected_text, expected_outcome))) in
+        second_pass_outcomes(&events)
+            .into_iter()
+            .zip(expected)
+            .enumerate()
+    {
+        // A slow test machine can make an early line late too; it then keeps the live text.
+        if outcome == Some(SecondPassOutcome::Late) {
+            assert_eq!(text, live[index]);
+        } else {
+            assert_eq!(
+                (text.as_str(), outcome),
+                (expected_text, Some(expected_outcome))
+            );
+        }
+    }
+    let live_text = events.iter().find_map(|event| match event {
+        PipelineEvent::AsrFinal {
+            id: UtteranceId(2),
+            second_pass: Some(pass),
+            ..
+        } => Some(pass.live_text.clone()),
+        _ => None,
+    });
+    assert_eq!(live_text, Some(Some("他们来了。".into())));
+}
+
+/// Stop returns while the second pass decodes and lines wait for it, and every line ends.
+#[test]
+fn stop_joins_every_thread_while_the_second_pass_decodes() {
+    let (started, decoding) = bounded(64);
+    let second_pass = ScriptedSecondPass {
+        replies: (0..40)
+            .map(|_| Reply::Slow("你好。", Duration::from_millis(300)))
+            .collect(),
+        started,
+    };
+    let (mut handle, events) = start_with(
+        Config::default(),
+        VecSource::new(tones(40)),
+        FakeStream::new(vec!["你好。".into(); 40], PAUSE_S),
+        Some(Box::new(second_pass)),
+        FakeTranslator::default(),
+    );
+    decoding.recv_timeout(WATCHDOG).unwrap();
+    let (stopped_tx, stopped) = bounded(1);
+    thread::spawn(move || {
+        let result = handle.stop();
+        let _ = stopped_tx.send((result, handle.is_finished()));
+    });
+    let (result, finished) = stopped.recv_timeout(WATCHDOG).expect("stop did not return");
+    result.unwrap();
+    assert!(finished);
+    let recorded: Vec<_> = events.try_iter().collect();
+    assert_order(&recorded);
 }
 
 /// A blocked translator stops the recognizer once the queue is full, instead of letting finals

@@ -3,7 +3,8 @@
 use serde::{Deserialize, Serialize};
 
 pub use crate::types::{
-    CaptureMode, CutReason, PipelineStats, SourceInfo, TextClass, Timing, UtteranceId,
+    CaptureMode, CutReason, PipelineStats, SecondPass, SecondPassOutcome, SourceInfo, TextClass,
+    Timing, UtteranceId,
 };
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -91,6 +92,9 @@ pub enum PipelineEvent {
         /// Mean token log-probability, when the live engine gives one.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         logprob: Option<f32>,
+        /// Absent when the second pass is off.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        second_pass: Option<SecondPass>,
     },
     Joined {
         id: UtteranceId,
@@ -164,6 +168,16 @@ mod tests {
                 asr_ms: 330,
                 cut: CutReason::Pause,
                 logprob: None,
+                second_pass: Some(SecondPass {
+                    outcome: SecondPassOutcome::Used,
+                    live_text: Some("我也想半一个".into()),
+                    window_text: Some("对。我也想办一个。伟大".into()),
+                    window_start_ms: 44_910,
+                    window_end_ms: 47_100,
+                    distance: Some(1),
+                    decode_ms: Some(92),
+                    refine_ms: 104,
+                }),
             },
             PipelineEvent::Joined {
                 id: UtteranceId(12),

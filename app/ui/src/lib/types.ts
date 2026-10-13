@@ -55,6 +55,19 @@ export interface PipelineStats {
 
 export type CutReason = "pause" | "discontinuity" | "end" | "commit";
 
+export type SecondPassOutcome = "used" | "mismatch" | "late" | "failed";
+
+export interface SecondPass {
+  outcome: SecondPassOutcome;
+  live_text?: string;
+  window_text?: string;
+  window_start_ms: number;
+  window_end_ms: number;
+  distance?: number;
+  decode_ms?: number;
+  refine_ms: number;
+}
+
 export type PipelineEvent =
   | { type: "speech_started"; id: UtteranceId; at_ms: number }
   | { type: "asr_partial"; id: UtteranceId; text: string; class: TextClass; end_ms: number }
@@ -70,6 +83,8 @@ export type PipelineEvent =
       cut: CutReason;
       /** Mean token log-probability; only engines that give one send it. */
       logprob?: number;
+      /** Absent when the second pass is off. `text` is already the final text. */
+      second_pass?: SecondPass;
     }
   | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }
