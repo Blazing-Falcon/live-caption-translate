@@ -16,7 +16,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 |---|---|---|
 | `speech_started` | `id`, `at_ms` | A clause opens at its first word |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | The open clause's text grew |
-| `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`? | A clause is complete. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). |
+| `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`?, `second_pass`? | A clause is complete. `text` is the final text, after the second pass. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). `second_pass` is present when the second pass is on (see below). |
 | `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
@@ -29,6 +29,18 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `engine_status` | `engine`, `state`, `message` | An engine changed state |
 | `stats` | `PipelineStats` fields | One time each second while listening |
 
+`second_pass` fields:
+
+| Field | Meaning |
+|---|---|
+| `outcome` | `SecondPassOutcome` |
+| `live_text`? | The live text, when `text` differs from it |
+| `window_text`? | The second pass's text for the whole window, when it decoded |
+| `window_start_ms`, `window_end_ms` | The decoded audio: the clause with a margin on both sides |
+| `distance`? | Edit distance from the chosen text to the live text, over letters and digits (`used` only) |
+| `decode_ms`? | Decode time, when it decoded |
+| `refine_ms` | From the clause's close to the final text, waiting included |
+
 Enum values:
 
 | Enum | Values |
@@ -38,6 +50,7 @@ Enum values:
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
 | `DropReason` | `empty`, `single_char` |
+| `SecondPassOutcome` | `used` (the final text comes from the second pass), `mismatch` (no part of its text matched the live text closely enough), `late` (the line waited longer than `asr.second_pass_max_wait_s`), `failed` |
 | `EngineKind` | `asr`, `translator` |
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |
