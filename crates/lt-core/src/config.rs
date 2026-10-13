@@ -67,6 +67,9 @@ config_table!(AsrConfig {
     chunk_ms: u32 = 480,
     threads: u32 = 1,
     pause_s: f32 = 0.8,
+    second_pass: String = "sensevoice".into(),
+    second_pass_threads: u32 = 1,
+    second_pass_max_wait_s: f32 = 1.5,
 });
 config_table!(FilterConfig {
     single_char_max_s: f32 = 0.6,
@@ -141,6 +144,11 @@ impl AsrConfig {
     /// Recognizer threads, at most the logical CPUs of this PC.
     pub fn engine_threads(&self) -> u32 {
         self.threads.clamp(1, logical_cpus())
+    }
+
+    /// Second-pass recognizer threads, at most the logical CPUs of this PC.
+    pub fn second_pass_engine_threads(&self) -> u32 {
+        self.second_pass_threads.clamp(1, logical_cpus())
     }
 }
 
@@ -366,6 +374,9 @@ impl Config {
         }
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
+        choice!(asr, second_pass, &["off", "sensevoice"]);
+        number!(asr, second_pass_threads, 1, MAX_THREADS);
+        number!(asr, second_pass_max_wait_s, 0.5, 5.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
         number!(translate, threads, 1, MAX_THREADS);
@@ -638,6 +649,7 @@ fn normalize_float(
         "translate.repeat_penalty" => (1.0, 1.3),
         "translate.timeout_s" => (2.0, 60.0),
         "translate.skip_lag_s" => (2.0, 30.0),
+        "asr.second_pass_max_wait_s" => (0.5, 5.0),
         "overlay.expire_s" => (3.0, 60.0),
         "filter.single_char_max_s" => (0.0, f64::from(f32::MAX)),
         _ => (f64::MIN, f64::MAX),
@@ -653,7 +665,9 @@ fn normalize_float(
 fn integer_range(path: &str) -> (i64, i64) {
     match path {
         "config_version" => (2, 2),
-        "asr.threads" | "translate.threads" => (1, i64::from(MAX_THREADS)),
+        "asr.threads" | "asr.second_pass_threads" | "translate.threads" => {
+            (1, i64::from(MAX_THREADS))
+        }
         "translate.ctx" => (512, 4096),
         "translate.max_tokens_cap" => (32, 1024),
         "translate.queue_join_max_chars" => (20, 300),

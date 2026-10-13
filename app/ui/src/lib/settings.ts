@@ -35,6 +35,9 @@ export interface Config extends ExtraFields {
     chunk_ms: 160 | 480 | 960;
     threads: number;
     pause_s: number;
+    second_pass: "off" | "sensevoice";
+    second_pass_threads: number;
+    second_pass_max_wait_s: number;
   };
   filter: ExtraFields & {
     single_char_max_s: number;
@@ -288,7 +291,10 @@ export const DEFAULT_CONFIG: Config = {
   "asr": {
     "chunk_ms": 480,
     "threads": 1,
-    "pause_s": 0.8
+    "pause_s": 0.8,
+    "second_pass": "sensevoice",
+    "second_pass_threads": 1,
+    "second_pass_max_wait_s": 1.5
   },
   "filter": {
     "single_char_max_s": 0.6,

@@ -62,6 +62,20 @@ pub trait StreamingAsr: Send {
     fn finish(&mut self) -> Result<StreamResult>;
 }
 
+/// What an offline recognizer heard in one window of audio.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct OfflineText {
+    pub text: String,
+    /// The language the engine detected, such as "zh" or "ja".
+    pub lang: Option<String>,
+}
+
+/// A recognizer that decodes one whole window of audio (16 kHz mono) at a time.
+pub trait OfflineAsr: Send {
+    /// `language`: decode as this language (such as "zh") instead of detecting it.
+    fn decode(&mut self, samples: &[f32], language: Option<&str>) -> Result<OfflineText>;
+}
+
 #[derive(Clone, Debug)]
 pub struct TranslatorCaps {
     /// Accepts earlier lines in `TranslateRequest::context`.
@@ -130,17 +144,23 @@ pub trait Translator: Send {
 }
 
 type AsrFactory = fn(&Config) -> Result<Box<dyn StreamingAsr>>;
+type SecondPassFactory = fn(&Config) -> Result<Option<Box<dyn OfflineAsr>>>;
 type TranslatorFactory = fn(&Config) -> Result<Box<dyn Translator>>;
 
 #[derive(Default)]
 pub struct EngineRegistry {
     asr: Option<AsrFactory>,
+    second_pass: Option<SecondPassFactory>,
     translator: Option<TranslatorFactory>,
 }
 
 impl EngineRegistry {
     pub fn register_asr(&mut self, factory: AsrFactory) {
         self.asr = Some(factory);
+    }
+    /// The factory returns `None` when the configuration turns the second pass off.
+    pub fn register_second_pass(&mut self, factory: SecondPassFactory) {
+        self.second_pass = Some(factory);
     }
     pub fn register_translator(&mut self, factory: TranslatorFactory) {
         self.translator = Some(factory);
@@ -149,6 +169,12 @@ impl EngineRegistry {
         self.asr.ok_or_else(|| Error::UnknownEngine {
             kind: "ASR",
             name: "xasr_stream".into(),
+        })?(config)
+    }
+    pub fn build_second_pass(&self, config: &Config) -> Result<Option<Box<dyn OfflineAsr>>> {
+        self.second_pass.ok_or_else(|| Error::UnknownEngine {
+            kind: "second-pass ASR",
+            name: config.asr.second_pass.clone(),
         })?(config)
     }
     pub fn build_translator(&self, config: &Config) -> Result<Box<dyn Translator>> {
