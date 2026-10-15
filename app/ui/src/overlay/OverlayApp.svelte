@@ -12,26 +12,9 @@
 
   // The session is fixed for the lifetime of the window.
   // svelte-ignore state_referenced_locally
-  const { captions, config, appState, hover } = session;
+  const { captions, config, appState } = session;
 
   const moving = $derived($appState?.overlay_moving ?? false);
-  const listening = $derived($appState?.listening === "listening");
-  const sourceLabel = $derived($appState?.source?.label.trim() ?? "");
-  const headerText = $derived(
-    $appState?.listening === "paused"
-      ? "Paused"
-      : $appState?.listening === "starting"
-        ? "Starting"
-        : sourceLabel
-          ? `Listening · ${sourceLabel}`
-          : "Listening",
-  );
-
-  async function togglePause(): Promise<void> {
-    await session.act("pause", () => (listening ? api.pauseListening() : api.startListening()));
-  }
-
-  const openSettings = (): Promise<unknown> => session.act("settings", () => api.showControlWindow());
   const lock = (): Promise<unknown> => session.act("lock", () => api.setOverlayMoving(false));
 </script>
 
@@ -55,11 +38,6 @@
         showSource={$config.overlay.show_source}
         liveSource={$config.overlay.live_source}
         panelLines={$config.overlay.panel_lines}
-        {headerText}
-        {listening}
-        reveal={$hover || moving}
-        onpause={togglePause}
-        onsettings={openSettings}
       />
     {:else if $config.overlay.style === "flow"}
       <div class="bar-slot">

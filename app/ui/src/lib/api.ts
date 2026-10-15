@@ -28,7 +28,6 @@ export const COMMANDS = {
   setOverlayMoving: "set_overlay_moving",
   setOverlayVisible: "set_overlay_visible",
   openFolder: "open_folder",
-  showControlWindow: "show_control_window",
   quit: "quit",
 } as const;
 
@@ -89,8 +88,6 @@ export const setOverlayMoving = (moving: boolean): Promise<void> => call<void>(C
 export const setOverlayVisible = (visible: boolean): Promise<void> =>
   call<void>(COMMANDS.setOverlayVisible, { visible });
 export const openFolder = (which: FolderKind): Promise<void> => call<void>(COMMANDS.openFolder, { which });
-/** Not in 07: shows and focuses the fixed "control" window (panel header Settings button). */
-export const showControlWindow = (): Promise<void> => call<void>(COMMANDS.showControlWindow);
 export const quit = (): Promise<void> => call<void>(COMMANDS.quit);
 
 export async function getConfig(): Promise<Config> {

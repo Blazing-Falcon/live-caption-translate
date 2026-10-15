@@ -18,8 +18,6 @@ export const EVENTS = {
   pipeline: "pipeline://event",
   overlayMode: "overlay://mode",
   overlayVisible: "overlay://visible",
-  /** Optional, not in 07: native cursor-over-panel observation, `{ hover: boolean }`. */
-  overlayHover: "overlay://hover",
   modelsError: "models://error",
   configChanged: "config://changed",
   modelsProgress: "models://progress",
@@ -92,7 +90,6 @@ export interface Session {
   models: Readable<ModelStatus[] | null>;
   hotkeyErrors: Readable<Record<string, HotkeyError>>;
   notices: Readable<Notice[]>;
-  hover: Readable<boolean>;
   busy: Readable<ReadonlySet<string>>;
   loadError: Readable<string | null>;
   ready: Promise<void>;
@@ -130,7 +127,6 @@ export function createSession(options: SessionOptions): Session {
   const models = writable<ModelStatus[] | null>(null);
   const hotkeyErrors = writable<Record<string, HotkeyError>>({});
   const notices = writable<Notice[]>([]);
-  const hover = writable(false);
   const busy = writable<ReadonlySet<string>>(new Set());
   const loadError = writable<string | null>(null);
 
@@ -239,7 +235,6 @@ export function createSession(options: SessionOptions): Session {
     subscribe<OverlayVisiblePayload>(EVENTS.overlayVisible, ({ visible }) =>
       appState.update((state) => (state ? { ...state, overlay_visible: visible } : state)),
     ),
-    subscribe<{ hover: boolean }>(EVENTS.overlayHover, (payload) => hover.set(payload.hover)),
   );
 
   if (options.kind === "control") {
@@ -293,7 +288,6 @@ export function createSession(options: SessionOptions): Session {
     models,
     hotkeyErrors,
     notices,
-    hover,
     busy,
     loadError,
     ready,

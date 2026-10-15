@@ -105,7 +105,6 @@ asr_final -> joined (as leader)*
 | `config://changed` | `Config` | After a save or a change by the app (overlay position, visibility) |
 | `overlay://visible` | `{ visible }` | The overlay shows or hides |
 | `overlay://mode` | `{ moving }` | Move mode starts or stops |
-| `overlay://hover` | `{ hover }` | The cursor enters or leaves the panel (polled each 100 ms) |
 | `models://progress` | `ModelStatus[]` | Download progress |
 | `models://error` | `{ message }` | A download failed |
 | `hotkeys://error` | `{ action, accelerator, message }` | A hotkey is not available |
@@ -140,7 +139,6 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
 | `set_overlay_visible` | `visible` | | Show or hide the overlay |
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
-| `show_control_window` | | | Show the control window |
 | `quit` | | | Stop the pipeline and servers, then exit |
 
 `AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible` and `logical_cpus` (the most threads a setting can use).

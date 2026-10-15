@@ -126,11 +126,6 @@ pub fn open_folder_native(shared: &Shared, which: &str) -> Reply<()> {
 
 /// The caption panel's Settings button needs the control window.
 #[tauri::command]
-pub fn show_control_window(shared: Shell) {
-    shared.show_control();
-}
-
-#[tauri::command]
 pub fn quit(shared: Shell) {
     crate::quit(shared.inner().clone());
 }

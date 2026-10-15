@@ -57,7 +57,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 | `lt-scheduler` | Translation queue, stats |
 | `lt-translator` | HTTP requests to the server |
 | `lt-transcript` | Transcript writer |
-| `lt-bridge`, `lt-controller`, `lt-models`, `lt-hover` | App: events, start and stop, downloads, panel hover |
+| `lt-bridge`, `lt-controller`, `lt-models` | App: events, start and stop, downloads |
 
 - The pipeline code has one module for each thread in `crates/lt-core/src/pipeline/`; `recognizer.rs` holds the clause state machine that `lt-asr` runs.
 - Each engine has one owner thread.
