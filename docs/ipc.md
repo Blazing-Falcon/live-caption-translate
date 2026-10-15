@@ -129,6 +129,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `pause_listening` | | | Close capture. Pending translations finish. |
 | `get_config` | | `Config` | Full config |
 | `set_config` | `patch` | `{ config, applied, messages }` | Merge, validate, save and apply. `applied` is `live`, `capture`, `pipeline` or `restart`. |
+| `reset_config` | | `{ config, applied, messages }` | Save and apply the defaults. The overlay positions, `capture.apps` and `models.dir` stay. |
 | `get_stats` | | `PipelineStats` | Latest stats |
 | `list_audio_devices` | | `{ id, name, is_default }[]` | Output devices |
 | `list_audio_apps` | | `{ supported, reason, apps[] }` | Apps with audio, and recent selections |

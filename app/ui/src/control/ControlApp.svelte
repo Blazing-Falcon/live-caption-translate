@@ -24,7 +24,7 @@
   type PageId = (typeof PAGES)[number]["id"];
 
   // svelte-ignore state_referenced_locally
-  const { config, appState, stats, models, loadError } = session;
+  const { config, appState, stats, models, loadError, busy } = session;
 
   let page = $state<PageId>("capture");
   let ready = $state(false);
@@ -69,6 +69,13 @@
   }
 
   const footer = $derived(footerText($appState?.listening, $stats));
+
+  let confirmReset = $state(false);
+
+  async function reset(): Promise<void> {
+    if ($busy.has("config.reset")) return;
+    if (await session.reset()) confirmReset = false;
+  }
 </script>
 
 {#if !ready}
@@ -101,6 +108,30 @@
             </button>
           {/each}
         </div>
+        <div class="reset">
+          {#if confirmReset}
+            <p class="help small" id="reset-help">
+              Reset all settings to their defaults? The overlay position, the chosen apps and the downloaded models stay.
+            </p>
+            <div class="reset-actions">
+              <button
+                type="button"
+                class="btn"
+                aria-describedby="reset-help"
+                aria-disabled={$busy.has("config.reset")}
+                data-testid="reset-confirm"
+                onclick={reset}
+              >
+                Reset
+              </button>
+              <button type="button" class="btn" onclick={() => (confirmReset = false)}>Cancel</button>
+            </div>
+          {:else}
+            <button type="button" class="btn" data-testid="reset-settings" onclick={() => (confirmReset = true)}>
+              Reset settings
+            </button>
+          {/if}
+        </div>
       </nav>
 
       <main class="content">
@@ -125,6 +156,19 @@
 {/if}
 
 <style>
+  .reset {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+    padding: 0 var(--space-1);
+  }
+
+  .reset-actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+
   .loading {
     display: flex;
     flex-direction: column;

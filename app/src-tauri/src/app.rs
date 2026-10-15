@@ -56,11 +56,27 @@ impl Shared {
     /// Applies a patch, saves atomically, announces it, and tells the controller when
     /// capture or the pipeline must change. Returns the normalized config.
     pub fn patch_config(&self, patch: serde_json::Value) -> Result<SetConfigResult, String> {
+        self.change_config(|config| config.merge_patch(patch).map_err(|e| e.to_string()))
+    }
+
+    /// Back to the defaults; see `Config::reset` for what stays.
+    pub fn reset_config(&self) -> Result<SetConfigResult, String> {
+        self.change_config(|config| {
+            *config = config.reset();
+            Ok(Vec::new())
+        })
+    }
+
+    /// Change, save and apply the configuration as one step.
+    fn change_config(
+        &self,
+        change: impl FnOnce(&mut Config) -> Result<Vec<String>, String>,
+    ) -> Result<SetConfigResult, String> {
         let (old, new, messages) = {
             let mut guard = lock(&self.config);
             let old = guard.clone();
             let mut new = old.clone();
-            let messages = new.merge_patch(patch).map_err(|e| e.to_string())?;
+            let messages = change(&mut new)?;
             new.save(&self.paths.config_file)
                 .map_err(|e| format!("Could not save settings: {e}"))?;
             *guard = new.clone();

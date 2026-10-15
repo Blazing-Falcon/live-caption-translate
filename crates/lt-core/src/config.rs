@@ -319,6 +319,18 @@ impl Config {
         Ok(messages)
     }
 
+    /// The defaults, keeping what the user placed or picked rather than tuned: the overlay's
+    /// positions, the apps chosen for capture and the models folder.
+    pub fn reset(&self) -> Self {
+        let mut config = Self::default();
+        config.overlay.bar_rect = self.overlay.bar_rect.clone();
+        config.overlay.panel_rect = self.overlay.panel_rect.clone();
+        config.overlay.flow_rect = self.overlay.flow_rect.clone();
+        config.capture.apps = self.capture.apps.clone();
+        config.models.dir = self.models.dir.clone();
+        config
+    }
+
     pub fn to_toml(&self) -> Result<String> {
         toml::to_string_pretty(self).map_err(config_error)
     }

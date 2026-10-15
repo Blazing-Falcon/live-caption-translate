@@ -94,6 +94,7 @@ export interface Session {
   loadError: Readable<string | null>;
   ready: Promise<void>;
   save(key: string, patch: ConfigPatch): Promise<SetConfigResult | null>;
+  reset(): Promise<SetConfigResult | null>;
   act<T>(key: string, action: () => Promise<T>): Promise<T | null>;
   refreshState(): Promise<void>;
   refreshModels(): Promise<ModelStatus[] | null>;
@@ -188,8 +189,12 @@ export function createSession(options: SessionOptions): Session {
     }
   }
 
-  async function save(key: string, patch: ConfigPatch): Promise<SetConfigResult | null> {
-    const result = await act(key, () => api.setConfig(patch));
+  const save = (key: string, patch: ConfigPatch): Promise<SetConfigResult | null> =>
+    change(key, () => api.setConfig(patch));
+  const reset = (): Promise<SetConfigResult | null> => change("config.reset", api.resetConfig);
+
+  async function change(key: string, action: () => Promise<SetConfigResult>): Promise<SetConfigResult | null> {
+    const result = await act(key, action);
     if (!result) return null;
     applyConfig(result.config);
     for (const message of result.messages) pushNotice("info", message);
@@ -292,6 +297,7 @@ export function createSession(options: SessionOptions): Session {
     loadError,
     ready,
     save,
+    reset,
     act,
     refreshState,
     refreshModels,

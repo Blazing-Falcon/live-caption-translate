@@ -17,6 +17,7 @@ export const COMMANDS = {
   pauseListening: "pause_listening",
   getConfig: "get_config",
   setConfig: "set_config",
+  resetConfig: "reset_config",
   getStats: "get_stats",
   startupNotices: "startup_notices",
   listAudioDevices: "list_audio_devices",
@@ -99,12 +100,17 @@ export async function getConfig(): Promise<Config> {
   }
 }
 
-export async function setConfig(patch: ConfigPatch): Promise<SetConfigResult> {
-  const result = await call<SetConfigResult>(COMMANDS.setConfig, { patch });
+export const setConfig = (patch: ConfigPatch): Promise<SetConfigResult> => changeConfig(COMMANDS.setConfig, { patch });
+
+/** Back to the defaults; the overlay positions, the chosen apps and the models folder stay. */
+export const resetConfig = (): Promise<SetConfigResult> => changeConfig(COMMANDS.resetConfig);
+
+async function changeConfig(command: CommandName, args?: Record<string, unknown>): Promise<SetConfigResult> {
+  const result = await call<SetConfigResult>(command, args);
   try {
     return { ...result, config: parseConfig(result.config), messages: result.messages ?? [] };
   } catch (error) {
-    throw new ApiError(COMMANDS.setConfig, readableError(error));
+    throw new ApiError(command, readableError(error));
   }
 }
 

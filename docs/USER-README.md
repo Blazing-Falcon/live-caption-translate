@@ -32,6 +32,8 @@ All processing is on your computer. After the first download, the app does not u
 | **Overlay** | Style (subtitle bar at the bottom, caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
 | **Performance** | Chunk size of the speech model (160, 480 or 960 ms: sooner words or less CPU), recognizer threads, translator threads, "Translate with earlier lines" (0 to 60 characters; 0 translates each line alone), "Give games priority", word delay ("Word to English", median for the last minute), lines waiting, memory, CPU, transcripts |
 
+**Reset settings** (below the pages) sets all settings back to their defaults. The overlay position, the selected apps and the downloaded models stay.
+
 When you close the control window, the app continues in the system tray. Right-click the tray icon for Pause, Hide overlay, Move overlay, Listen to, Open transcript folder, Settings and Quit.
 
 The overlay does not take focus. It does not show in Alt-Tab or the taskbar. Mouse clicks go through it to the window below.

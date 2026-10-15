@@ -56,6 +56,11 @@ pub fn set_config(shared: Shell, patch: serde_json::Value) -> Reply<SetConfigRes
 }
 
 #[tauri::command]
+pub fn reset_config(shared: Shell) -> Reply<SetConfigResult> {
+    shared.reset_config()
+}
+
+#[tauri::command]
 pub fn get_stats(shared: Shell) -> PipelineStats {
     crate::app::lock(&shared.stats).clone()
 }

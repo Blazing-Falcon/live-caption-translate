@@ -296,3 +296,36 @@ threads = 3
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
     assert!(saved["translate"].get("model").is_none());
 }
+
+#[test]
+fn reset_restores_the_defaults_but_keeps_positions_apps_and_the_models_folder() {
+    let (config, _) = Config::from_toml(
+        r#"
+config_version = 2
+[capture]
+mode = "apps"
+apps = [{exe = "chrome.exe", name = "Chrome"}]
+[asr]
+second_pass = "off"
+[translate]
+threads = 2
+[overlay]
+style = "bar"
+font_px = 34
+panel_rect = {monitor = "A", x = 10, y = 20, w = 300, h = 400}
+[models]
+dir = "D:/models"
+"#,
+    )
+    .unwrap();
+    let reset = config.reset();
+    let defaults = Config::default();
+    assert_eq!(reset.capture.mode, defaults.capture.mode);
+    assert_eq!(reset.asr.second_pass, defaults.asr.second_pass);
+    assert_eq!(reset.translate.threads, defaults.translate.threads);
+    assert_eq!(reset.overlay.style, defaults.overlay.style);
+    assert_eq!(reset.overlay.font_px, defaults.overlay.font_px);
+    assert_eq!(reset.capture.apps, config.capture.apps);
+    assert_eq!(reset.overlay.panel_rect, config.overlay.panel_rect);
+    assert_eq!(reset.models.dir, "D:/models");
+}

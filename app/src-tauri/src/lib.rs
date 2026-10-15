@@ -178,6 +178,7 @@ pub fn run() {
             commands::pause_listening,
             commands::get_config,
             commands::set_config,
+            commands::reset_config,
             commands::get_stats,
             commands::list_audio_devices,
             commands::list_audio_apps,
