@@ -144,7 +144,7 @@ pub fn translator(
         ));
     }
     let binary = binary.map(Path::to_path_buf).unwrap_or_else(default_binary);
-    let (id, file) = config.translate.model_file();
+    let (id, file) = lt_core::config::TranslateConfig::MODEL;
     let options = lt_llm::supervisor::ServerOptions::new(
         binary,
         models.join(id).join(file),

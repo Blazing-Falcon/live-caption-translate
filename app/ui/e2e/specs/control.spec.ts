@@ -3,7 +3,7 @@ import { calls, emitNamed, open } from "./support";
 
 const MB = 1024 * 1024;
 const MISSING = [
-  { id: "hy-mt2-1.8b-q4_0", name: "Translation", bytes_total: 1030 * MB, bytes_done: 1030 * MB, optional: false, state: "ready" },
+  { id: "hy-mt2-1.8b-ternary-tq2_0", name: "Translation", bytes_total: 578 * MB, bytes_done: 578 * MB, optional: false, state: "ready" },
   { id: "xasr-stream-480ms-int8-2026-06-05", name: "Speech recognition", bytes_total: 128 * MB, bytes_done: 0, optional: false, state: "missing" },
   { id: "xasr-stream-160ms-int8-2026-06-05", name: "Speech recognition (160 ms)", bytes_total: 128 * MB, bytes_done: 0, optional: true, state: "missing" },
 ] as const;

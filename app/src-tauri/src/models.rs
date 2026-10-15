@@ -31,7 +31,7 @@ pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
     if config.asr.second_pass == "qwen3" {
         wanted.push(lt_llm::speech::QWEN3_MODEL);
     }
-    wanted.push(config.translate.model_file().0);
+    wanted.push(lt_core::config::TranslateConfig::MODEL.0);
     match lt_llm::models::status(dir) {
         Ok(models) => models
             .into_iter()

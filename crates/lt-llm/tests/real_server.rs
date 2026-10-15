@@ -32,7 +32,8 @@ fn frozen_translation_sentences_against_configured_llama_server() {
             let directory = std::env::var_os("LT_MODELS_DIR")
                 .map(PathBuf::from)
                 .unwrap_or_else(|| workspace.join("models"));
-            directory.join("hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf")
+            let (id, file) = TranslateConfig::MODEL;
+            directory.join(id).join(file)
         });
     assert!(
         model.is_file(),

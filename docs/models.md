@@ -7,22 +7,20 @@
 | Id | Use | File | Bytes | SHA-256 |
 |---|---|---|---|---|
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition (default) | archive, 4 files | 133,895,136 | in the manifest |
-| `hy-mt2-1.8b-ternary-tq2_0` | Translation (default, `translate.model = "ternary"`) | download `Hy-MT2-1.8B-1.25Bit.gguf`, kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` | 461,860,800 (606,564,288 kept) | in the manifest |
-| `hy-mt2-1.8b-q4_0` | Translation, optional (`translate.model = "q4_0"`) | `Hy-MT2-1.8B.i1-Q4_0.gguf` | 1,079,997,440 | `77b7db506ed5dddd79b30553d346af1bfbed5999838441964ade98c970512087` |
+| `hy-mt2-1.8b-ternary-tq2_0` | Translation | download `Hy-MT2-1.8B-1.25Bit.gguf`, kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` | 461,860,800 (606,564,288 kept) | in the manifest |
 | `qwen3-asr-0.6b-q4_k_m` | Second pass (`asr.second_pass = "qwen3"`) | `Qwen3-ASR-0.6B.Q4_K_M.gguf`, `mmproj-Qwen3-ASR-0.6B-Q8_0.gguf` | 698,608,768 | in the manifest |
 | `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
 | `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
 Sources (Hugging Face):
 
-- Hy-MT2 ternary: `tencent/Hy-MT2-1.8B-1.25Bit-GGUF`, revision `9df5c824a00a744fb0512a29c640466f4d97dfb0` (AngelSlim 1.25-bit quantization)
-- Hy-MT2 Q4_0: `mradermacher/Hy-MT2-1.8B-i1-GGUF`
+- Hy-MT2 1.25-bit: `tencent/Hy-MT2-1.8B-1.25Bit-GGUF`, revision `9df5c824a00a744fb0512a29c640466f4d97dfb0` (AngelSlim 1.25-bit quantization)
 - Qwen3-ASR: `mradermacher/Qwen3-ASR-0.6B-GGUF` revision `6cf166e9f1c5bd2521108e3410ee5358de5eabab` (the language model, Q4_K_M) and `ggml-org/Qwen3-ASR-0.6B-GGUF` revision `928ab958557df9aa2ef1c93e0e83c7ad0933fae2` (the audio encoder, Q8_0), conversions of `Qwen/Qwen3-ASR-0.6B`
 - X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
 
 Rules:
 
-- The first-run download takes the required models, Qwen3-ASR included. The optional models (other chunk sizes, Hy-MT2 Q4_0) download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
+- The first-run download takes the required models, Qwen3-ASR included. The optional models (the other chunk sizes) download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
 - Files go to `<models dir>/<id>/<file>`.
 - Downloads continue from `<file>.part` with HTTP range requests. The app checks the SHA-256 and then renames the file.
 - A file with `convert` is a GGUF whose weights are STQ1_0, a ternary type that only an unmerged ARM branch of llama.cpp reads. After its SHA-256 check, the app rewrites those weights as TQ2_0 (the same blocks of 256 weights of -1, 0 or +1 times one fp16 scale, which llama.cpp runs on x86), checks the result's size and SHA-256, keeps it under the `convert` name and deletes the download. Every weight keeps its value; the rest of the file is copied unchanged.
@@ -71,23 +69,21 @@ ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-15, `cargo te
 
 SenseVoice Small (sherpa-onnx int8) was the earlier second pass. On the drama clip it lowered the character error rate from 9.9% (live text) to 9.5% and changed some correct lines; Qwen3-ASR lowered it to 6.2% (real time, 2026-10-13..15, same PC). On the ASCEND clips its error rate was 0.184 (0.159 with `zh` forced).
 
-**Translation models:** both are Hy-MT2 1.8B.
+**Translation model:** Hy-MT2 1.8B in Tencent's 1.25-bit quantization (AngelSlim), as TQ2_0. The app used the 4-bit Q4_0 file (mradermacher, imatrix) before:
 
-| | Ternary (default) | Q4_0 |
+| | 1.25-bit (used) | Q4_0 (removed) |
 |---|---|---|
-| Weights | Tencent's 1.25-bit quantization (AngelSlim), as TQ2_0 | 4-bit, imatrix (mradermacher) |
 | Memory (llama-server working set) | 732 MB | 1181 MB |
 | Time per line | 411 ms | 595 ms |
-| Earlier lines (`window_chars`) | as earlier chat turns | joined with `<br>`, English prefilled |
 
 Measured on the 26 lines of a drama clip, each line alone, 2 threads, `--load-mode none`, 2026-10-15, Ryzen 7 5700X. Both translated all lines correctly; each was better on a few.
 
-The ternary model and earlier lines, on 81 lines of a drama session, 30 characters of earlier lines, 2026-10-15, same PC:
+The 1.25-bit model and earlier lines, on 81 lines of a drama session, 30 characters of earlier lines, 2026-10-15, same PC:
 
 | Earlier lines given as | Per line | Memory | Result |
 |---|---|---|---|
 | none | 418 ms | 787 MB | wrong subjects where they come from an earlier line |
-| `<br>` window with prefilled English (Q4_0's form) | | | other scripts and runaway answers on some lines |
+| joined with `<br>`, English prefilled (the form Q4_0 used) | | | other scripts and runaway answers on some lines |
 | Hy-MT2's "Background Information" prompt | 811 ms | 1016 MB | the prompt echoed or the background translated on 10 lines |
 | chat turns, the instruction in every turn | 1391 ms | 1255 MB | no failures |
 | chat turns, the instruction in the first turn only (used) | 852 ms | 1047 MB | no failures; "I really like it" (a comic) instead of "him", "you" instead of "myself" |
@@ -102,8 +98,8 @@ llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c 
 
 - `--override-kv` corrects the GGUF's end token (the correct id is 120020).
 - `<threads>` is `translate.threads` (2 by default), at most the PC's logical CPUs.
-- Do not add `--no-repack`. llama.cpp repacks Q4_0 for x86, and that makes Hy-MT2 much faster.
-- `--load-mode none` reads the model into memory instead of mapping the file. The repacked copy is the only copy then. With a mapped file, the original pages also stay in memory: for Q4_0, 2074 MB working set against 1271 MB, with the same translations (26 lines, 2026-10-15, Ryzen 7 5700X).
+- Do not add `--no-repack`. llama.cpp repacks some weight types for x86; for the Q4_0 file the app used before, that made Hy-MT2 much faster.
+- `--load-mode none` reads the model into memory instead of mapping the file. The repacked copy is the only copy then. With a mapped file, the original pages also stay in memory: for the Q4_0 file, 2074 MB working set against 1271 MB, with the same translations (26 lines, 2026-10-15, Ryzen 7 5700X).
 - With `performance.low_priority`, the server runs at below-normal priority.
 
 **Requests:**

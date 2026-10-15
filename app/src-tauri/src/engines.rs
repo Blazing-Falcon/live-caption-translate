@@ -65,7 +65,7 @@ pub fn start_supervisor(
     bus: &EventBus,
     cancelled: &AtomicBool,
 ) -> Result<Supervisor, String> {
-    let (id, file) = config.translate.model_file();
+    let (id, file) = lt_core::config::TranslateConfig::MODEL;
     let options = ServerOptions::new(
         binary.to_path_buf(),
         models.join(id).join(file),

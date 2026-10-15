@@ -117,7 +117,7 @@ fn run_session(
             },
             asr: recognizer_name(&config),
             asr_second: lt_core::transcript::second_pass_name(&config),
-            translator: lt_core::transcript::translator_name(&config),
+            translator: lt_core::transcript::translator_name(),
             config: SessionConfig::from(&config),
         };
         let writer = TranscriptWriter::new(

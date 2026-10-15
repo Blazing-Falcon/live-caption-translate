@@ -78,7 +78,6 @@ config_table!(FilterConfig {
 });
 config_table!(TranslateConfig {
     server_url: String = String::new(),
-    model: String = "ternary".into(),
     threads: u32 = 2,
     ctx: u32 = 1024,
     temperature: f32 = 0.0,
@@ -159,16 +158,11 @@ impl TranslateConfig {
         self.threads.clamp(1, logical_cpus())
     }
 
-    /// The manifest id and file name of `model`.
-    pub fn model_file(&self) -> (&'static str, &'static str) {
-        match self.model.as_str() {
-            "q4_0" => ("hy-mt2-1.8b-q4_0", "Hy-MT2-1.8B.i1-Q4_0.gguf"),
-            _ => (
-                "hy-mt2-1.8b-ternary-tq2_0",
-                "Hy-MT2-1.8B-ternary-TQ2_0.gguf",
-            ),
-        }
-    }
+    /// The manifest id and file name of the translation model.
+    pub const MODEL: (&'static str, &'static str) = (
+        "hy-mt2-1.8b-ternary-tq2_0",
+        "Hy-MT2-1.8B-ternary-TQ2_0.gguf",
+    );
 }
 
 /// Version 1 keys that version 2 keeps under a new name.
@@ -240,12 +234,18 @@ fn migrate_v1(value: &mut toml::Value) {
 /// Version 2 values that the app no longer has take the default without a warning: the user
 /// did not choose them wrong, the app dropped them.
 fn retire_v2(value: &mut toml::Value) {
-    let Some(asr) = value.get_mut("asr").and_then(toml::Value::as_table_mut) else {
+    let Some(root) = value.as_table_mut() else {
         return;
     };
-    if asr.get("second_pass").and_then(toml::Value::as_str) == Some("sensevoice") {
-        asr.remove("second_pass");
-        tracing::info!("asr.second_pass: SenseVoice was removed; using the default");
+    if let Some(asr) = root.get_mut("asr").and_then(toml::Value::as_table_mut) {
+        if asr.get("second_pass").and_then(toml::Value::as_str) == Some("sensevoice") {
+            asr.remove("second_pass");
+            tracing::info!("asr.second_pass: SenseVoice was removed; using the default");
+        }
+    }
+    // One translation model is left, so its key is gone.
+    if take(root, "translate.model").is_some() {
+        tracing::info!("translate.model was removed");
     }
 }
 
@@ -404,7 +404,6 @@ impl Config {
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
-        choice!(translate, model, &["ternary", "q4_0"]);
         number!(translate, threads, 1, MAX_THREADS);
         number!(translate, ctx, 512, 4096);
         number!(translate, temperature, 0.0, 1.0);

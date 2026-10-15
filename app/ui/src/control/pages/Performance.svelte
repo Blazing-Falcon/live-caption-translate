@@ -14,7 +14,6 @@
   import {
     STREAM_CHUNKS,
     SECOND_PASSES,
-    TRANSLATORS,
     asrPatch,
     WINDOW_LIMITS,
     performancePatch,
@@ -75,7 +74,7 @@
   }
 
   interface SpeechRow {
-    key: "asr.chunk_ms" | "asr.second_pass" | "translate.model";
+    key: "asr.chunk_ms" | "asr.second_pass";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -98,14 +97,6 @@
       patch: (value) => asrPatch({ second_pass: value as Config["asr"]["second_pass"] }),
     },
   ]);
-
-  const translatorRow = $derived<SpeechRow>({
-    key: "translate.model",
-    label: "Translation model",
-    value: config.translate.model,
-    choices: TRANSLATORS,
-    patch: (value) => ({ translate: { model: value as Config["translate"]["model"] } }),
-  });
 
   /** A choice whose model is downloading; it is saved when the model is ready. */
   let waiting = $state<{ key: SpeechRow["key"]; value: string; model: string; patch: ConfigPatch } | null>(null);
@@ -245,7 +236,10 @@
 
   <div class="stack">
     <h3 class="section-title">Translation</h3>
-    {@render modelRow(translatorRow)}
+    <div class="field">
+      <span>Translation model</span>
+      <span class="model-name" data-testid="translate-model">Tencent Hy-MT2 1.8B (1.25-bit)</span>
+    </div>
     <label class="field">
       <span>Translator threads</span>
       <select
@@ -350,5 +344,10 @@
 
   .window {
     width: 96px;
+  }
+
+  .model-name {
+    font-size: var(--text-ui);
+    color: var(--c-text);
   }
 </style>

@@ -282,10 +282,17 @@ config_version = 2
 [asr]
 second_pass = "sensevoice"
 second_pass_threads = 3
+[translate]
+model = "q4_0"
+threads = 3
 "#,
     )
     .unwrap();
     assert_eq!(config.asr.second_pass, Config::default().asr.second_pass);
     assert_eq!(config.asr.second_pass_threads, 3);
+    assert_eq!(config.translate.threads, 3);
+    assert!(config.translate.extra.is_empty());
     assert!(messages.is_empty(), "{messages:?}");
+    let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
+    assert!(saved["translate"].get("model").is_none());
 }

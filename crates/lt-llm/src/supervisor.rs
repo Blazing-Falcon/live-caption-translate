@@ -23,8 +23,8 @@ use std::{
 
 /// Hy-MT2's GGUF has an incorrect end token; `models/manifest.json` lists the same arguments.
 const MODEL_ARGS: [&str; 2] = ["--override-kv", "tokenizer.ggml.eos_token_id=int:120020"];
-/// llama.cpp repacks Q4_0 and ternary weights for x86 into a copy of its own. A memory-mapped
-/// file would also keep the original pages: about 800 MB more for Q4_0.
+/// Models load into memory instead of being mapped: a mapped file keeps its pages besides the
+/// copies of the weights that llama.cpp repacks for x86.
 const LOAD_ARGS: [&str; 2] = ["--load-mode", "none"];
 
 /// What a server runs.

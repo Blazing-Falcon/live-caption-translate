@@ -35,8 +35,8 @@ impl From<&Config> for SessionConfig {
 }
 
 /// The translation model named in session headers.
-pub fn translator_name(config: &Config) -> String {
-    config.translate.model_file().0.into()
+pub fn translator_name() -> String {
+    crate::config::TranslateConfig::MODEL.0.into()
 }
 
 /// The recognizer named in session headers and `asr_live` records.

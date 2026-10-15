@@ -165,77 +165,32 @@ impl OpenAiCompatTranslator {
             ));
         }
         if request.context.is_empty() {
-            return self.stream(alone(request.text), false, request, on_delta);
+            return self.stream(alone(request.text), request, on_delta);
         }
-        let window = if self.config.model == "q4_0" {
-            self.window(request, on_delta)?
-        } else {
-            // The ternary model loses the window's delimiters; earlier lines go as chat turns.
-            let messages = HyMt2Prompts::turns(request.context, request.text)
-                .into_iter()
-                .map(|(role, content)| json!({"role": role, "content": content}))
-                .collect();
-            let mut turns = self.stream(messages, false, request, on_delta)?;
-            turns.text = turns.text.trim().to_owned();
-            turns
-        };
-        if !window.text.is_empty() {
-            return Ok(window);
+        let messages = HyMt2Prompts::turns(request.context, request.text)
+            .into_iter()
+            .map(|(role, content)| json!({"role": role, "content": content}))
+            .collect();
+        let mut turns = self.stream(messages, request, on_delta)?;
+        turns.text = turns.text.trim().to_owned();
+        if !turns.text.is_empty() {
+            return Ok(turns);
         }
         tracing::debug!(
             id = request.id.0,
-            "Window translation was empty; translating the line alone"
+            "Translation with earlier lines was empty; translating the line alone"
         );
-        let mut alone = self.stream(alone(request.text), false, request, on_delta)?;
-        alone.prompt_tokens += window.prompt_tokens;
-        alone.cached_tokens += window.cached_tokens;
-        alone.generated_tokens += window.generated_tokens;
+        let mut alone = self.stream(alone(request.text), request, on_delta)?;
+        alone.prompt_tokens += turns.prompt_tokens;
+        alone.cached_tokens += turns.cached_tokens;
+        alone.generated_tokens += turns.generated_tokens;
         Ok(alone)
     }
 
-    /// Q4_0: the earlier lines and the new one joined by the separator. The answer starts with
-    /// the earlier lines' English as shown, so the model writes only the new line and stops at
-    /// the next separator.
-    fn window(
-        &self,
-        request: &TranslateRequest<'_>,
-        on_delta: &mut dyn FnMut(&str),
-    ) -> Result<TranslationOut> {
-        let source = HyMt2Prompts::window_source(request.context, request.text);
-        let prefill = HyMt2Prompts::window_prefill(request.context);
-        let new_part = |english: &str| -> String {
-            // llama-server repeats the prefill in its first delta.
-            let english = english.strip_prefix(prefill.as_str()).unwrap_or(english);
-            english
-                .split(HyMt2Prompts::SEPARATOR)
-                .next()
-                .unwrap_or_default()
-                .trim_start()
-                .to_owned()
-        };
-        let mut window = self.stream(
-            vec![
-                json!({"role": "user", "content": HyMt2Prompts::window_message(&source)}),
-                json!({"role": "assistant", "content": prefill}),
-            ],
-            true,
-            request,
-            &mut |english| {
-                let part = new_part(english);
-                if !part.is_empty() {
-                    on_delta(&part);
-                }
-            },
-        )?;
-        window.text = new_part(&window.text).trim_end().to_owned();
-        Ok(window)
-    }
-
-    /// One streamed request. With `separated`, generation stops at the window separator.
+    /// One streamed request.
     fn stream(
         &self,
         messages: Vec<serde_json::Value>,
-        separated: bool,
         request: &TranslateRequest<'_>,
         on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut> {
@@ -247,7 +202,7 @@ impl OpenAiCompatTranslator {
                 .min(Instant::now() + Duration::from_secs_f32(self.config.timeout_s)),
             ..request.control.clone()
         };
-        let mut body = json!({
+        let body = json!({
             "messages": messages,
             "stream":true,
             "temperature":readable_float(self.config.temperature),
@@ -256,9 +211,6 @@ impl OpenAiCompatTranslator {
             "cache_prompt":true,
             "stream_options":{"include_usage":true},
         });
-        if separated {
-            body["stop"] = json!([HyMt2Prompts::SEPARATOR]);
-        }
         let agent = local_agent(self.endpoint.address, control.clone())?;
         let mut response = agent
             .post(&self.endpoint.completions)

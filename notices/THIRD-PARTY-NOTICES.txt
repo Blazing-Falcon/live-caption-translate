@@ -11,14 +11,9 @@ Hy-MT2-1.8B — Tencent
 Upstream: https://huggingface.co/tencent/Hy-MT2-1.8B
 Copyright (C) 2026 Tencent. All rights reserved.
 License: Apache License, Version 2.0, confirmed by the upstream LICENSE.txt.
-Used quantization: Hy-MT2-1.8B.i1-Q4_0.gguf by mradermacher.
-Quantization page: https://huggingface.co/mradermacher/Hy-MT2-1.8B-i1-GGUF
-The quantization card declares Apache-2.0, identifies tencent/Hy-MT2-1.8B as
-base_model and describes weighted/imatrix quantization. Both upstream and
-conversion attributions are retained; no additional custom Hunyuan conditions
-appear in this exact model's LICENSE.txt.
+No additional custom Hunyuan conditions appear in this model's LICENSE.txt.
 
-Hy-MT2-1.8B 1.25-bit — Tencent, quantized with AngelSlim (default translation model)
+Hy-MT2-1.8B 1.25-bit — Tencent, quantized with AngelSlim (translation model)
 Upstream: https://huggingface.co/tencent/Hy-MT2-1.8B-1.25Bit-GGUF (revision
 9df5c824a00a744fb0512a29c640466f4d97dfb0); its LICENSE.txt and model card declare
 Apache-2.0. Modification: after the download the application rewrites the

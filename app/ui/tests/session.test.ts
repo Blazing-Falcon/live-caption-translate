@@ -9,7 +9,7 @@ import type { ModelStatus } from "../src/lib/types";
 import { FakeClock, STATS, asrFinal, testConfig, testState } from "./helpers";
 
 const MODELS: ModelStatus[] = [
-  { id: "hy-mt2-1.8b-q4_0", name: "Translation", bytes_total: 1_080_000_000, bytes_done: 1_080_000_000, optional: false, state: "ready" },
+  { id: "hy-mt2-1.8b-ternary-tq2_0", name: "Translation", bytes_total: 606_564_288, bytes_done: 606_564_288, optional: false, state: "ready" },
   { id: "xasr-stream-480ms-int8-2026-06-05", name: "Speech recognition", bytes_total: 134_000_000, bytes_done: 0, optional: false, state: "missing" },
 ];
 
