@@ -78,7 +78,7 @@ config_table!(FilterConfig {
 });
 config_table!(TranslateConfig {
     server_url: String = String::new(),
-    threads: u32 = 2,
+    threads: u32 = 4,
     ctx: u32 = 1024,
     temperature: f32 = 0.0,
     repeat_penalty: f32 = 1.05,

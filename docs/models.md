@@ -97,7 +97,7 @@ llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c 
 ```
 
 - `--override-kv` corrects the GGUF's end token (the correct id is 120020).
-- `<threads>` is `translate.threads` (2 by default), at most the PC's logical CPUs.
+- `<threads>` is `translate.threads` (4 by default), at most the PC's logical CPUs.
 - Do not add `--no-repack`. llama.cpp repacks some weight types for x86; for the Q4_0 file the app used before, that made Hy-MT2 much faster.
 - `--load-mode none` reads the model into memory instead of mapping the file. The repacked copy is the only copy then. With a mapped file, the original pages also stay in memory: for the Q4_0 file, 2074 MB working set against 1271 MB, with the same translations (26 lines, 2026-10-15, Ryzen 7 5700X).
 - With `performance.low_priority`, the server runs at below-normal priority.

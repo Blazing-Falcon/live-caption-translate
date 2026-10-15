@@ -308,7 +308,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   "translate": {
     "server_url": "",
-    "threads": 2,
+    "threads": 4,
     "ctx": 1024,
     "temperature": 0.0,
     "repeat_penalty": 1.05,

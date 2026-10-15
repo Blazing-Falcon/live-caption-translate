@@ -721,7 +721,7 @@ mod tests {
         );
         assert_eq!(
             options.arguments(8081).join(" "),
-            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 2 -tb 2 --override-kv tokenizer.ggml.eos_token_id=int:120020 --load-mode none --no-webui"
+            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 4 -tb 4 --override-kv tokenizer.ggml.eos_token_id=int:120020 --load-mode none --no-webui"
         );
     }
 

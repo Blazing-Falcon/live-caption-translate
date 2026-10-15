@@ -57,7 +57,7 @@ fillers = ["呃", "嗯", "额", "uh", "um"]
 
 [translate]
 server_url = ""                 # "" = spawn the bundled llama-server; otherwise use this OpenAI-compatible base URL
-threads = 2                     # 1 to the logical CPUs of the PC
+threads = 4                     # 1 to the logical CPUs of the PC
 ctx = 1024
 temperature = 0.0
 repeat_penalty = 1.05
