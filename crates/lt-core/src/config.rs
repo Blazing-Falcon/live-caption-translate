@@ -374,7 +374,7 @@ impl Config {
         }
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
-        choice!(asr, second_pass, &["off", "sensevoice"]);
+        choice!(asr, second_pass, &["off", "sensevoice", "qwen3"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
         // No maximum is specified for this duration; it must remain finite.

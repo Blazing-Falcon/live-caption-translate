@@ -64,7 +64,9 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 **SenseVoice (second pass):** sherpa-onnx offline recognizer, greedy search, inverse text normalization on (punctuation and digits), `asr.second_pass_threads` (1). It decodes one window of audio at a time and detects the language. The language is fixed when the recognizer is created; a stream option does not change it. A decode with a forced language (`zh`) therefore uses a second recognizer, which the app creates the first time it needs one.
 
-ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-13, `cargo test -p lt-sherpa --release --test sensevoice`: character error rate 0.184 with the detected language, 0.159 with `zh` forced. The streaming X-ASR on the same clips: 0.102.
+**Qwen3-ASR (second pass, optional):** sherpa-onnx offline recognizer, an audio encoder with a 0.6B language model that writes the text, `asr.second_pass_threads`. Context of 512 tokens (prompt, about 13 audio tokens per second, text), at most 256 text tokens, near-zero temperature (greedy). It reports no language tag; a forced language goes into its prompt by name (`Chinese`), per stream.
+
+ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-15, `cargo test -p lt-sherpa --release --test second_pass`: character error rate SenseVoice 0.184 with the detected language, 0.159 with `zh` forced; Qwen3-ASR 0.144 both ways. The streaming X-ASR on the same clips: 0.102.
 
 **llama-server:** the supervisor starts the server with:
 

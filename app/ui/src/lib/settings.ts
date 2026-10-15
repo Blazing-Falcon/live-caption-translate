@@ -35,7 +35,7 @@ export interface Config extends ExtraFields {
     chunk_ms: 160 | 480 | 960;
     threads: number;
     pause_s: number;
-    second_pass: "off" | "sensevoice";
+    second_pass: "off" | "sensevoice" | "qwen3";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
   };

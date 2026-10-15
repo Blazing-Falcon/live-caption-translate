@@ -45,7 +45,7 @@ norm_gate_dbfs = -60.0
 chunk_ms = 480                  # 160 | 480 | 960
 threads = 1                     # 1 to the logical CPUs of the PC
 pause_s = 0.8                   # silence that ends a line
-second_pass = "sensevoice"      # "off" | "sensevoice": read each closed line again offline
+second_pass = "sensevoice"      # "off" | "sensevoice" | "qwen3": read each closed line again offline
 second_pass_threads = 1         # 1 to the logical CPUs of the PC
 second_pass_max_wait_s = 1.5    # after this, the line keeps the live text
 
@@ -133,8 +133,8 @@ The default values are in the file above.
 | `chunk_ms` | `160`, `480`, `960` | pipeline | Streaming X-ASR model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
 | `threads` | 1–64 | pipeline | ONNX Runtime threads for the recognizer. The app uses at most the PC's logical CPUs. |
 | `pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
-| `second_pass` | `off`, `sensevoice` | pipeline | When a line ends, SenseVoice reads its audio again. Its text replaces the live Chinese before translation if it matches the live text closely enough. |
-| `second_pass_threads` | 1–64 | pipeline | ONNX Runtime threads for SenseVoice. The app uses at most the PC's logical CPUs. |
+| `second_pass` | `off`, `sensevoice`, `qwen3` | pipeline | When a line ends, a second model reads its audio again. Its text replaces the live Chinese before translation if it matches the live text closely enough. `sensevoice`: fast, small gain. `qwen3`: Qwen3-ASR 0.6B, fixes more words, several times the CPU and memory, an optional download. |
+| `second_pass_threads` | 1–64 | pipeline | ONNX Runtime threads for the second-pass model. The app uses at most the PC's logical CPUs. |
 | `second_pass_max_wait_s` | 0.5–5.0 | pipeline | A line that waits longer than this for the second pass keeps the live text |
 
 ### filter
