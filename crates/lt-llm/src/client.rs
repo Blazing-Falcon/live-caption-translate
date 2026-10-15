@@ -173,12 +173,18 @@ impl OpenAiCompatTranslator {
             .collect();
         let mut turns = self.stream(messages, request, on_delta)?;
         turns.text = turns.text.trim().to_owned();
-        if !turns.text.is_empty() {
+        // The small model sometimes copies an earlier line's English instead of translating.
+        let copied = request
+            .context
+            .iter()
+            .any(|(_, english)| english.trim() == turns.text);
+        if !turns.text.is_empty() && !copied {
             return Ok(turns);
         }
         tracing::debug!(
             id = request.id.0,
-            "Translation with earlier lines was empty; translating the line alone"
+            copied,
+            "Translation with earlier lines was empty or copied; translating the line alone"
         );
         let mut alone = self.stream(alone(request.text), request, on_delta)?;
         alone.prompt_tokens += turns.prompt_tokens;

@@ -255,17 +255,20 @@ fn respond(stream: &mut TcpStream, pieces: &[&str]) {
     let _ = stream.write_all(b"0\r\n\r\n");
 }
 
-/// Earlier lines go as chat turns, and an empty answer must not lose the line.
+/// Earlier lines go as chat turns. An empty answer must not lose the line, and an answer that
+/// copies an earlier line's English must not show as this line's.
 #[test]
-fn earlier_lines_go_as_chat_turns_and_an_empty_answer_falls_back() {
+fn earlier_lines_go_as_chat_turns_and_an_empty_or_copied_answer_falls_back() {
     let (sent_tx, sent_rx) = mpsc::channel();
     let mut replies = vec![
         vec!["Then", " we'll eat."],
         vec![" "],
         vec!["Then we'll eat."],
+        vec!["We're going", " to the park,"],
+        vec!["Then we'll eat."],
     ]
     .into_iter();
-    let server = MockServer::serve(3, move |mut stream, _| {
+    let server = MockServer::serve(5, move |mut stream, _| {
         sent_tx.send(read_request(&mut stream).1).unwrap();
         respond(&mut stream, &replies.next().unwrap());
     });
@@ -284,7 +287,8 @@ fn earlier_lines_go_as_chat_turns_and_an_empty_answer_falls_back() {
         "stream":true,"temperature":0.0,"repeat_penalty":1.05,"max_tokens":36,"cache_prompt":true,
         "stream_options":{"include_usage":true},
     });
-    for _ in 0..2 {
+    let alone = json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}]);
+    for retried in [false, true, true] {
         let request = TranslateRequest {
             context: &earlier,
             ..request("然后吃饭。", control(WATCHDOG))
@@ -292,12 +296,10 @@ fn earlier_lines_go_as_chat_turns_and_an_empty_answer_falls_back() {
         let output = translator.translate(&request, &mut |_| {}).unwrap();
         assert_eq!(output.text, "Then we'll eat.");
         assert_eq!(sent_rx.recv_timeout(WATCHDOG).unwrap(), turns);
+        if retried {
+            assert_eq!(sent_rx.recv_timeout(WATCHDOG).unwrap()["messages"], alone);
+        }
     }
-    let alone = sent_rx.recv_timeout(WATCHDOG).unwrap();
-    assert_eq!(
-        alone["messages"],
-        json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}])
-    );
     server.finish();
 }
 
