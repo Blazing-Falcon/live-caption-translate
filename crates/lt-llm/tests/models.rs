@@ -171,6 +171,7 @@ fn file(name: &str, url: String, data: &[u8]) -> FileEntry {
         url,
         mirror: String::new(),
         extract: Vec::new(),
+        convert: None,
     }
 }
 fn manifest(url: String, data: &[u8]) -> Manifest {

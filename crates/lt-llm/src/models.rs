@@ -51,6 +51,10 @@ pub struct FileEntry {
     /// name, checked, and kept; the archive itself is deleted.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub extract: Vec<ArchiveMember>,
+    /// Present: the download is a GGUF with STQ1_0 ternary weights. Its weights are rewritten
+    /// as TQ2_0 into this file, which is checked and kept; the download is deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub convert: Option<ArchiveMember>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -63,11 +67,12 @@ pub struct ArchiveMember {
 impl FileEntry {
     /// The files this entry leaves in the model folder.
     fn local_files(&self) -> Vec<FileEntry> {
-        if self.extract.is_empty() {
+        if self.extract.is_empty() && self.convert.is_none() {
             return vec![self.clone()];
         }
         self.extract
             .iter()
+            .chain(&self.convert)
             .map(|member| FileEntry {
                 name: member.name.clone(),
                 size: member.size,
@@ -75,8 +80,14 @@ impl FileEntry {
                 url: String::new(),
                 mirror: String::new(),
                 extract: Vec::new(),
+                convert: None,
             })
             .collect()
+    }
+
+    /// The download itself is not kept; files made from it are.
+    fn is_source(&self) -> bool {
+        !self.extract.is_empty() || self.convert.is_some()
     }
 }
 
@@ -247,7 +258,7 @@ impl ModelManager {
             let file = &model.files[file_index];
             let paths = file_paths(dir, model, file, true)?;
             check_cancel(cancelled, &mut progress, dir, model)?;
-            if !file.extract.is_empty() {
+            if file.is_source() {
                 if members_verified(file, cancelled, &mut progress, dir, model)? {
                     progress.complete(dir, model)?;
                     continue;
@@ -305,11 +316,14 @@ impl ModelManager {
                 return Err(Error::Engine(message));
             }
             check_cancel(cancelled, &mut progress, dir, model)?;
-            if file.extract.is_empty() {
-                promote(&paths.partial, &paths.final_file)?;
-            } else {
+            if !file.extract.is_empty() {
                 extract(&paths.partial, file, cancelled, &mut progress, dir, model)?;
                 remove_regular(&paths.partial)?;
+            } else if file.convert.is_some() {
+                convert(&paths.partial, file, cancelled, &mut progress, dir, model)?;
+                remove_regular(&paths.partial)?;
+            } else {
+                promote(&paths.partial, &paths.final_file)?;
             }
             progress.complete(dir, model)?;
         }
@@ -788,6 +802,36 @@ fn extract(
     Ok(())
 }
 
+/// Writes the TQ2_0 rewrite of a verified ternary download through a `.part` file and its
+/// SHA-256 before it gets its name.
+fn convert(
+    source: &Path,
+    file: &FileEntry,
+    cancelled: &AtomicBool,
+    progress: &mut Progress<'_>,
+    dir: &Path,
+    model: &ModelEntry,
+) -> Result<()> {
+    let Some(local) = file.local_files().pop() else {
+        return Ok(());
+    };
+    let paths = file_paths(dir, model, &local, true)?;
+    progress.emit(dir, model, ModelState::Verifying, true)?;
+    if let Err(error) = crate::ternary::convert(source, &paths.partial, cancelled) {
+        remove_regular(&paths.partial)?;
+        check_cancel(cancelled, progress, dir, model)?;
+        return Err(error);
+    }
+    if !verified(&paths.partial, &local, cancelled, progress, dir, model)? {
+        remove_regular(&paths.partial)?;
+        return Err(Error::Engine(format!(
+            "The converted {} failed its SHA-256 check",
+            local.name
+        )));
+    }
+    promote(&paths.partial, &paths.final_file)
+}
+
 fn verified(
     path: &Path,
     file: &FileEntry,
@@ -961,7 +1005,13 @@ fn validate_manifest(manifest: &Manifest) -> Result<()> {
                     "Model manifest can extract only .tar.bz2 archives".into(),
                 ));
             }
-            for member in &file.extract {
+            if file.convert.is_some() && (!file.extract.is_empty() || !file.name.ends_with(".gguf"))
+            {
+                return Err(Error::Engine(
+                    "Model manifest can convert only a .gguf download".into(),
+                ));
+            }
+            for member in file.extract.iter().chain(&file.convert) {
                 if !safe_component(&member.name)
                     || member.name.ends_with(".part")
                     || !names.insert(&member.name)

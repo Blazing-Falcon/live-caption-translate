@@ -4,6 +4,7 @@ pub mod client;
 pub mod models;
 pub mod prompts;
 pub mod supervisor;
+mod ternary;
 
 pub use client::OpenAiCompatTranslator;
 pub use prompts::HyMt2Prompts;
