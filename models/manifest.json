@@ -55,7 +55,9 @@
           "-c",
           "1024",
           "--override-kv",
-          "tokenizer.ggml.eos_token_id=int:120020"
+          "tokenizer.ggml.eos_token_id=int:120020",
+          "--load-mode",
+          "none"
         ],
         "bos_token_id": 120000,
         "eos_token_id_override": 120020

@@ -72,12 +72,14 @@ ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-15, `cargo te
 
 ```
 llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c <ctx>
-                 -t <threads> -tb <threads> [--override-kv tokenizer.ggml.eos_token_id=int:120020] --no-webui
+                 -t <threads> -tb <threads> [--override-kv tokenizer.ggml.eos_token_id=int:120020]
+                 --load-mode none --no-webui
 ```
 
 - `--override-kv` corrects the GGUF's end token (the correct id is 120020).
 - `<threads>` is `translate.threads` (2 by default), at most the PC's logical CPUs.
 - Do not add `--no-repack`. llama.cpp repacks Q4_0 for x86, and that makes Hy-MT2 much faster.
+- `--load-mode none` reads the model into memory instead of mapping the file. The repacked copy is the only copy then. With a mapped file, the original pages also stay in memory: for Q4_0, 2074 MB working set against 1271 MB, with the same translations (26 lines, 2026-10-15, Ryzen 7 5700X).
 - With `performance.low_priority`, the server runs at below-normal priority.
 
 **Requests:**

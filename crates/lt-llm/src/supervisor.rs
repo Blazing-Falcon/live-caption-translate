@@ -22,6 +22,9 @@ use std::{
 
 /// Hy-MT2's GGUF has an incorrect end token; `models/manifest.json` lists the same arguments.
 const MODEL_ARGS: [&str; 2] = ["--override-kv", "tokenizer.ggml.eos_token_id=int:120020"];
+/// llama.cpp repacks Q4_0 and ternary weights for x86 into a copy of its own. A memory-mapped
+/// file would also keep the original pages: about 800 MB more for Q4_0.
+const LOAD_ARGS: [&str; 2] = ["--load-mode", "none"];
 
 #[derive(Clone, Debug)]
 pub struct ServerOptions {
@@ -69,6 +72,7 @@ impl ServerOptions {
         args.extend(["-t".into(), self.threads.to_string()]);
         args.extend(["-tb".into(), self.threads.to_string()]);
         args.extend(MODEL_ARGS.map(String::from));
+        args.extend(LOAD_ARGS.map(String::from));
         args.push("--no-webui".into());
         args
     }
@@ -653,7 +657,7 @@ mod tests {
         );
         assert_eq!(
             options.arguments(8081).join(" "),
-            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 2 -tb 2 --override-kv tokenizer.ggml.eos_token_id=int:120020 --no-webui"
+            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 2 -tb 2 --override-kv tokenizer.ggml.eos_token_id=int:120020 --load-mode none --no-webui"
         );
     }
 
