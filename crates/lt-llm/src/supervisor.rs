@@ -1,4 +1,5 @@
-//! Owns the local translator process and its crash-recovery budget.
+//! Owns a local llama-server process (the translator, or the second-pass recognizer) and its
+//! crash-recovery budget.
 use lt_core::{
     bus::EventBus,
     config::TranslateConfig,
@@ -26,10 +27,30 @@ const MODEL_ARGS: [&str; 2] = ["--override-kv", "tokenizer.ggml.eos_token_id=int
 /// file would also keep the original pages: about 800 MB more for Q4_0.
 const LOAD_ARGS: [&str; 2] = ["--load-mode", "none"];
 
+/// What a server runs.
+#[derive(Clone, Debug)]
+pub enum Role {
+    /// Hy-MT2. It gets a warm-up request and reports its state on the bus.
+    Translator,
+    /// Qwen3-ASR with its audio encoder. Its failures show as failed second-pass lines, not
+    /// as an engine state: the live recognizer keeps working.
+    Speech { mmproj: PathBuf },
+}
+
+impl Role {
+    fn name(&self) -> &'static str {
+        match self {
+            Self::Translator => "Translator",
+            Self::Speech { .. } => "Second-pass recognizer",
+        }
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct ServerOptions {
     pub binary: PathBuf,
     pub model: PathBuf,
+    pub role: Role,
     pub threads: u32,
     pub context: u32,
     pub translate: TranslateConfig,
@@ -46,6 +67,7 @@ impl ServerOptions {
         Self {
             binary,
             model,
+            role: Role::Translator,
             threads: config.server_threads(),
             context: config.ctx,
             translate: config.clone(),
@@ -53,6 +75,17 @@ impl ServerOptions {
             below_normal: false,
             #[cfg(test)]
             mock_directory: None,
+        }
+    }
+
+    /// A Qwen3-ASR server. Its context holds a 30 s clause with margins (about 13 audio tokens
+    /// a second), the prompt and the text.
+    pub fn speech(binary: PathBuf, model: PathBuf, mmproj: PathBuf, threads: u32) -> Self {
+        Self {
+            role: Role::Speech { mmproj },
+            threads,
+            context: 1024,
+            ..Self::new(binary, model, &TranslateConfig::default())
         }
     }
 
@@ -65,13 +98,19 @@ impl ServerOptions {
     pub fn arguments(&self, port: u16) -> Vec<String> {
         let mut args: Vec<String> = ["-m"].map(String::from).to_vec();
         args.push(self.model.display().to_string());
+        if let Role::Speech { mmproj } = &self.role {
+            args.push("--mmproj".into());
+            args.push(mmproj.display().to_string());
+        }
         args.extend(["--host", "127.0.0.1", "--port"].map(String::from));
         args.push(port.to_string());
         args.extend(["--jinja", "-np", "1", "-c"].map(String::from));
         args.push(self.context.to_string());
         args.extend(["-t".into(), self.threads.to_string()]);
         args.extend(["-tb".into(), self.threads.to_string()]);
-        args.extend(MODEL_ARGS.map(String::from));
+        if matches!(self.role, Role::Translator) {
+            args.extend(MODEL_ARGS.map(String::from));
+        }
         args.extend(LOAD_ARGS.map(String::from));
         args.push("--no-webui".into());
         args
@@ -100,6 +139,7 @@ impl ServerOptions {
 }
 
 pub struct Supervisor {
+    name: &'static str,
     url: String,
     pid: Arc<AtomicU32>,
     ready: Arc<AtomicBool>,
@@ -110,24 +150,29 @@ pub struct Supervisor {
 impl Supervisor {
     /// Returns immediately. Readiness and failures are reported on the bus.
     pub fn start(options: ServerOptions, bus: EventBus) -> Result<Self> {
-        if !options.binary.is_file() {
-            let message = format!("Translator binary is missing: {}", options.binary.display());
-            status(
-                &bus,
-                EngineKind::Translator,
-                EngineState::Failed,
-                Some(message.clone()),
-            );
-            return Err(Error::Engine(message));
-        }
-        if !options.model.is_file() {
-            let message = format!("Translation model is missing: {}", options.model.display());
-            status(
-                &bus,
-                EngineKind::Translator,
-                EngineState::Failed,
-                Some(message.clone()),
-            );
+        let engine = matches!(options.role, Role::Translator).then_some(EngineKind::Translator);
+        let name = options.role.name();
+        let missing = if !options.binary.is_file() {
+            Some(format!(
+                "{name} binary is missing: {}",
+                options.binary.display()
+            ))
+        } else if !options.model.is_file() {
+            Some(format!(
+                "{name} model is missing: {}",
+                options.model.display()
+            ))
+        } else {
+            match &options.role {
+                Role::Speech { mmproj } if !mmproj.is_file() => Some(format!(
+                    "{name} audio encoder is missing: {}",
+                    mmproj.display()
+                )),
+                _ => None,
+            }
+        };
+        if let Some(message) = missing {
+            status(&bus, engine, EngineState::Failed, Some(message.clone()));
             return Err(Error::Engine(message));
         }
         let port = TcpListener::bind(("127.0.0.1", 0))?.local_addr()?.port();
@@ -136,7 +181,7 @@ impl Supervisor {
         let ready = Arc::new(AtomicBool::new(false));
         let cancelled = Arc::new(AtomicBool::new(false));
         let state = WorkerState {
-            engine: EngineKind::Translator,
+            engine,
             url: url.clone(),
             pid: pid.clone(),
             ready: ready.clone(),
@@ -144,9 +189,13 @@ impl Supervisor {
             bus,
         };
         let worker = thread::Builder::new()
-            .name("lt-translator-supervisor".into())
+            .name(match options.role {
+                Role::Translator => "lt-translator-supervisor".into(),
+                Role::Speech { .. } => "lt-speech-supervisor".into(),
+            })
             .spawn(move || run(options, port, state))?;
         Ok(Self {
+            name,
             url,
             pid,
             ready,
@@ -186,14 +235,16 @@ impl Supervisor {
                 return Err(Error::Stopped);
             }
             if self.worker.as_ref().is_none_or(JoinHandle::is_finished) {
-                return Err(Error::Engine(
-                    "Translator failed to start; see engine status".into(),
-                ));
+                return Err(Error::Engine(format!(
+                    "{} failed to start; see the log",
+                    self.name
+                )));
             }
             if Instant::now() >= deadline {
-                return Err(Error::Engine(
-                    "Timed out waiting for translator readiness".into(),
-                ));
+                return Err(Error::Engine(format!(
+                    "Timed out waiting for the {} to be ready",
+                    self.name.to_lowercase()
+                )));
             }
             thread::sleep(Duration::from_millis(20));
         }
@@ -205,7 +256,7 @@ impl Supervisor {
         match self.worker.take() {
             Some(worker) => worker
                 .join()
-                .map_err(|_| Error::Engine("Translator supervisor panicked".into()))?,
+                .map_err(|_| Error::Engine(format!("{} supervisor panicked", self.name)))?,
             None => Ok(()),
         }
     }
@@ -218,7 +269,8 @@ impl Drop for Supervisor {
 }
 
 struct WorkerState {
-    engine: EngineKind,
+    /// `None`: the server reports nothing on the bus.
+    engine: Option<EngineKind>,
     url: String,
     pid: Arc<AtomicU32>,
     ready: Arc<AtomicBool>,
@@ -226,12 +278,18 @@ struct WorkerState {
     bus: EventBus,
 }
 
-fn status(bus: &EventBus, engine: EngineKind, state: EngineState, message: Option<String>) {
-    bus.publish(PipelineEvent::EngineStatus {
-        engine,
-        state,
-        message,
-    });
+fn status(bus: &EventBus, engine: Option<EngineKind>, state: EngineState, message: Option<String>) {
+    match engine {
+        Some(engine) => bus.publish(PipelineEvent::EngineStatus {
+            engine,
+            state,
+            message,
+        }),
+        None if state == EngineState::Failed || state == EngineState::Restarting => {
+            tracing::warn!(?state, message, "Second-pass recognizer server")
+        }
+        None => {}
+    }
 }
 
 fn control(cancelled: &Arc<AtomicBool>, timeout: Duration) -> TranslationControl {
@@ -280,7 +338,7 @@ fn run(options: ServerOptions, port: u16, state: WorkerState) -> Result<()> {
             return Ok(());
         }
         let message = match attempt {
-            Ok(()) => "Translator exited unexpectedly".into(),
+            Ok(()) => format!("{} exited unexpectedly", options.role.name()),
             Err(error) => error.to_string(),
         };
         if restarts == 3 {
@@ -315,7 +373,8 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         }
         if let Some(exit) = owned.child.try_wait()? {
             return Err(Error::Engine(format!(
-                "Translator exited ({exit}): {}",
+                "{} exited ({exit}): {}",
+                options.role.name(),
                 owned.last_stderr()
             )));
         }
@@ -329,19 +388,22 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         }
         if Instant::now() >= deadline {
             return Err(Error::Engine(format!(
-                "Translator did not become healthy within {:?}: {}",
+                "{} did not become healthy within {:?}: {}",
+                options.role.name(),
                 options.load_timeout,
                 owned.last_stderr()
             )));
         }
         sleep_checked(&state.cancelled, Duration::from_millis(100));
     }
-    let warm_up_control = control(
-        &state.cancelled,
-        Duration::from_secs_f64(f64::from(options.translate.timeout_s)),
-    );
-    crate::client::OpenAiCompatTranslator::new(&state.url, options.translate.clone())?
-        .warm_up(&warm_up_control)?;
+    if matches!(options.role, Role::Translator) {
+        let warm_up_control = control(
+            &state.cancelled,
+            Duration::from_secs_f64(f64::from(options.translate.timeout_s)),
+        );
+        crate::client::OpenAiCompatTranslator::new(&state.url, options.translate.clone())?
+            .warm_up(&warm_up_control)?;
+    }
     state.ready.store(true, Ordering::Release);
     status(&state.bus, state.engine, EngineState::Ready, None);
     let mut unhealthy = 0;
@@ -351,7 +413,8 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         }
         if let Some(exit) = owned.child.try_wait()? {
             return Err(Error::Engine(format!(
-                "Translator exited ({exit}): {}",
+                "{} exited ({exit}): {}",
+                options.role.name(),
                 owned.last_stderr()
             )));
         }
@@ -367,7 +430,8 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         }
         if unhealthy >= 3 {
             return Err(Error::Engine(format!(
-                "Translator stopped responding: {}",
+                "{} stopped responding: {}",
+                options.role.name(),
                 owned.last_stderr()
             )));
         }
@@ -390,7 +454,7 @@ impl OwnedChild {
             .stderr(Stdio::piped());
         let mut child = command
             .spawn()
-            .map_err(|error| Error::Engine(format!("Could not start translator: {error}")))?;
+            .map_err(|error| Error::Engine(format!("Could not start llama-server: {error}")))?;
         if below_normal {
             lower_priority(&child);
         }
