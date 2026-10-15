@@ -29,8 +29,8 @@ All processing is on your computer. After the first download, the app does not u
 | Page | Settings |
 |---|---|
 | **Capture** | Listen to the **whole system** (you can select an output device), or to **selected apps** such as Chrome and Discord. The app remembers apps by program name. |
-| **Overlay** | Style (subtitle bar at the bottom, caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
-| **Performance** | Chunk size of the speech model (160, 480 or 960 ms: sooner words or less CPU), recognizer threads, translator threads, "Translate with earlier lines" (0 to 60 characters; 0 translates each line alone), "Give games priority", word delay ("Word to English", median for the last minute), lines waiting, memory, CPU, transcripts |
+| **Overlay** | Style (caption panel at a screen edge, subtitle bar at the bottom, or running text that joins the lines into one paragraph, with 2 to 6 lines kept), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
+| **Performance** | Chunk size of the speech model (160, 480 or 960 ms: sooner words or less CPU), "Correct lines after they end" (Qwen3-ASR reads each line again and fixes misheard words, or Off), recognizer and correction threads, translator threads, "Translate with earlier lines" (0 to 60 characters; 0 translates each line alone), "Give games priority", word delay ("Word to English", median for the last minute), lines waiting, memory, CPU, transcripts |
 
 **Reset settings** (below the pages) sets all settings back to their defaults. The overlay position, the selected apps and the downloaded models stay.
 
