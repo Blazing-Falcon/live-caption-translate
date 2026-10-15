@@ -47,8 +47,10 @@ export interface PipelineStats {
   failed_total: number;
   cpu_app_pct: number;
   cpu_translator_pct: number;
+  cpu_speech_pct: number;
   rss_app_mb: number;
   rss_translator_mb: number;
+  rss_speech_mb: number;
   cpu_system_pct: number;
   word_final_p50_ms: number | null;
 }

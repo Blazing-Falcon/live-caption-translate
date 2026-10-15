@@ -29,13 +29,13 @@ export function levelText(app: Pick<AudioApp, "peak" | "active">): string {
   return `${Math.round(20 * Math.log10(Math.min(1, app.peak)))} dB`;
 }
 
-/** App plus the translator server. */
-export function totalCpu(stats: Pick<PipelineStats, "cpu_app_pct" | "cpu_translator_pct">): number {
-  return Math.round(stats.cpu_app_pct + stats.cpu_translator_pct);
+/** App plus the translator and second-pass servers. */
+export function totalCpu(stats: Pick<PipelineStats, "cpu_app_pct" | "cpu_translator_pct" | "cpu_speech_pct">): number {
+  return Math.round(stats.cpu_app_pct + stats.cpu_translator_pct + stats.cpu_speech_pct);
 }
 
-export function totalMemoryMb(stats: Pick<PipelineStats, "rss_app_mb" | "rss_translator_mb">): number {
-  return stats.rss_app_mb + stats.rss_translator_mb;
+export function totalMemoryMb(stats: Pick<PipelineStats, "rss_app_mb" | "rss_translator_mb" | "rss_speech_mb">): number {
+  return stats.rss_app_mb + stats.rss_translator_mb + stats.rss_speech_mb;
 }
 
 export function footerText(listening: ListeningStateKind | undefined, stats: PipelineStats | null): string {

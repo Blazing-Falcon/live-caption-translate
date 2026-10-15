@@ -135,7 +135,7 @@ fn run_session(
         None
     };
     let mut report = ReplayReport::new();
-    let sampler = ProcessSampler::new(engines.pid.clone())?;
+    let sampler = ProcessSampler::new(engines.pid.clone(), engines.speech_pid.clone())?;
     let mut pipeline = Pipeline::start(
         config,
         source,

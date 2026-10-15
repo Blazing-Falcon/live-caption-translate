@@ -15,8 +15,13 @@ use std::{
     time::Duration,
 };
 
-/// The live recognizer and, unless it is off, the second-pass recognizer.
-pub type Speech = (Box<dyn StreamingAsr>, Option<Box<dyn OfflineAsr>>);
+/// The live recognizer, the second-pass recognizer unless it is off, and the pid of the
+/// second-pass server (zero when it is off).
+pub type Speech = (
+    Box<dyn StreamingAsr>,
+    Option<Box<dyn OfflineAsr>>,
+    Arc<AtomicU32>,
+);
 
 /// Qwen3-ASR runs in its own llama-server (`binary`); quitting (`cancelled`) stops its start.
 pub fn speech(
@@ -32,21 +37,19 @@ pub fn speech(
     let asr = registry
         .build_asr(&engine_config)
         .map_err(|e| e.to_string())?;
-    let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass == "qwen3" {
-        Some(Box::new(
-            lt_llm::speech::Qwen3Server::start(
-                binary,
-                &models.join(lt_llm::speech::QWEN3_MODEL),
-                &config.asr,
-                config.performance.low_priority,
-                cancelled,
-            )
-            .map_err(|e| format!("Second pass: {e}"))?,
-        ))
-    } else {
-        None
-    };
-    Ok((asr, second_pass))
+    if config.asr.second_pass != "qwen3" {
+        return Ok((asr, None, Arc::default()));
+    }
+    let server = lt_llm::speech::Qwen3Server::start(
+        binary,
+        &models.join(lt_llm::speech::QWEN3_MODEL),
+        &config.asr,
+        config.performance.low_priority,
+        cancelled,
+    )
+    .map_err(|e| format!("Second pass: {e}"))?;
+    let pid = server.child_pid();
+    Ok((asr, Some(Box::new(server)), pid))
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {

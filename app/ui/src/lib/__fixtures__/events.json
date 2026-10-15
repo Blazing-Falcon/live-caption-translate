@@ -12,5 +12,5 @@
   { "type": "source_state", "state": "silent", "detail": "Chrome, Discord" },
   { "type": "listening_state", "state": "listening" },
   { "type": "engine_status", "engine": "translator", "state": "ready", "message": null },
-  { "type": "stats", "lag_ms": 400, "queue_depth": 1, "done_p50_ms": 1230, "done_p95_ms": 2100, "first_p50_ms": 700, "skipped_total": 2, "failed_total": 1, "cpu_app_pct": 2.5, "cpu_translator_pct": 150.0, "rss_app_mb": 520, "rss_translator_mb": 1380, "cpu_system_pct": 41.5, "word_final_p50_ms": null }
+  { "type": "stats", "lag_ms": 400, "queue_depth": 1, "done_p50_ms": 1230, "done_p95_ms": 2100, "first_p50_ms": 700, "skipped_total": 2, "failed_total": 1, "cpu_app_pct": 2.5, "cpu_translator_pct": 150.0, "cpu_speech_pct": 45.0, "rss_app_mb": 520, "rss_translator_mb": 1380, "rss_speech_mb": 1165, "cpu_system_pct": 41.5, "word_final_p50_ms": null }
 ]

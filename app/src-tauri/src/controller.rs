@@ -143,7 +143,7 @@ impl Controller {
             state: EngineState::Loading,
             message: None,
         });
-        let (asr, second_pass) = match engines::speech(
+        let (asr, second_pass, speech_pid) = match engines::speech(
             &config,
             &models,
             &crate::paths::llama_server(),
@@ -188,7 +188,7 @@ impl Controller {
         let (translator, pid) = engines::translator(&config, self.supervisor.as_ref())?;
         let (source, mode, label) = make_source(&config)?;
         let transcript = self.start_transcript(&config, mode, &label)?;
-        let sampler = ProcessSampler::new(pid).map_err(|e| e.to_string())?;
+        let sampler = ProcessSampler::new(pid, speech_pid).map_err(|e| e.to_string())?;
         let pipeline = Pipeline::start(
             config.clone(),
             source,

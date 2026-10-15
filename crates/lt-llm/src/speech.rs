@@ -15,7 +15,10 @@ use lt_core::{
 use serde_json::{json, Value};
 use std::{
     path::Path,
-    sync::{atomic::AtomicBool, Arc},
+    sync::{
+        atomic::{AtomicBool, AtomicU32},
+        Arc,
+    },
     time::{Duration, Instant},
 };
 
@@ -40,7 +43,7 @@ const LANGUAGES: [(&str, &str); 5] = [
 pub struct Qwen3Server {
     endpoint: Endpoint,
     // Stops the server when the engine is dropped with its pipeline.
-    _supervisor: Supervisor,
+    supervisor: Supervisor,
 }
 
 impl Qwen3Server {
@@ -63,8 +66,13 @@ impl Qwen3Server {
         supervisor.wait_ready_cancellable(Duration::from_secs(65), cancelled)?;
         Ok(Self {
             endpoint: Endpoint::new(supervisor.url())?,
-            _supervisor: supervisor,
+            supervisor,
         })
+    }
+
+    /// The server's pid for resource stats, zero after it stopped.
+    pub fn child_pid(&self) -> Arc<AtomicU32> {
+        self.supervisor.child_pid()
     }
 }
 

@@ -103,7 +103,7 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
     let subscriber =
         TranscriptSubscriber::start(&bus, writer, Arc::new(|| Local::now().to_rfc3339()))?;
     let mut report = ReplayReport::new();
-    let sampler = ProcessSampler::new(engines.pid.clone())?;
+    let sampler = ProcessSampler::new(engines.pid.clone(), engines.speech_pid.clone())?;
     let mut timed: Vec<TimedEvent> = Vec::new();
     let events_path = sibling(&args.out, "events.jsonl");
     let mut events_log = BufWriter::new(

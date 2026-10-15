@@ -303,7 +303,7 @@
       <dt>Memory</dt>
       <dd data-testid="stat-memory">{$stats ? formatMemory(totalMemoryMb($stats)) : "—"}</dd>
       <span class="note">
-        CPU {$stats ? `${totalCpu($stats)}%` : "—"}, app and translator
+        CPU {$stats ? `${totalCpu($stats)}%` : "—"}, app and its servers
       </span>
     </div>
   </dl>

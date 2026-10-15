@@ -14,8 +14,11 @@ const WORD_STEP_MS: u64 = 100;
 pub struct ResourceSample {
     pub cpu_app_pct: f32,
     pub cpu_translator_pct: f32,
+    /// The second-pass server (Qwen3-ASR); zero when it is off.
+    pub cpu_speech_pct: f32,
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
+    pub rss_speech_mb: u32,
     /// Whole-PC CPU busy percent over the last second.
     pub cpu_system_pct: f32,
 }
@@ -250,8 +253,10 @@ impl Metrics {
             failed_total: self.failed_total,
             cpu_app_pct: resources.cpu_app_pct,
             cpu_translator_pct: resources.cpu_translator_pct,
+            cpu_speech_pct: resources.cpu_speech_pct,
             rss_app_mb: resources.rss_app_mb,
             rss_translator_mb: resources.rss_translator_mb,
+            rss_speech_mb: resources.rss_speech_mb,
             ..PipelineStats::default()
         }
     }

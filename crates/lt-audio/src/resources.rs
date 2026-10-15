@@ -101,18 +101,51 @@ impl SystemCpu {
     }
 }
 
+/// A llama-server child. Its pid is zero while none runs; the supervisor replaces it on restart.
+struct Child {
+    pid: Arc<AtomicU32>,
+    cpu: CpuHistory,
+}
+
+impl Child {
+    fn new(pid: Arc<AtomicU32>) -> Self {
+        Self {
+            pid,
+            cpu: CpuHistory::default(),
+        }
+    }
+
+    fn observe(
+        &mut self,
+        backend: &platform::Backend,
+        app_pid: u32,
+        app: Option<RawProcess>,
+        now: Instant,
+    ) -> (f32, u32) {
+        let pid = self.pid.load(Ordering::Acquire);
+        let raw = if pid == 0 {
+            None
+        } else if pid == app_pid {
+            app
+        } else {
+            backend.read(pid)
+        };
+        self.cpu.observe(pid, raw, now)
+    }
+}
+
 pub struct ProcessSampler {
     app_pid: u32,
-    /// Zero means no supervised translator; the supervisor replaces this on restart.
-    child_pid: Arc<AtomicU32>,
     backend: platform::Backend,
     app_cpu: CpuHistory,
-    child_cpu: CpuHistory,
+    translator: Child,
+    speech: Child,
     system_cpu: SystemCpu,
 }
 
 impl ProcessSampler {
-    pub fn new(child_pid: Arc<AtomicU32>) -> Result<Self> {
+    /// `translator` and `speech` are the pids of the translation and second-pass servers.
+    pub fn new(translator: Arc<AtomicU32>, speech: Arc<AtomicU32>) -> Result<Self> {
         let backend = platform::Backend::new()?;
         let app_pid = std::process::id();
         if backend.read(app_pid).is_none() {
@@ -122,10 +155,10 @@ impl ProcessSampler {
         }
         Ok(Self {
             app_pid,
-            child_pid,
             backend,
             app_cpu: CpuHistory::default(),
-            child_cpu: CpuHistory::default(),
+            translator: Child::new(translator),
+            speech: Child::new(speech),
             system_cpu: SystemCpu::default(),
         })
     }
@@ -133,24 +166,22 @@ impl ProcessSampler {
 
 impl ResourceSampler for ProcessSampler {
     fn sample(&mut self) -> ResourceSample {
-        let child_pid = self.child_pid.load(Ordering::Acquire);
         let app = self.backend.read(self.app_pid);
-        let child = if child_pid == 0 {
-            None
-        } else if child_pid == self.app_pid {
-            app
-        } else {
-            self.backend.read(child_pid)
-        };
         let now = Instant::now();
         let (cpu_app_pct, rss_app_mb) = self.app_cpu.observe(self.app_pid, app, now);
-        let (cpu_translator_pct, rss_translator_mb) = self.child_cpu.observe(child_pid, child, now);
+        let (cpu_translator_pct, rss_translator_mb) =
+            self.translator
+                .observe(&self.backend, self.app_pid, app, now);
+        let (cpu_speech_pct, rss_speech_mb) =
+            self.speech.observe(&self.backend, self.app_pid, app, now);
         let cpu_system_pct = self.system_cpu.observe(self.backend.system_times());
         ResourceSample {
             cpu_app_pct,
             cpu_translator_pct,
+            cpu_speech_pct,
             rss_app_mb,
             rss_translator_mb,
+            rss_speech_mb,
             cpu_system_pct,
         }
     }

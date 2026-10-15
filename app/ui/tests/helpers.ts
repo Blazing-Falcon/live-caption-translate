@@ -135,8 +135,10 @@ export const STATS: PipelineStats = {
   failed_total: 1,
   cpu_app_pct: 2.5,
   cpu_translator_pct: 38.4,
+  cpu_speech_pct: 0,
   rss_app_mb: 520,
   rss_translator_mb: 1380,
+  rss_speech_mb: 0,
   cpu_system_pct: 20,
   word_final_p50_ms: null,
 };
