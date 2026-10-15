@@ -18,7 +18,13 @@ use std::{
 /// The live recognizer and, unless it is off, the second-pass recognizer.
 pub type Speech = (Box<dyn StreamingAsr>, Option<Box<dyn OfflineAsr>>);
 
-pub fn speech(config: &Config, models: &Path) -> Result<Speech, String> {
+/// Qwen3-ASR runs in its own llama-server (`binary`); quitting (`cancelled`) stops its start.
+pub fn speech(
+    config: &Config,
+    models: &Path,
+    binary: &Path,
+    cancelled: &AtomicBool,
+) -> Result<Speech, String> {
     let mut registry = EngineRegistry::default();
     lt_sherpa::register_engines(&mut registry);
     let mut engine_config = config.clone();
@@ -26,9 +32,22 @@ pub fn speech(config: &Config, models: &Path) -> Result<Speech, String> {
     let asr = registry
         .build_asr(&engine_config)
         .map_err(|e| e.to_string())?;
-    let second_pass = registry
-        .build_second_pass(&engine_config)
-        .map_err(|e| format!("Second pass: {e}"))?;
+    let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass == "qwen3" {
+        Some(Box::new(
+            lt_llm::speech::Qwen3Server::start(
+                binary,
+                &models.join(lt_llm::speech::QWEN3_MODEL),
+                &config.asr,
+                config.performance.low_priority,
+                cancelled,
+            )
+            .map_err(|e| format!("Second pass: {e}"))?,
+        ))
+    } else {
+        registry
+            .build_second_pass(&engine_config)
+            .map_err(|e| format!("Second pass: {e}"))?
+    };
     Ok((asr, second_pass))
 }
 

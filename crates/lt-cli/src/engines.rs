@@ -87,7 +87,21 @@ pub fn build(
         let mut engine_config = config.clone();
         engine_config.models.dir = models.to_string_lossy().into_owned();
         let asr = registry.build_asr(&engine_config)?;
-        let second_pass = registry.build_second_pass(&engine_config)?;
+        let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass == "qwen3" {
+            let server = binary.map(Path::to_path_buf).unwrap_or_else(default_binary);
+            Some(Box::new(
+                lt_llm::speech::Qwen3Server::start(
+                    &server,
+                    &models.join(lt_llm::speech::QWEN3_MODEL),
+                    &config.asr,
+                    config.performance.low_priority,
+                    cancelled,
+                )
+                .context("Starting the second-pass recognizer")?,
+            ))
+        } else {
+            registry.build_second_pass(&engine_config)?
+        };
         let (translator, supervisor, pid) = translator(config, models, binary, bus, cancelled)?;
         Ok(Engines {
             asr,

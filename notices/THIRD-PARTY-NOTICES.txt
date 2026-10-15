@@ -38,10 +38,12 @@ Qwen3-ASR 0.6B — Qwen team, Alibaba Cloud (optional second-pass speech recogni
 Upstream: https://huggingface.co/Qwen/Qwen3-ASR-0.6B (model card declares apache-2.0)
 and https://github.com/QwenLM/Qwen3-ASR (Apache-2.0 LICENSE, revision
 7c6daf77a2421100f5fb066495372c00129d39ff).
-Used model: the int8 ONNX conversion
-https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25
-(revision 68818b2313fe77bd06f6a7c5068ff3ef59d02b8a), which states no license of
-its own. The Apache License 2.0 text reproduced below for Hy-MT2 applies.
+Used model: GGUF conversions. Language model Qwen3-ASR-0.6B.Q4_K_M.gguf from
+https://huggingface.co/mradermacher/Qwen3-ASR-0.6B-GGUF (revision
+6cf166e9f1c5bd2521108e3410ee5358de5eabab, declares apache-2.0); audio encoder
+mmproj-Qwen3-ASR-0.6B-Q8_0.gguf from https://huggingface.co/ggml-org/Qwen3-ASR-0.6B-GGUF
+(revision 928ab958557df9aa2ef1c93e0e83c7ad0933fae2, states no license of its own).
+The Apache License 2.0 text reproduced below for Hy-MT2 applies.
 
 SenseVoice Small (2024-07-17) — Alibaba Group / FunAudioLLM (second-pass speech recognition)
 Upstream: https://huggingface.co/FunAudioLLM/SenseVoiceSmall

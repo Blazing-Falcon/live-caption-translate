@@ -18,7 +18,7 @@ export const READY_MODELS: ModelStatus[] = [
   { id: "hy-mt2-1.8b-ternary-tq2_0", name: "Translation (ternary)", bytes_total: 440 * MB, bytes_done: 440 * MB, optional: false, state: "ready" },
   { id: "hy-mt2-1.8b-q4_0", name: "Translation (Q4_0)", bytes_total: 1030 * MB, bytes_done: 0, optional: true, state: "missing" },
   { id: "sensevoice-2024-07-17-int8", name: "Second-pass speech recognition (SenseVoice)", bytes_total: 228 * MB, bytes_done: 228 * MB, optional: false, state: "ready" },
-  { id: "qwen3-asr-0.6b-int8-2026-03-25", name: "Second-pass speech recognition (Qwen3-ASR)", bytes_total: 941 * MB, bytes_done: 0, optional: true, state: "missing" },
+  { id: "qwen3-asr-0.6b-q4_k_m", name: "Second-pass speech recognition (Qwen3-ASR)", bytes_total: 666 * MB, bytes_done: 0, optional: true, state: "missing" },
   { id: "xasr-stream-960ms-int8-2026-06-05", name: "Speech recognition (960 ms)", bytes_total: 128 * MB, bytes_done: 0, optional: true, state: "missing" },
   { id: "xasr-stream-160ms-int8-2026-06-05", name: "Speech recognition (160 ms)", bytes_total: 128 * MB, bytes_done: 0, optional: true, state: "missing" },
 ];

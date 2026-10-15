@@ -143,7 +143,12 @@ impl Controller {
             state: EngineState::Loading,
             message: None,
         });
-        let (asr, second_pass) = match engines::speech(&config, &models) {
+        let (asr, second_pass) = match engines::speech(
+            &config,
+            &models,
+            &crate::paths::llama_server(),
+            &self.shared.quitting,
+        ) {
             Ok(loaded) => loaded,
             Err(message) => {
                 engines::fail(&bus, EngineKind::Asr, &message);

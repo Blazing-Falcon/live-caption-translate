@@ -28,6 +28,9 @@ pub fn all_ready(dir: &Path) -> bool {
 /// and that are not ready on disk.
 pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
     let mut wanted = lt_sherpa::model_ids(config);
+    if config.asr.second_pass == "qwen3" {
+        wanted.push(lt_llm::speech::QWEN3_MODEL);
+    }
     wanted.push(config.translate.model_file().0);
     match lt_llm::models::status(dir) {
         Ok(models) => models
