@@ -26,7 +26,7 @@ npm --prefix app/ui run build
 cargo run -p live-translation    # the app
 ```
 
-`./scripts/package.ps1 -Version 0.5.0` makes the zip in `dist/`.
+`./scripts/package.ps1 -Version 0.6.0` makes the zip in `dist/`.
 
 ## Models
 
