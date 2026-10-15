@@ -271,8 +271,11 @@ fn window_prefills_earlier_english_shows_only_the_new_line_and_falls_back_when_e
         sent_tx.send(read_request(&mut stream).1).unwrap();
         respond(&mut stream, &replies.next().unwrap());
     });
-    let mut translator =
-        OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
+    let config = TranslateConfig {
+        model: "q4_0".into(),
+        ..TranslateConfig::default()
+    };
+    let mut translator = OpenAiCompatTranslator::new(&server.url, config).unwrap();
     let earlier = [(
         "我们去公园，".to_owned(),
         "We're going to the park,".to_owned(),
@@ -307,6 +310,53 @@ fn window_prefills_earlier_english_shows_only_the_new_line_and_falls_back_when_e
         json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}])
     );
     assert!(alone.get("stop").is_none());
+    server.finish();
+}
+
+/// The ternary model gets earlier lines as chat turns, and an empty answer must not lose the
+/// line.
+#[test]
+fn earlier_lines_go_as_chat_turns_to_the_ternary_model_and_an_empty_answer_falls_back() {
+    let (sent_tx, sent_rx) = mpsc::channel();
+    let mut replies = vec![
+        vec!["Then", " we'll eat."],
+        vec![" "],
+        vec!["Then we'll eat."],
+    ]
+    .into_iter();
+    let server = MockServer::serve(3, move |mut stream, _| {
+        sent_tx.send(read_request(&mut stream).1).unwrap();
+        respond(&mut stream, &replies.next().unwrap());
+    });
+    let mut translator =
+        OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
+    let earlier = [(
+        "我们去公园，".to_owned(),
+        "We're going to the park,".to_owned(),
+    )];
+    let turns = json!({
+        "messages":[
+            {"role":"user","content":HyMt2Prompts::user_message("我们去公园，")},
+            {"role":"assistant","content":"We're going to the park,"},
+            {"role":"user","content":"然后吃饭。"},
+        ],
+        "stream":true,"temperature":0.0,"repeat_penalty":1.05,"max_tokens":36,"cache_prompt":true,
+        "stream_options":{"include_usage":true},
+    });
+    for _ in 0..2 {
+        let request = TranslateRequest {
+            context: &earlier,
+            ..request("然后吃饭。", control(WATCHDOG))
+        };
+        let output = translator.translate(&request, &mut |_| {}).unwrap();
+        assert_eq!(output.text, "Then we'll eat.");
+        assert_eq!(sent_rx.recv_timeout(WATCHDOG).unwrap(), turns);
+    }
+    let alone = sent_rx.recv_timeout(WATCHDOG).unwrap();
+    assert_eq!(
+        alone["messages"],
+        json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}])
+    );
     server.finish();
 }
 

@@ -81,9 +81,19 @@ ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-15, `cargo te
 | Weights | Tencent's 1.25-bit quantization (AngelSlim), as TQ2_0 | 4-bit, imatrix (mradermacher) |
 | Memory (llama-server working set) | 732 MB | 1181 MB |
 | Time per line | 411 ms | 595 ms |
-| Earlier lines (`window_chars`) | not used | used |
+| Earlier lines (`window_chars`) | as earlier chat turns | joined with `<br>`, English prefilled |
 
-Measured on the 26 lines of a drama clip, each line alone, 2 threads, `--load-mode none`, 2026-10-15, Ryzen 7 5700X. Both translated all lines correctly; each was better on a few. With the window prompt the ternary model wrote other scripts or repeated itself on some lines, so it translates each line alone. Hy-MT2's own context prompt ("Background Information") worked but was not better and took twice as long.
+Measured on the 26 lines of a drama clip, each line alone, 2 threads, `--load-mode none`, 2026-10-15, Ryzen 7 5700X. Both translated all lines correctly; each was better on a few.
+
+The ternary model and earlier lines, on 81 lines of a drama session, 30 characters of earlier lines, 2026-10-15, same PC:
+
+| Earlier lines given as | Per line | Memory | Result |
+|---|---|---|---|
+| none | 418 ms | 787 MB | wrong subjects where they come from an earlier line |
+| `<br>` window with prefilled English (Q4_0's form) | | | other scripts and runaway answers on some lines |
+| Hy-MT2's "Background Information" prompt | 811 ms | 1016 MB | the prompt echoed or the background translated on 10 lines |
+| chat turns, the instruction in every turn | 1391 ms | 1255 MB | no failures |
+| chat turns, the instruction in the first turn only (used) | 852 ms | 1047 MB | no failures; "I really like it" (a comic) instead of "him", "you" instead of "myself" |
 
 **llama-server:** the supervisor starts the server with:
 

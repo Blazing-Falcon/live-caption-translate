@@ -165,11 +165,42 @@ impl OpenAiCompatTranslator {
             ));
         }
         if request.context.is_empty() {
-            let prompt = HyMt2Prompts::user_message(request.text);
-            return self.stream(prompt, None, request, on_delta);
+            return self.stream(alone(request.text), false, request, on_delta);
         }
-        // The answer starts with the earlier lines' English as shown, so the
-        // model writes only the new line and stops at the next separator.
+        let window = if self.config.model == "q4_0" {
+            self.window(request, on_delta)?
+        } else {
+            // The ternary model loses the window's delimiters; earlier lines go as chat turns.
+            let messages = HyMt2Prompts::turns(request.context, request.text)
+                .into_iter()
+                .map(|(role, content)| json!({"role": role, "content": content}))
+                .collect();
+            let mut turns = self.stream(messages, false, request, on_delta)?;
+            turns.text = turns.text.trim().to_owned();
+            turns
+        };
+        if !window.text.is_empty() {
+            return Ok(window);
+        }
+        tracing::debug!(
+            id = request.id.0,
+            "Window translation was empty; translating the line alone"
+        );
+        let mut alone = self.stream(alone(request.text), false, request, on_delta)?;
+        alone.prompt_tokens += window.prompt_tokens;
+        alone.cached_tokens += window.cached_tokens;
+        alone.generated_tokens += window.generated_tokens;
+        Ok(alone)
+    }
+
+    /// Q4_0: the earlier lines and the new one joined by the separator. The answer starts with
+    /// the earlier lines' English as shown, so the model writes only the new line and stops at
+    /// the next separator.
+    fn window(
+        &self,
+        request: &TranslateRequest<'_>,
+        on_delta: &mut dyn FnMut(&str),
+    ) -> Result<TranslationOut> {
         let source = HyMt2Prompts::window_source(request.context, request.text);
         let prefill = HyMt2Prompts::window_prefill(request.context);
         let new_part = |english: &str| -> String {
@@ -183,8 +214,11 @@ impl OpenAiCompatTranslator {
                 .to_owned()
         };
         let mut window = self.stream(
-            HyMt2Prompts::window_message(&source),
-            Some(&prefill),
+            vec![
+                json!({"role": "user", "content": HyMt2Prompts::window_message(&source)}),
+                json!({"role": "assistant", "content": prefill}),
+            ],
+            true,
             request,
             &mut |english| {
                 let part = new_part(english);
@@ -194,26 +228,14 @@ impl OpenAiCompatTranslator {
             },
         )?;
         window.text = new_part(&window.text).trim_end().to_owned();
-        if !window.text.is_empty() {
-            return Ok(window);
-        }
-        tracing::debug!(
-            id = request.id.0,
-            "Window translation was empty; translating the line alone"
-        );
-        let prompt = HyMt2Prompts::user_message(request.text);
-        let mut alone = self.stream(prompt, None, request, on_delta)?;
-        alone.prompt_tokens += window.prompt_tokens;
-        alone.cached_tokens += window.cached_tokens;
-        alone.generated_tokens += window.generated_tokens;
-        Ok(alone)
+        Ok(window)
     }
 
-    /// One streamed request. `prefill` is the start of the answer.
+    /// One streamed request. With `separated`, generation stops at the window separator.
     fn stream(
         &self,
-        prompt: String,
-        prefill: Option<&str>,
+        messages: Vec<serde_json::Value>,
+        separated: bool,
         request: &TranslateRequest<'_>,
         on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut> {
@@ -225,10 +247,6 @@ impl OpenAiCompatTranslator {
                 .min(Instant::now() + Duration::from_secs_f32(self.config.timeout_s)),
             ..request.control.clone()
         };
-        let mut messages = vec![json!({"role":"user", "content":prompt})];
-        if let Some(prefill) = prefill {
-            messages.push(json!({"role":"assistant", "content":prefill}));
-        }
         let mut body = json!({
             "messages": messages,
             "stream":true,
@@ -238,7 +256,7 @@ impl OpenAiCompatTranslator {
             "cache_prompt":true,
             "stream_options":{"include_usage":true},
         });
-        if prefill.is_some() {
+        if separated {
             body["stop"] = json!([HyMt2Prompts::SEPARATOR]);
         }
         let agent = local_agent(self.endpoint.address, control.clone())?;
@@ -318,7 +336,7 @@ impl OpenAiCompatTranslator {
 impl Translator for OpenAiCompatTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            context: self.config.uses_window(),
+            context: true,
             max_input_chars: 300,
         }
     }
@@ -347,6 +365,11 @@ impl Translator for OpenAiCompatTranslator {
 }
 
 /// The supervisor can reuse cancellation-aware local HTTP for readiness polls.
+/// One line without earlier lines.
+fn alone(text: &str) -> Vec<serde_json::Value> {
+    vec![json!({"role": "user", "content": HyMt2Prompts::user_message(text)})]
+}
+
 pub fn health(base_url: &str, control: &TranslationControl) -> Result<bool> {
     control.check()?;
     let endpoint = Endpoint::new(base_url)?;

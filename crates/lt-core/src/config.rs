@@ -169,12 +169,6 @@ impl TranslateConfig {
             ),
         }
     }
-
-    /// Lines go with earlier lines (`window_chars`) only to Q4_0. The ternary model loses the
-    /// window's delimiters and repeats or writes other scripts with it.
-    pub fn uses_window(&self) -> bool {
-        self.model == "q4_0"
-    }
 }
 
 /// Version 1 keys that version 2 keeps under a new name.

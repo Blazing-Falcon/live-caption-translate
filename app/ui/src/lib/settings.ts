@@ -265,8 +265,8 @@ export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
 ];
 
 export const TRANSLATORS: readonly SpeechChoice<Config["translate"]["model"]>[] = [
-  { value: "ternary", label: "Small (ternary)", model: "hy-mt2-1.8b-ternary-tq2_0", help: "The default. About 730 MB of memory and fast. Translates each line on its own." },
-  { value: "q4_0", label: "Large (Q4_0)", model: "hy-mt2-1.8b-q4_0", help: "About 450 MB more memory and a little slower. Can use earlier lines as context." },
+  { value: "ternary", label: "Small (ternary)", model: "hy-mt2-1.8b-ternary-tq2_0", help: "The default. About 0.8 to 1 GB of memory and fast." },
+  { value: "q4_0", label: "Large (Q4_0)", model: "hy-mt2-1.8b-q4_0", help: "About 1.2 GB of memory and a little slower." },
 ];
 
 export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [

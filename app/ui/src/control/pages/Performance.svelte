@@ -268,7 +268,6 @@
           min={WINDOW_LIMITS.min}
           max={WINDOW_LIMITS.max}
           step="1"
-          disabled={config.translate.model !== "q4_0"}
           value={config.translate.window_chars}
           aria-describedby="help-window"
           data-testid="translate-window"
@@ -276,7 +275,7 @@
         />
       </label>
       <p id="help-window" class="help small">
-        Each line is translated together with the earlier lines that fit in this many characters, so the translator knows what came before. Only the new line's English is shown. 0 translates each line alone; more characters make the English appear a little later. Only the large model uses it.
+        Each line is translated together with the earlier lines that fit in this many characters, so the translator knows what came before. Only the new line's English is shown. 0 translates each line alone; more characters make the English appear a little later.
       </p>
     </div>
     <div class="option">
