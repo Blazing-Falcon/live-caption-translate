@@ -40,6 +40,14 @@ fn is_mark(character: char) -> bool {
     !character.is_alphanumeric() && !character.is_whitespace()
 }
 
+/// A mark that opens a quote or a bracket belongs to the words after it.
+fn is_opening(character: char) -> bool {
+    matches!(
+        character,
+        '“' | '‘' | '「' | '『' | '（' | '(' | '《' | '〈' | '【' | '['
+    )
+}
+
 /// The part of `offline` that best matches `live`, or `None` when no part is close enough.
 ///
 /// The match ignores punctuation and case and may skip offline characters at both ends. Of
@@ -91,14 +99,20 @@ pub fn trim(live: &str, offline: &str) -> Option<Trimmed> {
     if (kept as f64) < MIN_KEPT * n as f64 || distance as f64 > MAX_DISTANCE * n as f64 {
         return None;
     }
-    // The marks right after the last unit belong to the clause.
+    // The marks right after the last unit belong to the clause, up to one that opens the next
+    // words; an opening mark right before the first unit belongs to it.
     let tail_end = offline[offline_units[end - 1].end..]
         .char_indices()
-        .find(|(_, character)| !is_mark(*character))
+        .find(|(_, character)| !is_mark(*character) || is_opening(*character))
         .map_or(offline.len(), |(offset, _)| {
             offline_units[end - 1].end + offset
         });
-    let mut text = offline[offline_units[start].start..tail_end].to_owned();
+    let head = offline[..offline_units[start].start]
+        .chars()
+        .next_back()
+        .filter(|character| is_opening(*character))
+        .map_or(0, char::len_utf8);
+    let mut text = offline[offline_units[start].start - head..tail_end].to_owned();
     // A commit cut ends at a mark; keep it when the offline text has none there.
     if !text.ends_with(is_mark) {
         let live_tail = live.trim_end();

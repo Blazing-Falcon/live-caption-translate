@@ -1,5 +1,5 @@
 {
-  "about": "Live clause texts (streaming X-ASR, 480 ms) and SenseVoice texts of a window around them, decoded from the same recording. expected is the part of the window that belongs to the clause, or null when the live text stays.",
+  "about": "Live clause texts (streaming X-ASR, 480 ms) and SenseVoice texts of a window around them, decoded from the same recordings (SenseVoice or Qwen3-ASR). expected is the part of the window that belongs to the clause, or null when the live text stays.",
   "cases": [
     {
       "live": "游戏对方还是我们正在争取的合作伙伴",
@@ -25,6 +25,21 @@
       "live": "还有竞标事项，千万别出什么披露啊。",
       "window": "这段时间你一定要好好准备案件报告，还有竞标事项，千万别出什么纰漏啊，听我们律所脸知道了。",
       "expected": "还有竞标事项，千万别出什么纰漏啊，"
+    },
+    {
+      "live": "女企业家协会的会长蓝小婷，",
+      "window": "女企业家协会的会长兰晓婷：“你要是。”",
+      "expected": "女企业家协会的会长兰晓婷："
+    },
+    {
+      "live": "还有工作瑜伽哈。",
+      "window": "不忙了，还有空做瑜伽哈。您平时。",
+      "expected": "还有空做瑜伽哈。"
+    },
+    {
+      "live": "人都到齐了。",
+      "window": "你好，请问您有请柬。",
+      "expected": null
     }
   ]
 }
