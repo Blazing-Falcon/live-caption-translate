@@ -90,7 +90,7 @@ config_table!(TranslateConfig {
 });
 config_table!(OverlayConfig {
     visible: bool = true,
-    style: String = "bar".into(),
+    style: String = "panel".into(),
     font_px: u32 = 26,
     background: f32 = 0.82,
     show_source: bool = true,

@@ -154,7 +154,7 @@ source = "elsewhere"
     assert!(config.audio.normalize);
     assert_eq!(config.asr.threads, 1);
     assert_eq!(config.filter.fillers, Config::default().filter.fillers);
-    assert_eq!(config.overlay.style, "bar");
+    assert_eq!(config.overlay.style, "panel");
     assert_eq!(config.overlay.panel_edge, "right");
     assert!(config.overlay.bar_rect.is_none());
     assert_eq!(config.logging.level, "info");

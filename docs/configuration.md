@@ -69,7 +69,7 @@ window_chars = 30               # 0 = translate each line alone
 
 [overlay]
 visible = true
-style = "bar"                   # "bar" (subtitle bar) | "panel" (caption panel) | "flow" (running text)
+style = "panel"                 # "bar" (subtitle bar) | "panel" (caption panel) | "flow" (running text)
 font_px = 26
 background = 0.82               # 0.0 to 1.0
 show_source = true              # show the Chinese line above the English

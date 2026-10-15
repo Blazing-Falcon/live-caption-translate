@@ -320,7 +320,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   "overlay": {
     "visible": true,
-    "style": "bar",
+    "style": "panel",
     "font_px": 26,
     "background": 0.82,
     "show_source": true,

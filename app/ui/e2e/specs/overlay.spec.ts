@@ -4,7 +4,7 @@ import { NOW, emitEvent, open } from "./support";
 test.describe("overlay (browser simulation with mocked transport)", () => {
 
   test("shows a live line, then pending, streaming and the final in the same elements", async ({ page }) => {
-    const external = await open(page, "overlay");
+    const external = await open(page, "overlay", { config: { overlay: { style: "bar" } } });
     await emitEvent(page, NOW.partial(1, "这次华为发布的呢是整个"));
     await expect(page.locator('[data-state="live"] .source')).toHaveText("这次华为发布的呢是整个");
     await expect(page.locator(".english")).toHaveCount(0);

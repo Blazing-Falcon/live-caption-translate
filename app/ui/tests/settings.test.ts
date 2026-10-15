@@ -53,7 +53,7 @@ describe("applyPatch", () => {
       capture: { apps: [{ exe: "chrome.exe", name: "Chrome" }] },
     });
     expect(next.overlay.font_px).toBe(30);
-    expect(next.overlay.style).toBe("bar");
+    expect(next.overlay.style).toBe(DEFAULT_CONFIG.overlay.style);
     expect(next.overlay.bar_rect).toBeUndefined();
     expect(next.capture.apps).toEqual([{ exe: "chrome.exe", name: "Chrome" }]);
     expect(base.overlay.font_px).toBe(26);
