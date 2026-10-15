@@ -15,8 +15,6 @@ use std::{
     time::Duration,
 };
 
-pub const TRANSLATOR_MODEL: &str = "hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf";
-
 /// The live recognizer and, unless it is off, the second-pass recognizer.
 pub type Speech = (Box<dyn StreamingAsr>, Option<Box<dyn OfflineAsr>>);
 
@@ -50,9 +48,10 @@ pub fn start_supervisor(
     bus: &EventBus,
     cancelled: &AtomicBool,
 ) -> Result<Supervisor, String> {
+    let (id, file) = config.translate.model_file();
     let options = ServerOptions::new(
         binary.to_path_buf(),
-        models.join(TRANSLATOR_MODEL),
+        models.join(id).join(file),
         &config.translate,
     )
     .with_below_normal(config.performance.low_priority);

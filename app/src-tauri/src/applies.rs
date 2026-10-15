@@ -66,6 +66,7 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
     let key = |config: &Config| {
         json!([
             config.translate.server_url,
+            config.translate.model,
             config.translate.threads,
             config.translate.ctx,
             config.performance.low_priority,
@@ -136,6 +137,9 @@ mod tests {
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
         new.performance.low_priority = false;
+        assert!(server_changed(&old, &new));
+        let mut new = old.clone();
+        new.translate.model = "q4_0".into();
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
         new.translate.window_chars = 40;

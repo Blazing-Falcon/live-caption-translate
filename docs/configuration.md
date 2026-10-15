@@ -19,7 +19,7 @@ Rules:
 |---|---|
 | `live` | Immediately |
 | `capture` | The capture sources open again. The pipeline continues. |
-| `pipeline` | The pipeline restarts. The llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads`, `translate.ctx` or `performance.low_priority`. |
+| `pipeline` | The pipeline restarts. The llama-server restarts only if one of these changes: `translate.server_url`, `translate.model`, `translate.threads`, `translate.ctx` or `performance.low_priority`. |
 | `restart` | At the next app start |
 
 ## Full Default File
@@ -56,6 +56,7 @@ fillers = ["呃", "嗯", "额", "uh", "um"]
 
 [translate]
 server_url = ""                 # "" = spawn the bundled llama-server; otherwise use this OpenAI-compatible base URL
+model = "ternary"               # "ternary" | "q4_0"
 threads = 2                     # 1 to the logical CPUs of the PC
 ctx = 1024
 temperature = 0.0
@@ -150,6 +151,7 @@ The default values are in the file above.
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
 | `server_url` | URL | pipeline | Empty: start and supervise the bundled llama-server. Set: use this OpenAI-compatible server. |
+| `model` | `ternary`, `q4_0` | pipeline | Hy-MT2 1.8B. `ternary`: Tencent's 1.25-bit model as TQ2_0, about 730 MB of memory. `q4_0`: about 1.2 GB, an optional download, and the only one that uses `window_chars`. |
 | `threads` | 1–64 | pipeline | llama-server threads. The app uses at most the PC's logical CPUs. |
 | `ctx` | 512–4096 | pipeline | Context size (`-c`) |
 | `temperature` | 0–1 | pipeline | Sampling temperature |
@@ -158,7 +160,7 @@ The default values are in the file above.
 | `timeout_s` | 2–60 | pipeline | Time limit for one request |
 | `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items. Items are not joined across a pause, a device change or a gap of more than 10 s. |
 | `skip_lag_s` | 2–30 | pipeline | Lag at which the translator skips older items |
-| `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters. Their English is given as the start of the answer, so only the new line is translated. Whole lines only. `0`: off. |
+| `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters. Their English is given as the start of the answer, so only the new line is translated. Whole lines only. `0`: off. Only `q4_0` uses it; the ternary model translates each line alone. |
 
 ### overlay
 

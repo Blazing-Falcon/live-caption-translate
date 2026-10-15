@@ -238,7 +238,7 @@ impl Controller {
             },
             asr: lt_core::transcript::recognizer_name(config),
             asr_second: lt_core::transcript::second_pass_name(config),
-            translator: lt_core::transcript::TRANSLATOR_NAME.into(),
+            translator: lt_core::transcript::translator_name(config),
             config: SessionConfig::from(config),
         };
         let writer =

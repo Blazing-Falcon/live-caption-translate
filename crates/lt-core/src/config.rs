@@ -78,6 +78,7 @@ config_table!(FilterConfig {
 });
 config_table!(TranslateConfig {
     server_url: String = String::new(),
+    model: String = "ternary".into(),
     threads: u32 = 2,
     ctx: u32 = 1024,
     temperature: f32 = 0.0,
@@ -156,6 +157,23 @@ impl TranslateConfig {
     /// llama-server threads, at most the logical CPUs of this PC.
     pub fn server_threads(&self) -> u32 {
         self.threads.clamp(1, logical_cpus())
+    }
+
+    /// The manifest id and file name of `model`.
+    pub fn model_file(&self) -> (&'static str, &'static str) {
+        match self.model.as_str() {
+            "q4_0" => ("hy-mt2-1.8b-q4_0", "Hy-MT2-1.8B.i1-Q4_0.gguf"),
+            _ => (
+                "hy-mt2-1.8b-ternary-tq2_0",
+                "Hy-MT2-1.8B-ternary-TQ2_0.gguf",
+            ),
+        }
+    }
+
+    /// Lines go with earlier lines (`window_chars`) only to Q4_0. The ternary model loses the
+    /// window's delimiters and repeats or writes other scripts with it.
+    pub fn uses_window(&self) -> bool {
+        self.model == "q4_0"
     }
 }
 
@@ -379,6 +397,7 @@ impl Config {
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
+        choice!(translate, model, &["ternary", "q4_0"]);
         number!(translate, threads, 1, MAX_THREADS);
         number!(translate, ctx, 512, 4096);
         number!(translate, temperature, 0.0, 1.0);

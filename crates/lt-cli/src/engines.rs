@@ -130,9 +130,10 @@ pub fn translator(
         ));
     }
     let binary = binary.map(Path::to_path_buf).unwrap_or_else(default_binary);
+    let (id, file) = config.translate.model_file();
     let options = lt_llm::supervisor::ServerOptions::new(
         binary,
-        models.join("hy-mt2-1.8b-q4_0/Hy-MT2-1.8B.i1-Q4_0.gguf"),
+        models.join(id).join(file),
         &config.translate,
     )
     .with_below_normal(config.performance.low_priority);

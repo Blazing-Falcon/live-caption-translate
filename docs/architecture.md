@@ -28,7 +28,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
                           | HTTP 127.0.0.1
              +------------v------------+
              | llama-server            |
-             | Hy-MT2 1.8B Q4_0        |
+             | Hy-MT2 1.8B (ternary)   |
              +-------------------------+
 ```
 

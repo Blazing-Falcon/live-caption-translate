@@ -35,7 +35,9 @@ impl From<&Config> for SessionConfig {
 }
 
 /// The translation model named in session headers.
-pub const TRANSLATOR_NAME: &str = "hy-mt2-1.8b-q4_0";
+pub fn translator_name(config: &Config) -> String {
+    config.translate.model_file().0.into()
+}
 
 /// The recognizer named in session headers and `asr_live` records.
 pub fn recognizer_name(config: &Config) -> String {

@@ -46,6 +46,7 @@ export interface Config extends ExtraFields {
   };
   translate: ExtraFields & {
     server_url: string;
+    model: "ternary" | "q4_0";
     threads: number;
     ctx: number;
     temperature: number;
@@ -263,6 +264,11 @@ export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
   { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "Least CPU, about 30% less than 480 ms. Words appear about 0.2 s later." },
 ];
 
+export const TRANSLATORS: readonly SpeechChoice<Config["translate"]["model"]>[] = [
+  { value: "ternary", label: "Small (ternary)", model: "hy-mt2-1.8b-ternary-tq2_0", help: "The default. About 730 MB of memory and fast. Translates each line on its own." },
+  { value: "q4_0", label: "Large (Q4_0)", model: "hy-mt2-1.8b-q4_0", help: "About 450 MB more memory and a little slower. Can use earlier lines as context." },
+];
+
 export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
   { value: "off", label: "Off", model: null, help: "The live Chinese is final. The English appears soonest." },
   { value: "sensevoice", label: "SenseVoice", model: "sensevoice-2024-07-17-int8", help: "Fixes some misheard words. The English appears about 0.4 s later; about 300 MB more memory." },
@@ -309,6 +315,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   "translate": {
     "server_url": "",
+    "model": "ternary",
     "threads": 2,
     "ctx": 1024,
     "temperature": 0.0,

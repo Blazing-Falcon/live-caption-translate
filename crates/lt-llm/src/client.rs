@@ -318,7 +318,7 @@ impl OpenAiCompatTranslator {
 impl Translator for OpenAiCompatTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            context: true,
+            context: self.config.uses_window(),
             max_input_chars: 300,
         }
     }

@@ -93,11 +93,10 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
             lt_core::transcript::second_pass_name(&config)
         },
         translator: if args.fake {
-            "fake"
+            "fake".into()
         } else {
-            lt_core::transcript::TRANSLATOR_NAME
-        }
-        .into(),
+            lt_core::transcript::translator_name(&config)
+        },
         config: SessionConfig::from(&config),
     };
     let writer = TranscriptWriter::new(output, header)?;

@@ -42,6 +42,43 @@
       "optional": false
     },
     {
+      "id": "hy-mt2-1.8b-ternary-tq2_0",
+      "name": "Translation (Hy-MT2 1.8B, ternary)",
+      "role": "translator",
+      "license": "Apache-2.0 (LICENSE.txt and model card of tencent/Hy-MT2-1.8B-1.25Bit-GGUF, checked 2026-10-15). The app rewrites the weight encoding from STQ1_0 to TQ2_0 after the download; every weight keeps its value.",
+      "page": "https://huggingface.co/tencent/Hy-MT2-1.8B-1.25Bit-GGUF",
+      "runtime": {
+        "server_args": [
+          "--jinja",
+          "-np",
+          "1",
+          "-c",
+          "1024",
+          "--override-kv",
+          "tokenizer.ggml.eos_token_id=int:120020",
+          "--load-mode",
+          "none"
+        ],
+        "bos_token_id": 120000,
+        "eos_token_id_override": 120020
+      },
+      "files": [
+        {
+          "name": "Hy-MT2-1.8B-1.25Bit.gguf",
+          "size": 461860800,
+          "sha256": "cc497fe8f033b52b3b8b00a7669e9661435432f9d4cd43f7ed24400c01507a93",
+          "url": "https://huggingface.co/tencent/Hy-MT2-1.8B-1.25Bit-GGUF/resolve/9df5c824a00a744fb0512a29c640466f4d97dfb0/Hy-MT2-1.8B-1.25Bit.gguf",
+          "mirror": "",
+          "convert": {
+            "name": "Hy-MT2-1.8B-ternary-TQ2_0.gguf",
+            "size": 606564288,
+            "sha256": "283e3160c2b5cb64a0a579e8d568730677e9ea15985a05c9bd5beb2ad4371add"
+          }
+        }
+      ],
+      "optional": false
+    },
+    {
       "id": "hy-mt2-1.8b-q4_0",
       "name": "Translation (Hy-MT2 1.8B, Q4_0)",
       "role": "translator",
@@ -71,7 +108,7 @@
           "mirror": ""
         }
       ],
-      "optional": false
+      "optional": true
     },
     {
       "id": "sensevoice-2024-07-17-int8",

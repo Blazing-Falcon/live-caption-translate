@@ -24,10 +24,11 @@ pub fn all_ready(dir: &Path) -> bool {
         .unwrap_or(false)
 }
 
-/// Names of the speech models that the chosen chunk size needs
+/// Names of the models that the chosen speech and translation settings need
 /// and that are not ready on disk.
 pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
-    let wanted = lt_sherpa::model_ids(config);
+    let mut wanted = lt_sherpa::model_ids(config);
+    wanted.push(config.translate.model_file().0);
     match lt_llm::models::status(dir) {
         Ok(models) => models
             .into_iter()

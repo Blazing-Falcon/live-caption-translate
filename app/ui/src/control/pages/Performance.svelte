@@ -14,6 +14,7 @@
   import {
     STREAM_CHUNKS,
     SECOND_PASSES,
+    TRANSLATORS,
     asrPatch,
     WINDOW_LIMITS,
     performancePatch,
@@ -74,7 +75,7 @@
   }
 
   interface SpeechRow {
-    key: "asr.chunk_ms" | "asr.second_pass";
+    key: "asr.chunk_ms" | "asr.second_pass" | "translate.model";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -97,6 +98,14 @@
       patch: (value) => asrPatch({ second_pass: value as Config["asr"]["second_pass"] }),
     },
   ]);
+
+  const translatorRow = $derived<SpeechRow>({
+    key: "translate.model",
+    label: "Translation model",
+    value: config.translate.model,
+    choices: TRANSLATORS,
+    patch: (value) => ({ translate: { model: value as Config["translate"]["model"] } }),
+  });
 
   /** A choice whose model is downloading; it is saved when the model is ready. */
   let waiting = $state<{ key: SpeechRow["key"]; value: string; model: string; patch: ConfigPatch } | null>(null);
@@ -163,42 +172,46 @@
   };
 </script>
 
+{#snippet modelRow(row: SpeechRow)}
+  {@const status = speechStatus(row)}
+  <div class="option">
+    <label class="field">
+      <span>{row.label}</span>
+      <select
+        class="select"
+        value={row.value}
+        aria-describedby={`help-${row.key}`}
+        data-testid={`speech-${row.key}`}
+        onchange={(event) => chooseSpeech(row, event)}
+      >
+        {#each row.choices as choice (choice.value)}
+          <option value={choice.value}>{optionLabel(choice)}</option>
+        {/each}
+      </select>
+    </label>
+    <div class="status-row">
+      <p id={`help-${row.key}`} class="help small" aria-live="polite">{status.text}</p>
+      {#if status.download}
+        <button
+          type="button"
+          class="btn"
+          aria-disabled={$busy.has("models.download")}
+          onclick={() => status.download && downloadModel(status.download)}
+        >
+          Download
+        </button>
+      {/if}
+    </div>
+  </div>
+{/snippet}
+
 <section class="page" aria-labelledby="performance-title">
   <h2 id="performance-title" class="section-title">Performance</h2>
 
   <div class="stack">
     <h3 class="section-title">Speech recognition</h3>
     {#each speechRows as row (row.key)}
-      {@const status = speechStatus(row)}
-      <div class="option">
-        <label class="field">
-          <span>{row.label}</span>
-          <select
-            class="select"
-            value={row.value}
-            aria-describedby={`help-${row.key}`}
-            data-testid={`speech-${row.key}`}
-            onchange={(event) => chooseSpeech(row, event)}
-          >
-            {#each row.choices as choice (choice.value)}
-              <option value={choice.value}>{optionLabel(choice)}</option>
-            {/each}
-          </select>
-        </label>
-        <div class="status-row">
-          <p id={`help-${row.key}`} class="help small" aria-live="polite">{status.text}</p>
-          {#if status.download}
-            <button
-              type="button"
-              class="btn"
-              aria-disabled={$busy.has("models.download")}
-              onclick={() => status.download && downloadModel(status.download)}
-            >
-              Download
-            </button>
-          {/if}
-        </div>
-      </div>
+      {@render modelRow(row)}
     {/each}
     <label class="field">
       <span>Recognizer threads</span>
@@ -232,6 +245,7 @@
 
   <div class="stack">
     <h3 class="section-title">Translation</h3>
+    {@render modelRow(translatorRow)}
     <label class="field">
       <span>Translator threads</span>
       <select
@@ -254,6 +268,7 @@
           min={WINDOW_LIMITS.min}
           max={WINDOW_LIMITS.max}
           step="1"
+          disabled={config.translate.model !== "q4_0"}
           value={config.translate.window_chars}
           aria-describedby="help-window"
           data-testid="translate-window"
@@ -261,7 +276,7 @@
         />
       </label>
       <p id="help-window" class="help small">
-        Each line is translated together with the earlier lines that fit in this many characters, so the translator knows what came before. Only the new line's English is shown. 0 translates each line alone; more characters make the English appear a little later.
+        Each line is translated together with the earlier lines that fit in this many characters, so the translator knows what came before. Only the new line's English is shown. 0 translates each line alone; more characters make the English appear a little later. Only the large model uses it.
       </p>
     </div>
     <div class="option">
