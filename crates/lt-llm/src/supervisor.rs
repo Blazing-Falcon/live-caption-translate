@@ -24,8 +24,10 @@ use std::{
 /// Hy-MT2's GGUF has an incorrect end token; `models/manifest.json` lists the same arguments.
 const MODEL_ARGS: [&str; 2] = ["--override-kv", "tokenizer.ggml.eos_token_id=int:120020"];
 /// Models load into memory instead of being mapped: a mapped file keeps its pages besides the
-/// copies of the weights that llama.cpp repacks for x86.
-const LOAD_ARGS: [&str; 2] = ["--load-mode", "none"];
+/// copies of the weights that llama.cpp repacks for x86. The host prompt cache is off: it keeps
+/// the state of each earlier prompt, up to 8 GiB by default, and one slot reuses its own prefix
+/// without it.
+const LOAD_ARGS: [&str; 4] = ["--load-mode", "none", "--cache-ram", "0"];
 
 /// What a server runs.
 #[derive(Clone, Debug)]
@@ -721,7 +723,7 @@ mod tests {
         );
         assert_eq!(
             options.arguments(8081).join(" "),
-            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 4 -tb 4 --override-kv tokenizer.ggml.eos_token_id=int:120020 --load-mode none --no-webui"
+            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 4 -tb 4 --override-kv tokenizer.ggml.eos_token_id=int:120020 --load-mode none --cache-ram 0 --no-webui"
         );
     }
 

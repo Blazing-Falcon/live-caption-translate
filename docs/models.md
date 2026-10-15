@@ -61,7 +61,7 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 **X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
 
-**Qwen3-ASR (second pass):** a second llama-server with the audio encoder (`--mmproj`), `asr.second_pass_threads` (2), context 1024 (a 30 s window takes about 400 audio tokens), `--load-mode none`, no warm-up. The engine starts it with the pipeline and stops it with the pipeline. Each window goes as 16-bit WAV to `/v1/chat/completions`; the answer is `language <Name><asr_text><text>`. A forced language is the start of the answer (`language Chinese<asr_text>`). Its failures show as `failed` second-pass lines, not as an engine state, because the live recognizer keeps working.
+**Qwen3-ASR (second pass):** a second llama-server with the audio encoder (`--mmproj`), `asr.second_pass_threads` (2), context 1024 (a 30 s window takes about 400 audio tokens), `--load-mode none --cache-ram 0`, no warm-up. The engine starts it with the pipeline and stops it with the pipeline. Each window goes as 16-bit WAV to `/v1/chat/completions`; the answer is `language <Name><asr_text><text>`. A forced language is the start of the answer (`language Chinese<asr_text>`). Its failures show as `failed` second-pass lines, not as an engine state, because the live recognizer keeps working.
 
 Against the same model in ONNX Runtime (sherpa-onnx int8), on the drama clip, real time, 2 threads, 2026-10-15, Ryzen 7 5700X: memory 275 MB for the app plus 1165 MB for the server, against 1760 MB in the app, which grew by about 33 MB for each second of the longest window read (2143 MB after a 31 s window); decode 845 ms against 916 ms (median); character error rate 6.2% against 7.0%.
 
@@ -93,13 +93,14 @@ The 1.25-bit model and earlier lines, on 81 lines of a drama session, 30 charact
 ```
 llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c <ctx>
                  -t <threads> -tb <threads> [--override-kv tokenizer.ggml.eos_token_id=int:120020]
-                 --load-mode none --no-webui
+                 --load-mode none --cache-ram 0 --no-webui
 ```
 
 - `--override-kv` corrects the GGUF's end token (the correct id is 120020).
 - `<threads>` is `translate.threads` (4 by default), at most the PC's logical CPUs.
 - Do not add `--no-repack`. llama.cpp repacks some weight types for x86; for the Q4_0 file the app used before, that made Hy-MT2 much faster.
 - `--load-mode none` reads the model into memory instead of mapping the file. The repacked copy is the only copy then. With a mapped file, the original pages also stay in memory: for the Q4_0 file, 2074 MB working set against 1271 MB, with the same translations (26 lines, 2026-10-15, Ryzen 7 5700X).
+- `--cache-ram 0` turns off the host prompt cache. By default llama-server keeps the state of each earlier prompt in memory, up to 8 GiB, so the servers grew for the whole session. The one slot still reuses the prefix it shares with the last request. Measured 2026-10-15, Ryzen 7 5700X: Qwen3-ASR after 60 windows 1466 MB with the cache, 996 MB without (flat after the first 10); the translator after the 150 lines of a drama session 1240 MB with the cache, 710 MB without, 463 and 466 ms per line, the same translations.
 - With `performance.low_priority`, the server runs at below-normal priority.
 
 **Requests:**
