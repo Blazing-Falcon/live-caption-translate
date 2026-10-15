@@ -9,8 +9,7 @@
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition (default) | archive, 4 files | 133,895,136 | in the manifest |
 | `hy-mt2-1.8b-ternary-tq2_0` | Translation (default, `translate.model = "ternary"`) | download `Hy-MT2-1.8B-1.25Bit.gguf`, kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` | 461,860,800 (606,564,288 kept) | in the manifest |
 | `hy-mt2-1.8b-q4_0` | Translation, optional (`translate.model = "q4_0"`) | `Hy-MT2-1.8B.i1-Q4_0.gguf` | 1,079,997,440 | `77b7db506ed5dddd79b30553d346af1bfbed5999838441964ade98c970512087` |
-| `sensevoice-2024-07-17-int8` | Second pass (`asr.second_pass`) | `model.int8.onnx`, `tokens.txt` | 239,549,735 | in the manifest |
-| `qwen3-asr-0.6b-q4_k_m` | Second pass, optional (`asr.second_pass = "qwen3"`) | `Qwen3-ASR-0.6B.Q4_K_M.gguf`, `mmproj-Qwen3-ASR-0.6B-Q8_0.gguf` | 698,608,768 | in the manifest |
+| `qwen3-asr-0.6b-q4_k_m` | Second pass (`asr.second_pass = "qwen3"`) | `Qwen3-ASR-0.6B.Q4_K_M.gguf`, `mmproj-Qwen3-ASR-0.6B-Q8_0.gguf` | 698,608,768 | in the manifest |
 | `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
 | `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
@@ -19,12 +18,11 @@ Sources (Hugging Face):
 - Hy-MT2 ternary: `tencent/Hy-MT2-1.8B-1.25Bit-GGUF`, revision `9df5c824a00a744fb0512a29c640466f4d97dfb0` (AngelSlim 1.25-bit quantization)
 - Hy-MT2 Q4_0: `mradermacher/Hy-MT2-1.8B-i1-GGUF`
 - Qwen3-ASR: `mradermacher/Qwen3-ASR-0.6B-GGUF` revision `6cf166e9f1c5bd2521108e3410ee5358de5eabab` (the language model, Q4_K_M) and `ggml-org/Qwen3-ASR-0.6B-GGUF` revision `928ab958557df9aa2ef1c93e0e83c7ad0933fae2` (the audio encoder, Q8_0), conversions of `Qwen/Qwen3-ASR-0.6B`
-- SenseVoice: `csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17`, revision `2365baeacb507f821a0c8120fcee3d484dba7a07` (the sherpa-onnx conversion of `FunAudioLLM/SenseVoiceSmall`)
 - X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
 
 Rules:
 
-- The first-run download takes the required models, SenseVoice included. The optional models (other chunk sizes, Qwen3-ASR, Hy-MT2 Q4_0) download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
+- The first-run download takes the required models, Qwen3-ASR included. The optional models (other chunk sizes, Hy-MT2 Q4_0) download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
 - Files go to `<models dir>/<id>/<file>`.
 - Downloads continue from `<file>.part` with HTTP range requests. The app checks the SHA-256 and then renames the file.
 - A file with `convert` is a GGUF whose weights are STQ1_0, a ternary type that only an unmerged ARM branch of llama.cpp reads. After its SHA-256 check, the app rewrites those weights as TQ2_0 (the same blocks of 256 weights of -1, 0 or +1 times one fp16 scale, which llama.cpp runs on x86), checks the result's size and SHA-256, keeps it under the `convert` name and deletes the download. Every weight keeps its value; the rest of the file is copied unchanged.
@@ -39,7 +37,6 @@ Rules:
 |---|---|
 | X-ASR | Apache-2.0 (upstream `Gilgamesh-J/X-ASR`) |
 | Qwen3-ASR 0.6B | Apache-2.0 (`Qwen/Qwen3-ASR-0.6B` model card, `QwenLM/Qwen3-ASR` LICENSE; the mradermacher conversion declares apache-2.0) |
-| SenseVoice Small | FunASR Model Open Source License Agreement 1.1 (custom). It requires attribution and the model name. Commercial use is not confirmed by the license owner (`QwenAudio/SenseVoice` issue 334). |
 | Hy-MT2 1.8B | Apache-2.0 (recorded; confirm on the `tencent/Hy-MT2-1.8B` model card) |
 | Hy-MT2 1.8B 1.25-bit | Apache-2.0 (`tencent/Hy-MT2-1.8B-1.25Bit-GGUF` LICENSE.txt and model card) |
 | sherpa-onnx 1.13.8 | Apache-2.0 |
@@ -66,13 +63,13 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 **X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
 
-**SenseVoice (second pass):** sherpa-onnx offline recognizer, greedy search, inverse text normalization on (punctuation and digits), `asr.second_pass_threads` (1). It decodes one window of audio at a time and detects the language. The language is fixed when the recognizer is created; a stream option does not change it. A decode with a forced language (`zh`) therefore uses a second recognizer, which the app creates the first time it needs one.
-
-**Qwen3-ASR (second pass, optional):** a second llama-server with the audio encoder (`--mmproj`), `asr.second_pass_threads`, context 1024 (a 30 s window takes about 400 audio tokens), `--load-mode none`, no warm-up. The engine starts it with the pipeline and stops it with the pipeline. Each window goes as 16-bit WAV to `/v1/chat/completions`; the answer is `language <Name><asr_text><text>`. A forced language is the start of the answer (`language Chinese<asr_text>`). Its failures show as `failed` second-pass lines, not as an engine state, because the live recognizer keeps working.
+**Qwen3-ASR (second pass):** a second llama-server with the audio encoder (`--mmproj`), `asr.second_pass_threads` (2), context 1024 (a 30 s window takes about 400 audio tokens), `--load-mode none`, no warm-up. The engine starts it with the pipeline and stops it with the pipeline. Each window goes as 16-bit WAV to `/v1/chat/completions`; the answer is `language <Name><asr_text><text>`. A forced language is the start of the answer (`language Chinese<asr_text>`). Its failures show as `failed` second-pass lines, not as an engine state, because the live recognizer keeps working.
 
 Against the same model in ONNX Runtime (sherpa-onnx int8), on the drama clip, real time, 2 threads, 2026-10-15, Ryzen 7 5700X: memory 275 MB for the app plus 1165 MB for the server, against 1760 MB in the app, which grew by about 33 MB for each second of the longest window read (2143 MB after a 31 s window); decode 845 ms against 916 ms (median); character error rate 6.2% against 7.0%.
 
-ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-15, `cargo test -p lt-sherpa --release --test second_pass`: character error rate SenseVoice 0.184 with the detected language, 0.159 with `zh` forced; Qwen3-ASR 0.131 both ways (llama-server, `cargo test -p lt-llm --release --test real_speech`). The streaming X-ASR on the same clips: 0.102.
+ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-15, `cargo test -p lt-llm --release --test real_speech`: character error rate of Qwen3-ASR 0.131 with the detected language and with `zh` forced. The streaming X-ASR on the same clips: 0.102.
+
+SenseVoice Small (sherpa-onnx int8) was the earlier second pass. On the drama clip it lowered the character error rate from 9.9% (live text) to 9.5% and changed some correct lines; Qwen3-ASR lowered it to 6.2% (real time, 2026-10-13..15, same PC). On the ASCEND clips its error rate was 0.184 (0.159 with `zh` forced).
 
 **Translation models:** both are Hy-MT2 1.8B.
 

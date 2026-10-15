@@ -111,30 +111,6 @@
       "optional": true
     },
     {
-      "id": "sensevoice-2024-07-17-int8",
-      "name": "Second-pass speech recognition (SenseVoice Small, int8)",
-      "role": "asr",
-      "license": "FunASR Model Open Source License Agreement 1.1 (custom; commercial use not confirmed by the owner, SenseVoice issue #334). The conversion's LICENSE refers to it.",
-      "page": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17",
-      "files": [
-        {
-          "name": "model.int8.onnx",
-          "size": 239233841,
-          "sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
-          "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/2365baeacb507f821a0c8120fcee3d484dba7a07/model.int8.onnx",
-          "mirror": ""
-        },
-        {
-          "name": "tokens.txt",
-          "size": 315894,
-          "sha256": "f449eb28dc567533d7fa59be34e2abca8784f771850c78a47fb731a31429a1dc",
-          "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/2365baeacb507f821a0c8120fcee3d484dba7a07/tokens.txt",
-          "mirror": ""
-        }
-      ],
-      "optional": false
-    },
-    {
       "id": "qwen3-asr-0.6b-q4_k_m",
       "name": "Second-pass speech recognition (Qwen3-ASR 0.6B, Q4_K_M)",
       "role": "asr",
@@ -156,7 +132,7 @@
           "mirror": ""
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "xasr-stream-960ms-int8-2026-06-05",

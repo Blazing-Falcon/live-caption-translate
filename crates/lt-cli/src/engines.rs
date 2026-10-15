@@ -100,7 +100,7 @@ pub fn build(
                 .context("Starting the second-pass recognizer")?,
             ))
         } else {
-            registry.build_second_pass(&engine_config)?
+            None
         };
         let (translator, supervisor, pid) = translator(config, models, binary, bus, cancelled)?;
         Ok(Engines {

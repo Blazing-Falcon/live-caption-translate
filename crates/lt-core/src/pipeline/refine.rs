@@ -19,7 +19,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-/// Languages that SenseVoice can tag when it mishears Chinese.
+/// Languages that the second pass can tag when it mishears Chinese.
 const MISTAKEN_FOR_CHINESE: [&str; 3] = ["ja", "ko", "yue"];
 
 /// The audio of a clause with its margins.

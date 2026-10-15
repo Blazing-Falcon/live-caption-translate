@@ -35,7 +35,7 @@ npm --prefix app/ui test     # fast UI tests
 | Filter, translation queue | `crates/lt-core/src/text.rs`, `queue.rs` |
 | Second pass (trim, refine thread) | `crates/lt-core/src/refine.rs`, `pipeline/refine.rs` |
 | Pipeline threads and shutdown | `crates/lt-core/src/pipeline/` |
-| X-ASR streaming, SenseVoice | `crates/lt-sherpa/src/` |
+| X-ASR streaming | `crates/lt-sherpa/src/` |
 | llama-server, model downloads | `crates/lt-llm/src/` |
 | Windows capture | `crates/lt-audio/src/windows/` |
 | App commands and bridge | `app/src-tauri/src/` |

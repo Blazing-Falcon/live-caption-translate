@@ -27,7 +27,7 @@ pub fn all_ready(dir: &Path) -> bool {
 /// Names of the models that the chosen speech and translation settings need
 /// and that are not ready on disk.
 pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
-    let mut wanted = lt_sherpa::model_ids(config);
+    let mut wanted = vec![lt_sherpa::xasr_stream_model(config.asr.chunk_ms)];
     if config.asr.second_pass == "qwen3" {
         wanted.push(lt_llm::speech::QWEN3_MODEL);
     }

@@ -67,8 +67,8 @@ config_table!(AsrConfig {
     chunk_ms: u32 = 480,
     threads: u32 = 1,
     pause_s: f32 = 0.8,
-    second_pass: String = "sensevoice".into(),
-    second_pass_threads: u32 = 1,
+    second_pass: String = "qwen3".into(),
+    second_pass_threads: u32 = 2,
     second_pass_max_wait_s: f32 = 1.5,
 });
 config_table!(FilterConfig {
@@ -237,6 +237,18 @@ fn migrate_v1(value: &mut toml::Value) {
     tracing::info!(?dropped, "settings migrated from version 1");
 }
 
+/// Version 2 values that the app no longer has take the default without a warning: the user
+/// did not choose them wrong, the app dropped them.
+fn retire_v2(value: &mut toml::Value) {
+    let Some(asr) = value.get_mut("asr").and_then(toml::Value::as_table_mut) else {
+        return;
+    };
+    if asr.get("second_pass").and_then(toml::Value::as_str) == Some("sensevoice") {
+        asr.remove("second_pass");
+        tracing::info!("asr.second_pass: SenseVoice was removed; using the default");
+    }
+}
+
 /// Remove `table.key` (or a whole top-level table) and return its value.
 fn take(root: &mut toml::Table, path: &str) -> Option<toml::Value> {
     match path.split_once('.') {
@@ -276,6 +288,7 @@ impl Config {
         }
         let mut messages = Vec::new();
         migrate_v1(&mut value);
+        retire_v2(&mut value);
         let schema = schema()?;
         normalize_types(&mut value, &schema, "", &mut messages);
         let mut config: Self = value.clone().try_into().map_err(config_error)?;
@@ -386,7 +399,7 @@ impl Config {
         }
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
-        choice!(asr, second_pass, &["off", "sensevoice", "qwen3"]);
+        choice!(asr, second_pass, &["off", "qwen3"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
         // No maximum is specified for this duration; it must remain finite.

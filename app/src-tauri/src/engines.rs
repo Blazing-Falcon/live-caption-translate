@@ -44,9 +44,7 @@ pub fn speech(
             .map_err(|e| format!("Second pass: {e}"))?,
         ))
     } else {
-        registry
-            .build_second_pass(&engine_config)
-            .map_err(|e| format!("Second pass: {e}"))?
+        None
     };
     Ok((asr, second_pass))
 }

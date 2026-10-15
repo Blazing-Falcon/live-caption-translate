@@ -35,7 +35,7 @@ export interface Config extends ExtraFields {
     chunk_ms: 160 | 480 | 960;
     threads: number;
     pause_s: number;
-    second_pass: "off" | "sensevoice" | "qwen3";
+    second_pass: "off" | "qwen3";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
   };
@@ -271,8 +271,7 @@ export const TRANSLATORS: readonly SpeechChoice<Config["translate"]["model"]>[] 
 
 export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
   { value: "off", label: "Off", model: null, help: "The live Chinese is final. The English appears soonest." },
-  { value: "sensevoice", label: "SenseVoice", model: "sensevoice-2024-07-17-int8", help: "Fixes some misheard words. The English appears about 0.4 s later; about 300 MB more memory." },
-  { value: "qwen3", label: "Qwen3-ASR", model: "qwen3-asr-0.6b-q4_k_m", help: "Fixes the most misheard words. The English appears about 1 s later with 2 threads; about 1.2 GB more memory and half a CPU core." },
+  { value: "qwen3", label: "Qwen3-ASR 0.6B", model: "qwen3-asr-0.6b-q4_k_m", help: "The default. Fixes misheard words. The English appears about 1 s later with 2 threads; about 1.2 GB more memory and half a CPU core." },
 ];
 
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
@@ -304,8 +303,8 @@ export const DEFAULT_CONFIG: Config = {
     "chunk_ms": 480,
     "threads": 1,
     "pause_s": 0.8,
-    "second_pass": "sensevoice",
-    "second_pass_threads": 1,
+    "second_pass": "qwen3",
+    "second_pass_threads": 2,
     "second_pass_max_wait_s": 1.5
   },
   "filter": {

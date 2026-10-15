@@ -273,3 +273,19 @@ step_down = true
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
     assert_eq!(saved["config_version"].as_integer(), Some(2));
 }
+
+#[test]
+fn removed_choices_in_a_saved_file_take_the_default_without_a_warning() {
+    let (config, messages) = Config::from_toml(
+        r#"
+config_version = 2
+[asr]
+second_pass = "sensevoice"
+second_pass_threads = 3
+"#,
+    )
+    .unwrap();
+    assert_eq!(config.asr.second_pass, Config::default().asr.second_pass);
+    assert_eq!(config.asr.second_pass_threads, 3);
+    assert!(messages.is_empty(), "{messages:?}");
+}
