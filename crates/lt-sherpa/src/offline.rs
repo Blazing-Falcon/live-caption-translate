@@ -105,8 +105,21 @@ struct RawResult {
 }
 
 /// A language tag comes as `<|zh|>`; models without one leave it empty.
+///
+/// sherpa writes the text into its JSON without escaping control characters, and Qwen3-ASR can
+/// put a line break between sentences: they become spaces, which JSON accepts between values.
 fn parse_result(name: &str, json: &str) -> Result<OfflineText> {
-    let raw: RawResult = serde_json::from_str(json)
+    let json: String = json
+        .chars()
+        .map(|character| {
+            if character.is_control() {
+                ' '
+            } else {
+                character
+            }
+        })
+        .collect();
+    let raw: RawResult = serde_json::from_str(&json)
         .map_err(|error| engine_error(&format!("{name} returned invalid result JSON"), error))?;
     let lang = raw
         .lang
@@ -115,7 +128,23 @@ fn parse_result(name: &str, json: &str) -> Result<OfflineText> {
         .trim_end_matches("|>")
         .to_owned();
     Ok(OfflineText {
-        text: raw.text,
+        text: raw.text.trim().to_owned(),
         lang: (!lang.is_empty()).then_some(lang),
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_line_break_inside_the_text_does_not_fail_the_result() {
+        let json =
+            "{\"lang\": \"\", \"text\": \"你不信？\n你把你现在情况跟她说。\", \"tokens\": []}";
+        let heard = parse_result("test", json).unwrap();
+        assert_eq!(heard.text, "你不信？ 你把你现在情况跟她说。");
+        assert_eq!(heard.lang, None);
+        let tagged = parse_result("test", r#"{"lang": "<|zh|>", "text": "你好。"}"#).unwrap();
+        assert_eq!(tagged.lang.as_deref(), Some("zh"));
+    }
 }
