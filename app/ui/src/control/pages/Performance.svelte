@@ -13,6 +13,7 @@
   } from "../../lib/format";
   import {
     STREAM_CHUNKS,
+    SECOND_PASSES,
     asrPatch,
     WINDOW_LIMITS,
     performancePatch,
@@ -40,16 +41,16 @@
     reconcileChecked(input, get(liveConfig)?.performance.low_priority ?? config.performance.low_priority);
   }
 
-  async function toggleSecondPass(event: Event): Promise<void> {
-    const input = event.currentTarget as HTMLInputElement;
-    await session.save("asr.second_pass", asrPatch({ second_pass: input.checked ? "sensevoice" : "off" }));
-    reconcileChecked(input, (get(liveConfig)?.asr.second_pass ?? config.asr.second_pass) !== "off");
-  }
-
   async function chooseThreads(event: Event, table: "asr" | "translate"): Promise<void> {
     const select = event.currentTarget as HTMLSelectElement;
     const saved = await session.save(`${table}.threads`, threadsPatch(table, Number(select.value)));
     if (!saved) select.value = String(config[table].threads);
+  }
+
+  async function chooseSecondPassThreads(event: Event): Promise<void> {
+    const select = event.currentTarget as HTMLSelectElement;
+    const saved = await session.save("asr.second_pass_threads", asrPatch({ second_pass_threads: Number(select.value) }));
+    if (!saved) select.value = String(config.asr.second_pass_threads);
   }
 
   async function chooseWindow(event: Event): Promise<void> {
@@ -73,7 +74,7 @@
   }
 
   interface SpeechRow {
-    key: "asr.chunk_ms";
+    key: "asr.chunk_ms" | "asr.second_pass";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -87,6 +88,13 @@
       value: String(config.asr.chunk_ms),
       choices: STREAM_CHUNKS,
       patch: (value) => asrPatch({ chunk_ms: Number(value) as Config["asr"]["chunk_ms"] }),
+    },
+    {
+      key: "asr.second_pass",
+      label: "Correct lines after they end",
+      value: config.asr.second_pass,
+      choices: SECOND_PASSES,
+      patch: (value) => asrPatch({ second_pass: value as Config["asr"]["second_pass"] }),
     },
   ]);
 
@@ -205,21 +213,21 @@
         {/each}
       </select>
     </label>
-    <div class="option">
-      <label class="check-row">
-        <input
-          type="checkbox"
-          checked={config.asr.second_pass !== "off"}
-          aria-describedby="help-second-pass"
-          data-testid="asr-second-pass"
-          onchange={toggleSecondPass}
-        />
-        <span>Correct lines after they end</span>
+    {#if config.asr.second_pass !== "off"}
+      <label class="field">
+        <span>Correction threads</span>
+        <select
+          class="select"
+          value={String(config.asr.second_pass_threads)}
+          data-testid="asr-second-pass-threads"
+          onchange={chooseSecondPassThreads}
+        >
+          {#each threadOptions(config.asr.second_pass_threads) as count (count)}
+            <option value={String(count)}>{count}</option>
+          {/each}
+        </select>
       </label>
-      <p id="help-second-pass" class="help small">
-        When a line ends, a second model reads its audio again, and its Chinese can replace the live text before translation. The English appears a little later and listening uses more memory.
-      </p>
-    </div>
+    {/if}
   </div>
 
   <div class="stack">
