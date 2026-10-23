@@ -52,7 +52,7 @@ impl OpenClause {
     fn after(&self, id: UtteranceId) -> Option<String> {
         let open = self.0.lock().ok()?;
         let (open_id, text) = open.as_ref()?;
-        let next = open_id.0.checked_add(1) == Some(id.0);
+        let next = id.0.checked_add(1) == Some(open_id.0);
         (next && !text.is_empty()).then(|| text.clone())
     }
 }
@@ -289,5 +289,27 @@ fn text_language(text: &str) -> Option<String> {
         (0, 0) => None,
         _ if latin > cjk => Some("en".into()),
         _ => Some("zh".into()),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The refine thread reads the cell after clause `id` closed. Only the clause that opened
+    /// after it may cut its window or mark it unfinished; the clause itself, or the one before
+    /// it when this clause produced no partial, must not.
+    #[test]
+    fn only_the_next_clause_is_read_as_what_follows() {
+        let open = OpenClause::default();
+        assert_eq!(open.after(UtteranceId(5)), None);
+        open.heard(UtteranceId(4), "上一句");
+        assert_eq!(open.after(UtteranceId(5)), None);
+        open.heard(UtteranceId(5), "这一句");
+        assert_eq!(open.after(UtteranceId(5)), None);
+        open.heard(UtteranceId(6), "而且我还有事");
+        assert_eq!(open.after(UtteranceId(5)).as_deref(), Some("而且我还有事"));
+        open.heard(UtteranceId(7), "再下一句");
+        assert_eq!(open.after(UtteranceId(5)), None);
     }
 }
