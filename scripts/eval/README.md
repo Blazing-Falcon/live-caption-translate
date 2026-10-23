@@ -69,3 +69,34 @@ the same build spread 39 ms at p50 and 58 ms at p90.
 2. Add an entry to `$sources` in `run.ps1` with the wav and whatever references exist.
 3. Add a reference file to `testdata/eval/` if you have one. Never edit an existing reference to
    make a run look better; add a new file.
+
+## Translation quality, with a reference nobody here wrote
+
+The drama reference is 26 lines drafted by this project. For ranking translators, use the subtitle
+sample instead: each Chinese line is a human translation of an original English subtitle, so the
+original is a real reference.
+
+```powershell
+# One time: the corpus (~345 MiB).
+curl -L -o .agent/tmp/opus/en-zh_cn.txt.zip `
+    https://object.pouta.csc.fi/OPUS-OpenSubtitles/v2018/moses/en-zh_cn.txt.zip
+
+# 600 lines, 6-24 Han characters, one-to-one alignments only, fixed seed.
+.agent/venv/Scripts/python.exe scripts/eval/make_corpus.py --pairs 600
+
+# Translate with a model, then score.
+.agent/venv/Scripts/python.exe scripts/eval/translate_file.py `
+    --in .agent/experiments/corpus/opus-casual.zh.txt `
+    --out .agent/experiments/corpus/opus-casual.ternary.txt
+.agent/venv/Scripts/python.exe scripts/eval/score_corpus.py `
+    --hyp .agent/experiments/corpus/opus-casual.ternary.txt --label ternary
+```
+
+`score_corpus.py` needs `torch` and `unbabel-comet` in `.agent/venv`; it downloads COMET
+(wmt22-comet-da, about 2.2 GiB) into `.agent/tmp/comet/` on first use. With two `--hyp`/`--label`
+pairs it prints the paired bootstrap interval, which is what decides whether a difference is real:
+600 lines at a 0.003 COMET gap is inside the interval.
+
+Measured 2026-10-23: the shipping 1.25-bit model scores 0.7706, Q4_K_M 0.7738 (95% CI
+[-0.0015, +0.0080]) at +188 ms per line. The sample is third-party text and stays in
+`.agent/experiments/corpus/`, which is not committed.
