@@ -3,7 +3,7 @@ use crate::{app::Shared, controller::Cmd};
 use lt_core::config::HotkeysConfig;
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter, Manager};
-use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
+use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 
 #[derive(Clone, Copy)]
 enum Action {
@@ -59,9 +59,15 @@ pub fn register(app: &AppHandle, hotkeys: &HotkeysConfig) {
             // At startup this runs before the control page has a listener, so the event is
             // dropped; the notice list is what the page shows when it loads.
             if let Some(shared) = app.try_state::<Arc<Shared>>() {
+                // A config file edited by hand can hold a string that is not a shortcut at all;
+                // anything that parses failed because another program holds it.
+                let problem = if accelerator.parse::<Shortcut>().is_err() {
+                    "is not a valid shortcut"
+                } else {
+                    "is already used by another program"
+                };
                 let message = format!(
-                    "The {} shortcut ({accelerator}) is already used by another program. \
-                     Change it on the Overlay page.",
+                    "The {} shortcut ({accelerator}) {problem}. Change it on the Overlay page.",
                     action.label()
                 );
                 crate::app::lock(&shared.startup_messages).push(message);
