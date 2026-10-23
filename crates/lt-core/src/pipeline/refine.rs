@@ -158,6 +158,9 @@ fn second_pass(
             .is_some_and(|logprob| logprob >= min_logprob);
     if confident {
         record.outcome = SecondPassOutcome::Confident;
+        // The wait this line was spared is what the stage cost it, and a consumer comparing
+        // outcomes would otherwise read a zero as "the second pass finished instantly".
+        record.refine_ms = elapsed_ms(closed);
         transcript.second_pass = Some(record);
         return;
     }

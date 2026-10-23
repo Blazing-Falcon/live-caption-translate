@@ -64,16 +64,16 @@
       <CaptionLine {status} />
     {/if}
     {#if flow.source.length > 0}
-      <div class="para source" class:fading={flow.source.some((piece) => fadingIds.has(piece.id))}>
+      <div class="para source">
         <p>
-          {#each flow.source as piece (piece.id)}<span class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
+          {#each flow.source as piece (piece.id)}<span class:fading={fadingIds.has(piece.id)} class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
         </p>
       </div>
     {/if}
     {#if flow.english.length > 0}
-      <div class="para english" class:fading={flow.english.some((piece) => fadingIds.has(piece.id))}>
+      <div class="para english">
         <p>
-          {#each flow.english as piece, index (piece.id)}{index > 0 ? " " : ""}<span class={piece.kind}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
+          {#each flow.english as piece, index (piece.id)}{index > 0 ? " " : ""}<span class={piece.kind} class:fading={fadingIds.has(piece.id)}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
         </p>
       </div>
     {/if}
@@ -105,10 +105,12 @@
     transition: opacity var(--fade-ms) linear;
   }
 
-  /* The shared clock fades the lines that are expiring; without this the running text vanished
-   * at once while the panel and the bar faded. */
-  .para.fading {
+  /* The shared clock fades the lines that are expiring. The fade is per piece, not per
+   * paragraph: running text holds several lines at once, so a paragraph-level fade would hide the
+   * newest line whenever an older one expired. */
+  .fading {
     opacity: 0;
+    transition: opacity var(--fade-ms) linear;
   }
 
   p {
@@ -138,8 +140,9 @@
     color: var(--ov-pending);
   }
 
+  /* Still being recognized: dimmer than settled Chinese, as in the bar and the panel. */
   .live {
-    color: var(--ov-text);
+    color: var(--ov-dim);
   }
 
   .caret {

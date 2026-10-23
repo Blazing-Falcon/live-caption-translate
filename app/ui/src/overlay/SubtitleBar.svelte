@@ -22,7 +22,7 @@
 {#if status || shown.length > 0}
   <section class="bar" aria-label="Live captions" data-testid="subtitle-bar">
     {#if status}
-      <CaptionLine {status} />
+      <div class="status-row"><CaptionLine {status} /></div>
     {/if}
     {#each shown as line, index (line.id)}
       <CaptionLine
@@ -47,5 +47,12 @@
     padding: var(--space-4) var(--space-6) 18px;
     background: var(--ov-bar-bg);
     border-radius: var(--radius-overlay);
+  }
+
+  /* The bar is bottom-anchored in the overlay window and clips from the top, so the status is a
+   * fixed item above the captions: a status is what a reader most needs, and it must not be the
+   * thing that gets cut when the saved window height is tight. */
+  .status-row {
+    flex: none;
   }
 </style>

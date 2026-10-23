@@ -21,16 +21,16 @@
     panelLines = 5,
   }: Props = $props();
 
-  // A status row sits above the captions, so it costs one caption row: the panel's height is a
-  // saved rect and can be too short to add a row without dropping one.
-  const shown = $derived(visibleLines(lines, "panel", status ? panelLines - 1 : panelLines, liveSource));
+  // The status is a separate flex item above the history, so the history gives up its oldest
+  // line rather than the status; the count is the user's own setting either way.
+  const shown = $derived(visibleLines(lines, "panel", panelLines, liveSource));
 </script>
 
 <section class="panel" aria-label="Live captions" data-testid="caption-panel">
+  {#if status}
+    <div class="status-row"><CaptionLine {status} /></div>
+  {/if}
   <div class="history">
-    {#if status}
-      <CaptionLine {status} />
-    {/if}
     {#each shown as line, index (line.id)}
       <CaptionLine
         {line}
@@ -56,8 +56,17 @@
     border-radius: var(--radius-overlay);
   }
 
+  /* The status is its own flex item, so a full history shrinks the captions instead of pushing
+   * the status off the top: the history is bottom-anchored and clips its oldest line, while the
+   * status keeps its height. */
+  .status-row {
+    flex: none;
+    padding: var(--space-4) 18px 0;
+  }
+
   .history {
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
