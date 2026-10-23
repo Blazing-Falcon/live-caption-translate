@@ -34,18 +34,22 @@ const HTTP_BUFFER_BYTES: usize = 16 * 1024;
 /// An answer this many times longer than its source in characters is not a translation of it.
 const MAX_LENGTH_RATIO: usize = 12;
 /// Openings of a reply that answers the instruction instead of translating the line. They are
-/// lowercase because the check lowercases the answer first. "Refer to the following" is here
-/// because a glossary block placed after the instruction makes the model repeat the block's own
-/// header instead of translating.
-const REPLY_PHRASES: [&str; 7] = [
+/// lowercase because the check lowercases the answer first. The glossary block's header is here
+/// because the model sometimes repeats it instead of translating; both of Hy-MT2's spellings of
+/// it are listed.
+const REPLY_PHRASES: [&str; 8] = [
     "please translate",
     "translate the following",
     "refer to the following translations",
+    "reference the following translations",
     "here is the translation",
     "here's the translation",
     "the translation is",
-    "translated text:",
+    "translated text",
 ];
+/// A reply introduces what follows with a colon soon after its opening. A translation that only
+/// contains the words ("Please translate this.", "The translation is wrong.") has none.
+const REPLY_COLON_WITHIN: usize = 40;
 /// Hy-MT2's template ends a sentence with a control token. A leaked spelling of it is ordinary
 /// text, so a stop string catches it; the model has been seen to emit either full-width bar.
 pub const LEAKED_MARKERS: [&str; 6] = [
@@ -191,7 +195,7 @@ impl OpenAiCompatTranslator {
         }
         if request.context.is_empty() && request.terms.is_empty() {
             let mut output = self.stream(alone(request.text), request, on_delta)?;
-            finish(&mut output);
+            finish(&mut output, request);
             return Ok(output);
         }
         let messages = HyMt2Prompts::turns_with_terms(request.context, request.terms, request.text)
@@ -199,7 +203,7 @@ impl OpenAiCompatTranslator {
             .map(|(role, content)| json!({"role": role, "content": content}))
             .collect();
         let mut turns = self.stream(messages, request, on_delta)?;
-        finish(&mut turns);
+        finish(&mut turns, request);
         let problem = answer_problem(&turns, request);
         if problem.is_none() {
             let missing = missing_terms(&turns.text, request.terms);
@@ -218,15 +222,19 @@ impl OpenAiCompatTranslator {
                 .map(|(role, content)| json!({"role": role, "content": content}))
                 .collect();
             if let Ok(mut retry) = self.stream(messages, request, on_delta) {
-                finish(&mut retry);
-                retry.prompt_tokens += turns.prompt_tokens;
-                retry.cached_tokens += turns.cached_tokens;
-                retry.generated_tokens += turns.generated_tokens;
-                if answer_problem(&retry, request).is_none()
-                    && missing_terms(&retry.text, request.terms).len() < missing.len()
-                {
-                    return Ok(retry);
-                }
+                finish(&mut retry, request);
+                let better = answer_problem(&retry, request).is_none()
+                    && missing_terms(&retry.text, request.terms).len() < missing.len();
+                // Both requests ran, so the kept answer carries the tokens of both.
+                let (mut kept, spent) = if better {
+                    (retry, turns)
+                } else {
+                    (turns, retry)
+                };
+                kept.prompt_tokens += spent.prompt_tokens;
+                kept.cached_tokens += spent.cached_tokens;
+                kept.generated_tokens += spent.generated_tokens;
+                return Ok(kept);
             }
             return Ok(turns);
         }
@@ -239,7 +247,7 @@ impl OpenAiCompatTranslator {
         alone.prompt_tokens += turns.prompt_tokens;
         alone.cached_tokens += turns.cached_tokens;
         alone.generated_tokens += turns.generated_tokens;
-        finish(&mut alone);
+        finish(&mut alone, request);
         // A second failure keeps the answer that is not wrong in the same way.
         if answer_problem(&alone, request).is_some() && answer_problem(&turns, request).is_none() {
             return Ok(turns);
@@ -387,9 +395,12 @@ fn alone(text: &str) -> Vec<serde_json::Value> {
     vec![json!({"role": "user", "content": HyMt2Prompts::user_message(text)})]
 }
 
-/// Trim the answer and drop any leaked template marker, which is ordinary text to us.
-fn finish(output: &mut TranslationOut) {
-    output.text = strip_marker_residue(output.text.trim());
+/// Trim the answer and drop any leaked template marker, which is ordinary text to us. A source
+/// that ends in `…` was marked as unfinished by the queue, and an ellipsis at the end of the
+/// answer is then the model echoing that mark.
+fn finish(output: &mut TranslationOut, request: &TranslateRequest<'_>) {
+    let echoed = request.text.ends_with('…');
+    output.text = strip_marker_residue(output.text.trim(), echoed);
     output.text = output.text.trim().to_owned();
 }
 
@@ -419,7 +430,15 @@ fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Op
     // following content into English: <line>". That is a reply, not a translation, and the line
     // it repeats is already in the answer.
     let lowered = output.text.to_lowercase();
-    if REPLY_PHRASES.iter().any(|phrase| lowered.contains(phrase)) {
+    let replies = REPLY_PHRASES.iter().any(|phrase| {
+        lowered.find(phrase).is_some_and(|at| {
+            lowered[at + phrase.len()..]
+                .chars()
+                .take(REPLY_COLON_WITHIN)
+                .any(|character| matches!(character, ':' | '：'))
+        })
+    });
+    if replies {
         return Some("answered instead of translating");
     }
     None
@@ -443,15 +462,10 @@ fn missing_terms(answer: &str, terms: &[(String, String)]) -> Vec<(String, Strin
         .collect()
 }
 
-/// Remove a leaked marker spelling, including a truncated one at the end of the answer, and an
-/// ellipsis the model echoed from the source's own unfinished marker.
-fn strip_marker_residue(text: &str) -> String {
+/// Remove a leaked marker spelling, including a truncated one at the end of the answer, and,
+/// when `echoed`, an ellipsis the model copied from the source's own unfinished marker.
+fn strip_marker_residue(text: &str, echoed: bool) -> String {
     let mut cleaned = text.to_owned();
-    for ellipsis in ["…", "..."] {
-        if let Some(rest) = cleaned.strip_suffix(ellipsis) {
-            cleaned = rest.trim_end().to_owned();
-        }
-    }
     for marker in LEAKED_MARKERS {
         if let Some(at) = cleaned.find(marker) {
             cleaned.truncate(at);
@@ -463,7 +477,15 @@ fn strip_marker_residue(text: &str) -> String {
             cleaned.truncate(at);
         }
     }
-    cleaned.trim_end().to_owned()
+    let mut cleaned = cleaned.trim_end().to_owned();
+    if echoed {
+        for ellipsis in ["…", "..."] {
+            if let Some(rest) = cleaned.strip_suffix(ellipsis) {
+                cleaned = rest.trim_end().to_owned();
+            }
+        }
+    }
+    cleaned
 }
 
 pub fn health(base_url: &str, control: &TranslationControl) -> Result<bool> {
@@ -877,28 +899,90 @@ pub(crate) fn local_agent(address: SocketAddr, control: TranslationControl) -> R
 
 #[cfg(test)]
 mod residue_tests {
-    use super::strip_marker_residue;
+    use super::{answer_problem, strip_marker_residue};
+    use lt_core::{
+        engines::{TranslateRequest, TranslationControl, TranslationOut},
+        types::UtteranceId,
+    };
+    use std::{
+        sync::{atomic::AtomicBool, Arc},
+        time::{Duration, Instant},
+    };
+
+    /// A reply to the instruction introduces something with a colon. A translation that only
+    /// uses the same words is a translation, and retrying it costs a second request.
+    #[test]
+    fn a_reply_is_told_apart_from_a_translation_that_shares_its_words() {
+        let request = TranslateRequest {
+            id: UtteranceId(1),
+            text: "这个翻译是错的。",
+            context: &[],
+            terms: &[],
+            max_tokens: None,
+            control: TranslationControl {
+                deadline: Instant::now() + Duration::from_secs(1),
+                cancelled: Arc::new(AtomicBool::new(false)),
+                abort: Arc::new(AtomicBool::new(false)),
+            },
+        };
+        let answer = |text: &str| TranslationOut {
+            text: text.into(),
+            ..TranslationOut::default()
+        };
+        assert_eq!(
+            answer_problem(&answer("The translation is wrong."), &request),
+            None
+        );
+        assert_eq!(
+            answer_problem(&answer("Please translate this for me."), &request),
+            None
+        );
+        assert_eq!(
+            answer_problem(
+                &answer("Here is the translation: This translation is wrong."),
+                &request
+            ),
+            Some("answered instead of translating")
+        );
+        // The glossary block's own header, repeated back.
+        assert_eq!(
+            answer_problem(
+                &answer("Reference the following translations: President Zhuo"),
+                &request
+            ),
+            Some("answered instead of translating")
+        );
+    }
 
     /// The source carries a `…` for a clause that stopped mid-thought; a model that copies it
     /// back must not put it in the caption.
     #[test]
     fn an_echoed_ellipsis_is_removed() {
         assert_eq!(
-            strip_marker_residue("Then just assume it's that…"),
+            strip_marker_residue("Then just assume it's that…", true),
             "Then just assume it's that"
         );
         assert_eq!(
-            strip_marker_residue("Then just assume it's that..."),
+            strip_marker_residue("Then just assume it's that...", true),
             "Then just assume it's that"
         );
+        assert_eq!(
+            strip_marker_residue("Then that…<｜hy_end▁of▁sentence｜>", true),
+            "Then that"
+        );
         // An ellipsis inside the sentence is the model's own punctuation and stays.
-        assert_eq!(strip_marker_residue("I… don't know."), "I… don't know.");
+        assert_eq!(
+            strip_marker_residue("I… don't know.", true),
+            "I… don't know."
+        );
+        // Without the mark in the source, a trailing ellipsis is the model's own.
+        assert_eq!(strip_marker_residue("Wait...", false), "Wait...");
     }
 
     #[test]
     fn a_leaked_marker_is_cut() {
         assert_eq!(
-            strip_marker_residue("Hello.<｜hy_end▁of▁sentence｜>"),
+            strip_marker_residue("Hello.<｜hy_end▁of▁sentence｜>", false),
             "Hello."
         );
     }
