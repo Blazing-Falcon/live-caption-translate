@@ -253,6 +253,28 @@ export function transcriptPatch(enabled: boolean): ConfigPatch {
   return { transcript: { enabled } };
 }
 
+/** The "also heard as" field, split on either comma width and on the list mark a Chinese IME emits. */
+export function splitVariants(text: string): string[] {
+  const seen = new Set<string>();
+  const variants: string[] = [];
+  for (const part of text.split(/[,，、]/)) {
+    const variant = part.trim();
+    if (variant === "" || seen.has(variant)) continue;
+    seen.add(variant);
+    variants.push(variant);
+  }
+  return variants;
+}
+
+export function formatVariants(variants: readonly string[]): string {
+  return variants.join(", ");
+}
+
+/** The Rust side replaces an array wholesale, so a patch always carries the whole list. */
+export function glossaryPatch(entries: GlossaryEntry[]): ConfigPatch {
+  return { translate: { glossary: entries } };
+}
+
 export function performancePatch(values: DeepPartial<Config["performance"]>): ConfigPatch {
   return { performance: values };
 }
@@ -310,7 +332,7 @@ export const DEFAULT_CONFIG: Config = {
     "threads": 1,
     "pause_s": 0.8,
     "second_pass": "qwen3",
-    "second_pass_threads": 2,
+    "second_pass_threads": 4,
     "second_pass_max_wait_s": 1.5
   },
   "filter": {

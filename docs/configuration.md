@@ -47,7 +47,7 @@ chunk_ms = 480                  # 160 | 480 | 960
 threads = 1                     # 1 to the logical CPUs of the PC
 pause_s = 0.8                   # silence that ends a line
 second_pass = "qwen3"           # "off" | "qwen3": read each closed line again offline
-second_pass_threads = 2         # 1 to the logical CPUs of the PC
+second_pass_threads = 4         # 1 to the logical CPUs of the PC
 second_pass_max_wait_s = 1.5    # after this, the line keeps the live text
 
 [filter]

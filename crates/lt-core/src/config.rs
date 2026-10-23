@@ -68,7 +68,7 @@ config_table!(AsrConfig {
     threads: u32 = 1,
     pause_s: f32 = 0.8,
     second_pass: String = "qwen3".into(),
-    second_pass_threads: u32 = 2,
+    second_pass_threads: u32 = 4,
     second_pass_max_wait_s: f32 = 1.5,
 });
 config_table!(FilterConfig {
