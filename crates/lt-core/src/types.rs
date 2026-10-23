@@ -179,6 +179,10 @@ pub struct Transcript {
     /// Mean token log-probability, when the engine gives one.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logprob: Option<f32>,
+    /// The recognizer was much less sure of this line than of the session's speech, which is
+    /// what singing sounds like to it.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub music: bool,
     /// Absent when the second pass is off.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub second_pass: Option<SecondPass>,

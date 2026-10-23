@@ -23,9 +23,10 @@ use std::{
     time::{Duration, Instant},
 };
 
-/// Chinese and mixed lines are translated; English and other languages show as heard.
-fn translates(transcript: &Transcript) -> bool {
-    transcript.class.is_translated()
+/// Chinese and mixed lines are translated; English and other languages show as heard. A line
+/// marked as singing is translated too, unless the user turned that off.
+fn translates(transcript: &Transcript, skip_music: bool) -> bool {
+    transcript.class.is_translated() && !(skip_music && transcript.music)
 }
 
 struct Scheduler {
@@ -127,9 +128,10 @@ impl Scheduler {
                     asr_ms: transcript.timing.asr_ms,
                     cut: transcript.cut,
                     logprob: transcript.logprob,
+                    music: transcript.music,
                     second_pass: transcript.second_pass.clone(),
                 });
-                if translates(&transcript) {
+                if translates(&transcript, self.config.filter.skip_music) {
                     self.translating.insert(transcript.id);
                     self.ready.push_back(transcript);
                 } else {

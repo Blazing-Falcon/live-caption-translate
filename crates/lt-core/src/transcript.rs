@@ -563,6 +563,7 @@ mod tests {
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
             logprob: None,
+            music: false,
             second_pass: None,
         }
     }
@@ -643,6 +644,7 @@ mod tests {
                     end_ms: 1_500,
                     asr_ms: 100,
                     cut: CutReason::Commit,
+                    music: false,
                     logprob: None,
                     second_pass: None,
                 },

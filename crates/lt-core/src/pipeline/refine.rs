@@ -9,6 +9,7 @@ use crate::{
     error::Result,
     events::DropReason,
     glossary::Glossary,
+    lyrics::LyricDetector,
     recognizer::AsrMessage,
     refine::{cut_at_next_clause, only_pronoun_differs, trim},
     text::{chinese_chars, classify, clean, drop_reason},
@@ -77,6 +78,7 @@ pub(super) fn refine_loop(
 ) -> Result<()> {
     let max_wait = Duration::from_secs_f32(config.asr.second_pass_max_wait_s);
     let glossary = Glossary::new(&config.translate.glossary);
+    let mut lyrics = LyricDetector::default();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
             Ok(input) => input,
@@ -94,7 +96,7 @@ pub(super) fn refine_loop(
                 if let Some(engine) = engine.as_deref_mut() {
                     second_pass(engine, &mut transcript, &window, &open, closed, max_wait);
                 }
-                finalize(transcript, &live, config, &glossary)
+                finalize(transcript, &live, config, &glossary, &mut lyrics)
             }
             RefineInput::Message(message) => message,
         };
@@ -190,6 +192,7 @@ fn finalize(
     live: &str,
     config: &Config,
     glossary: &Glossary,
+    lyrics: &mut LyricDetector,
 ) -> AsrMessage {
     transcript.text = clean(&transcript.text, &config.filter.fillers);
     if let Some(record) = transcript.second_pass.as_mut() {
@@ -197,6 +200,8 @@ fn finalize(
         record.live_text = (live != transcript.text).then_some(live);
     }
     transcript.text = glossary.normalize(&transcript.text);
+    // Confidence is read on the clause as the engine heard it, before any correction.
+    transcript.music = lyrics.observe(transcript.logprob);
     let Some(class) = classify(&transcript.text) else {
         return AsrMessage::Dropped(transcript.id, DropReason::Empty);
     };

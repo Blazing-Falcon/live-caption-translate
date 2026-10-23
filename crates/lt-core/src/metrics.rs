@@ -301,6 +301,7 @@ mod tests {
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
             logprob: None,
+            music: false,
             second_pass: None,
         }
     }

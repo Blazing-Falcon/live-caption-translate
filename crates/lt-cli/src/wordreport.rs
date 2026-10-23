@@ -162,6 +162,7 @@ mod tests {
             asr_ms: 100,
             cut,
             logprob: None,
+            music: false,
             second_pass: None,
         }
     }

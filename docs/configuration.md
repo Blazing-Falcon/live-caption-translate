@@ -51,6 +51,7 @@ second_pass_threads = 2         # 1 to the logical CPUs of the PC
 second_pass_max_wait_s = 1.5    # after this, the line keeps the live text
 
 [filter]
+skip_music = false              # do not translate a line that looks like song lyrics
 single_char_max_s = 0.6
 single_char_allow = ["对", "好", "是", "行", "不", "哦"]
 fillers = ["呃", "嗯", "额", "uh", "um"]
@@ -145,6 +146,7 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
+| `skip_music` | true or false | pipeline | Do not translate a line the recognizer was much less sure of than the session's speech, which is what singing sounds like to it. The line still shows, marked as song; only its English is left out. |
 | `single_char_max_s` | 0 or more | pipeline | Drop a one-character result from a clause shorter than this, unless the character is in `single_char_allow` |
 | `single_char_allow` | list of strings | pipeline | One-character results that the filter always keeps |
 | `fillers` | list of strings | pipeline | Words removed when they stand alone |
