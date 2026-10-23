@@ -86,10 +86,11 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
     }
 }
 
-/// A wrong window only makes translations worse: lines from before a break,
-/// or one line too many, would pass every other check.
+/// A wrong window only makes translations worse: lines from before a break, or a window that
+/// changes shape from line to line (which defeats the server's prompt cache), would pass every
+/// other check.
 #[test]
-fn window_holds_whole_earlier_lines_and_restarts_after_a_gap_or_a_break() {
+fn window_grows_until_full_and_restarts_after_a_gap_or_a_break() {
     let mut config = Config::default().translate;
     config.window_chars = 10;
     let mut queue = TranslationQueue::new(config);
@@ -105,7 +106,9 @@ fn window_holds_whole_earlier_lines_and_restarts_after_a_gap_or_a_break() {
             .collect::<Vec<_>>()
     };
     assert!(next(&mut queue, 1, "我们今天去公园，", 1.0).is_empty());
-    assert_eq!(next(&mut queue, 2, "好的。", 2.0), ["我们今天去公园，"]);
+    // 8 characters are kept, so the next line would overflow: the window starts over rather
+    // than dropping the oldest line, and the prompt is then a prefix of the next one.
+    assert!(next(&mut queue, 2, "好的。", 2.0).is_empty());
     assert_eq!(next(&mut queue, 3, "然后吃饭。", 3.0), ["好的。"]);
     assert_eq!(next(&mut queue, 4, "嗯。", 4.0), ["好的。", "然后吃饭。"]);
     // Starts 15 s after the previous line ended.
@@ -125,6 +128,33 @@ fn window_holds_whole_earlier_lines_and_restarts_after_a_gap_or_a_break() {
     });
     next(&mut off, 1, "好的。", 1.0);
     assert!(next(&mut off, 2, "然后吃饭。", 2.0).is_empty());
+}
+
+/// Each prompt extends the one before it, so the server's cached prefix covers every earlier
+/// line. A sliding window would change the prefix on every line.
+#[test]
+fn consecutive_windows_extend_each_other_until_the_window_fills() {
+    let mut config = Config::default().translate;
+    config.window_chars = 60;
+    let mut queue = TranslationQueue::new(config);
+    let mut previous: Vec<String> = Vec::new();
+    for (id, text) in [(1, "我们今天去公园，"), (2, "好的。"), (3, "然后吃饭。"), (4, "嗯。")] {
+        queue
+            .push(transcript(id, text, f64::from(id as u32)), 0)
+            .unwrap();
+        let window: Vec<String> = queue
+            .take(StreamTime::from_seconds(f64::from(id as u32)))
+            .item
+            .unwrap()
+            .window
+            .into_iter()
+            .map(|(_, line)| line)
+            .collect();
+        // The new window starts with the previous one, then adds the line before this one.
+        assert_eq!(&window[..previous.len()], &previous[..]);
+        assert_eq!(window.len(), if id == 1 { 0 } else { previous.len() + 1 });
+        previous = window;
+    }
 }
 
 #[test]
@@ -413,6 +443,7 @@ impl Translator for ScriptedTranslator {
             prompt_tokens: 17,
             cached_tokens: 31,
             generated_tokens: 9,
+            truncated: false,
         })
     }
 }

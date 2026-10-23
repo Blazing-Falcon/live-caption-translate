@@ -82,7 +82,7 @@ config_table!(TranslateConfig {
     ctx: u32 = 1024,
     temperature: f32 = 0.0,
     repeat_penalty: f32 = 1.05,
-    max_tokens_cap: u32 = 256,
+    max_tokens_cap: u32 = 160,
     timeout_s: f32 = 10.0,
     queue_join_max_chars: u32 = 120,
     skip_lag_s: f32 = 6.0,

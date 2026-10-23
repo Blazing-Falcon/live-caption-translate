@@ -109,7 +109,11 @@ impl TranslationQueue {
         after_break || after_gap
     }
 
-    /// The newest earlier lines that fit in `window_chars` together, whole lines only.
+    /// The earlier lines to translate with this one. The window is append-only between resets:
+    /// every line since the last reset stays, and a line that would overflow `window_chars`
+    /// starts a new window instead of pushing the oldest out. llama-server reuses the KV of the
+    /// prompt prefix it saw last, so a window that only grows keeps that cache; a window that
+    /// slides changes the prefix on every line and misses on every line.
     fn window(&mut self, transcript: &Transcript, new_context: bool) -> Vec<(UtteranceId, String)> {
         let limit = self.config.window_chars as usize;
         if limit == 0 {
@@ -118,25 +122,24 @@ impl TranslationQueue {
         if new_context {
             self.earlier.clear();
         }
-        let mut window = Vec::new();
-        let mut chars = 0;
-        for (_, id, line) in self.earlier.iter().rev() {
-            chars += line.chars().count();
-            if chars > limit {
-                break;
-            }
-            window.push((*id, line.clone()));
+        let used: usize = self
+            .earlier
+            .iter()
+            .map(|(_, _, line)| line.chars().count())
+            .sum();
+        if used.saturating_add(transcript.text.chars().count()) > limit {
+            self.earlier.clear();
         }
-        window.reverse();
+        let window = self
+            .earlier
+            .iter()
+            .map(|(_, id, line)| (*id, line.clone()))
+            .collect();
         self.earlier.push_back((
             transcript.timing.end,
             transcript.id,
             transcript.text.clone(),
         ));
-        // Every line has at least one character, so older lines can never fit.
-        while self.earlier.len() > limit {
-            self.earlier.pop_front();
-        }
         window
     }
     pub fn len(&self) -> usize {

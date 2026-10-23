@@ -312,7 +312,7 @@ export const DEFAULT_CONFIG: Config = {
     "ctx": 1024,
     "temperature": 0.0,
     "repeat_penalty": 1.05,
-    "max_tokens_cap": 256,
+    "max_tokens_cap": 160,
     "timeout_s": 10.0,
     "queue_join_max_chars": 120,
     "skip_lag_s": 6.0,

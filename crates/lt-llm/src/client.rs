@@ -31,6 +31,18 @@ const MAX_LINE_BYTES: usize = 64 * 1024;
 const MAX_EVENT_BYTES: usize = 64 * 1024;
 const MAX_OUTPUT_BYTES: usize = 64 * 1024;
 const HTTP_BUFFER_BYTES: usize = 16 * 1024;
+/// An answer this many times longer than its source in characters is not a translation of it.
+const MAX_LENGTH_RATIO: usize = 12;
+/// Hy-MT2's template ends a sentence with a control token. A leaked spelling of it is ordinary
+/// text, so a stop string catches it; the model has been seen to emit either full-width bar.
+pub const LEAKED_MARKERS: [&str; 6] = [
+    "<｜hy_end▁of▁sentence｜>",
+    "<｠hy_end▁of▁sentence｠>",
+    "<｜hy_place▁holder▁no▁2｜>",
+    "<｠hy_place▁holder▁no▁2｠>",
+    "<｜end▁of▁message｜>",
+    "<｠end▁of▁message｠>",
+];
 
 #[derive(Clone, Debug)]
 pub(crate) struct Endpoint {
@@ -165,31 +177,34 @@ impl OpenAiCompatTranslator {
             ));
         }
         if request.context.is_empty() {
-            return self.stream(alone(request.text), request, on_delta);
+            let mut output = self.stream(alone(request.text), request, on_delta)?;
+            finish(&mut output);
+            return Ok(output);
         }
         let messages = HyMt2Prompts::turns(request.context, request.text)
             .into_iter()
             .map(|(role, content)| json!({"role": role, "content": content}))
             .collect();
         let mut turns = self.stream(messages, request, on_delta)?;
-        turns.text = turns.text.trim().to_owned();
-        // The small model sometimes copies an earlier line's English instead of translating.
-        let copied = request
-            .context
-            .iter()
-            .any(|(_, english)| english.trim() == turns.text);
-        if !turns.text.is_empty() && !copied {
+        finish(&mut turns);
+        let problem = answer_problem(&turns, request);
+        if problem.is_none() {
             return Ok(turns);
         }
         tracing::debug!(
             id = request.id.0,
-            copied,
-            "Translation with earlier lines was empty or copied; translating the line alone"
+            problem = problem.unwrap_or_default(),
+            "Translating the line alone"
         );
         let mut alone = self.stream(alone(request.text), request, on_delta)?;
         alone.prompt_tokens += turns.prompt_tokens;
         alone.cached_tokens += turns.cached_tokens;
         alone.generated_tokens += turns.generated_tokens;
+        finish(&mut alone);
+        // A second failure keeps the answer that is not wrong in the same way.
+        if answer_problem(&alone, request).is_some() && answer_problem(&turns, request).is_none() {
+            return Ok(turns);
+        }
         Ok(alone)
     }
 
@@ -212,10 +227,14 @@ impl OpenAiCompatTranslator {
             "messages": messages,
             "stream":true,
             "temperature":readable_float(self.config.temperature),
+            "top_k":1,
+            "top_p":1.0,
+            "min_p":0.0,
             "repeat_penalty":readable_float(self.config.repeat_penalty),
             "max_tokens":max_tokens(request.text, self.config.max_tokens_cap),
             "cache_prompt":true,
             "stream_options":{"include_usage":true},
+            "stop":LEAKED_MARKERS,
         });
         let agent = local_agent(self.endpoint.address, control.clone())?;
         let mut response = agent
@@ -326,6 +345,54 @@ impl Translator for OpenAiCompatTranslator {
 /// One line without earlier lines.
 fn alone(text: &str) -> Vec<serde_json::Value> {
     vec![json!({"role": "user", "content": HyMt2Prompts::user_message(text)})]
+}
+
+/// Trim the answer and drop any leaked template marker, which is ordinary text to us.
+fn finish(output: &mut TranslationOut) {
+    output.text = strip_marker_residue(output.text.trim());
+    output.text = output.text.trim().to_owned();
+}
+
+/// Why the answer is not usable as this line's translation, if it is not.
+fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Option<&'static str> {
+    if output.text.is_empty() {
+        return Some("empty");
+    }
+    if request
+        .context
+        .iter()
+        .any(|(_, english)| english.trim() == output.text)
+    {
+        return Some("copied an earlier line");
+    }
+    if output.truncated {
+        return Some("truncated");
+    }
+    if lt_core::text::chinese_chars(&output.text) > 0 {
+        return Some("Chinese in the answer");
+    }
+    let source = request.text.chars().count().max(1);
+    if output.text.chars().count() > MAX_LENGTH_RATIO * source {
+        return Some("longer than a translation");
+    }
+    None
+}
+
+/// Remove a leaked marker spelling, including a truncated one at the end of the answer.
+fn strip_marker_residue(text: &str) -> String {
+    let mut cleaned = text.to_owned();
+    for marker in LEAKED_MARKERS {
+        if let Some(at) = cleaned.find(marker) {
+            cleaned.truncate(at);
+        }
+    }
+    // A marker cut off by the token budget leaves an opening bracket and part of the name.
+    for needle in ["<｜hy_", "<｠hy_"] {
+        if let Some(at) = cleaned.find(needle) {
+            cleaned.truncate(at);
+        }
+    }
+    cleaned.trim_end().to_owned()
 }
 
 pub fn health(base_url: &str, control: &TranslationControl) -> Result<bool> {
@@ -454,6 +521,9 @@ fn process_chunk(
                 .is_some_and(|index| index != 0)
             {
                 continue;
+            }
+            if choice.get("finish_reason").and_then(Value::as_str) == Some("length") {
+                output.truncated = true;
             }
             if let Some(content) = choice.get("delta").and_then(|delta| delta.get("content")) {
                 if content.is_null() {

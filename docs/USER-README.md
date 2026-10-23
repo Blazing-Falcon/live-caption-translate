@@ -2,7 +2,7 @@
 
 Live Translation shows English captions for Chinese speech on your PC. It listens to the audio that your computer plays (a video, a call, a stream). It recognizes the Chinese, translates it to English, and shows the result as a subtitle on your screen.
 
-On a PC with 6 or more cores, the first English words appear in approximately one second, in a dimmer color. The final translation replaces them a short time later.
+On a PC with 6 or more cores, the English for a sentence appears about two and a half seconds after the speaker stops saying it.
 
 All processing is on your computer. After the first download, the app does not use the network. There are no accounts, no telemetry and no uploads.
 

@@ -131,6 +131,8 @@ pub struct TranslationOut {
     pub prompt_tokens: u32,
     pub cached_tokens: u32,
     pub generated_tokens: u32,
+    /// The server stopped at the output budget instead of finishing the sentence.
+    pub truncated: bool,
 }
 
 pub trait Translator: Send {
@@ -173,6 +175,10 @@ impl EngineRegistry {
     }
 }
 
+/// An output budget from the source length. English takes about 1.5 tokens per source
+/// character (p99 3.0 on our session), so `2 * chars + 8` bounds a runaway without cutting a
+/// real answer; the cap bounds the longest line the queue can join.
 pub fn max_tokens(text: &str, cap: u32) -> u32 {
-    (text.chars().count().saturating_mul(4).saturating_add(16)).min(cap as usize) as u32
+    let wanted = text.chars().count().saturating_mul(2).saturating_add(8);
+    wanted.max(24).min(cap as usize) as u32
 }

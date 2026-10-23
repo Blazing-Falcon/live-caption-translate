@@ -6,7 +6,7 @@ use lt_core::{
     events::FailReason,
     types::UtteranceId,
 };
-use lt_llm::{HyMt2Prompts, OpenAiCompatTranslator};
+use lt_llm::{HyMt2Prompts, OpenAiCompatTranslator, LEAKED_MARKERS};
 use serde_json::{json, Value};
 use std::{
     io::{Read, Write},
@@ -228,8 +228,10 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
         body,
         json!({
             "messages":[{"role":"user","content":HyMt2Prompts::user_message("你好。")}],
-            "stream":true,"temperature":0.0,"repeat_penalty":1.05,"max_tokens":28,"cache_prompt":true,
+            "stream":true,"temperature":0.0,"top_k":1,"top_p":1.0,"min_p":0.0,"repeat_penalty":1.05,
+            "max_tokens":24,"cache_prompt":true,
             "stream_options":{"include_usage":true},
+            "stop":LEAKED_MARKERS,
         })
     );
     assert_eq!(deltas, ["Hello胖", "Hello胖 world."]);
@@ -284,8 +286,10 @@ fn earlier_lines_go_as_chat_turns_and_an_empty_or_copied_answer_falls_back() {
             {"role":"assistant","content":"We're going to the park,"},
             {"role":"user","content":"然后吃饭。"},
         ],
-        "stream":true,"temperature":0.0,"repeat_penalty":1.05,"max_tokens":36,"cache_prompt":true,
+        "stream":true,"temperature":0.0,"top_k":1,"top_p":1.0,"min_p":0.0,"repeat_penalty":1.05,
+        "max_tokens":24,"cache_prompt":true,
         "stream_options":{"include_usage":true},
+        "stop":LEAKED_MARKERS,
     });
     let alone = json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}]);
     for retried in [false, true, true] {
