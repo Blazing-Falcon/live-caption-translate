@@ -37,7 +37,13 @@ fn cutting_at_the_next_clause_keeps_its_words_out_of_the_trimmed_text() {
         let window = cut.unwrap_or(&case.window);
         let chosen = trim(&case.live, window).map(|trimmed| trimmed.text);
         if chosen != case.expected {
-            regressed.push((case.id, &case.live, &case.window, chosen.clone(), &case.expected));
+            regressed.push((
+                case.id,
+                &case.live,
+                &case.window,
+                chosen.clone(),
+                &case.expected,
+            ));
         }
         if cut.is_some() {
             changed += 1;

@@ -139,6 +139,9 @@ export const STATS: PipelineStats = {
   rss_app_mb: 520,
   rss_translator_mb: 1380,
   rss_speech_mb: 0,
+  private_app_mb: 340,
+  private_translator_mb: 1310,
+  private_speech_mb: 0,
   cpu_system_pct: 20,
   word_final_p50_ms: null,
 };

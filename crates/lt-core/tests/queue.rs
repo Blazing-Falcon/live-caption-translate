@@ -5,8 +5,8 @@ use lt_core::{
     events::{EngineState, FailReason, PipelineEvent},
     fakes::FakeTranslator,
     queue::{
-        stop_runaway, strip_wrappers, translate_one, QueuedTranscript, TranslationQueue,
-        TranslatorWorker,
+        stop_runaway, strip_wrappers, translate_one, QueuedTranscript, Translation,
+        TranslationQueue, TranslatorWorker,
     },
     types::{StageTiming, StreamTime, TextClass, Transcript, UtteranceId},
 };
@@ -24,6 +24,15 @@ use std::{
 
 /// Only stops a hung test; no assertion depends on how fast this PC is.
 const WATCHDOG: Duration = Duration::from_secs(30);
+
+/// A request with no earlier lines and no glossary.
+fn translation(config: &TranslateConfig) -> Translation<'_> {
+    Translation {
+        context: &[],
+        terms: &[],
+        config,
+    }
+}
 
 fn transcript(id: u64, text: &str, end: f64) -> Transcript {
     Transcript {
@@ -138,7 +147,12 @@ fn consecutive_windows_extend_each_other_until_the_window_fills() {
     config.window_chars = 60;
     let mut queue = TranslationQueue::new(config);
     let mut previous: Vec<String> = Vec::new();
-    for (id, text) in [(1, "我们今天去公园，"), (2, "好的。"), (3, "然后吃饭。"), (4, "嗯。")] {
+    for (id, text) in [
+        (1, "我们今天去公园，"),
+        (2, "好的。"),
+        (3, "然后吃饭。"),
+        (4, "嗯。"),
+    ] {
         queue
             .push(transcript(id, text, f64::from(id as u32)), 0)
             .unwrap();
@@ -215,9 +229,7 @@ fn wrappers_runaway_echo_and_leaked_chinese_are_checked() {
         let event = translate_one(
             &mut fake,
             &item,
-            &[],
-            &[],
-            &Config::default().translate,
+            &translation(&Config::default().translate),
             &clock,
             &bus,
             Arc::new(AtomicBool::new(false)),
@@ -476,9 +488,7 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     let event = translate_one(
         &mut fake,
         &item,
-        &[],
-        &[],
-        &config,
+        &translation(&config),
         &clock,
         &bus,
         cancelled.clone(),
@@ -495,7 +505,14 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     // An abort belongs to one request; the same pipeline cancellation flag can
     // be reused for the next request without suppressing it.
     let mut next = ScriptedTranslator::new(clock.clone(), &["Goodbye."], "Goodbye.");
-    let next_event = translate_one(&mut next, &item, &[], &[], &config, &clock, &bus, cancelled);
+    let next_event = translate_one(
+        &mut next,
+        &item,
+        &translation(&config),
+        &clock,
+        &bus,
+        cancelled,
+    );
     assert!(
         matches!(next_event, PipelineEvent::TranslationFinal { text, .. } if text == "Goodbye.")
     );

@@ -161,7 +161,6 @@ pub struct ProcessSampler {
     translator: Child,
     speech: Child,
     system_cpu: SystemCpu,
-    private_mb: (u32, u32, u32),
 }
 
 impl ProcessSampler {
@@ -181,15 +180,7 @@ impl ProcessSampler {
             translator: Child::new(translator),
             speech: Child::new(speech),
             system_cpu: SystemCpu::default(),
-            private_mb: (0, 0, 0),
         })
-    }
-
-    /// Private bytes of the app, the translator and the second-pass server from the last
-    /// sample, in MiB. `ResourceSample` carries only the working set, so this is where the
-    /// companion counter is read out.
-    pub fn private_mb(&self) -> (u32, u32, u32) {
-        self.private_mb
     }
 }
 
@@ -202,11 +193,6 @@ impl ResourceSampler for ProcessSampler {
             .translator
             .observe(&self.backend, self.app_pid, app, now);
         let speech = self.speech.observe(&self.backend, self.app_pid, app, now);
-        self.private_mb = (
-            app_usage.private_mb,
-            translator.private_mb,
-            speech.private_mb,
-        );
         let cpu_system_pct = self.system_cpu.observe(self.backend.system_times());
         ResourceSample {
             cpu_app_pct: app_usage.cpu_pct,
@@ -215,6 +201,9 @@ impl ResourceSampler for ProcessSampler {
             rss_app_mb: app_usage.rss_mb,
             rss_translator_mb: translator.rss_mb,
             rss_speech_mb: speech.rss_mb,
+            private_app_mb: app_usage.private_mb,
+            private_translator_mb: translator.private_mb,
+            private_speech_mb: speech.private_mb,
             cpu_system_pct,
         }
     }
@@ -300,7 +289,7 @@ mod platform {
             if unsafe {
                 K32GetProcessMemoryInfo(
                     handle.0,
-                    &mut memory as *mut PROCESS_MEMORY_COUNTERS_EX as *mut PROCESS_MEMORY_COUNTERS,
+                    std::ptr::from_mut(&mut memory).cast::<PROCESS_MEMORY_COUNTERS>(),
                     memory_size,
                 )
             } == 0
@@ -469,10 +458,19 @@ mod tests {
         let no_server = Arc::new(AtomicU32::new(0));
         let mut sampler = ProcessSampler::new(no_server.clone(), no_server).unwrap();
         let sample = sampler.sample();
-        let (app_mb, translator_mb, speech_mb) = sampler.private_mb();
-        assert!(app_mb > 0, "the app has committed memory");
+        assert!(sample.private_app_mb > 0, "the app has committed memory");
         assert!(sample.rss_app_mb > 0, "the app has a working set");
+        // The two counters measure different things, so they must not be the same reading:
+        // the working set also counts pages shared with other processes (the DLLs), and the
+        // commit charge counts pages that are reserved but not resident.
+        assert_ne!(
+            sample.private_app_mb, sample.rss_app_mb,
+            "private bytes and working set are separate counters"
+        );
         // With no server running, their readings are zero rather than the app's.
-        assert_eq!((translator_mb, speech_mb), (0, 0));
+        assert_eq!(
+            (sample.private_translator_mb, sample.private_speech_mb),
+            (0, 0)
+        );
     }
 }

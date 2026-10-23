@@ -210,11 +210,10 @@ impl OpenAiCompatTranslator {
                 missing = missing.len(),
                 "Retrying with the glossary entries the answer dropped"
             );
-            let messages =
-                HyMt2Prompts::turns_with_terms(request.context, &missing, request.text)
-                    .into_iter()
-                    .map(|(role, content)| json!({"role": role, "content": content}))
-                    .collect();
+            let messages = HyMt2Prompts::turns_with_terms(request.context, &missing, request.text)
+                .into_iter()
+                .map(|(role, content)| json!({"role": role, "content": content}))
+                .collect();
             if let Ok(mut retry) = self.stream(messages, request, on_delta) {
                 finish(&mut retry);
                 retry.prompt_tokens += turns.prompt_tokens;
@@ -417,10 +416,7 @@ fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Op
     // following content into English: <line>". That is a reply, not a translation, and the line
     // it repeats is already in the answer.
     let lowered = output.text.to_lowercase();
-    if REPLY_PHRASES
-        .iter()
-        .any(|phrase| lowered.contains(phrase))
-    {
+    if REPLY_PHRASES.iter().any(|phrase| lowered.contains(phrase)) {
         return Some("answered instead of translating");
     }
     None

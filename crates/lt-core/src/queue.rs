@@ -326,16 +326,27 @@ fn window_context(
     context
 }
 
+/// What a request needs beyond the line itself: the earlier lines it may use, the glossary
+/// entries it mentions, and the queue's settings.
+pub struct Translation<'a> {
+    pub context: &'a [(String, String)],
+    pub terms: &'a [(String, String)],
+    pub config: &'a TranslateConfig,
+}
+
 pub fn translate_one(
     translator: &mut dyn Translator,
     item: &QueuedTranscript,
-    context: &[(String, String)],
-    terms: &[(String, String)],
-    config: &TranslateConfig,
+    translation: &Translation<'_>,
     clock: &dyn Clock,
     bus: &EventBus,
     cancelled: Arc<AtomicBool>,
 ) -> PipelineEvent {
+    let Translation {
+        context,
+        terms,
+        config,
+    } = *translation;
     let source = &item.transcript;
     let span = tracing::info_span!("translation", id = source.id.0);
     let _utterance = span.enter();
@@ -525,12 +536,15 @@ impl TranslatorWorker {
                     };
                     let context = window_context(&item.window, &shown);
                     let terms = glossary.terms(&item.transcript.text, MAX_TERMS);
+                    let translation = Translation {
+                        context: &context,
+                        terms: &terms,
+                        config: &config,
+                    };
                     let event = translate_one(
                         translator.as_mut(),
                         &item,
-                        &context,
-                        &terms,
-                        &config,
+                        &translation,
                         clock.as_ref(),
                         &bus,
                         worker_cancelled.clone(),

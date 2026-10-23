@@ -229,6 +229,10 @@ pub struct PipelineStats {
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
     pub rss_speech_mb: u32,
+    /// Private bytes (commit charge) of the same three processes.
+    pub private_app_mb: u32,
+    pub private_translator_mb: u32,
+    pub private_speech_mb: u32,
     /// Whole-PC CPU busy percent over the last second.
     pub cpu_system_pct: f32,
     /// Median delay from a spoken word to the English that covers it, last minute.

@@ -676,7 +676,10 @@ fn normalize_types(
             normalize_types(item, &app_schema, &format!("{path}[{index}]"), messages);
         }
     }
-    if let Some(items) = value.as_array_mut().filter(|_| path == "translate.glossary") {
+    if let Some(items) = value
+        .as_array_mut()
+        .filter(|_| path == "translate.glossary")
+    {
         // A glossary row's schema, so a wrong type in one field does not drop the whole entry.
         let entry_schema = toml::Value::Table(toml::Table::from_iter([
             ("zh".into(), toml::Value::String(String::new())),
@@ -686,12 +689,7 @@ fn normalize_types(
             ("confirmed".into(), toml::Value::Boolean(false)),
         ]));
         for (index, item) in items.iter_mut().enumerate() {
-            normalize_types(
-                item,
-                &entry_schema,
-                &format!("{path}[{index}]"),
-                messages,
-            );
+            normalize_types(item, &entry_schema, &format!("{path}[{index}]"), messages);
         }
     }
 }

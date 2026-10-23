@@ -51,6 +51,9 @@ export interface PipelineStats {
   rss_app_mb: number;
   rss_translator_mb: number;
   rss_speech_mb: number;
+  private_app_mb: number;
+  private_translator_mb: number;
+  private_speech_mb: number;
   cpu_system_pct: number;
   word_final_p50_ms: number | null;
 }

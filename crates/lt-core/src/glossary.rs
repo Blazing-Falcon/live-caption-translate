@@ -188,7 +188,9 @@ impl Glossary {
 /// Characters that turn an honorific into an ordinary word when they follow it: 周总 + 理 is
 /// 总理 (premier), 朱总 + 裁 is 总裁 (a company's president). Chinese has no word boundaries, so
 /// replacement needs this guard.
-const COMPOUND_TAILS: [char; 11] = ['理', '裁', '统', '书', '编', '监', '管', '局', '部', '长', '员'];
+const COMPOUND_TAILS: [char; 11] = [
+    '理', '裁', '统', '书', '编', '监', '管', '局', '部', '长', '员',
+];
 
 fn extends_to_another_word(characters: &[char], at: usize) -> bool {
     characters

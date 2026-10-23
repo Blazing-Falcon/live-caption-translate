@@ -19,6 +19,12 @@ pub struct ResourceSample {
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
     pub rss_speech_mb: u32,
+    /// Private bytes (commit charge) of the same three processes. Working set counts pages
+    /// shared with other processes and shrinks when Windows trims it, so it does not answer
+    /// what a process costs; this does.
+    pub private_app_mb: u32,
+    pub private_translator_mb: u32,
+    pub private_speech_mb: u32,
     /// Whole-PC CPU busy percent over the last second.
     pub cpu_system_pct: f32,
 }
@@ -257,6 +263,9 @@ impl Metrics {
             rss_app_mb: resources.rss_app_mb,
             rss_translator_mb: resources.rss_translator_mb,
             rss_speech_mb: resources.rss_speech_mb,
+            private_app_mb: resources.private_app_mb,
+            private_translator_mb: resources.private_translator_mb,
+            private_speech_mb: resources.private_speech_mb,
             ..PipelineStats::default()
         }
     }
