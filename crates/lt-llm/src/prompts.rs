@@ -44,8 +44,11 @@ impl HyMt2Prompts {
             turns.push(("assistant", english.clone()));
         }
         let text = if !terms.is_empty() {
-            format!("{}{}Text:
-{}", Self::user_message_head(), Self::term_block(terms), text)
+            format!(
+                "{}{}Text:\n{text}",
+                Self::user_message_head(),
+                Self::term_block(terms)
+            )
         } else if turns.is_empty() {
             Self::user_message(text)
         } else {
@@ -102,7 +105,6 @@ mod tests {
         assert_eq!(HyMt2Prompts::user_message("我也想办一个，伟大的公司。"), "Translate the following text into English. Note that you should only output the translated result without any additional explanation:\n\n我也想办一个，伟大的公司。");
     }
 
-    #[test]
     /// The instruction comes first so the server's cached prefix covers it, and the block ends
     /// with `Text:` so the model translates what follows instead of echoing the block.
     #[test]

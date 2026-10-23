@@ -185,8 +185,14 @@ mod pronoun_tests {
 
     #[test]
     fn a_pronoun_only_change_is_refused() {
-        assert!(only_pronoun_differs("我也不知道她在里面叫啥，", "我也不知道他在里面叫啥，"));
-        assert!(only_pronoun_differs("然后她的弟弟特别喜欢音乐", "然后他的弟弟特别喜欢音乐"));
+        assert!(only_pronoun_differs(
+            "我也不知道她在里面叫啥，",
+            "我也不知道他在里面叫啥，"
+        ));
+        assert!(only_pronoun_differs(
+            "然后她的弟弟特别喜欢音乐",
+            "然后他的弟弟特别喜欢音乐"
+        ));
         // A change that also fixes a word is a real correction and is kept.
         assert!(!only_pronoun_differs("她来了", "他来了吧"));
         assert!(!only_pronoun_differs("她来了", "她来了"));
