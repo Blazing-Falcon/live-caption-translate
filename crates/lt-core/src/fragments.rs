@@ -5,9 +5,13 @@
 //! from the words, because a time or length test cannot tell a short complete line (`谢谢`) from
 //! an unfinished one (`那就当做`).
 
-/// A clause cannot end on these: function words, prepositions and pronouns that need a
-/// complement.
-const CONTINUATION_TAIL: &str = "的地得把被跟和与对在从向往给让使为比由就是会能要想该敢肯也都还又很太更最不没别挺真才我你他她它咱您这个些位件种样但而并且着过说做当成叫";
+/// A clause cannot end on these: function words and prepositions that need a complement.
+/// `样` and `过` are left out: 怎么样 and 我没去过 end a sentence.
+const CONTINUATION_TAIL: &str = "的地得把被跟和与对在从向往给让使为比由就是会能要想该敢肯也都还又很太更最不没别挺真才这个些位件种但而并且着说做当成叫";
+
+/// A pronoun at the end is either an object, which completes the clause (谢谢你, 相信我), or a
+/// subject still waiting for its verb (然后他, 跟我).
+const PRONOUNS: &str = "我你他她它咱您";
 
 /// Two-character endings that continue in the same way.
 const CONTINUATION_TAIL_PAIRS: [&str; 5] = ["我们", "你们", "他们", "咱们", "的话"];
@@ -57,19 +61,41 @@ pub fn looks_unfinished(text: &str, next_head: Option<&str>) -> bool {
     tail_cue(trimmed)
 }
 
-/// The last word cannot end a sentence: a function word, a pronoun, or one of the pairs.
+/// The last word cannot end a sentence: a function word, a subject pronoun, or one of the
+/// pairs.
 fn tail_cue(text: &str) -> bool {
+    // The punctuation that ended the cut is not part of the last word.
+    let words = text.trim_end_matches(|character: char| !character.is_alphanumeric());
+    // 是不是, 要不要, 有没有: a question that ends here, though its verb alone would not.
+    if ends_with_a_not_a(words) {
+        return false;
+    }
     if CONTINUATION_TAIL_PAIRS
         .iter()
-        .any(|pair| text.ends_with(pair))
+        .any(|pair| words.ends_with(pair))
     {
         return true;
     }
-    // The punctuation that ended the cut is not part of the last word.
-    text.chars()
-        .rev()
-        .find(|character| character.is_alphanumeric())
-        .is_some_and(|last| CONTINUATION_TAIL.contains(last))
+    let Some(last) = words.chars().next_back() else {
+        return false;
+    };
+    if PRONOUNS.contains(last) {
+        // A pronoun after a function word or a connective, or on its own, has no verb yet.
+        let before = &words[..words.len() - last.len_utf8()];
+        return before
+            .chars()
+            .next_back()
+            .is_none_or(|character| CONTINUATION_TAIL.contains(character))
+            || CONTINUATION_HEAD
+                .iter()
+                .any(|connective| before.ends_with(connective));
+    }
+    CONTINUATION_TAIL.contains(last)
+}
+
+fn ends_with_a_not_a(words: &str) -> bool {
+    let last: Vec<char> = words.chars().rev().take(3).collect();
+    matches!(last.as_slice(), [verb, '不' | '没', again] if verb == again)
 }
 
 fn starts_with_connective(text: &str) -> bool {
@@ -95,6 +121,9 @@ mod tests {
         assert!(looks_unfinished("那就当做", None));
         assert!(looks_unfinished("我希望我们", None));
         assert!(looks_unfinished("还是说", None));
+        assert!(looks_unfinished("然后他", None));
+        assert!(looks_unfinished("跟我，", None));
+        assert!(looks_unfinished("他", None));
         assert!(looks_unfinished(
             "我大可不必跟贵公司合作，",
             Some("而且我十分怀疑")
@@ -127,6 +156,13 @@ mod tests {
         assert!(!looks_unfinished("谢谢", None));
         assert!(!looks_unfinished("不用了", None));
         assert!(!looks_unfinished("给我吧", None));
+        // A pronoun that is the object, and a question that asks "or not", end here.
+        for complete in ["谢谢你", "相信我，", "是不是", "要不要", "对不对", "有没有"]
+        {
+            assert!(!looks_unfinished(complete, None), "{complete}");
+        }
+        assert!(!looks_unfinished("怎么样", None));
+        assert!(!looks_unfinished("我没去过", None));
         // A question that merely starts with 那 is not a continuation.
         assert!(!looks_unfinished("谢谢", Some("那是什么")));
     }
