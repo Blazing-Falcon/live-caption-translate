@@ -142,7 +142,7 @@ The default values are in the file above.
 | `threads` | 1–64 | pipeline | ONNX Runtime threads for the recognizer. The app uses at most the PC's logical CPUs. |
 | `pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
 | `second_pass` | `off`, `qwen3` | pipeline | When a line ends, Qwen3-ASR 0.6B reads its audio again in a second llama-server. Its text replaces the live Chinese before translation if it matches the live text closely enough. |
-| `second_pass_threads` | 1–64 | pipeline | Threads for the second-pass model. The app uses at most the PC's logical CPUs. |
+| `second_pass_threads` | 1–64 | pipeline | Threads for the second-pass model. The app uses at most the PC's logical CPUs. With 4 here plus 4 for the translator and 1 for the recognizer, a 4-core PC oversubscribes: measured on four pinned CPUs, end-to-end p50 is 1480 ms against 1428 on sixteen, and p90 2246 against 1964. Set this to 2 on a 4-core machine. |
 | `second_pass_max_wait_s` | 0.5–5.0 | pipeline | A line that waits longer than this for the second pass keeps the live text |
 | `second_pass_min_logprob` | -5.0–0.0 | pipeline | Run the second pass only on a line whose mean token log-probability is below this. `0` decodes every line. Measured on two domains: at -0.6 it keeps the whole gain on scripted drama and stops costing accuracy on spontaneous conversation, and its decode is skipped on 68% of drama lines and 95% of conversation lines. |
 
