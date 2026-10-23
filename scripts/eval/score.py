@@ -173,13 +173,17 @@ def main():
         1 for r in finals if r.get("id") in lyric_ids and (r.get("english") or "").strip()
     )
 
-    # A fragment: the source stops mid-phrase but the English reads as a finished sentence.
+    # A fragment: the pipeline decided the clause stopped mid-thought, and the English was
+    # published anyway.
+    #
+    # The transcript carries the pipeline's own flag, so this no longer infers the decision from
+    # the text. The old inference broke when the confidence gate arrived: a gated line keeps live
+    # text the recognizer never punctuated, so two complete sentences (好的，小吕 and 不用了)
+    # counted as fragments on a gated run that had none without the gate.
     fragments = [
         r["id"]
         for r in finals
-        if not SENTENCE_MARK.search(r.get("source") or "")
-        and len(HAN.findall(r.get("source") or "")) <= 4
-        and (r.get("english") or "").rstrip().endswith(".")
+        if r.get("fragment") is True and (r.get("english") or "").strip()
     ]
 
     names = {}

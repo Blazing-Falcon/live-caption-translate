@@ -40,7 +40,8 @@ From the transcript alone, so a run can be rescored without the audio:
 - shape: duration, Han characters, inter-line gaps, share of gaps at or above `asr.pause_s`;
 - name forms per person, from a names file;
 - lyric lines that were translated anyway;
-- fragments: an unfinished-looking source whose English reads as a complete sentence.
+- fragments: lines the pipeline flagged as stopping mid-thought and still translated. The flag is
+  new: a transcript recorded before it has no field, so those runs report zero rather than a guess.
 
 With a reference (`--zh` and `--en`) it also reports a character error rate over the joined text.
 That is coarse: the reference and the replay do not cut the same clauses.

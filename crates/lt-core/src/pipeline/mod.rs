@@ -61,7 +61,8 @@ pub struct Pipeline;
 
 impl Pipeline {
     /// Subscribe to `bus` before this call: a short replay can finish before it returns.
-    /// `second_pass` reads each closed clause again; `None` keeps the live text.
+    /// `second_pass` reads a closed clause again when the live recognizer was unsure of it;
+    /// `None` keeps the live text.
     /// `sampler` adds process CPU and memory to the stats.
     pub fn start(
         mut config: Config,

@@ -91,6 +91,8 @@ export type PipelineEvent =
       /** The recognizer was much less sure of this line than of the session's speech, which is
        * what singing sounds like to it. */
       music?: boolean;
+      /** The clause stopped mid-thought: its words say the speaker was still going. */
+      fragment?: boolean;
       /** Absent when the second pass is off. `text` is already the final text. */
       second_pass?: SecondPass;
     }

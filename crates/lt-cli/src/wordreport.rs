@@ -163,6 +163,7 @@ mod tests {
             cut,
             logprob: None,
             music: false,
+            fragment: false,
             second_pass: None,
         }
     }

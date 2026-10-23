@@ -171,6 +171,7 @@ mod tests {
             cut: lt_core::types::CutReason::Pause,
             logprob: None,
             music: false,
+            fragment: false,
             second_pass: None,
         }
     }

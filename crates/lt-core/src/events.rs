@@ -95,6 +95,9 @@ pub enum PipelineEvent {
         /// The recognizer was much less sure of this line than of the session's speech.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         music: bool,
+        /// The clause stopped mid-thought: its words say the speaker was still going.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        fragment: bool,
         /// Absent when the second pass is off.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         second_pass: Option<SecondPass>,
@@ -172,6 +175,7 @@ mod tests {
                 cut: CutReason::Pause,
                 logprob: None,
                 music: false,
+                fragment: false,
                 second_pass: Some(SecondPass {
                     outcome: SecondPassOutcome::Used,
                     live_text: Some("我也想半一个".into()),

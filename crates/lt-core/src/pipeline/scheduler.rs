@@ -129,6 +129,7 @@ impl Scheduler {
                     cut: transcript.cut,
                     logprob: transcript.logprob,
                     music: transcript.music,
+                    fragment: transcript.fragment,
                     second_pass: transcript.second_pass.clone(),
                 });
                 if translates(&transcript, self.config.filter.skip_music) {
