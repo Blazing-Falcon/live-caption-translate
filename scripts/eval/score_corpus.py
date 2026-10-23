@@ -3,8 +3,11 @@
     python scripts/eval/score_corpus.py --hyp a.txt --label ternary [--hyp b.txt --label q4]
 
 With two hypotheses it also prints the paired bootstrap confidence interval and the lines where the
-second loses most. COMET (wmt22-comet-da) is downloaded on first use into `.agent/tmp/comet/` and
-needs `torch` and `unbabel-comet` in the venv.
+second loses most. `--out` chooses where the report and per-line scores go, so scoring a different
+corpus does not overwrite this one.
+
+COMET (wmt22-comet-da) is downloaded on first use into `.agent/tmp/comet/` and needs `torch` and
+`unbabel-comet` in the venv.
 """
 
 import argparse
@@ -40,10 +43,25 @@ def main():
     parser.add_argument("--label", action="append", required=True)
     parser.add_argument("--ref", default=str(CORPUS / "opus-casual.en.txt"))
     parser.add_argument("--src", default=str(CORPUS / "opus-casual.zh.txt"))
+    parser.add_argument(
+        "--out",
+        default=str(CORPUS / "scores.json"),
+        help="where to write the report and the per-line scores",
+    )
     args = parser.parse_args()
+
+    if len(args.hyp) != len(args.label):
+        raise SystemExit(
+            f"{len(args.hyp)} --hyp against {len(args.label)} --label; every hypothesis needs its "
+            "own label"
+        )
+    if len(set(args.label)) != len(args.label):
+        raise SystemExit(f"duplicate --label: {args.label}; labels key the report")
 
     source = read_lines(args.src)
     reference = read_lines(args.ref)
+    if len(source) != len(reference):
+        raise SystemExit(f"{len(source)} source lines against {len(reference)} references")
     hypotheses = []
     for path, label in zip(args.hyp, args.label):
         lines = read_lines(path)
@@ -95,9 +113,10 @@ def main():
             print(f"      {a_label}: {a[index]}")
             print(f"      {b_label}: {b[index]}")
 
-    (CORPUS / "scores.json").write_text(
+    Path(args.out).write_text(
         json.dumps({"report": report, "per_line": per_line}, indent=1), encoding="utf-8"
     )
+    print(f"\nwrote {args.out}")
 
 
 if __name__ == "__main__":

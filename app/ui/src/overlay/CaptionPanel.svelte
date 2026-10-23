@@ -21,7 +21,9 @@
     panelLines = 5,
   }: Props = $props();
 
-  const shown = $derived(visibleLines(lines, "panel", panelLines, liveSource));
+  // A status row sits above the captions, so it costs one caption row: the panel's height is a
+  // saved rect and can be too short to add a row without dropping one.
+  const shown = $derived(visibleLines(lines, "panel", status ? panelLines - 1 : panelLines, liveSource));
 </script>
 
 <section class="panel" aria-label="Live captions" data-testid="caption-panel">

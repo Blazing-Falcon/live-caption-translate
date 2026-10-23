@@ -22,6 +22,16 @@ impl Action {
             Action::Settings => "settings",
         }
     }
+
+    /// The name the user sees, for a message they have to act on.
+    fn label(self) -> &'static str {
+        match self {
+            Action::MoveLock => "move or lock overlay",
+            Action::ShowHide => "show or hide overlay",
+            Action::Pause => "pause",
+            Action::Settings => "open settings",
+        }
+    }
 }
 
 pub fn register(app: &AppHandle, hotkeys: &HotkeysConfig) {
@@ -46,6 +56,16 @@ pub fn register(app: &AppHandle, hotkeys: &HotkeysConfig) {
         });
         if let Err(error) = result {
             tracing::warn!(%error, action = action.name(), "Hotkey registration failed");
+            // At startup this runs before the control page has a listener, so the event is
+            // dropped; the notice list is what the page shows when it loads.
+            if let Some(shared) = app.try_state::<Arc<Shared>>() {
+                let message = format!(
+                    "The {} shortcut ({accelerator}) is already used by another program. \
+                     Change it on the Overlay page.",
+                    action.label()
+                );
+                crate::app::lock(&shared.startup_messages).push(message);
+            }
             let _ = app.emit_to(
                 "control",
                 "hotkeys://error",

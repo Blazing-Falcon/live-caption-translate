@@ -71,7 +71,12 @@ def main():
     parser.add_argument("--seed", type=int, default=20261023)
     args = parser.parse_args()
     if not ZIP.exists():
-        raise SystemExit(f"No corpus at {ZIP}; see this file's docstring for the download.")
+        ZIP.parent.mkdir(parents=True, exist_ok=True)
+        raise SystemExit(
+            f"No corpus at {ZIP}. Download it first:\n"
+            f"  curl.exe -L -o {ZIP} "
+            "https://object.pouta.csc.fi/OPUS-OpenSubtitles/v2018/moses/en-zh_cn.txt.zip"
+        )
 
     rng = random.Random(args.seed)
     kept = []

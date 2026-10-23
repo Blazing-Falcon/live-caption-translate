@@ -13,7 +13,10 @@
 
   let { lines, fadingIds = new Set<number>(), status = null, showSource = true, liveSource = true }: Props = $props();
 
-  const shown = $derived(visibleLines(lines, "bar", 2, liveSource));
+  // The bar's window height comes from a saved rect, which may be the 200 DIP default of an
+  // earlier version. A status row costs one caption row, so with a status the bar shows the
+  // newest line only: two lines and a status overflow a 200 DIP bar.
+  const shown = $derived(visibleLines(lines, "bar", status ? 1 : 2, liveSource));
 </script>
 
 {#if status || shown.length > 0}

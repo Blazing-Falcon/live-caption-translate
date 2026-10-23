@@ -220,10 +220,15 @@ export function isHiddenLive(line: CaptionLine, liveSource: boolean): boolean {
 export function visibleLines<T extends CaptionLine>(
   lines: readonly T[],
   style: OverlayStyle,
-  panelLines: number,
+  wanted: number,
   liveSource = true,
 ): T[] {
-  const count = style === "bar" ? 2 : Math.min(6, Math.max(4, Math.round(panelLines)));
+  // The bar's window height is a saved rect that can predate the status row, so its caller
+  // decides how many rows fit; it never shows more than two. The panel's own setting is 4-6.
+  const count =
+    style === "bar"
+      ? Math.min(2, Math.max(1, Math.round(wanted)))
+      : Math.min(6, Math.max(4, Math.round(wanted)));
   return lines.filter((line) => !isHiddenLive(line, liveSource)).slice(-count);
 }
 

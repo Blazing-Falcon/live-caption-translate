@@ -77,8 +77,11 @@ sample instead: each Chinese line is a human translation of an original English 
 original is a real reference.
 
 ```powershell
-# One time: the corpus (~345 MiB).
-curl -L -o .agent/tmp/opus/en-zh_cn.txt.zip `
+# One time: the corpus (~345 MiB). curl.exe is named in full because PowerShell aliases
+# `curl` to Invoke-WebRequest, which has no -L or -o; and the directory is made first,
+# because .agent/ is not tracked and curl will not create it.
+New-Item -ItemType Directory -Force .agent/tmp/opus | Out-Null
+curl.exe -L -o .agent/tmp/opus/en-zh_cn.txt.zip `
     https://object.pouta.csc.fi/OPUS-OpenSubtitles/v2018/moses/en-zh_cn.txt.zip
 
 # 600 lines, 6-24 Han characters, one-to-one alignments only, fixed seed.
@@ -97,6 +100,10 @@ curl -L -o .agent/tmp/opus/en-zh_cn.txt.zip `
 pairs it prints the paired bootstrap interval, which is what decides whether a difference is real:
 600 lines at a 0.003 COMET gap is inside the interval.
 
-Measured 2026-10-23: the shipping 1.25-bit model scores 0.7706, Q4_K_M 0.7738 (95% CI
-[-0.0015, +0.0080]) at +188 ms per line. The sample is third-party text and stays in
-`.agent/experiments/corpus/`, which is not committed.
+Measured 2026-10-23 on a Ryzen 7 5700X with nothing else running, with
+`translate_file.py` and `score_corpus.py` at their defaults: the shipping 1.25-bit model scores
+0.7706 and Q4_K_M 0.7738, a mean of +0.0032 with a 95% CI of [-0.0015, +0.0081] over 600 lines
+(200 better, 180 worse). Q4_K_M's translation p50 was 467 ms against 279 ms for the shipping model
+over 80 lines of the same sample, measured with `.agent/research/tmp/q4_speed.py` and its server
+flags. The sample is third-party text and stays in `.agent/experiments/corpus/`, which is not
+committed.

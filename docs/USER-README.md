@@ -47,6 +47,7 @@ You can change the hotkeys on the Overlay page.
 | Ctrl + Shift + L | Move or lock the overlay. In move mode, drag the overlay or its edges. Press again to lock it and keep the position. |
 | Ctrl + Shift + H | Show or hide the overlay |
 | Ctrl + Shift + P | Pause or resume |
+| Ctrl + Shift + S | Open the settings window. The overlay lets clicks through, so this is the way back to it from a game. |
 
 If a different program uses a hotkey, the Overlay page tells you. The other hotkeys continue to work.
 
