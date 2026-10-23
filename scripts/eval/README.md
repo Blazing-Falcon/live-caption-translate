@@ -54,6 +54,7 @@ That is coarse: the reference and the replay do not cut the same clauses.
 | ramc | `testdata/fetched/ramc/CTS-CN-F2F-2019-11-15-1449.wav` (33 min) | human transcript with speaker labels, no English |
 | leijun | `testdata/fetched/leijun/lei-jun.wav` (4.5 min) | `lei-jun.srt`, 70 cues |
 | ascend | `testdata/fetched/ascend/clip_*.wav` (20 clips) | `clips.json` |
+| fleurs | `testdata/fetched/fleurs/fleurs-dev-50.wav` (664 s, 50 read sentences) | FLEURS Mandarin transcript and the human English of the same sentence |
 
 `testdata/eval/drama-130s.en.txt` is a hand-checked draft by the agent that wrote it, not the
 owner's: treat it as a regression reference, not as a gold standard.
@@ -111,3 +112,35 @@ Measured 2026-10-23 on a Ryzen 7 5700X with nothing else running, with
 over 80 lines of the same sample, measured with `.agent/research/tmp/q4_speed.py` and its server
 flags. The sample is third-party text and stays in `.agent/experiments/corpus/`, which is not
 committed.
+
+## Speech to English, with a reference nobody here wrote
+
+The subtitle sample scores the translator alone. FLEURS scores the whole pipeline: it reads the same
+FLoRes sentences aloud in every language, so a Mandarin recording and the English text with the
+same sentence id are a source and a human reference translation (CC-BY-4.0). It is read speech of
+encyclopedic text, so it says nothing about conversation or drama; use it beside them, not instead.
+
+```powershell
+# One time: the transcripts and the dev audio (217 MB), at the download cap.
+New-Item -ItemType Directory -Force testdata/fetched/fleurs/download | Out-Null
+$fleurs = 'https://huggingface.co/datasets/google/fleurs/resolve/main/data'
+curl.exe -L --limit-rate 2400k -o testdata/fetched/fleurs/download/cmn_hans_cn_dev.tsv "$fleurs/cmn_hans_cn/dev.tsv"
+curl.exe -L --limit-rate 2400k -o testdata/fetched/fleurs/download/en_us_dev.tsv "$fleurs/en_us/dev.tsv"
+curl.exe -L --limit-rate 2400k -o testdata/fetched/fleurs/download/cmn_hans_cn_dev.tar.gz "$fleurs/cmn_hans_cn/audio/dev.tar.gz"
+
+# 50 sentences joined with 1.2 s of silence, fixed seed.
+.agent/venv/Scripts/python.exe -I scripts/eval/make_fleurs.py --sentences 50
+
+# Replay, then map the captions back to their sentences and score.
+./scripts/eval/run.ps1 -Id base -Domain fleurs
+.agent/venv/Scripts/python.exe -I scripts/eval/score_fleurs.py .agent/experiments/runs/base-fleurs/out.jsonl `
+    --spans testdata/fetched/fleurs/fleurs-dev-50.spans.json --zh testdata/fetched/fleurs/fleurs-dev-50.zh.txt `
+    --hyp-out .agent/experiments/runs/base-fleurs/fleurs.en.txt
+.agent/venv/Scripts/python.exe scripts/eval/score_corpus.py --hyp .agent/experiments/runs/base-fleurs/fleurs.en.txt `
+    --label base --src testdata/fetched/fleurs/fleurs-dev-50.zh.txt --ref testdata/fetched/fleurs/fleurs-dev-50.en.txt `
+    --out .agent/experiments/runs/base-fleurs/comet.json
+```
+
+`score_fleurs.py` gives a caption to the sentence whose time span holds its midpoint, joins the
+English of a sentence cut into clauses, and reports a per-sentence CER over Han characters. A
+sentence with no English is written as an empty line, so `score_corpus.py` counts it as a miss.

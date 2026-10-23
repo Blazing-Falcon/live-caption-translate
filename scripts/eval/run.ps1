@@ -32,6 +32,7 @@ try {
         ramc   = @{ Wav = 'testdata/fetched/ramc/CTS-CN-F2F-2019-11-15-1449.wav'; Zh = ''; En = ''; Names = '' }
         leijun = @{ Wav = 'testdata/fetched/leijun/lei-jun.wav'; Zh = ''; En = ''; Names = '' }
         ascend = @{ Wav = 'testdata/fetched/ascend/clip_00.wav'; Zh = ''; En = ''; Names = '' }
+        fleurs = @{ Wav = 'testdata/fetched/fleurs/fleurs-dev-50.wav'; Zh = 'testdata/fetched/fleurs/fleurs-dev-50.zh.txt'; En = ''; Names = '' }
     }
 
     foreach ($name in $Domain) {
