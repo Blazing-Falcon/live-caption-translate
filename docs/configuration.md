@@ -63,7 +63,7 @@ threads = 4                     # 1 to the logical CPUs of the PC
 ctx = 1024
 temperature = 0.0
 repeat_penalty = 1.05
-max_tokens_cap = 160
+max_tokens_cap = 256
 timeout_s = 10.0
 queue_join_max_chars = 120
 skip_lag_s = 6.0
@@ -164,7 +164,7 @@ The default values are in the file above.
 | `ctx` | 512–4096 | pipeline | Context size (`-c`) |
 | `temperature` | 0–1 | pipeline | Sampling temperature |
 | `repeat_penalty` | 1.0–1.3 | pipeline | Repeat penalty |
-| `max_tokens_cap` | 32–1024 | pipeline | Maximum output tokens: `min(cap, 2 × characters + 8)`, at least 24 |
+| `max_tokens_cap` | 32–1024 | pipeline | Maximum output tokens: `min(cap, 2 × characters + 8)`, at least 24. Keep it at or above `2 × queue_join_max_chars + 8`, or a long joined line is cut short. |
 | `timeout_s` | 2–60 | pipeline | Time limit for one request |
 | `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items. Items are not joined across a pause, a device change or a gap of more than 10 s. |
 | `skip_lag_s` | 2–30 | pipeline | Lag at which the translator skips older items |
