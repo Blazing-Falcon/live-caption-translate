@@ -9,6 +9,11 @@
 /// more of them, is more likely a misaligned window than a correction.
 const MIN_KEPT: f64 = 0.6;
 const MAX_DISTANCE: f64 = 0.6;
+/// The shortest opening of the next clause that is evidence of where this clause ends.
+const MIN_OPENING: usize = 2;
+/// Connectives that occur inside a clause as often as at its start, so a window that ends with
+/// one says nothing about the clause boundary.
+const CONNECTIVES: [&str; 3] = ["然后", "就是", "那个"];
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Trimmed {
@@ -46,6 +51,43 @@ fn is_opening(character: char) -> bool {
         character,
         '“' | '‘' | '「' | '『' | '（' | '(' | '《' | '〈' | '【' | '['
     )
+}
+
+/// The part of a window's offline text that belongs to the clause, without the start of the
+/// next clause, or `None` when the window does not show that start.
+///
+/// The window runs past the clause, so the offline recognizer hears the beginning of the next
+/// clause as well and can turn it into a word of this one. When the next clause's live text is
+/// known and the window ends with its opening, that opening and everything after it are the
+/// next clause, and `trim` must not choose them.
+///
+/// The opening is two or more letters or digits. It must also follow a mark, the offline
+/// text's own clause boundary: a match inside the clause's words is a coincidence. A
+/// connective that also occurs inside a clause does not show where the next clause begins, so
+/// it alone does not cut.
+pub fn cut_at_next_clause<'a>(window: &'a str, next: &str) -> Option<&'a str> {
+    let next_units: Vec<char> = units(next).iter().map(|unit| unit.character).collect();
+    let window_units = units(window);
+    let longest = next_units.len().min(window_units.len());
+    if longest < MIN_OPENING {
+        return None;
+    }
+    let opening = (MIN_OPENING..=longest).rev().find(|&count| {
+        window_units[window_units.len() - count..]
+            .iter()
+            .map(|unit| unit.character)
+            .eq(next_units[..count].iter().copied())
+    })?;
+    let matched = &next_units[..opening];
+    if CONNECTIVES
+        .iter()
+        .any(|word| word.chars().eq(matched.iter().copied()))
+    {
+        return None;
+    }
+    let start = window_units[window_units.len() - opening].start;
+    let boundary = start > 0 && window[..start].chars().next_back().is_some_and(is_mark);
+    boundary.then(|| &window[..start])
 }
 
 /// The part of `offline` that best matches `live`, or `None` when no part is close enough.

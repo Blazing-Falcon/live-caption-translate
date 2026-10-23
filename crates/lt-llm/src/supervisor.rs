@@ -28,6 +28,11 @@ const MODEL_ARGS: [&str; 2] = ["--override-kv", "tokenizer.ggml.eos_token_id=int
 /// the state of each earlier prompt, up to 8 GiB by default, and one slot reuses its own prefix
 /// without it.
 const LOAD_ARGS: [&str; 4] = ["--load-mode", "none", "--cache-ram", "0"];
+/// llama.cpp sizes the prefill activation buffers from `n_ubatch` (512 rows by default) and
+/// every `[n_embd, n_tokens]` and `[ffn, n_tokens]` intermediate grows with them. Every request
+/// here is one short prompt, so 128 rows are enough. This lowers commit charge; the weights are
+/// the working set and it does not touch them. `-b` must not be below `-ub`.
+const BATCH_ARGS: [&str; 4] = ["-ub", "128", "-b", "512"];
 
 /// What a server runs.
 #[derive(Clone, Debug)]
@@ -80,13 +85,16 @@ impl ServerOptions {
         }
     }
 
-    /// A Qwen3-ASR server. Its context holds a 30 s clause with margins (about 13 audio tokens
-    /// a second), the prompt and the text.
+    /// A Qwen3-ASR server. The second-pass window is a clause with 0.3 s before and 0.8 s after
+    /// it, and a clause is cut at the 30 s wait cap, so a window holds at most about 32 s of
+    /// audio. The encoder emits 13 tokens for each whole second, which is 33 chunks, 429
+    /// tokens; the prompt and the 256-token answer cap add about 280. 768 is the next multiple
+    /// of 256 above that and the smallest context that fits a long clause; 512 would fail it.
     pub fn speech(binary: PathBuf, model: PathBuf, mmproj: PathBuf, threads: u32) -> Self {
         Self {
             role: Role::Speech { mmproj },
             threads,
-            context: 1024,
+            context: 768,
             ..Self::new(binary, model, &TranslateConfig::default())
         }
     }
@@ -108,6 +116,7 @@ impl ServerOptions {
         args.push(port.to_string());
         args.extend(["--jinja", "-np", "1", "-c"].map(String::from));
         args.push(self.context.to_string());
+        args.extend(BATCH_ARGS.map(String::from));
         args.extend(["-t".into(), self.threads.to_string()]);
         args.extend(["-tb".into(), self.threads.to_string()]);
         if matches!(self.role, Role::Translator) {
@@ -715,15 +724,27 @@ mod tests {
     }
 
     #[test]
-    fn the_server_gets_the_expected_argument_list() {
-        let options = ServerOptions::new(
+    fn each_role_gets_its_expected_argument_list() {
+        let translator = ServerOptions::new(
             PathBuf::from("llama-server"),
             PathBuf::from("model.gguf"),
             &TranslateConfig::default(),
         );
         assert_eq!(
-            options.arguments(8081).join(" "),
-            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -t 4 -tb 4 --override-kv tokenizer.ggml.eos_token_id=int:120020 --load-mode none --cache-ram 0 --no-webui"
+            translator.arguments(8081).join(" "),
+            "-m model.gguf --host 127.0.0.1 --port 8081 --jinja -np 1 -c 1024 -ub 128 -b 512 -t 4 -tb 4 --override-kv tokenizer.ggml.eos_token_id=int:120020 --load-mode none --cache-ram 0 --no-webui"
+        );
+        // The recognizer's context must hold its longest window, and it must not get the
+        // translator's end-token override.
+        let speech = ServerOptions::speech(
+            PathBuf::from("llama-server"),
+            PathBuf::from("asr.gguf"),
+            PathBuf::from("mmproj.gguf"),
+            2,
+        );
+        assert_eq!(
+            speech.arguments(8082).join(" "),
+            "-m asr.gguf --mmproj mmproj.gguf --host 127.0.0.1 --port 8082 --jinja -np 1 -c 768 -ub 128 -b 512 -t 2 -tb 2 --load-mode none --cache-ram 0 --no-webui"
         );
     }
 
@@ -784,6 +805,7 @@ mod tests {
             id: UtteranceId(1),
             text: "你好。",
             context: &[],
+            terms: &[],
             max_tokens: None,
             control: control(&Arc::new(AtomicBool::new(false)), WATCHDOG),
         };

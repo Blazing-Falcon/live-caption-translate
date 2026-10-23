@@ -7,6 +7,7 @@ use crate::{
     engines::{TranslateRequest, TranslationControl, Translator},
     error::{Error, Result},
     events::{EngineKind, EngineState, FailReason, PipelineEvent, SkipReason, Timing},
+    glossary::Glossary,
     text::chinese_chars,
     types::{StreamTime, Transcript, UtteranceId},
 };
@@ -26,6 +27,9 @@ use std::{
 const WINDOW_GAP_S: f64 = 10.0;
 /// Recent English kept for windows; a window holds at most `window_chars` (60) lines.
 const SHOWN_CAPACITY: usize = 64;
+/// Glossary entries injected for one line. A line naming more people than this is rare, and
+/// every entry costs prompt tokens on a model that reads prompts slowly.
+const MAX_TERMS: usize = 8;
 
 #[derive(Clone, Debug)]
 pub struct QueuedTranscript {
@@ -326,6 +330,7 @@ pub fn translate_one(
     translator: &mut dyn Translator,
     item: &QueuedTranscript,
     context: &[(String, String)],
+    terms: &[(String, String)],
     config: &TranslateConfig,
     clock: &dyn Clock,
     bus: &EventBus,
@@ -348,6 +353,7 @@ pub fn translate_one(
         } else {
             &[]
         },
+        terms,
         max_tokens: None,
         control: control.clone(),
     };
@@ -510,6 +516,7 @@ impl TranslatorWorker {
                     message: warmup.err().map(|error| error.to_string()),
                 });
                 let mut shown: VecDeque<(UtteranceId, String)> = VecDeque::new();
+                let glossary = Glossary::new(&config.glossary);
                 while !worker_cancelled.load(Ordering::Relaxed) {
                     let item = match work.recv_timeout(Duration::from_millis(20)) {
                         Ok(item) => item,
@@ -517,10 +524,12 @@ impl TranslatorWorker {
                         Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
                     };
                     let context = window_context(&item.window, &shown);
+                    let terms = glossary.terms(&item.transcript.text, MAX_TERMS);
                     let event = translate_one(
                         translator.as_mut(),
                         &item,
                         &context,
+                        &terms,
                         &config,
                         clock.as_ref(),
                         &bus,

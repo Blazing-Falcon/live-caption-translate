@@ -162,7 +162,7 @@
       oninput={(event) => (backgroundDraft = Number(event.currentTarget.value) / 100)}
       onchange={(event) => commitNumber("overlay.background", event, "background", 100, () => (backgroundDraft = null))}
     />
-    {#if backgroundPct / 100 < LOW_BACKGROUND_WARNING}
+    {#if backgroundPct / 100 <= LOW_BACKGROUND_WARNING}
       <span class="help small warning" role="note" data-testid="background-warning">May be hard to read on bright video</span>
     {/if}
   </div>

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { ageOpacity, isHiddenLive, type OverlayStyle, type StatusLine } from "../lib/captions";
+  import { ageOpacity, isHiddenLive, type CaptionLineView, type OverlayStyle, type StatusLine } from "../lib/captions";
   import { languageLabel } from "../lib/settings";
   import type { CaptionLine } from "../lib/types";
 
   interface Props {
-    line?: CaptionLine | null;
+    line?: CaptionLineView | null;
     status?: StatusLine | null;
     variant?: OverlayStyle;
     age?: number;
@@ -50,7 +50,6 @@
 {:else if line && !hidden}
   <article
     class="line"
-    class:older={age > 0}
     class:fading
     class:skipped={line.state === "skipped"}
     data-id={line.id}
@@ -65,7 +64,14 @@
       <p class="label">{otherLabel}</p>
     {:else}
       {#if sourceVisible}
-        <p class="source" lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
+        {#if line.swap}
+          <p class="source swapping" lang="zh">
+            <span class="swap-out" aria-hidden="true">{line.swap.from}</span>
+            <span class="swap-in">{line.source}</span>
+          </p>
+        {:else}
+          <p class="source" lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
+        {/if}
       {/if}
       {#if showEnglish}
         <p class="english">{englishText}{#if line.state === "streaming"}<span class="caret" aria-hidden="true"></span>{/if}</p>
@@ -84,7 +90,6 @@
 
 <style>
   .line {
-    --line-scale: 1;
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
@@ -92,10 +97,6 @@
     transition: opacity var(--fade-ms) linear;
     animation: slide-up var(--slide-ms) ease-out;
     min-width: 0;
-  }
-
-  .line.older {
-    --line-scale: var(--older-scale);
   }
 
   .line.skipped {
@@ -111,24 +112,66 @@
     overflow-wrap: anywhere;
   }
 
+  /* Every caption size is one step from the setting: an older line dims but never shrinks, so
+   * the reader's eye keeps its place on the panel. */
   .english {
-    font-size: calc(var(--font-px, 26) * 1px * var(--line-scale));
+    font-size: calc(var(--font-px, 26) * 1px);
     font-weight: 500;
     line-height: 1.3;
     color: var(--ov-text);
+    text-shadow: var(--ov-halo);
   }
 
   .other {
-    font-size: calc(var(--font-px, 26) * 1px * var(--line-scale) * var(--older-scale));
+    font-size: calc(var(--font-px, 26) * 1px);
     line-height: 1.35;
     color: var(--ov-text-secondary);
+    text-shadow: var(--ov-halo);
   }
 
   .source {
     font-family: var(--font-cjk);
-    font-size: calc(var(--font-px, 26) * 1px * var(--source-scale) * var(--line-scale));
+    font-size: calc(var(--font-px, 26) * 1px * var(--source-scale));
     line-height: 1.45;
     color: var(--ov-text-secondary);
+    text-shadow: var(--ov-halo);
+  }
+
+  /* The corrected Chinese fades in over the text the viewer was reading, so a larger correction
+   * reads as a change rather than as a flicker. */
+  .swapping {
+    display: grid;
+  }
+
+  .swapping > span {
+    grid-area: 1 / 1;
+  }
+
+  .swap-out {
+    animation: swap-out var(--swap-ms) ease-in forwards;
+  }
+
+  .swap-in {
+    animation: swap-in var(--swap-ms) ease-out;
+  }
+
+  @keyframes swap-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes swap-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .swap-out,
+    .swap-in {
+      animation: none;
+    }
   }
 
   .dots {

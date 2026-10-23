@@ -11,7 +11,6 @@
   --text-meta: 11px;
   --meta-tracking: 0.04em;
   --source-scale: 0.65;
-  --older-scale: 0.8;
 
   --space-1: 4px;
   --space-2: 8px;
@@ -32,7 +31,8 @@
   --focus-width: 2px;
 
   --slide-ms: 120ms;
-  --fade-ms: 200ms;
+  --fade-ms: 400ms;
+  --swap-ms: 150ms;
   --caret-ms: 1000ms;
 
   /* Overlay: always dark, independent of the Windows theme. */
@@ -44,7 +44,10 @@
   --ov-meta: #9a9da3;
   --ov-chip-text: #b4b7bc;
   --ov-dim: #b4b7bc;
-  --ov-pending: #6f7278;
+  /* Keeps the dots at 4.55:1 against white video through the default scrim. */
+  --ov-pending: #a4a4a4;
+  /* Legibility on bright video must not depend on the scrim alone. */
+  --ov-halo: 0 0 2px rgb(0 0 0 / .9), 0 1px 3px rgb(0 0 0 / .8);
   --ov-accent: #e3a33b;
   --ov-warning: #e8b866;
   --ov-divider: #2b2d31;

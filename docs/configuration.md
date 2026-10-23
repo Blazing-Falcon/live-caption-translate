@@ -65,7 +65,9 @@ max_tokens_cap = 160
 timeout_s = 10.0
 queue_join_max_chars = 120
 skip_lag_s = 6.0
-window_chars = 30               # 0 = translate each line alone
+window_chars = 60               # 0 = translate each line alone
+# glossary = [{ zh = "卓总", en = "President Zhuo", note = "name, male, her boss",
+#               variants = ["周总", "朱总"], confirmed = true }]
 
 [overlay]
 visible = true
@@ -160,6 +162,7 @@ The default values are in the file above.
 | `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items. Items are not joined across a pause, a device change or a gap of more than 10 s. |
 | `skip_lag_s` | 2–30 | pipeline | Lag at which the translator skips older items |
 | `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters, whole lines only. The window grows between resets and starts over when the next line would exceed it, so the server keeps its prompt cache. They go as earlier chat turns with their English as shown, so only the new line is translated. `0`: off. |
+| `glossary` | at most 200 entries | live | Names and terms. `zh` is the spelling to translate, `en` the English to use, `variants` the other spellings recognition produces for it, and `note` a short hint such as a person's gender or role. Every variant is replaced with `zh` before translation, so one person keeps one English name. Only `confirmed` entries are applied. At most 8 entries that the line actually mentions go into the prompt. |
 
 ### overlay
 

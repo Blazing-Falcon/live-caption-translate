@@ -8,6 +8,14 @@ export interface CaptureApp extends ExtraFields {
   name: string;
 }
 
+export interface GlossaryEntry extends ExtraFields {
+  zh: string;
+  en: string;
+  note: string;
+  variants: string[];
+  confirmed: boolean;
+}
+
 export interface OverlayRect extends ExtraFields {
   monitor: string;
   x: number;
@@ -55,6 +63,7 @@ export interface Config extends ExtraFields {
     queue_join_max_chars: number;
     skip_lag_s: number;
     window_chars: number;
+    glossary: GlossaryEntry[];
   };
   overlay: ExtraFields & {
     visible: boolean;
@@ -119,6 +128,8 @@ export const OVERLAY_LIMITS = {
 
 /** The most threads a setting accepts; the UI offers up to the PC's logical CPUs. */
 export const MAX_THREADS = 64;
+/** Below this the English cannot reach 4.5:1 against white video, so the panel warns. The
+ * value itself fails the floor, hence "at or below". */
 export const LOW_BACKGROUND_WARNING = 0.5;
 
 export const HOTKEY_ACTIONS = ["move_lock", "show_hide", "pause"] as const;
@@ -316,7 +327,8 @@ export const DEFAULT_CONFIG: Config = {
     "timeout_s": 10.0,
     "queue_join_max_chars": 120,
     "skip_lag_s": 6.0,
-    "window_chars": 30
+    "window_chars": 60,
+    "glossary": []
   },
   "overlay": {
     "visible": true,

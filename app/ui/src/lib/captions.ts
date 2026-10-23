@@ -8,12 +8,13 @@ import type {
   FailReason,
   ListeningStateKind,
   PipelineEvent,
+  SecondPass,
   SourceInfo,
   SourceStateKind,
   UtteranceId,
 } from "./types";
 
-export const FADE_MS = 200;
+export const FADE_MS = 400;
 export const CHIP_MS = 3000;
 /** Terminal rows kept after they leave the screen. The panel shows at most 6; running text
  * needs more, because commit cuts make short lines and it keeps up to 6 wrapped lines. */
@@ -62,7 +63,7 @@ export interface ChipMessage {
 }
 
 export interface CaptionView {
-  lines: readonly CaptionLine[];
+  lines: readonly CaptionLineView[];
   fadingIds: ReadonlySet<number>;
   status: StatusLine | null;
   chip: ChipMessage | null;
@@ -160,10 +161,11 @@ export function listeningChipText(source: SourceInfo | null): string {
 
 export type OverlayStyle = "bar" | "panel";
 
-/** Newest line is full strength; older lines fade by index and stop at the last step. */
+/** Newest line is full strength; older lines fade by index and stop at the last step. The
+ * dimmest step stays at 0.6: below that the English drops under 4.5:1 against white video. */
 const AGE_OPACITY: Record<OverlayStyle, readonly number[]> = {
-  bar: [1, 0.55],
-  panel: [1, 0.75, 0.6, 0.45],
+  bar: [1, 0.6],
+  panel: [1, 0.75, 0.6],
 };
 
 export function ageOpacity(style: OverlayStyle, age: number): number {
@@ -171,17 +173,43 @@ export function ageOpacity(style: OverlayStyle, age: number): number {
   return steps[Math.min(Math.max(age, 0), steps.length - 1)] ?? 1;
 }
 
+/** Characters a second that a viewer reads; a line stays up at least this long. */
+const READING_CPS = 15;
+
+/** Whether the second pass changed the live text by at most one character. Its distance counts
+ * letters and digits only, so a punctuation-only correction counts as none. */
+function isTrivialSwap(secondPass: SecondPass | undefined): boolean {
+  const distance = secondPass?.distance;
+  return secondPass?.live_text !== undefined && distance !== undefined && distance <= 1;
+}
+
+/** How long the display takes to fade one Chinese row out and the corrected one in. */
+export const SWAP_MS = 150;
+
+/** The Chinese a line showed before the second pass replaced it. The display fades it out
+ * under the corrected text, so a reader can see that the line changed under them. */
+export interface CaptionSwap {
+  from: string;
+  /** Counts replacements, so a row that re-enters the view does not replay the crossfade. */
+  seq: number;
+}
+
+/** A caption line with what the display needs beyond the text itself. */
+export interface CaptionLineView extends CaptionLine {
+  swap?: CaptionSwap;
+}
+
 /** A live line with its Chinese hidden has nothing to show, so it takes no place and no space. */
 export function isHiddenLive(line: CaptionLine, liveSource: boolean): boolean {
   return line.state === "live" && !liveSource;
 }
 
-export function visibleLines(
-  lines: readonly CaptionLine[],
+export function visibleLines<T extends CaptionLine>(
+  lines: readonly T[],
   style: OverlayStyle,
   panelLines: number,
   liveSource = true,
-): CaptionLine[] {
+): T[] {
   const count = style === "bar" ? 2 : Math.min(6, Math.max(4, Math.round(panelLines)));
   return lines.filter((line) => !isHiddenLive(line, liveSource)).slice(-count);
 }
@@ -262,8 +290,12 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   const reducedMotion = options.reducedMotion ?? prefersReducedMotion;
   const warn = options.onWarn ?? (() => undefined);
 
-  const lines = new Map<number, CaptionLine>();
+  const lines = new Map<number, CaptionLineView>();
   const fading = new Set<number>();
+  /** The text a line shows while its replacement fades in; empty again after `SWAP_MS`. */
+  const swaps = new Map<number, CaptionSwap>();
+  const swapTimers = new Map<number, unknown>();
+  let swapSeq = 0;
   /** Last speech or translation result: terminal lines fade `expire_s` after it, together. A
    * translation that ends after the speech still shows for the whole time. */
   let expiryFrom: number | null = null;
@@ -319,12 +351,34 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       if (text !== null) announcement = text;
     }
     store.set({
-      lines: [...lines.values()],
+      lines: [...lines.values()].map((line) => {
+        const swap = swaps.get(line.id);
+        return swap === undefined ? line : { ...line, swap };
+      }),
       fadingIds: new Set(fading),
       status: current,
       chip: current === null ? chip : null,
       announcement,
     });
+  }
+
+  /** Marks a line as swapping, so the display can fade the old Chinese out under the new one.
+   * A second swap before the first ends replaces it; the view drops the old text when the
+   * timer fires. */
+  function startSwap(id: number, from: string): void {
+    if (reducedMotion()) return;
+    swapSeq += 1;
+    swaps.set(id, { from, seq: swapSeq });
+    const running = swapTimers.get(id);
+    if (running !== undefined) clock.clearTimer(running);
+    swapTimers.set(
+      id,
+      clock.setTimer(() => {
+        swapTimers.delete(id);
+        swaps.delete(id);
+        emit();
+      }, SWAP_MS),
+    );
   }
 
   function clearTimer(handle: unknown): null {
@@ -347,10 +401,20 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     return [...lines.values()].filter((line) => isTerminal(line.state) && !fading.has(line.id)).map((line) => line.id);
   }
 
+  /** How long the newest line needs at a reading pace. The shared timer would otherwise clear a
+   * long line while it is still being read. */
+  function readingHoldMs(): number {
+    const newest = [...lines.values()].filter((line) => isTerminal(line.state) && !fading.has(line.id)).at(-1);
+    if (newest === undefined) return 0;
+    const shown = newest.english !== "" ? newest.english : newest.source;
+    return (shown.length * 1000) / READING_CPS;
+  }
+
   function armExpiry(): void {
     expiryTimer = clearTimer(expiryTimer);
     if (expiryFrom === null || expirable().length === 0) return;
-    const delay = Math.max(0, expiryFrom + settings.expireMs - clock.now());
+    const hold = Math.max(settings.expireMs, readingHoldMs());
+    const delay = Math.max(0, expiryFrom + hold - clock.now());
     expiryTimer = clock.setTimer(onExpire, delay);
   }
 
@@ -392,16 +456,16 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     }
   }
 
-  function update(id: number, patch: Partial<CaptionLine>): void {
+  function update(id: number, patch: Partial<CaptionLineView>): void {
     const line = lines.get(id);
     if (line) lines.set(id, { ...line, ...patch, updatedAt: clock.now() });
   }
 
-  function addLine(line: Omit<CaptionLine, "updatedAt">): void {
+  function addLine(line: Omit<CaptionLineView, "updatedAt">): void {
     lines.set(line.id, { ...line, updatedAt: clock.now() });
   }
 
-  function newLine(id: number, source: string, state: CaptionLine["state"], lang: string | null): Omit<CaptionLine, "updatedAt"> {
+  function newLine(id: number, source: string, state: CaptionLine["state"], lang: string | null): Omit<CaptionLineView, "updatedAt"> {
     return {
       id,
       state,
@@ -453,7 +517,22 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           state = "other";
           announcement = event.text;
         }
-        lines.set(event.id, { ...base, state, source: event.text, lang, updatedAt: clock.now() });
+        // A correction of one character, or of punctuation only, stays in the transcript: moving
+        // the Chinese the viewer is already reading under their eyes is not worth the jolt.
+        const trivial = existing !== undefined && isTrivialSwap(event.second_pass);
+        const source = trivial ? existing.source : event.text;
+        lines.set(event.id, {
+          ...base,
+          state,
+          source,
+          lang,
+          updatedAt: clock.now(),
+        });
+        // A larger correction changes what the viewer is reading, so the old Chinese fades out
+        // under the new one instead of being replaced between two frames.
+        if (!trivial && existing !== undefined && existing.source !== "" && existing.source !== event.text) {
+          startSwap(event.id, existing.source);
+        }
         return true;
       }
       case "joined": {

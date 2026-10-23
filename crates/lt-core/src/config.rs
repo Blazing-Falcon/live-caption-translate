@@ -86,7 +86,8 @@ config_table!(TranslateConfig {
     timeout_s: f32 = 10.0,
     queue_join_max_chars: u32 = 120,
     skip_lag_s: f32 = 6.0,
-    window_chars: u32 = 30,
+    window_chars: u32 = 60,
+    glossary: Vec<crate::glossary::GlossaryEntry> = Vec::new(),
 });
 config_table!(OverlayConfig {
     visible: bool = true,
@@ -425,6 +426,15 @@ impl Config {
         number!(translate, queue_join_max_chars, 20, 300);
         number!(translate, skip_lag_s, 2.0, 30.0);
         number!(translate, window_chars, 0, 60);
+        // A glossary is a session aid, not a corpus: a list this long means the user pasted a
+        // dictionary, and every line would pay for a block it cannot use.
+        if self.translate.glossary.len() > 200 {
+            messages.push(format!(
+                "translate.glossary: {} entries; only the first 200 are used",
+                self.translate.glossary.len()
+            ));
+            self.translate.glossary.truncate(200);
+        }
         number!(overlay, font_px, 18, 40);
         number!(overlay, background, 0.0, 1.0);
         number!(overlay, expire_s, 3.0, 60.0);
@@ -641,7 +651,7 @@ fn normalize_types(
             normalize_float(value, number, path, messages)
         }
         (toml::Value::Array(items), toml::Value::Array(_)) => {
-            if path == "capture.apps" {
+            if path == "capture.apps" || path == "translate.glossary" {
                 items.iter().all(toml::Value::is_table)
             } else {
                 items.iter().all(toml::Value::is_str)
@@ -664,6 +674,24 @@ fn normalize_types(
         ]));
         for (index, item) in items.iter_mut().enumerate() {
             normalize_types(item, &app_schema, &format!("{path}[{index}]"), messages);
+        }
+    }
+    if let Some(items) = value.as_array_mut().filter(|_| path == "translate.glossary") {
+        // A glossary row's schema, so a wrong type in one field does not drop the whole entry.
+        let entry_schema = toml::Value::Table(toml::Table::from_iter([
+            ("zh".into(), toml::Value::String(String::new())),
+            ("en".into(), toml::Value::String(String::new())),
+            ("note".into(), toml::Value::String(String::new())),
+            ("variants".into(), toml::Value::Array(Vec::new())),
+            ("confirmed".into(), toml::Value::Boolean(false)),
+        ]));
+        for (index, item) in items.iter_mut().enumerate() {
+            normalize_types(
+                item,
+                &entry_schema,
+                &format!("{path}[{index}]"),
+                messages,
+            );
         }
     }
 }

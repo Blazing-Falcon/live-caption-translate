@@ -216,6 +216,7 @@ fn wrappers_runaway_echo_and_leaked_chinese_are_checked() {
             &mut fake,
             &item,
             &[],
+            &[],
             &Config::default().translate,
             &clock,
             &bus,
@@ -476,6 +477,7 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
         &mut fake,
         &item,
         &[],
+        &[],
         &config,
         &clock,
         &bus,
@@ -493,7 +495,7 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     // An abort belongs to one request; the same pipeline cancellation flag can
     // be reused for the next request without suppressing it.
     let mut next = ScriptedTranslator::new(clock.clone(), &["Goodbye."], "Goodbye.");
-    let next_event = translate_one(&mut next, &item, &[], &config, &clock, &bus, cancelled);
+    let next_event = translate_one(&mut next, &item, &[], &[], &config, &clock, &bus, cancelled);
     assert!(
         matches!(next_event, PipelineEvent::TranslationFinal { text, .. } if text == "Goodbye.")
     );

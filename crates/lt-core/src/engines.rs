@@ -120,6 +120,9 @@ pub struct TranslateRequest<'a> {
     /// Earlier lines as (source, English shown), oldest first. Engines
     /// without `caps().context` get none.
     pub context: &'a [(String, String)],
+    /// Glossary entries this line mentions, as (source, English with its note). Only these go
+    /// into the prompt, so a line without names costs nothing for the list.
+    pub terms: &'a [(String, String)],
     /// Overrides the engine's default output budget.
     pub max_tokens: Option<u32>,
     pub control: TranslationControl,

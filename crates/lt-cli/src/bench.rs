@@ -101,6 +101,7 @@ fn mt(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()>
                 id: UtteranceId(id as u64),
                 text,
                 context: &[],
+                terms: &[],
                 max_tokens: None,
                 control: control(),
             },

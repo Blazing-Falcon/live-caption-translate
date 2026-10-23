@@ -8,19 +8,20 @@ use crate::{
     engines::OfflineAsr,
     error::Result,
     events::DropReason,
+    glossary::Glossary,
     recognizer::AsrMessage,
-    refine::trim,
+    refine::{cut_at_next_clause, trim},
     text::{chinese_chars, classify, clean, drop_reason},
-    types::{SecondPass, SecondPassOutcome, StreamTime, TextClass, Transcript},
+    types::{SecondPass, SecondPassOutcome, StreamTime, TextClass, Transcript, UtteranceId},
 };
 use crossbeam_channel::{Receiver, Sender};
 use std::{
-    sync::atomic::{AtomicBool, Ordering},
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, Mutex,
+    },
     time::{Duration, Instant},
 };
-
-/// Languages that the second pass can tag when it mishears Chinese.
-const MISTAKEN_FOR_CHINESE: [&str; 3] = ["ja", "ko", "yue"];
 
 /// The audio of a clause with its margins.
 pub(super) struct Window {
@@ -28,11 +29,40 @@ pub(super) struct Window {
     pub(super) samples: Vec<f32>,
 }
 
+/// The live text of the clause that is open right now, shared with the second pass.
+///
+/// A window runs past its clause, so its offline text can end with the start of the next
+/// clause. That text is only known once the next clause has started, which is after this one
+/// closed; the asr thread writes it here and the second pass reads it after its decode.
+#[derive(Default)]
+pub(super) struct OpenClause(Mutex<Option<(UtteranceId, String)>>);
+
+impl OpenClause {
+    /// Record the open clause's newest live text.
+    pub(super) fn heard(&self, id: UtteranceId, text: &str) {
+        if let Ok(mut open) = self.0.lock() {
+            *open = Some((id, text.to_owned()));
+        }
+    }
+
+    /// The live text of the clause right after `id`, when the open clause is that one. Text
+    /// from any other clause must not cut a window: the cell can still hold the clause that
+    /// just closed, or a later one when the second pass has fallen behind.
+    fn after(&self, id: UtteranceId) -> Option<String> {
+        let open = self.0.lock().ok()?;
+        let (open_id, text) = open.as_ref()?;
+        let next = open_id.0.checked_add(1) == Some(id.0);
+        (next && !text.is_empty()).then(|| text.clone())
+    }
+}
+
 pub(super) enum RefineInput {
     Clause {
         transcript: Transcript,
         window: Window,
         closed: Instant,
+        /// The clause that is open while this one is refined.
+        open: Arc<OpenClause>,
     },
     /// A dropped or failed clause, kept in line with the others.
     Message(AsrMessage),
@@ -46,6 +76,7 @@ pub(super) fn refine_loop(
     cancelled: &AtomicBool,
 ) -> Result<()> {
     let max_wait = Duration::from_secs_f32(config.asr.second_pass_max_wait_s);
+    let glossary = Glossary::new(&config.translate.glossary);
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
             Ok(input) => input,
@@ -57,12 +88,13 @@ pub(super) fn refine_loop(
                 mut transcript,
                 window,
                 closed,
+                open,
             } => {
                 let live = transcript.text.clone();
                 if let Some(engine) = engine.as_deref_mut() {
-                    second_pass(engine, &mut transcript, &window, closed, max_wait);
+                    second_pass(engine, &mut transcript, &window, &open, closed, max_wait);
                 }
-                finalize(transcript, &live, config)
+                finalize(transcript, &live, config, &glossary)
             }
             RefineInput::Message(message) => message,
         };
@@ -79,6 +111,7 @@ fn second_pass(
     engine: &mut dyn OfflineAsr,
     transcript: &mut Transcript,
     window: &Window,
+    open: &OpenClause,
     closed: Instant,
     max_wait: Duration,
 ) {
@@ -95,20 +128,29 @@ fn second_pass(
     };
     if closed.elapsed() <= max_wait {
         let started = Instant::now();
-        let chinese = chinese_chars(&transcript.text) > 0;
-        let heard =
-            engine
-                .decode(&window.samples, None)
-                .and_then(|heard| match heard.lang.as_deref() {
-                    Some(lang) if chinese && MISTAKEN_FOR_CHINESE.contains(&lang) => {
-                        engine.decode(&window.samples, Some("zh"))
-                    }
-                    _ => Ok(heard),
-                });
+        // The live text already says the clause is Chinese. Without this the model tags
+        // Mandarin as Japanese, Korean or Cantonese on lines it heard correctly, and the only
+        // cure was a second decode of the same window.
+        let language = (chinese_chars(&transcript.text) > 0).then_some("zh");
+        let heard = engine.decode(&window.samples, language);
         record.decode_ms = Some(elapsed_ms(started));
         match heard {
             Ok(heard) => {
-                match trim(&transcript.text, &heard.text) {
+                // The next clause has usually started by now, and the window ends in its first
+                // words. Those words are not this clause's, so `trim` must not choose them.
+                let next = open.after(transcript.id);
+                let text = next
+                    .as_deref()
+                    .and_then(|next| cut_at_next_clause(&heard.text, next))
+                    .unwrap_or(&heard.text);
+                if text.len() != heard.text.len() {
+                    tracing::debug!(
+                        id = transcript.id.0,
+                        dropped = heard.text.len() - text.len(),
+                        "Second-pass window ends in the next clause"
+                    );
+                }
+                match trim(&transcript.text, text) {
                     Some(trimmed) => {
                         record.outcome = SecondPassOutcome::Used;
                         record.distance = Some(trimmed.distance.min(u32::MAX as usize) as u32);
@@ -134,12 +176,22 @@ fn elapsed_ms(since: Instant) -> u32 {
 
 /// Clean, classify and filter a closed clause on its final text. `live` is the recognizer's
 /// text, recorded when the final text differs from it.
-fn finalize(mut transcript: Transcript, live: &str, config: &Config) -> AsrMessage {
+///
+/// The glossary is applied here, after the second pass and before the queue: the Chinese shown,
+/// the Chinese translated and the Chinese in the transcript are then the same string, so one
+/// person cannot appear under two spellings in the same line.
+fn finalize(
+    mut transcript: Transcript,
+    live: &str,
+    config: &Config,
+    glossary: &Glossary,
+) -> AsrMessage {
     transcript.text = clean(&transcript.text, &config.filter.fillers);
     if let Some(record) = transcript.second_pass.as_mut() {
         let live = clean(live, &config.filter.fillers);
         record.live_text = (live != transcript.text).then_some(live);
     }
+    transcript.text = glossary.normalize(&transcript.text);
     let Some(class) = classify(&transcript.text) else {
         return AsrMessage::Dropped(transcript.id, DropReason::Empty);
     };

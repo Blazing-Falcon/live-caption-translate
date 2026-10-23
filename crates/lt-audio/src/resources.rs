@@ -1,9 +1,12 @@
-//! Per-PID CPU/RSS sampling without enumerating unrelated processes.
+//! Per-PID CPU, working-set and private-byte sampling without enumerating unrelated processes.
 //!
 //! sysinfo 0.39.6's Windows `ProcessesToUpdate::Some` still takes a full
 //! Toolhelp process snapshot. Direct Win32 queries avoid that scan. Linux reads
 //! only `/proc/<pid>/stat` and `statm`. CPU is cumulative process time divided by
 //! elapsed monotonic time, expressed as percent of one core (and may exceed 100).
+//!
+//! The working set counts pages shared with other processes and shrinks when Windows trims it,
+//! so it does not answer "how much does this process cost". Private bytes (commit charge) do.
 //!
 //! Sources: Microsoft GetProcessTimes/GetProcessMemoryInfo documentation and
 //! Linux proc_pid_stat(5)/proc_pid_statm(5). A 200 ms minimum interval follows
@@ -29,6 +32,16 @@ struct RawProcess {
     identity: u64,
     cpu_ns: u128,
     rss_bytes: u64,
+    /// Private bytes: commit charge on Windows, the private data size on Linux.
+    private_bytes: u64,
+}
+
+/// One reading of a process: CPU percent of one core, working set and private bytes in MiB.
+#[derive(Clone, Copy, Default)]
+struct Usage {
+    cpu_pct: f32,
+    rss_mb: u32,
+    private_mb: u32,
 }
 
 struct Baseline {
@@ -44,13 +57,16 @@ struct CpuHistory {
 }
 
 impl CpuHistory {
-    fn observe(&mut self, pid: u32, raw: Option<RawProcess>, now: Instant) -> (f32, u32) {
+    fn observe(&mut self, pid: u32, raw: Option<RawProcess>, now: Instant) -> Usage {
         let Some(raw) = raw else {
             self.baseline = None;
-            return (0.0, 0);
+            return Usage::default();
         };
-        let rss_mb = (raw.rss_bytes / 1_048_576).min(u64::from(u32::MAX)) as u32;
-        let mut usage = 0.0;
+        let mut usage = Usage {
+            rss_mb: megabytes(raw.rss_bytes),
+            private_mb: megabytes(raw.private_bytes),
+            ..Usage::default()
+        };
         if let Some(previous) = &self.baseline {
             if previous.pid == pid
                 && previous.identity == raw.identity
@@ -59,12 +75,12 @@ impl CpuHistory {
                 let elapsed = now.saturating_duration_since(previous.at);
                 if elapsed < MINIMUM_CPU_INTERVAL {
                     // Keep the older baseline so frequent reads do not suppress CPU forever.
-                    return (0.0, rss_mb);
+                    return usage;
                 }
                 let ratio =
                     (raw.cpu_ns - previous.cpu_ns) as f64 / elapsed.as_nanos() as f64 * 100.0;
                 if ratio.is_finite() {
-                    usage = ratio.min(f64::from(f32::MAX)) as f32;
+                    usage.cpu_pct = ratio.min(f64::from(f32::MAX)) as f32;
                 }
             }
         }
@@ -74,8 +90,12 @@ impl CpuHistory {
             cpu_ns: raw.cpu_ns,
             at: now,
         });
-        (usage, rss_mb)
+        usage
     }
+}
+
+fn megabytes(bytes: u64) -> u32 {
+    (bytes / 1_048_576).min(u64::from(u32::MAX)) as u32
 }
 
 /// Whole-PC CPU busy percent from consecutive (idle, total) tick readings.
@@ -121,7 +141,7 @@ impl Child {
         app_pid: u32,
         app: Option<RawProcess>,
         now: Instant,
-    ) -> (f32, u32) {
+    ) -> Usage {
         let pid = self.pid.load(Ordering::Acquire);
         let raw = if pid == 0 {
             None
@@ -141,6 +161,7 @@ pub struct ProcessSampler {
     translator: Child,
     speech: Child,
     system_cpu: SystemCpu,
+    private_mb: (u32, u32, u32),
 }
 
 impl ProcessSampler {
@@ -160,7 +181,15 @@ impl ProcessSampler {
             translator: Child::new(translator),
             speech: Child::new(speech),
             system_cpu: SystemCpu::default(),
+            private_mb: (0, 0, 0),
         })
+    }
+
+    /// Private bytes of the app, the translator and the second-pass server from the last
+    /// sample, in MiB. `ResourceSample` carries only the working set, so this is where the
+    /// companion counter is read out.
+    pub fn private_mb(&self) -> (u32, u32, u32) {
+        self.private_mb
     }
 }
 
@@ -168,20 +197,24 @@ impl ResourceSampler for ProcessSampler {
     fn sample(&mut self) -> ResourceSample {
         let app = self.backend.read(self.app_pid);
         let now = Instant::now();
-        let (cpu_app_pct, rss_app_mb) = self.app_cpu.observe(self.app_pid, app, now);
-        let (cpu_translator_pct, rss_translator_mb) =
-            self.translator
-                .observe(&self.backend, self.app_pid, app, now);
-        let (cpu_speech_pct, rss_speech_mb) =
-            self.speech.observe(&self.backend, self.app_pid, app, now);
+        let app_usage = self.app_cpu.observe(self.app_pid, app, now);
+        let translator = self
+            .translator
+            .observe(&self.backend, self.app_pid, app, now);
+        let speech = self.speech.observe(&self.backend, self.app_pid, app, now);
+        self.private_mb = (
+            app_usage.private_mb,
+            translator.private_mb,
+            speech.private_mb,
+        );
         let cpu_system_pct = self.system_cpu.observe(self.backend.system_times());
         ResourceSample {
-            cpu_app_pct,
-            cpu_translator_pct,
-            cpu_speech_pct,
-            rss_app_mb,
-            rss_translator_mb,
-            rss_speech_mb,
+            cpu_app_pct: app_usage.cpu_pct,
+            cpu_translator_pct: translator.cpu_pct,
+            cpu_speech_pct: speech.cpu_pct,
+            rss_app_mb: app_usage.rss_mb,
+            rss_translator_mb: translator.rss_mb,
+            rss_speech_mb: speech.rss_mb,
             cpu_system_pct,
         }
     }
@@ -194,7 +227,9 @@ mod platform {
     use windows_sys::Win32::{
         Foundation::{CloseHandle, FILETIME, HANDLE, STILL_ACTIVE},
         System::{
-            ProcessStatus::{K32GetProcessMemoryInfo, PROCESS_MEMORY_COUNTERS},
+            ProcessStatus::{
+                K32GetProcessMemoryInfo, PROCESS_MEMORY_COUNTERS, PROCESS_MEMORY_COUNTERS_EX,
+            },
             Threading::{
                 GetExitCodeProcess, GetProcessTimes, OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION,
             },
@@ -250,13 +285,26 @@ mod platform {
             {
                 return None;
             }
-            let mut memory = PROCESS_MEMORY_COUNTERS {
-                cb: size_of::<PROCESS_MEMORY_COUNTERS>() as u32,
-                ..PROCESS_MEMORY_COUNTERS::default()
+            // `PrivateUsage` is commit charge, not private working set: it counts what the
+            // process has committed of RAM and page file, where `WorkingSetSize` also counts
+            // pages shared with other processes and drops when Windows trims.
+            let mut memory = PROCESS_MEMORY_COUNTERS_EX {
+                cb: size_of::<PROCESS_MEMORY_COUNTERS_EX>() as u32,
+                ..PROCESS_MEMORY_COUNTERS_EX::default()
             };
+            // `K32GetProcessMemoryInfo` is declared for the base struct, which is the prefix of
+            // the `_EX` one; `cb` tells the kernel how far it may write.
             let memory_size = memory.cb;
-            // SAFETY: Correct structure size, valid query handle and output buffer.
-            if unsafe { K32GetProcessMemoryInfo(handle.0, &mut memory, memory_size) } == 0 {
+            // SAFETY: `_EX` starts with the fields of `PROCESS_MEMORY_COUNTERS`, and `cb` is
+            // the `_EX` size, which is what the call validates before it fills the tail.
+            if unsafe {
+                K32GetProcessMemoryInfo(
+                    handle.0,
+                    &mut memory as *mut PROCESS_MEMORY_COUNTERS_EX as *mut PROCESS_MEMORY_COUNTERS,
+                    memory_size,
+                )
+            } == 0
+            {
                 return None;
             }
             let cpu_ticks = u128::from(filetime(kernel)) + u128::from(filetime(user));
@@ -264,6 +312,7 @@ mod platform {
                 identity: filetime(creation),
                 cpu_ns: cpu_ticks * 100,
                 rss_bytes: memory.WorkingSetSize as u64,
+                private_bytes: memory.PrivateUsage as u64,
             })
         }
     }
@@ -355,11 +404,16 @@ mod platform {
         let kernel_ticks = fields.get(12)?.parse::<u64>().ok()?;
         let identity = fields.get(19)?.parse::<u64>().ok()?;
         let resident_pages = statm.split_whitespace().nth(1)?.parse::<u64>().ok()?;
+        // Windows reports commit charge here. Linux has no per-process commit counter; the data
+        // segment (heap and stack) is the closest analogue. It undercounts allocations that come
+        // from mmap, and it is not comparable with the Windows figure.
+        let data_pages = statm.split_whitespace().nth(5)?.parse::<u64>().ok()?;
         Some(RawProcess {
             identity,
             cpu_ns: (u128::from(user_ticks) + u128::from(kernel_ticks)) * 1_000_000_000
                 / u128::from(ticks_per_second),
             rss_bytes: resident_pages.saturating_mul(page_bytes),
+            private_bytes: data_pages.saturating_mul(page_bytes),
         })
     }
 
@@ -405,5 +459,20 @@ mod tests {
         assert_eq!(cpu.observe(None), 0.0);
         // counters that go backwards restart the baseline
         assert_eq!(cpu.observe(Some((10, 20))), 0.0);
+    }
+
+    /// A wrong structure size or a wrong field makes the private bytes of every process read as
+    /// zero, and no other test looks at them.
+    #[cfg(windows)]
+    #[test]
+    fn the_current_process_reports_private_bytes_and_no_servers() {
+        let no_server = Arc::new(AtomicU32::new(0));
+        let mut sampler = ProcessSampler::new(no_server.clone(), no_server).unwrap();
+        let sample = sampler.sample();
+        let (app_mb, translator_mb, speech_mb) = sampler.private_mb();
+        assert!(app_mb > 0, "the app has committed memory");
+        assert!(sample.rss_app_mb > 0, "the app has a working set");
+        // With no server running, their readings are zero rather than the app's.
+        assert_eq!((translator_mb, speech_mb), (0, 0));
     }
 }
