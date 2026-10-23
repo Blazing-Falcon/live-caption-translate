@@ -7,7 +7,7 @@ use crate::{
     engines::{TranslateRequest, TranslationControl, Translator},
     error::{Error, Result},
     events::{EngineKind, EngineState, FailReason, PipelineEvent, SkipReason, Timing},
-    glossary::Glossary,
+    glossary::SharedGlossary,
     text::chinese_chars,
     types::{StreamTime, Transcript, UtteranceId},
 };
@@ -505,6 +505,7 @@ impl TranslatorWorker {
     pub fn start(
         mut translator: Box<dyn Translator>,
         config: TranslateConfig,
+        glossary: SharedGlossary,
         clock: Arc<dyn Clock>,
         bus: EventBus,
         cancelled: Arc<AtomicBool>,
@@ -536,7 +537,6 @@ impl TranslatorWorker {
                     message: warmup.err().map(|error| error.to_string()),
                 });
                 let mut shown: VecDeque<(UtteranceId, String)> = VecDeque::new();
-                let glossary = Glossary::new(&config.glossary);
                 while !worker_cancelled.load(Ordering::Relaxed) {
                     let item = match work.recv_timeout(Duration::from_millis(20)) {
                         Ok(item) => item,

@@ -8,7 +8,7 @@ use crate::{
     engines::OfflineAsr,
     error::Result,
     events::DropReason,
-    glossary::Glossary,
+    glossary::SharedGlossary,
     lyrics::LyricDetector,
     recognizer::AsrMessage,
     refine::{cut_at_next_clause, only_pronoun_differs, trim},
@@ -74,10 +74,10 @@ pub(super) fn refine_loop(
     config: &Config,
     inputs: Receiver<RefineInput>,
     output: Sender<AsrMessage>,
+    glossary: &SharedGlossary,
     cancelled: &AtomicBool,
 ) -> Result<()> {
     let max_wait = Duration::from_secs_f32(config.asr.second_pass_max_wait_s);
-    let glossary = Glossary::new(&config.translate.glossary);
     let mut lyrics = LyricDetector::default();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
@@ -109,7 +109,7 @@ pub(super) fn refine_loop(
                     transcript,
                     &live,
                     config,
-                    &glossary,
+                    glossary,
                     &mut lyrics,
                     next_head.as_deref(),
                 )
@@ -227,7 +227,7 @@ fn finalize(
     mut transcript: Transcript,
     live: &str,
     config: &Config,
-    glossary: &Glossary,
+    glossary: &SharedGlossary,
     lyrics: &mut LyricDetector,
     next_head: Option<&str>,
 ) -> AsrMessage {

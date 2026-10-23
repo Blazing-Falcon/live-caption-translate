@@ -22,6 +22,7 @@ use crate::{
     engines::{OfflineAsr, StreamingAsr, Translator},
     error::{Error, Result},
     events::{ListeningStateKind, PipelineEvent},
+    glossary::SharedGlossary,
     metrics::ResourceSampler,
     source::{AudioSource, SessionClock},
     types::{PipelineStats, StreamTime, UtteranceId},
@@ -76,6 +77,7 @@ impl Pipeline {
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
         }
+        let glossary = SharedGlossary::new(&config.translate.glossary);
         let cancelled = Arc::new(AtomicBool::new(false));
         let finished = Arc::new(AtomicBool::new(false));
         let clock = Arc::new(SessionClock::default());
@@ -96,6 +98,7 @@ impl Pipeline {
             threads: Vec::with_capacity(4),
             latest_stats: latest_stats.clone(),
             clause_counts: clause_counts.clone(),
+            glossary: glossary.clone(),
         };
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
@@ -130,6 +133,7 @@ impl Pipeline {
 
         let refine_cancel = cancelled.clone();
         let refine_config = config.clone();
+        let refine_glossary = glossary.clone();
         let refine_thread = thread::Builder::new()
             .name("lt-refine".into())
             .spawn(move || {
@@ -138,6 +142,7 @@ impl Pipeline {
                     &refine_config,
                     refine_rx,
                     asr_tx,
+                    &refine_glossary,
                     &refine_cancel,
                 )
             })?;
@@ -165,6 +170,7 @@ impl Pipeline {
                         scheduler_listening,
                         scheduler_latest,
                         sampler,
+                        glossary,
                     )
                 })?;
         handle.threads.push(scheduler_thread);

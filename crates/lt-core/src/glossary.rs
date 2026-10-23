@@ -7,6 +7,7 @@
 //! against the answer.
 
 use serde::{Deserialize, Serialize};
+use std::sync::{Arc, PoisonError, RwLock};
 
 /// One person or term.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -182,6 +183,37 @@ impl Glossary {
                 (entry.zh.clone(), english)
             })
             .collect()
+    }
+}
+
+/// The glossary a running pipeline reads. The user edits names during a show, so a new list
+/// replaces this one in place instead of restarting the session.
+#[derive(Clone, Debug, Default)]
+pub struct SharedGlossary(Arc<RwLock<Glossary>>);
+
+impl SharedGlossary {
+    pub fn new(entries: &[GlossaryEntry]) -> Self {
+        Self(Arc::new(RwLock::new(Glossary::new(entries))))
+    }
+
+    /// Apply a new list; the next clause and the next translation use it.
+    pub fn replace(&self, entries: &[GlossaryEntry]) {
+        let glossary = Glossary::new(entries);
+        *self.0.write().unwrap_or_else(PoisonError::into_inner) = glossary;
+    }
+
+    pub fn normalize(&self, text: &str) -> String {
+        self.0
+            .read()
+            .unwrap_or_else(PoisonError::into_inner)
+            .normalize(text)
+    }
+
+    pub fn terms(&self, text: &str, limit: usize) -> Vec<(String, String)> {
+        self.0
+            .read()
+            .unwrap_or_else(PoisonError::into_inner)
+            .terms(text, limit)
     }
 }
 

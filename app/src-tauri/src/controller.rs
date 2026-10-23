@@ -317,7 +317,7 @@ impl Controller {
                 session
                     .pipeline
                     .reopen_source(source)
-                    .map_err(|e| e.to_string())
+                    .map_err(|e| e.to_string())?;
             }
             Applies::Pipeline => {
                 let was_listening = self.shared.state().listening == ListeningStateKind::Listening;
@@ -329,10 +329,15 @@ impl Controller {
                 if !was_listening {
                     self.pause()?;
                 }
-                Ok(())
+                // The new session read the glossary from `new`.
+                return Ok(());
             }
-            Applies::Live | Applies::Restart => Ok(()),
+            Applies::Live | Applies::Restart => {}
         }
+        if old.translate.glossary != new.translate.glossary {
+            session.pipeline.set_glossary(&new.translate.glossary);
+        }
+        Ok(())
     }
 }
 
