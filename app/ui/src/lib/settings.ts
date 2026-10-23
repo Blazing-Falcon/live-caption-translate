@@ -303,7 +303,7 @@ export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
 
 export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
   { value: "off", label: "Off", model: null, help: "The live Chinese is final. The English appears soonest." },
-  { value: "qwen3", label: "Qwen3-ASR 0.6B", model: "qwen3-asr-0.6b-q4_k_m", help: "The default. Fixes misheard words. The English appears about 1 s later with 2 threads; about 1.2 GB more memory and half a CPU core." },
+  { value: "qwen3", label: "Qwen3-ASR 0.6B", model: "qwen3-asr-0.6b-q4_k_m", help: "The default. Fixes misheard words on the lines the recognizer was unsure of; a line it already heard clearly keeps its text and its English appears at once. About 1.2 GB more memory and half a CPU core." },
 ];
 
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
