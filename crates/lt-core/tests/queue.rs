@@ -83,6 +83,21 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
         UtteranceId(3)
     );
 
+    // A joined line ends with its last clause, so only that clause decides whether the
+    // translator is told the line stopped mid-thought.
+    for (leader, last) in [(true, false), (false, true)] {
+        let mut queue = TranslationQueue::new(Config::default().translate);
+        let mut first = transcript(1, "我希望我们", 1.0);
+        first.fragment = leader;
+        let mut second = transcript(2, "一起去", 2.0);
+        second.fragment = last;
+        queue.push(first, 0).unwrap();
+        queue.push(second, 0).unwrap();
+        let item = queue.take(StreamTime::from_seconds(2.0)).item.unwrap();
+        assert_eq!(item.transcript.absorbed, vec![UtteranceId(2)]);
+        assert_eq!(item.transcript.fragment, last);
+    }
+
     // Lines on either side of a break, or of a gap of more than 10 s, belong to different
     // contexts and are never translated as one sentence.
     let mut queue = TranslationQueue::new(Config::default().translate);
