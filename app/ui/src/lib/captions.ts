@@ -101,10 +101,14 @@ export function failReasonText(reason: FailReason, message: string): string {
   }
 }
 
-/** The overlay lets clicks through, so a status can only name the shortcut that opens settings. */
+/** The overlay lets clicks through, so a status can only name a way to open settings. The
+ * shortcut is named first, and the tray is always named too: a shortcut that another program
+ * owns fails to register, and the overlay has no way to learn that. */
 function openSettingsText(settingsHotkey: string): string {
   const binding = formatAccelerator(settingsHotkey);
-  return binding === "" ? "Open settings from the tray" : `Press ${binding} to open settings`;
+  return binding === ""
+    ? "Open settings from the tray"
+    : `Open settings with ${binding} or from the tray`;
 }
 
 export function pausedText(pauseHotkey: string): string {
