@@ -90,6 +90,7 @@ export interface Config extends ExtraFields {
     move_lock: string;
     show_hide: string;
     pause: string;
+    settings: string;
   };
   transcript: ExtraFields & {
     enabled: boolean;
@@ -135,7 +136,7 @@ export const MAX_THREADS = 64;
  * value itself fails the floor, hence "at or below". */
 export const LOW_BACKGROUND_WARNING = 0.5;
 
-export const HOTKEY_ACTIONS = ["move_lock", "show_hide", "pause"] as const;
+export const HOTKEY_ACTIONS = ["move_lock", "show_hide", "pause", "settings"] as const;
 export type HotkeyAction = (typeof HOTKEY_ACTIONS)[number];
 
 export function clamp(value: number, min: number, max: number): number {
@@ -377,6 +378,7 @@ export const DEFAULT_CONFIG: Config = {
   "hotkeys": {
     "move_lock": "Ctrl+Shift+L",
     "show_hide": "Ctrl+Shift+H",
+    "settings": "Ctrl+Shift+S",
     "pause": "Ctrl+Shift+P"
   },
   "transcript": {

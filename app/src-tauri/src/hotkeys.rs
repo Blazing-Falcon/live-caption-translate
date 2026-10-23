@@ -10,6 +10,7 @@ enum Action {
     MoveLock,
     ShowHide,
     Pause,
+    Settings,
 }
 
 impl Action {
@@ -18,6 +19,7 @@ impl Action {
             Action::MoveLock => "move_lock",
             Action::ShowHide => "show_hide",
             Action::Pause => "pause",
+            Action::Settings => "settings",
         }
     }
 }
@@ -31,6 +33,7 @@ pub fn register(app: &AppHandle, hotkeys: &HotkeysConfig) {
         (Action::MoveLock, &hotkeys.move_lock),
         (Action::ShowHide, &hotkeys.show_hide),
         (Action::Pause, &hotkeys.pause),
+        (Action::Settings, &hotkeys.settings),
     ];
     for (action, accelerator) in wanted {
         if accelerator.trim().is_empty() {
@@ -69,6 +72,10 @@ fn run(app: &AppHandle, action: Action) {
         }
         Action::Pause => {
             let _ = shared.controller.send(Cmd::TogglePause);
+        }
+        Action::Settings => {
+            // The overlay is click-through, so this is the only way to reach the window from it.
+            shared.show_control();
         }
     }
 }

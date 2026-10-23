@@ -22,13 +22,14 @@
     move_lock: "Move or lock overlay",
     show_hide: "Show or hide overlay",
     pause: "Pause listening",
+    settings: "Open settings",
   };
 
   let fontDraft = $state<number | null>(null);
   let backgroundDraft = $state<number | null>(null);
   let expireDraft = $state<number | null>(null);
-  let hotkeyDrafts = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "" });
-  let hotkeyBase = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "" });
+  let hotkeyDrafts = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "", settings: "" });
+  let hotkeyBase = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "", settings: "" });
 
   const overlay = $derived(config.overlay);
   const fontPx = $derived(fontDraft ?? overlay.font_px);

@@ -96,6 +96,7 @@ low_priority = true             # below-normal priority for the translation serv
 move_lock = "Ctrl+Shift+L"
 show_hide = "Ctrl+Shift+H"
 pause = "Ctrl+Shift+P"
+settings = "Ctrl+Shift+S"
 
 [transcript]
 enabled = true
@@ -204,6 +205,7 @@ Values use the Tauri global-shortcut format, for example `Ctrl+Shift+L`. An empt
 | `move_lock` | Move or lock the overlay |
 | `show_hide` | Show or hide the overlay |
 | `pause` | Pause or resume |
+| `settings` | Open the control window. The overlay lets clicks through, so this is the way back to it from a game |
 
 ### transcript
 

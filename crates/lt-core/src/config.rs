@@ -130,6 +130,9 @@ config_table!(HotkeysConfig {
     move_lock: String = "Ctrl+Shift+L".into(),
     show_hide: String = "Ctrl+Shift+H".into(),
     pause: String = "Ctrl+Shift+P".into(),
+    /// The overlay lets clicks through, so without a key the control window is reachable only
+    /// from the tray.
+    settings: String = "Ctrl+Shift+S".into(),
 });
 config_table!(TranscriptConfig {
     enabled: bool = true,
