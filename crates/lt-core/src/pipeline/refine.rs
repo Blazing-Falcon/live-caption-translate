@@ -94,7 +94,15 @@ pub(super) fn refine_loop(
             } => {
                 let live = transcript.text.clone();
                 if let Some(engine) = engine.as_deref_mut() {
-                    second_pass(engine, &mut transcript, &window, &open, closed, max_wait);
+                    second_pass(
+                        engine,
+                        &mut transcript,
+                        &window,
+                        &open,
+                        closed,
+                        max_wait,
+                        config.asr.second_pass_min_logprob,
+                    );
                 }
                 let next_head = open.after(transcript.id);
                 finalize(
@@ -117,6 +125,11 @@ pub(super) fn refine_loop(
 /// how it went. A clause that waited past `max_wait` keeps the live text without a decode, so
 /// the queue catches up when the engine is slow. A decode that started in time is used even if
 /// it ends later: the wait is spent by then.
+///
+/// A clause whose live text the streaming recognizer was at least as sure of as `min_logprob`
+/// keeps its text without a decode. The second pass earns its keep on lines the live model was
+/// unsure of; on confident lines it mostly rewrites words that were already right, and its
+/// decode is the longest stage after the close.
 fn second_pass(
     engine: &mut dyn OfflineAsr,
     transcript: &mut Transcript,
@@ -124,6 +137,7 @@ fn second_pass(
     open: &OpenClause,
     closed: Instant,
     max_wait: Duration,
+    min_logprob: f32,
 ) {
     let window_end = StreamTime(window.start.0 + window.samples.len() as u64);
     let mut record = SecondPass {
@@ -136,6 +150,17 @@ fn second_pass(
         decode_ms: None,
         refine_ms: 0,
     };
+    // `0` turns the gate off: a mean log-probability is at most 0, so a threshold of 0 would
+    // otherwise skip a line the engine was perfectly certain of.
+    let confident = min_logprob < 0.0
+        && transcript
+            .logprob
+            .is_some_and(|logprob| logprob >= min_logprob);
+    if confident {
+        record.outcome = SecondPassOutcome::Confident;
+        transcript.second_pass = Some(record);
+        return;
+    }
     if closed.elapsed() <= max_wait {
         let started = Instant::now();
         // The live text already says the clause is Chinese. Without this the model tags

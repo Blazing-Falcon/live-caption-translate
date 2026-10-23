@@ -191,6 +191,7 @@ fn second_pass_summary(passes: &[SecondPass]) -> Option<SecondPassSummary> {
             SecondPassOutcome::Used => "used",
             SecondPassOutcome::Mismatch => "mismatch",
             SecondPassOutcome::Late => "late",
+            SecondPassOutcome::Confident => "confident",
             SecondPassOutcome::Failed => "failed",
         };
         *outcomes.entry(key).or_default() += 1;

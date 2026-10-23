@@ -137,6 +137,8 @@ pub enum SecondPassOutcome {
     Mismatch,
     /// The line waited too long for the second pass.
     Late,
+    /// The live recognizer was sure of this line, so it was not decoded again.
+    Confident,
     /// The second pass failed.
     Failed,
 }

@@ -60,7 +60,7 @@ export interface PipelineStats {
 
 export type CutReason = "pause" | "discontinuity" | "end" | "commit";
 
-export type SecondPassOutcome = "used" | "mismatch" | "late" | "failed";
+export type SecondPassOutcome = "used" | "mismatch" | "late" | "confident" | "failed";
 
 export interface SecondPass {
   outcome: SecondPassOutcome;

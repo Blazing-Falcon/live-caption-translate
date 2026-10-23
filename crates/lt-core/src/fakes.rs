@@ -24,6 +24,8 @@ pub struct FakeStream {
     next: usize,
     threshold_energy: f32,
     pause_samples: u64,
+    /// Mean token log-probability this stream reports for every part.
+    pub logprob: f32,
     /// Samples heard since the stream started.
     heard: u64,
     /// Start of the current part, in samples since the stream started.
@@ -40,6 +42,7 @@ impl FakeStream {
             next: 0,
             threshold_energy: 0.001,
             pause_samples: (pause_s * 16_000.0).round() as u64,
+            logprob: -0.1,
             heard: 0,
             part_start: 0,
             tokens: Vec::new(),
@@ -83,7 +86,7 @@ impl StreamingAsr for FakeStream {
                     .iter()
                     .map(|(_, at)| *at as f32 / 16_000.0)
                     .collect(),
-                log_probs: vec![-0.1; self.tokens.len()],
+                log_probs: vec![self.logprob; self.tokens.len()],
             },
         })
     }

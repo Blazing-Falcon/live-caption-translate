@@ -70,6 +70,9 @@ config_table!(AsrConfig {
     second_pass: String = "qwen3".into(),
     second_pass_threads: u32 = 4,
     second_pass_max_wait_s: f32 = 1.5,
+    /// Run the second pass only on a clause whose live text the streaming recognizer was less
+    /// sure of than this (mean token log-probability). `0` decodes every clause.
+    second_pass_min_logprob: f32 = -0.6,
 });
 config_table!(FilterConfig {
     /// Do not translate a line that looks like song lyrics. Marking such a line is separate and
@@ -421,6 +424,7 @@ impl Config {
         choice!(asr, second_pass, &["off", "qwen3"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
+        number!(asr, second_pass_min_logprob, -5.0, 0.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
         number!(translate, threads, 1, MAX_THREADS);
@@ -719,6 +723,7 @@ fn normalize_float(
         "translate.timeout_s" => (2.0, 60.0),
         "translate.skip_lag_s" => (2.0, 30.0),
         "asr.second_pass_max_wait_s" => (0.5, 5.0),
+        "asr.second_pass_min_logprob" => (-5.0, 0.0),
         "overlay.expire_s" => (3.0, 60.0),
         "filter.single_char_max_s" => (0.0, f64::from(f32::MAX)),
         _ => (f64::MIN, f64::MAX),

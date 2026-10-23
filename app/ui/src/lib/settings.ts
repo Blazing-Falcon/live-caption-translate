@@ -46,6 +46,7 @@ export interface Config extends ExtraFields {
     second_pass: "off" | "qwen3";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
+    second_pass_min_logprob: number;
   };
   filter: ExtraFields & {
     skip_music: boolean;
@@ -335,7 +336,8 @@ export const DEFAULT_CONFIG: Config = {
     "pause_s": 0.8,
     "second_pass": "qwen3",
     "second_pass_threads": 4,
-    "second_pass_max_wait_s": 1.5
+    "second_pass_max_wait_s": 1.5,
+    "second_pass_min_logprob": -0.6
   },
   "filter": {
     "skip_music": false,
