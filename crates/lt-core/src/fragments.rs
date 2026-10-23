@@ -5,9 +5,19 @@
 //! from the words, because a time or length test cannot tell a short complete line (`谢谢`) from
 //! an unfinished one (`那就当做`).
 
-/// A clause cannot end on these: function words and prepositions that need a complement.
-/// `样` and `过` are left out: 怎么样 and 我没去过 end a sentence.
-const CONTINUATION_TAIL: &str = "的地得把被跟和与对在从向往给让使为比由就是会能要想该敢肯也都还又很太更最不没别挺真才这个些位件种但而并且着说做当成叫";
+/// A clause cannot end on these: function words, and verbs that need a complement.
+///
+/// The list is one character at a time, so a character that is also the second half of a common
+/// word marks complete sentences as unfinished. Those are left out: `的` (是值得的), `在` (所在),
+/// `地` (栖息地), `向` (方向), `为` (行为), `是` (也是), `成` (组成), `着` (睡着), `别` (差别),
+/// `真` (认真), `位` and `种` (席位, 各种), `些` and `件` (那些, 事件), `样` and `过` (怎么样,
+/// 我没去过).
+const CONTINUATION_TAIL: &str =
+    "得把被跟和与对从往给让使比由就会能要想该敢肯也都还又很太更最不没挺才这个但而并且说做当叫";
+
+/// Words that end on a continuation character but complete a clause: the modal 会 and 要 are
+/// also the second half of these nouns and adjectives.
+const COMPLETE_WORDS: [&str; 5] = ["机会", "社会", "重要", "主要", "必要"];
 
 /// A pronoun at the end is either an object, which completes the clause (谢谢你, 相信我), or a
 /// subject still waiting for its verb (然后他, 跟我).
@@ -67,7 +77,7 @@ fn tail_cue(text: &str) -> bool {
     // The punctuation that ended the cut is not part of the last word.
     let words = text.trim_end_matches(|character: char| !character.is_alphanumeric());
     // 是不是, 要不要, 有没有: a question that ends here, though its verb alone would not.
-    if ends_with_a_not_a(words) {
+    if ends_with_a_not_a(words) || COMPLETE_WORDS.iter().any(|word| words.ends_with(word)) {
         return false;
     }
     if CONTINUATION_TAIL_PAIRS
@@ -163,6 +173,15 @@ mod tests {
         }
         assert!(!looks_unfinished("怎么样", None));
         assert!(!looks_unfinished("我没去过", None));
+        // Read sentences that end without a mark, from a recorded replay.
+        for complete in [
+            "可以实质上提升你回国升学的机会",
+            "时间对于商务文件而言非常重要",
+            "战争开支是由菲律宾人民自己支付的",
+            "又发生了三起炸弹爆炸事件",
+        ] {
+            assert!(!looks_unfinished(complete, None), "{complete}");
+        }
         // A question that merely starts with 那 is not a continuation.
         assert!(!looks_unfinished("谢谢", Some("那是什么")));
     }
