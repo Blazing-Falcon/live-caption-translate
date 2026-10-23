@@ -543,21 +543,21 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           state = "other";
           announcement = event.text;
         }
-        // A correction of one character, or of punctuation only, stays in the transcript: moving
-        // the Chinese the viewer is already reading under their eyes is not worth the jolt.
-        const trivial = existing !== undefined && isTrivialSwap(event.second_pass);
-        const source = trivial ? existing.source : event.text;
+        // The English is translated from this text, so the Chinese shown is always this text too,
+        // even when the correction is one character: that is the usual size of a misheard word.
         lines.set(event.id, {
           ...base,
           state,
-          source,
+          source: event.text,
           lang,
           music: event.music === true,
           updatedAt: clock.now(),
         });
         // A larger correction changes what the viewer is reading, so the old Chinese fades out
-        // under the new one instead of being replaced between two frames.
-        if (!trivial && existing !== undefined && existing.source !== "" && existing.source !== event.text) {
+        // under the new one. A one-character or punctuation fix is replaced in place: a crossfade
+        // of the whole row would draw more attention than the change itself.
+        const small = isTrivialSwap(event.second_pass);
+        if (!small && existing !== undefined && existing.source !== "" && existing.source !== event.text) {
           startSwap(event.id, existing.source);
         }
         return true;

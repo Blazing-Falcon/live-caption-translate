@@ -53,6 +53,25 @@ describe("caption reducer", () => {
     expect(lines()[0]).toMatchObject({ state: "final", source: "我也想，办一个，公司" });
   });
 
+  // The English comes from the corrected text; a row that kept the misheard word would contradict it.
+  it("shows a one-character correction from the second pass", () => {
+    const { lines, run } = setup();
+    run(partial(40, "我也想半一个"));
+    run({
+      ...asrFinal(40, "我也想办一个"),
+      second_pass: {
+        outcome: "used",
+        live_text: "我也想半一个",
+        window_start_ms: 0,
+        window_end_ms: 1800,
+        distance: 1,
+        decode_ms: 500,
+        refine_ms: 600,
+      },
+    } as PipelineEvent);
+    expect(lines()).toMatchObject([{ id: 40, state: "pending", source: "我也想办一个" }]);
+  });
+
   it("ignores duplicate asr_final and anything after a terminal event", () => {
     const { lines, run } = setup();
     run(asrFinal(31, "你好"), final(31, "Hello"), asrFinal(31, "你好"), delta(31, "Hel"), failed(31, "timeout"), skipped(31));
