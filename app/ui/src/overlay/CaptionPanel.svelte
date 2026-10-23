@@ -28,18 +28,17 @@
   <div class="history">
     {#if status}
       <CaptionLine {status} />
-    {:else}
-      {#each shown as line, index (line.id)}
-        <CaptionLine
-          {line}
-          {showSource}
-          {liveSource}
-          variant="panel"
-          age={shown.length - 1 - index}
-          fading={fadingIds.has(line.id)}
-        />
-      {/each}
     {/if}
+    {#each shown as line, index (line.id)}
+      <CaptionLine
+        {line}
+        {showSource}
+        {liveSource}
+        variant="panel"
+        age={shown.length - 1 - index}
+        fading={fadingIds.has(line.id)}
+      />
+    {/each}
   </div>
 </section>
 

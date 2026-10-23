@@ -24,6 +24,10 @@ pub struct Physical {
 
 const MIN_W: f64 = 240.0;
 const MIN_H: f64 = 80.0;
+/// The panel's width in DIPs at the default font size. Its 18 px padding each side leaves 524
+/// for text, which is about 42 characters at 26 px: the width subtitle guidance gives a line.
+/// At 420 the column held 31 characters, so a line of ordinary speech wrapped every time.
+const PANEL_W: f64 = 560.0;
 
 fn dip(value: u32, scale: f64) -> f64 {
     f64::from(value) / scale
@@ -33,15 +37,16 @@ fn dip(value: u32, scale: f64) -> f64 {
 pub fn default_rect(style: &str, edge_right: bool, monitor: &Monitor) -> OverlayRect {
     let (work_w, work_h) = (dip(monitor.w, monitor.scale), dip(monitor.h, monitor.scale));
     let (x, y, w, h) = if style == "panel" {
-        let w = 420.0_f64.min(work_w - 48.0).max(MIN_W);
+        let w = PANEL_W.min(work_w - 48.0).max(MIN_W);
         let h = 600.0_f64.min(work_h - 48.0).max(MIN_H);
         let x = if edge_right { work_w - w - 24.0 } else { 24.0 };
         (x, 24.0, w, h)
     } else {
         let w = 960.0_f64.min(work_w * 0.9).max(MIN_W);
-        // Two utterances with source lines plus the status chip row need about 190 DIPs.
-        // Running text needs room for up to 6 wrapped lines of English and of Chinese.
-        let h: f64 = if style == "flow" { 360.0 } else { 200.0 };
+        // Two utterances with source lines plus the status chip row need about 190 DIPs; 200
+        // clipped the older line once one of them wrapped, which a long sentence does at the
+        // default width. Running text needs room for up to 6 wrapped lines of English and Chinese.
+        let h: f64 = if style == "flow" { 360.0 } else { 240.0 };
         let h = h.min(work_h - 48.0).max(MIN_H);
         ((work_w - w) / 2.0, work_h - h - 40.0, w, h)
     };
