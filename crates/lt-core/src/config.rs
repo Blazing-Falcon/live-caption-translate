@@ -90,6 +90,9 @@ config_table!(TranslateConfig {
     queue_join_max_chars: u32 = 120,
     skip_lag_s: f32 = 6.0,
     window_chars: u32 = 60,
+    /// Append an ellipsis to a clause that stopped mid-thought, so the translator does not
+    /// invent an ending.
+    fragment_ellipsis: bool = true,
     glossary: Vec<crate::glossary::GlossaryEntry> = Vec::new(),
 });
 config_table!(OverlayConfig {

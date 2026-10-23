@@ -8,6 +8,7 @@ pub mod engines;
 pub mod error;
 pub mod events;
 pub mod fakes;
+pub mod fragments;
 pub mod glossary;
 pub mod lyrics;
 pub mod metrics;

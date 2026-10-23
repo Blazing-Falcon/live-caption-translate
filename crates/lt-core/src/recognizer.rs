@@ -311,6 +311,7 @@ impl Recognizer {
             class: TextClass::Chinese,
             // Set by the refine thread, which sees the whole session.
             music: false,
+            fragment: false,
             timing: StageTiming {
                 start: clause.start,
                 end,

@@ -183,6 +183,10 @@ pub struct Transcript {
     /// what singing sounds like to it.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub music: bool,
+    /// The clause stopped mid-thought: the words say it is still going, or the next clause
+    /// opens with a connective. The translator is told, so it does not invent an ending.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub fragment: bool,
     /// Absent when the second pass is off.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub second_pass: Option<SecondPass>,

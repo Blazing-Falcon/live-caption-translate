@@ -96,7 +96,15 @@ pub(super) fn refine_loop(
                 if let Some(engine) = engine.as_deref_mut() {
                     second_pass(engine, &mut transcript, &window, &open, closed, max_wait);
                 }
-                finalize(transcript, &live, config, &glossary, &mut lyrics)
+                let next_head = open.after(transcript.id);
+                finalize(
+                    transcript,
+                    &live,
+                    config,
+                    &glossary,
+                    &mut lyrics,
+                    next_head.as_deref(),
+                )
             }
             RefineInput::Message(message) => message,
         };
@@ -193,6 +201,7 @@ fn finalize(
     config: &Config,
     glossary: &Glossary,
     lyrics: &mut LyricDetector,
+    next_head: Option<&str>,
 ) -> AsrMessage {
     transcript.text = clean(&transcript.text, &config.filter.fillers);
     if let Some(record) = transcript.second_pass.as_mut() {
@@ -202,6 +211,10 @@ fn finalize(
     transcript.text = glossary.normalize(&transcript.text);
     // Confidence is read on the clause as the engine heard it, before any correction.
     transcript.music = lyrics.observe(transcript.logprob);
+    // A pause cut that stopped mid-thought gets an ellipsis instead of an invented ending. A
+    // commit cut ends at a mark or a comma by definition, so it is not a fragment.
+    transcript.fragment = transcript.cut == crate::types::CutReason::Pause
+        && crate::fragments::looks_unfinished(&transcript.text, next_head);
     let Some(class) = classify(&transcript.text) else {
         return AsrMessage::Dropped(transcript.id, DropReason::Empty);
     };

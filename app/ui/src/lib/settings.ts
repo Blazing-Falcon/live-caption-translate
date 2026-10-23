@@ -64,6 +64,7 @@ export interface Config extends ExtraFields {
     queue_join_max_chars: number;
     skip_lag_s: number;
     window_chars: number;
+    fragment_ellipsis: boolean;
     glossary: GlossaryEntry[];
   };
   overlay: ExtraFields & {
@@ -253,7 +254,7 @@ export function transcriptPatch(enabled: boolean): ConfigPatch {
   return { transcript: { enabled } };
 }
 
-/** The "also heard as" field, split on either comma width and on the list mark a Chinese IME emits. */
+/** Splits the "also heard as" field; a Chinese keyboard types the full-width comma and 、 as a list mark. */
 export function splitVariants(text: string): string[] {
   const seen = new Set<string>();
   const variants: string[] = [];
@@ -266,11 +267,12 @@ export function splitVariants(text: string): string[] {
   return variants;
 }
 
+/** Joins a variant list for the field, which splits it again with `splitVariants`. */
 export function formatVariants(variants: readonly string[]): string {
   return variants.join(", ");
 }
 
-/** The Rust side replaces an array wholesale, so a patch always carries the whole list. */
+/** A patch carries the whole list: the app replaces the stored array rather than merging rows. */
 export function glossaryPatch(entries: GlossaryEntry[]): ConfigPatch {
   return { translate: { glossary: entries } };
 }
@@ -352,6 +354,7 @@ export const DEFAULT_CONFIG: Config = {
     "queue_join_max_chars": 120,
     "skip_lag_s": 6.0,
     "window_chars": 60,
+    "fragment_ellipsis": true,
     "glossary": []
   },
   "overlay": {

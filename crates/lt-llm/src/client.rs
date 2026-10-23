@@ -443,9 +443,15 @@ fn missing_terms(answer: &str, terms: &[(String, String)]) -> Vec<(String, Strin
         .collect()
 }
 
-/// Remove a leaked marker spelling, including a truncated one at the end of the answer.
+/// Remove a leaked marker spelling, including a truncated one at the end of the answer, and an
+/// ellipsis the model echoed from the source's own unfinished marker.
 fn strip_marker_residue(text: &str) -> String {
     let mut cleaned = text.to_owned();
+    for ellipsis in ["…", "..."] {
+        if let Some(rest) = cleaned.strip_suffix(ellipsis) {
+            cleaned = rest.trim_end().to_owned();
+        }
+    }
     for marker in LEAKED_MARKERS {
         if let Some(at) = cleaned.find(marker) {
             cleaned.truncate(at);
@@ -867,4 +873,33 @@ pub(crate) fn local_agent(address: SocketAddr, control: TranslationControl) -> R
         LocalConnector { address, control },
         LocalResolver { address },
     ))
+}
+
+#[cfg(test)]
+mod residue_tests {
+    use super::strip_marker_residue;
+
+    /// The source carries a `…` for a clause that stopped mid-thought; a model that copies it
+    /// back must not put it in the caption.
+    #[test]
+    fn an_echoed_ellipsis_is_removed() {
+        assert_eq!(
+            strip_marker_residue("Then just assume it's that…"),
+            "Then just assume it's that"
+        );
+        assert_eq!(
+            strip_marker_residue("Then just assume it's that..."),
+            "Then just assume it's that"
+        );
+        // An ellipsis inside the sentence is the model's own punctuation and stays.
+        assert_eq!(strip_marker_residue("I… don't know."), "I… don't know.");
+    }
+
+    #[test]
+    fn a_leaked_marker_is_cut() {
+        assert_eq!(
+            strip_marker_residue("Hello.<｜hy_end▁of▁sentence｜>"),
+            "Hello."
+        );
+    }
 }

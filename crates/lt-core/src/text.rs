@@ -394,6 +394,7 @@ mod tests {
             cut: crate::types::CutReason::Pause,
             logprob: None,
             music: false,
+            fragment: false,
             second_pass: None,
         }
     }

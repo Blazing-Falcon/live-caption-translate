@@ -356,9 +356,18 @@ pub fn translate_one(
         cancelled,
         abort: Arc::new(AtomicBool::new(false)),
     };
+    // A clause that stops mid-thought is marked so the translator does not invent an ending;
+    // an ellipsis it echoes back is removed from the answer below.
+    let marked;
+    let text = if config.fragment_ellipsis && source.fragment {
+        marked = format!("{}…", source.text);
+        marked.as_str()
+    } else {
+        source.text.as_str()
+    };
     let request = TranslateRequest {
         id: source.id,
-        text: &source.text,
+        text,
         context: if translator.caps().context {
             context
         } else {
