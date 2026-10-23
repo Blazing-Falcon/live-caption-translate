@@ -66,6 +66,7 @@ timeout_s = 10.0
 queue_join_max_chars = 120
 skip_lag_s = 6.0
 window_chars = 60               # 0 = translate each line alone
+glossary = []                   # names and terms, see the table below:
 # glossary = [{ zh = "卓总", en = "President Zhuo", note = "name, male, her boss",
 #               variants = ["周总", "朱总"], confirmed = true }]
 
