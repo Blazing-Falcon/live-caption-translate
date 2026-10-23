@@ -100,8 +100,8 @@ impl Glossary {
     /// Replace every spelling of a confirmed entry with its canonical form.
     ///
     /// Exact matches only: a name heard almost right is a different string, and a fuzzy
-    /// replacement would rewrite ordinary words. A match that begins a longer ordinary word is
-    /// left alone (周总 inside 周总理).
+    /// replacement would rewrite ordinary words. A match whose first or last character belongs
+    /// to a neighbouring word is left alone (周总 inside 周总理 or 四周总是).
     pub fn normalize(&self, text: &str) -> String {
         if self.variants.is_empty() || text.is_empty() {
             return text.to_owned();
@@ -120,7 +120,11 @@ impl Glossary {
                     .iter()
                     .copied()
                     .eq(variant.text.chars());
-                if same && !extends_to_another_word(&characters, at + length) {
+                let inside_word = at
+                    .checked_sub(1)
+                    .is_some_and(|before| joins_previous_word(characters[before]))
+                    || extends_to_another_word(&characters, at + length);
+                if same && !inside_word {
                     matched = Some(variant);
                     break;
                 }
@@ -154,7 +158,11 @@ impl Glossary {
                 let start = from + offset;
                 let end = start + variant.text.len();
                 let after: Vec<char> = text[end..].chars().take(1).collect();
-                if !extends_to_another_word(&after, 0) {
+                let joins_before = text[..start]
+                    .chars()
+                    .next_back()
+                    .is_some_and(joins_previous_word);
+                if !joins_before && !extends_to_another_word(&after, 0) {
                     found[variant.entry] = true;
                     break;
                 }
@@ -224,6 +232,18 @@ const COMPOUND_TAILS: [char; 11] = [
     '理', '裁', '统', '书', '编', '监', '管', '局', '部', '长', '员',
 ];
 
+/// Numerals and demonstratives turn the character after them into a measure or time word: 四 +
+/// 周 is "four weeks", 这 + 周 is "this week". A name that starts right after one is more likely
+/// the end of that word and the start of the next (四周总是, "always, all around").
+const COMPOUND_HEADS: [char; 18] = [
+    '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '两', '几', '每', '上', '下', '本',
+    '这', '那',
+];
+
+fn joins_previous_word(before: char) -> bool {
+    COMPOUND_HEADS.contains(&before)
+}
+
 fn extends_to_another_word(characters: &[char], at: usize) -> bool {
     characters
         .get(at)
@@ -270,6 +290,16 @@ mod tests {
         assert_eq!(glossary.normalize("周总来了"), "周总来了");
         assert!(glossary.matches("周总理来了", 8).is_empty());
         assert_eq!(glossary.matches("周总来了", 8).len(), 1);
+    }
+
+    #[test]
+    fn a_name_that_ends_an_ordinary_word_is_left_alone() {
+        let glossary = Glossary::new(&[entry("卓总", "President Zhuo", &["周总"])]);
+        for text in ["四周总是很安静", "一周总共三天", "这周总要见一面"] {
+            assert_eq!(glossary.normalize(text), text);
+            assert!(glossary.matches(text, 8).is_empty(), "{text}");
+        }
+        assert_eq!(glossary.normalize("跟周总说"), "跟卓总说");
     }
 
     #[test]
