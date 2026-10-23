@@ -5,13 +5,21 @@
 
   interface Props {
     lines: readonly Line[];
+    fadingIds?: ReadonlySet<number>;
     status?: StatusLine | null;
     showSource?: boolean;
     liveSource?: boolean;
     flowLines?: number;
   }
 
-  let { lines, status = null, showSource = true, liveSource = true, flowLines = 3 }: Props = $props();
+  let {
+    lines,
+    fadingIds = new Set<number>(),
+    status = null,
+    showSource = true,
+    liveSource = true,
+    flowLines = 3,
+  }: Props = $props();
 
   const flow = $derived(flowText(lines, showSource, liveSource));
   const streaming = $derived(flow.english.at(-1)?.kind === "streaming");
@@ -54,21 +62,20 @@
   >
     {#if status}
       <CaptionLine {status} />
-    {:else}
-      {#if flow.source.length > 0}
-        <div class="para source">
-          <p>
-            {#each flow.source as piece (piece.id)}<span class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
-          </p>
-        </div>
-      {/if}
-      {#if flow.english.length > 0}
-        <div class="para english">
-          <p>
-            {#each flow.english as piece, index (piece.id)}{index > 0 ? " " : ""}<span class={piece.kind}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
-          </p>
-        </div>
-      {/if}
+    {/if}
+    {#if flow.source.length > 0}
+      <div class="para source" class:fading={flow.source.some((piece) => fadingIds.has(piece.id))}>
+        <p>
+          {#each flow.source as piece (piece.id)}<span class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
+        </p>
+      </div>
+    {/if}
+    {#if flow.english.length > 0}
+      <div class="para english" class:fading={flow.english.some((piece) => fadingIds.has(piece.id))}>
+        <p>
+          {#each flow.english as piece, index (piece.id)}{index > 0 ? " " : ""}<span class={piece.kind}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
+        </p>
+      </div>
     {/if}
   </section>
 {/if}
@@ -95,6 +102,13 @@
     max-height: calc(var(--flow-lines) * var(--flow-line-height) * 1em);
     overflow: hidden;
     line-height: var(--flow-line-height);
+    transition: opacity var(--fade-ms) linear;
+  }
+
+  /* The shared clock fades the lines that are expiring; without this the running text vanished
+   * at once while the panel and the bar faded. */
+  .para.fading {
+    opacity: 0;
   }
 
   p {

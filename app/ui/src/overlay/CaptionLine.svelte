@@ -73,7 +73,7 @@
             <span class="swap-in">{line.source}</span>
           </p>
         {:else}
-          <p class="source" lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
+          <p class="source" class:heard={line.state === "live"} lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
         {/if}
       {/if}
       {#if showEnglish}
@@ -138,6 +138,12 @@
     line-height: 1.45;
     color: var(--ov-text-secondary);
     text-shadow: var(--ov-halo);
+  }
+
+  /* Words still being recognized, not a settled line: dimmer than the Chinese of a finished
+   * clause, so the reader can tell what the recognizer may still change. */
+  .source.heard {
+    color: var(--ov-dim);
   }
 
   /* The corrected Chinese fades in over the text the viewer was reading, so a larger correction
