@@ -85,11 +85,12 @@ impl ServerOptions {
         }
     }
 
-    /// A Qwen3-ASR server. The second-pass window is a clause with 0.3 s before and 0.8 s after
-    /// it, and a clause is cut at the 30 s wait cap, so a window holds at most about 32 s of
-    /// audio. The encoder emits 13 tokens for each whole second, which is 33 chunks, 429
-    /// tokens; the prompt and the 256-token answer cap add about 280. 768 is the next multiple
-    /// of 256 above that and the smallest context that fits a long clause; 512 would fail it.
+    /// A Qwen3-ASR server. The second-pass window is a clause plus 0.3 s before and 0.8 s after
+    /// it. A clause is cut at the 30 s wait cap, and its end time adds 0.6 s for the last word,
+    /// so a window holds at most 31.7 s of audio. The encoder emits 13 tokens for each whole
+    /// second, which is 32 chunks, 416 tokens; the chat template and the 256-token answer cap
+    /// add about 280. The total, about 700, fits 768 and not 512, and 768 is the next multiple
+    /// of 256 above it.
     pub fn speech(binary: PathBuf, model: PathBuf, mmproj: PathBuf, threads: u32) -> Self {
         Self {
             role: Role::Speech { mmproj },

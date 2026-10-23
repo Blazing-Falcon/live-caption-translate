@@ -34,10 +34,13 @@ const HTTP_BUFFER_BYTES: usize = 16 * 1024;
 /// An answer this many times longer than its source in characters is not a translation of it.
 const MAX_LENGTH_RATIO: usize = 12;
 /// Openings of a reply that answers the instruction instead of translating the line. They are
-/// lowercase because the check lowercases the answer first.
-const REPLY_PHRASES: [&str; 6] = [
+/// lowercase because the check lowercases the answer first. "Refer to the following" is here
+/// because a glossary block placed after the instruction makes the model repeat the block's own
+/// header instead of translating.
+const REPLY_PHRASES: [&str; 7] = [
     "please translate",
     "translate the following",
+    "refer to the following translations",
     "here is the translation",
     "here's the translation",
     "the translation is",
