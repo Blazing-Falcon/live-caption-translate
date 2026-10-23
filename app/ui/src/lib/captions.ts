@@ -78,6 +78,7 @@ export interface StatusInput {
   sourceDetail: string | null;
   selectedAppNames: readonly string[];
   pauseHotkey: string;
+  settingsHotkey: string;
 }
 
 const ENGINE_ORDER: readonly EngineKind[] = ["asr", "translator"];
@@ -100,6 +101,12 @@ export function failReasonText(reason: FailReason, message: string): string {
   }
 }
 
+/** The overlay lets clicks through, so a status can only name the shortcut that opens settings. */
+function openSettingsText(settingsHotkey: string): string {
+  const binding = formatAccelerator(settingsHotkey);
+  return binding === "" ? "Open settings from the tray" : `Press ${binding} to open settings`;
+}
+
 export function pausedText(pauseHotkey: string): string {
   const binding = formatAccelerator(pauseHotkey);
   return binding === "" ? "Paused · Resume in Settings" : `Paused · ${binding} to resume`;
@@ -108,12 +115,18 @@ export function pausedText(pauseHotkey: string): string {
 /** Priority order is fixed; silence is handled by the chip. */
 export function deriveStatus(input: StatusInput): StatusLine | null {
   if (!input.modelsReady) {
-    return { kind: "models_missing", text: "Models not downloaded. Open settings to download." };
+    return {
+      kind: "models_missing",
+      text: `Models not downloaded. ${openSettingsText(input.settingsHotkey)}`,
+    };
   }
   for (const engine of ENGINE_ORDER) {
     if (input.engines[engine] === "failed") {
       const name = engine === "translator" ? "Translator" : "Speech recognition";
-      return { kind: "engine_failed", text: `${name} stopped working. Open settings for details.` };
+      return {
+        kind: "engine_failed",
+        text: `${name} stopped working. ${openSettingsText(input.settingsHotkey)} for details.`,
+      };
     }
   }
   for (const engine of ENGINE_ORDER) {
@@ -266,6 +279,7 @@ interface AppSlice {
 
 interface SettingsSlice {
   pauseHotkey: string;
+  settingsHotkey: string;
   expireMs: number;
   appNames: string[];
 }
@@ -318,6 +332,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   };
   let settings: SettingsSlice = {
     pauseHotkey: "",
+    settingsHotkey: "",
     expireMs: 8000,
     appNames: [],
   };
@@ -339,6 +354,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       sourceDetail: app.sourceDetail,
       selectedAppNames: settings.appNames,
       pauseHotkey: settings.pauseHotkey,
+      settingsHotkey: settings.settingsHotkey,
     });
   }
 
@@ -654,6 +670,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     if (disposed) return;
     settings = {
       pauseHotkey: config.hotkeys.pause,
+      settingsHotkey: config.hotkeys.settings,
       expireMs: Math.max(0, config.overlay.expire_s * 1000),
       appNames: config.capture.apps.map((entry) => entry.name),
     };
