@@ -10,7 +10,7 @@ use crate::{
     events::DropReason,
     glossary::Glossary,
     recognizer::AsrMessage,
-    refine::{cut_at_next_clause, trim},
+    refine::{cut_at_next_clause, only_pronoun_differs, trim},
     text::{chinese_chars, classify, clean, drop_reason},
     types::{SecondPass, SecondPassOutcome, StreamTime, TextClass, Transcript, UtteranceId},
 };
@@ -151,6 +151,11 @@ fn second_pass(
                     );
                 }
                 match trim(&transcript.text, text) {
+                    Some(trimmed) if only_pronoun_differs(&transcript.text, &trimmed.text) => {
+                        // The live model heard the audio; the window heard a few seconds of it.
+                        // A pronoun is the one thing it gets wrong more often than the live pass.
+                        record.outcome = SecondPassOutcome::Mismatch;
+                    }
                     Some(trimmed) => {
                         record.outcome = SecondPassOutcome::Used;
                         record.distance = Some(trimmed.distance.min(u32::MAX as usize) as u32);

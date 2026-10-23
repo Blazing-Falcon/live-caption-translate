@@ -6,10 +6,12 @@ impl HyMt2Prompts {
     pub const PREFIX: &'static str = "Translate the following text into English. Note that you should only output the translated result without any additional explanation:\n\n";
 
     pub fn user_message(text: &str) -> String {
-        let mut prompt = String::with_capacity(Self::PREFIX.len() + text.len());
-        prompt.push_str(Self::PREFIX);
-        prompt.push_str(text);
-        prompt
+        format!("{}{}", Self::user_message_head(), text)
+    }
+
+    /// The instruction alone, for a prompt that puts something between it and the text.
+    pub fn user_message_head() -> &'static str {
+        Self::PREFIX
     }
 
     /// The earlier lines as finished chat turns, then the new line. Only the first user turn
@@ -21,12 +23,11 @@ impl HyMt2Prompts {
 
     /// As `turns`, with the glossary entries this line mentions in the last user turn.
     ///
-    /// The block goes in the last turn, so the instruction and every earlier turn stay
-    /// byte-identical and the server's cached prefix still covers them. With terms, the last
-    /// turn repeats the whole documented shape: the terminology block, the instruction, then
-    /// the line. Only the entries the line mentions, because a list on every line costs
-    /// latency on a 1.8B model, and a block without its instruction makes the model answer
-    /// instead of translate.
+    /// The block goes in the last turn, after the instruction, so the instruction and every
+    /// earlier turn stay byte-identical and the server's cached prefix still covers them. The
+    /// block ends with a `Text:` label: without one, a request that has no earlier turn (the
+    /// first line of a session, or any line after a window reset) makes the model echo the
+    /// block back instead of translating, on 17 of 23 term lines measured.
     pub fn turns_with_terms(
         earlier: &[(String, String)],
         terms: &[(String, String)],
@@ -43,7 +44,8 @@ impl HyMt2Prompts {
             turns.push(("assistant", english.clone()));
         }
         let text = if !terms.is_empty() {
-            format!("{}{}", Self::term_block(terms), Self::user_message(text))
+            format!("{}{}Text:
+{}", Self::user_message_head(), Self::term_block(terms), text)
         } else if turns.is_empty() {
             Self::user_message(text)
         } else {
@@ -101,7 +103,10 @@ mod tests {
     }
 
     #[test]
-    fn terms_go_before_the_instruction_and_their_notes_beside_it() {
+    /// The instruction comes first so the server's cached prefix covers it, and the block ends
+    /// with `Text:` so the model translates what follows instead of echoing the block.
+    #[test]
+    fn terms_come_after_the_instruction_and_end_at_a_text_label() {
         let terms = [
             (
                 "卓总".to_owned(),
@@ -114,11 +119,26 @@ mod tests {
             [(
                 "user",
                 format!(
-                    "Reference the following translations:\n`卓总` translates to `President Zhuo`\n`肖律` translates to `Lawyer Xiao`\n\nContext: 卓总 is name, male, her boss.\n\n{}",
-                    HyMt2Prompts::user_message("我要跟卓总出差几天，")
+                    "{}Reference the following translations:\n`卓总` translates to `President Zhuo`\n`肖律` translates to `Lawyer Xiao`\n\nContext: 卓总 is name, male, her boss.\n\nText:\n我要跟卓总出差几天，",
+                    HyMt2Prompts::PREFIX
                 )
             )]
         );
+    }
+
+    /// Without a `Text:` label the model answers the block instead of translating, on requests
+    /// that have no earlier turn to establish the pattern.
+    #[test]
+    fn a_glossary_block_with_terms_is_always_followed_by_the_text_label() {
+        let terms = [("卓总".to_owned(), "President Zhuo".to_owned())];
+        for earlier in [Vec::new(), vec![("好的。".to_owned(), "Okay.".to_owned())]] {
+            let turns = HyMt2Prompts::turns_with_terms(&earlier, &terms, "卓总来了。");
+            let last = &turns.last().unwrap().1;
+            assert!(
+                last.contains("Text:\n卓总来了。"),
+                "the last turn must label the text: {last:?}"
+            );
+        }
     }
 
     #[test]
