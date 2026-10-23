@@ -195,7 +195,7 @@ impl OpenAiCompatTranslator {
         }
         if request.context.is_empty() && request.terms.is_empty() {
             let mut output = self.stream(alone(request.text), request, on_delta)?;
-            finish(&mut output, request);
+            finish(&mut output);
             return Ok(output);
         }
         let messages = HyMt2Prompts::turns_with_terms(request.context, request.terms, request.text)
@@ -203,7 +203,7 @@ impl OpenAiCompatTranslator {
             .map(|(role, content)| json!({"role": role, "content": content}))
             .collect();
         let mut turns = self.stream(messages, request, on_delta)?;
-        finish(&mut turns, request);
+        finish(&mut turns);
         let problem = answer_problem(&turns, request);
         if problem.is_none() {
             let missing = missing_terms(&turns.text, request.terms);
@@ -222,7 +222,7 @@ impl OpenAiCompatTranslator {
                 .map(|(role, content)| json!({"role": role, "content": content}))
                 .collect();
             if let Ok(mut retry) = self.stream(messages, request, on_delta) {
-                finish(&mut retry, request);
+                finish(&mut retry);
                 let better = answer_problem(&retry, request).is_none()
                     && missing_terms(&retry.text, request.terms).len() < missing.len();
                 // Both requests ran, so the kept answer carries the tokens of both.
@@ -247,7 +247,7 @@ impl OpenAiCompatTranslator {
         alone.prompt_tokens += turns.prompt_tokens;
         alone.cached_tokens += turns.cached_tokens;
         alone.generated_tokens += turns.generated_tokens;
-        finish(&mut alone, request);
+        finish(&mut alone);
         // A second failure keeps the answer that is not wrong in the same way.
         if answer_problem(&alone, request).is_some() && answer_problem(&turns, request).is_none() {
             return Ok(turns);
@@ -395,12 +395,9 @@ fn alone(text: &str) -> Vec<serde_json::Value> {
     vec![json!({"role": "user", "content": HyMt2Prompts::user_message(text)})]
 }
 
-/// Trim the answer and drop any leaked template marker, which is ordinary text to us. A source
-/// that ends in `…` was marked as unfinished by the queue, and an ellipsis at the end of the
-/// answer is then the model echoing that mark.
-fn finish(output: &mut TranslationOut, request: &TranslateRequest<'_>) {
-    let echoed = request.text.ends_with('…');
-    output.text = strip_marker_residue(output.text.trim(), echoed);
+/// Trim the answer and drop any leaked template marker, which is ordinary text to us.
+fn finish(output: &mut TranslationOut) {
+    output.text = strip_marker_residue(output.text.trim());
     output.text = output.text.trim().to_owned();
 }
 
@@ -462,9 +459,14 @@ fn missing_terms(answer: &str, terms: &[(String, String)]) -> Vec<(String, Strin
         .collect()
 }
 
-/// Remove a leaked marker spelling, including a truncated one at the end of the answer, and,
-/// when `echoed`, an ellipsis the model copied from the source's own unfinished marker.
-fn strip_marker_residue(text: &str, echoed: bool) -> String {
+/// Remove a leaked marker spelling, including a truncated one at the end of the answer, and a
+/// trailing ellipsis.
+///
+/// A caption ends where a clause ends, and the speaker usually goes on in the next one. Subtitle
+/// style does not mark a sentence that continues in the next subtitle with an ellipsis, but the
+/// model adds one to a clause that ends at a comma, and echoes the `…` the queue puts on a
+/// clause that stopped mid-thought.
+fn strip_marker_residue(text: &str) -> String {
     let mut cleaned = text.to_owned();
     for marker in LEAKED_MARKERS {
         if let Some(at) = cleaned.find(marker) {
@@ -478,11 +480,9 @@ fn strip_marker_residue(text: &str, echoed: bool) -> String {
         }
     }
     let mut cleaned = cleaned.trim_end().to_owned();
-    if echoed {
-        for ellipsis in ["…", "..."] {
-            if let Some(rest) = cleaned.strip_suffix(ellipsis) {
-                cleaned = rest.trim_end().to_owned();
-            }
+    for ellipsis in ["…", "..."] {
+        if let Some(rest) = cleaned.strip_suffix(ellipsis) {
+            cleaned = rest.trim_end().to_owned();
         }
     }
     cleaned
@@ -954,35 +954,30 @@ mod residue_tests {
         );
     }
 
-    /// The source carries a `…` for a clause that stopped mid-thought; a model that copies it
-    /// back must not put it in the caption.
+    /// A caption whose sentence goes on in the next one ends without an ellipsis, whether the
+    /// model added it or copied the source's own unfinished mark.
     #[test]
-    fn an_echoed_ellipsis_is_removed() {
+    fn a_trailing_ellipsis_is_removed() {
         assert_eq!(
-            strip_marker_residue("Then just assume it's that…", true),
+            strip_marker_residue("Then just assume it's that…"),
             "Then just assume it's that"
         );
         assert_eq!(
-            strip_marker_residue("Then just assume it's that...", true),
-            "Then just assume it's that"
+            strip_marker_residue("And then, in one place..."),
+            "And then, in one place"
         );
         assert_eq!(
-            strip_marker_residue("Then that…<｜hy_end▁of▁sentence｜>", true),
+            strip_marker_residue("Then that…<｜hy_end▁of▁sentence｜>"),
             "Then that"
         );
         // An ellipsis inside the sentence is the model's own punctuation and stays.
-        assert_eq!(
-            strip_marker_residue("I… don't know.", true),
-            "I… don't know."
-        );
-        // Without the mark in the source, a trailing ellipsis is the model's own.
-        assert_eq!(strip_marker_residue("Wait...", false), "Wait...");
+        assert_eq!(strip_marker_residue("I… don't know."), "I… don't know.");
     }
 
     #[test]
     fn a_leaked_marker_is_cut() {
         assert_eq!(
-            strip_marker_residue("Hello.<｜hy_end▁of▁sentence｜>", false),
+            strip_marker_residue("Hello.<｜hy_end▁of▁sentence｜>"),
             "Hello."
         );
     }
