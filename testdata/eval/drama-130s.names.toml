@@ -1,0 +1,25 @@
+# Person names in the drama clip, with every English form that counts as the same person.
+#
+# `accepted` lists the forms a correct translation may use. A run that shows two different
+# forms for one person has drifted. Fill in a wrong form here once it is seen, so the count
+# can detect it.
+
+[zhuo]
+zh = "卓总"
+accepted = ["President Zhuo", "Mr. Zhuo", "Zhuo"]
+
+[shu]
+zh = "舒天蓝"
+accepted = ["Shu Tianlan", "Tianlan", "Shu"]
+
+[xiao]
+zh = "肖律"
+accepted = ["Lawyer Xiao", "Xiao", "Attorney Xiao"]
+
+[jiajia]
+zh = "佳佳"
+accepted = ["Jiajia", "Jia Jia"]
+
+[cheng]
+zh = "程媛"
+accepted = ["Cheng Yuan", "Yuan"]
