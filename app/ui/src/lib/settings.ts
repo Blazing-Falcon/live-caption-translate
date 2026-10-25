@@ -124,7 +124,7 @@ export interface SetConfigResult {
 export type ConfigPatch = DeepPartial<Config>;
 
 export const OVERLAY_LIMITS = {
-  font_px: { min: 18, max: 40 },
+  font_px: { min: 12, max: 40 },
   background: { min: 0, max: 1 },
   expire_s: { min: 3, max: 60 },
   panel_lines: { min: 4, max: 6 },

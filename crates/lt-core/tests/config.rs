@@ -186,7 +186,7 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     assert_eq!(config.translate.timeout_s, 2.0);
     assert_eq!(config.translate.queue_join_max_chars, 20);
     assert_eq!(config.translate.skip_lag_s, 2.0);
-    assert_eq!(config.overlay.font_px, 18);
+    assert_eq!(config.overlay.font_px, 12);
     assert_eq!(config.overlay.background, 1.0);
     assert_eq!(config.overlay.expire_s, 3.0);
     assert_eq!(config.overlay.panel_lines, 4);

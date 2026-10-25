@@ -462,7 +462,7 @@ impl Config {
             ));
             self.translate.glossary.truncate(200);
         }
-        number!(overlay, font_px, 18, 40);
+        number!(overlay, font_px, 12, 40);
         number!(overlay, background, 0.0, 1.0);
         number!(overlay, expire_s, 3.0, 60.0);
         number!(overlay, panel_lines, 4, 6);
@@ -763,7 +763,7 @@ fn integer_range(path: &str) -> (i64, i64) {
         "translate.max_tokens_cap" => (32, 1024),
         "translate.queue_join_max_chars" => (20, 300),
         "translate.window_chars" => (0, 60),
-        "overlay.font_px" => (18, 40),
+        "overlay.font_px" => (12, 40),
         "overlay.panel_lines" => (4, 6),
         "overlay.flow_lines" => (2, 6),
         _ => (0, i64::from(u32::MAX)),

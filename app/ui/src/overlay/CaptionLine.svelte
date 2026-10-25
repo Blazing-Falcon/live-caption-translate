@@ -136,7 +136,8 @@
 
   .source {
     font-family: var(--font-cjk);
-    font-size: calc(var(--font-px, 26) * 1px * var(--source-scale));
+    /* Smaller Chinese than this is not readable, whatever the English size. */
+    font-size: max(12px, calc(var(--font-px, 26) * 1px * var(--source-scale)));
     line-height: 1.45;
     color: var(--ov-text-secondary);
     text-shadow: var(--ov-halo);

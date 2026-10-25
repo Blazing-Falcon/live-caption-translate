@@ -131,7 +131,7 @@
 
   .source {
     font-family: var(--font-cjk);
-    font-size: calc(var(--font-px, 26) * 1px * var(--source-scale));
+    font-size: max(12px, calc(var(--font-px, 26) * 1px * var(--source-scale)));
     color: var(--ov-text-secondary);
     text-shadow: var(--ov-halo);
   }
