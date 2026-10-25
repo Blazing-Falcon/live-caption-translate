@@ -109,8 +109,8 @@ export type ConfigPatch = DeepPartial<Config>;
 export const OVERLAY_LIMITS = {
   font_px: { min: 12, max: 40 },
   background: { min: 0, max: 1 },
-  panel_lines: { min: 4, max: 6 },
-  flow_lines: { min: 2, max: 6 },
+  panel_lines: { min: 1, max: 10 },
+  flow_lines: { min: 1, max: 10 },
 } as const;
 
 /** The most threads a setting accepts; the UI offers up to the PC's logical CPUs. */

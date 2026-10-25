@@ -445,8 +445,8 @@ impl Config {
         number!(translate, window_chars, 0, 60);
         number!(overlay, font_px, 12, 40);
         number!(overlay, background, 0.0, 1.0);
-        number!(overlay, panel_lines, 4, 6);
-        number!(overlay, flow_lines, 2, 6);
+        number!(overlay, panel_lines, 1, 10);
+        number!(overlay, flow_lines, 1, 10);
         choice!(overlay, style, &["panel", "flow"]);
         choice!(overlay, panel_edge, &["left", "right"]);
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
@@ -720,8 +720,8 @@ fn integer_range(path: &str) -> (i64, i64) {
         "translate.queue_join_max_chars" => (20, 300),
         "translate.window_chars" => (0, 60),
         "overlay.font_px" => (12, 40),
-        "overlay.panel_lines" => (4, 6),
-        "overlay.flow_lines" => (2, 6),
+        "overlay.panel_lines" => (1, 10),
+        "overlay.flow_lines" => (1, 10),
         _ => (0, i64::from(u32::MAX)),
     }
 }

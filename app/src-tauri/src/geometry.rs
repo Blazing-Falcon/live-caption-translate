@@ -43,7 +43,6 @@ pub fn default_rect(style: &str, edge_right: bool, monitor: &Monitor) -> Overlay
         (x, 24.0, w, h)
     } else {
         let w = 960.0_f64.min(work_w * 0.9).max(MIN_W);
-        // Running text needs room for up to 6 wrapped lines of English and Chinese.
         let h = 360.0_f64.min(work_h - 48.0).max(MIN_H);
         ((work_w - w) / 2.0, work_h - h - 40.0, w, h)
     };

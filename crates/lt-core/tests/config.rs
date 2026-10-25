@@ -169,7 +169,7 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
         "audio":{"norm_attack_s":-1,"norm_release_s":99,"norm_max_gain_db":99,"norm_gate_dbfs":-100},
         "asr":{"threads":-10},
         "translate":{"threads":99,"ctx":0,"temperature":99,"repeat_penalty":0,"max_tokens_cap":99_999,"timeout_s":0,"queue_join_max_chars":0,"skip_lag_s":0},
-        "overlay":{"font_px":0,"background":99,"panel_lines":0},
+        "overlay":{"font_px":0,"background":99,"panel_lines":0,"flow_lines":11},
         "transcript":{"retention_days":-1},"logging":{"keep_files":-1}
     })).unwrap();
     assert_eq!(config.config_version, 2);
@@ -188,10 +188,11 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     assert_eq!(config.translate.skip_lag_s, 2.0);
     assert_eq!(config.overlay.font_px, 12);
     assert_eq!(config.overlay.background, 1.0);
-    assert_eq!(config.overlay.panel_lines, 4);
+    assert_eq!(config.overlay.panel_lines, 1);
+    assert_eq!(config.overlay.flow_lines, 10);
     assert_eq!(config.transcript.retention_days, 0);
     assert_eq!(config.logging.keep_files, 0);
-    assert_eq!(messages.len(), 19, "{messages:?}");
+    assert_eq!(messages.len(), 20, "{messages:?}");
 }
 
 #[test]

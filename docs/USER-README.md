@@ -29,7 +29,7 @@ All processing is on your computer. After the first download, the app does not u
 | Page | Settings |
 |---|---|
 | **Capture** | Listen to the **whole system** (you can select an output device), or to **selected apps** such as Chrome and Discord. The app remembers apps by program name. |
-| **Overlay** | Style (caption panel at a screen edge, or running text that joins the lines into one paragraph, with 2 to 6 lines kept. Both translate while someone speaks and may correct the English until the sentence ends, and both keep their text through silence), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
+| **Overlay** | Style (caption panel at a screen edge, or running text that joins the lines into one paragraph, with 1 to 10 lines kept. Both translate while someone speaks and may correct the English until the sentence ends, and both keep their text through silence), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
 | **Performance** | Recognizer and correction threads (each finished line is read again by X-ASR offline with the speech before it, which fixes misheard words), translator threads, "Translate with earlier lines" (0 to 60 characters; 0 translates each line alone), "Give games priority", word delay ("Word to English", median for the last minute), lines waiting, memory, CPU, transcripts |
 
 **Reset settings** (below the pages) sets all settings back to their defaults. The overlay position, the selected apps and the downloaded models stay.

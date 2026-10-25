@@ -195,7 +195,7 @@
       <label class="field">
         <span>Lines kept in the panel</span>
         <select class="select" value={String(overlay.panel_lines)} onchange={chooseLines}>
-          {#each [4, 5, 6] as count (count)}
+          {#each Array.from({ length: OVERLAY_LIMITS.panel_lines.max - OVERLAY_LIMITS.panel_lines.min + 1 }, (_, index) => OVERLAY_LIMITS.panel_lines.min + index) as count (count)}
             <option value={String(count)}>{count}</option>
           {/each}
         </select>

@@ -169,8 +169,8 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 Other rules:
 
 - Terminal lines stay until newer text needs their room; unfinished lines never leave on their own.
-- The store keeps a maximum of 24 terminal lines and 32 unfinished lines.
-- The panel shows `panel_lines` lines (4–6); running text keeps `flow_lines` wrapped lines of each paragraph.
+- The store keeps a maximum of 30 terminal lines and 32 unfinished lines.
+- The panel shows `panel_lines` lines (1–10); running text keeps `flow_lines` wrapped lines of each paragraph.
 
 ## Transcript records
 

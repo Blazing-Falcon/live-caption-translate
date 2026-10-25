@@ -1,5 +1,5 @@
 import { writable, type Readable } from "svelte/store";
-import { formatAccelerator, normalizeLang, type Config } from "./settings";
+import { OVERLAY_LIMITS, formatAccelerator, normalizeLang, type Config } from "./settings";
 import type {
   AppState,
   CaptionLine,
@@ -15,9 +15,9 @@ import type {
 } from "./types";
 
 export const CHIP_MS = 3000;
-/** Terminal rows kept after they leave the screen. The panel shows at most 6; running text
- * needs more, because commit cuts make short lines and it keeps up to 6 wrapped lines. */
-export const MAX_HISTORY_LINES = 24;
+/** Terminal rows kept after they leave the screen: three times the 10 a style can show, so a
+ * short line does not push a full screen out. */
+export const MAX_HISTORY_LINES = 30;
 /** Defensive cap: the core bounds outstanding work, the UI must not trust that blindly. */
 export const MAX_OUTSTANDING_LINES = 32;
 
@@ -248,7 +248,7 @@ export function visibleLines<T extends CaptionLine>(
   wanted: number,
   liveSource = true,
 ): T[] {
-  const count = Math.min(6, Math.max(4, Math.round(wanted)));
+  const count = Math.min(OVERLAY_LIMITS.panel_lines.max, Math.max(OVERLAY_LIMITS.panel_lines.min, Math.round(wanted)));
   return lines.filter((line) => !isHiddenLive(line, liveSource)).slice(-count);
 }
 

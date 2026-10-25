@@ -168,8 +168,8 @@ The second pass always runs: each closed line is decoded again by the offline X-
 | `background` | 0–1 | live | Background opacity. The control window warns below 0.5. |
 | `show_source` | bool | live | Show the Chinese line above the English line |
 | `panel_edge` | `left`, `right` | live | Default edge for the panel |
-| `panel_lines` | 4–6 | live | Lines in the panel |
-| `flow_lines` | 2–6 | live | Wrapped lines kept of each running-text paragraph. Older text scrolls out at the top. |
+| `panel_lines` | 1–10 | live | Lines in the panel |
+| `flow_lines` | 1–10 | live | Wrapped lines kept of each running-text paragraph. Older text scrolls out at the top. |
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
 | `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
 
