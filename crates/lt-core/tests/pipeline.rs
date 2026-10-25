@@ -675,8 +675,8 @@ fn chinese_is_translated_english_is_shown_as_heard_and_fillers_are_dropped() {
         "English speech got a translation"
     );
     let texts: Vec<String> = requests.lock().unwrap().clone();
-    // A preview may carry the heard English of a line without a final, so the guard is that no
-    // request holds the English line's own text.
+    // A preview joins the live text of the lines without a final, so this also proves that heard
+    // English never joins one.
     assert!(
         !texts.iter().any(|text| text.contains("Okay I see")),
         "English speech reached the translator: {texts:?}"

@@ -133,7 +133,11 @@ impl Scheduler {
         {
             // No partial after the id's AsrFinal or Dropped.
             if self.handled_through.is_none_or(|handled| id > handled) {
-                self.running_text.partial(id, text.clone());
+                // Only Chinese text is translated, so only it may join a preview; a preview
+                // that carried heard English would send English to the translator.
+                if class.is_translated() {
+                    self.running_text.partial(id, text.clone());
+                }
                 self.partial(id, text, class, end);
             }
             return;
