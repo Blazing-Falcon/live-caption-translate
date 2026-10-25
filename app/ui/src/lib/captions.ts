@@ -459,12 +459,14 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         });
         return true;
       }
-      case "joined": {
-        // Absorbed lines get no more events, so they go even when the leader was already evicted.
+      case "unit_sealed": {
+        // Sealed lines get no more events of their own, so they go even when the leader was
+        // already evicted.
         let changed = false;
-        for (const absorbed of event.absorbed) {
+        for (const absorbed of event.ids) {
+          if (absorbed === event.id) continue;
           const line = lines.get(absorbed);
-          if (absorbed !== event.id && line !== undefined && !isTerminal(line.state)) {
+          if (line !== undefined && !isTerminal(line.state)) {
             lines.delete(absorbed);
             changed = true;
           }
@@ -518,7 +520,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         return;
       case "asr_partial":
       case "asr_final":
-      case "joined":
+      case "unit_sealed":
       case "translation_delta":
       case "translation_final":
       case "translation_failed":

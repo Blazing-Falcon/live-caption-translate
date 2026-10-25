@@ -87,7 +87,8 @@ export type PipelineEvent =
       /** `text` is already the final text. */
       second_pass: SecondPass;
     }
-  | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string }
+  /** Every line of one translation unit, `id` first, sent for its final translation. */
+  | { type: "unit_sealed"; id: UtteranceId; ids: UtteranceId[]; text: string }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }
   | { type: "translation_final"; id: UtteranceId; text: string; timing: Timing }
   | { type: "translation_preview"; id: UtteranceId; ids: UtteranceId[]; text: string }

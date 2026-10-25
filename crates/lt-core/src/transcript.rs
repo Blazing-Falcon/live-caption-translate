@@ -86,7 +86,7 @@ struct SecondRecord {
     pass: SecondPass,
 }
 
-/// The live recognizer's text. A joined line concatenates its parts.
+/// The live recognizer's text. A unit concatenates the text of every line it names.
 #[derive(Clone, Serialize)]
 struct LiveRecord {
     engine: String,
@@ -235,12 +235,10 @@ impl<W: Write> TranscriptWriter<W> {
                     }
                 }
             }
-            PipelineEvent::Joined {
-                id, absorbed, text, ..
-            } => {
+            PipelineEvent::UnitSealed { id, ids, text } => {
                 if let Some(mut leader) = self.pending.remove(id) {
                     leader.source = text.clone();
-                    for absorbed in absorbed {
+                    for absorbed in ids.iter().filter(|absorbed| *absorbed != id) {
                         append_id(&mut leader.joined, leader.id, *absorbed);
                         if let Some(incoming) = self.pending.remove(absorbed) {
                             leader.end_ms = leader.end_ms.max(incoming.end_ms);
@@ -533,10 +531,10 @@ mod tests {
         }
     }
 
-    fn joined(id: u64, absorbed: &[u64], text: &str) -> PipelineEvent {
-        PipelineEvent::Joined {
+    fn sealed(id: u64, ids: &[u64], text: &str) -> PipelineEvent {
+        PipelineEvent::UnitSealed {
             id: UtteranceId(id),
-            absorbed: absorbed.iter().copied().map(UtteranceId).collect(),
+            ids: ids.iter().copied().map(UtteranceId).collect(),
             text: text.into(),
         }
     }
@@ -545,7 +543,7 @@ mod tests {
         vec![
             asr(12, "我也想办一个。", TextClass::Chinese, 45_210, 46_300),
             asr(13, "伟大的公司。", TextClass::Chinese, 46_900, 47_980),
-            joined(12, &[13], "我也想办一个，伟大的公司。"),
+            sealed(12, &[12, 13], "我也想办一个，伟大的公司。"),
             asr(14, "来不及。", TextClass::Chinese, 50_000, 51_000),
             asr(20, "Hello world.", TextClass::English, 52_000, 53_000),
             asr(22, "呃。", TextClass::Chinese, 56_000, 57_000),

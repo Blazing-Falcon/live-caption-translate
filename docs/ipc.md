@@ -17,7 +17,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `speech_started` | `id`, `at_ms` | A clause opens at its first word |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | The open clause's text grew |
 | `asr_final` | `id`, `text`, `class`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`?, `second_pass` | A clause is complete. `text` is the final text, after the second pass. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). `second_pass` is always present (see below). |
-| `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
+| `unit_sealed` | `id`, `ids[]`, `text` | One translation unit is complete: every line it covers, `id` first. Sent for every unit sent for final translation, including one of a single line. |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
 | `translation_preview` | `id`, `ids[]`, `text` | Every session: the English of the lines not yet translated for good, `id` being the first of `ids`; the last of them may have no final text yet. A newer preview replaces it; so does the final translation of any of its lines. |
@@ -88,18 +88,22 @@ These rules apply to each id. `crates/lt-core/tests/pipeline.rs` checks them wit
 
 ```
 speech_started? -> asr_partial* -> dropped                                           (end)
-speech_started? -> asr_partial* -> asr_final -> ...
+speech_started? -> asr_partial* -> asr_final -> unit_sealed -> ...
 asr_final (english)                                                                  (end)
-asr_final -> joined (as absorbed)                                                    (end)
-asr_final -> joined (as leader)*
+asr_final -> unit_sealed (as a later line of the unit)                               (end)
+asr_final -> unit_sealed (as leader)*
           -> translation_delta* -> translation_final | translation_failed | skipped   (end)
 ```
 
 - No event follows a terminal event.
-- `joined` comes after the `asr_final` of each id that it names. A leader can get more than one `joined`.
-- Absorbed ids get no translation events.
+- Every translated line is named by a `unit_sealed` after its own `asr_final` and before any
+  `translation_delta` or `translation_final` of its unit's `id`. A heard line seals the running
+  unit before its own `asr_final`.
+- A `unit_sealed` names every line of its unit, `id` first. A line named as anything but `id` gets no
+  translation events. The queue can seal the same leader again with more lines; `ids` is then the
+  union of the unit's lines.
 - `translation_preview` names only ids that have started and have no terminal event. It can come before an id's `asr_final`.
-- In every session, the scheduler joins closed lines into one translation up to a sentence end (。？！), a pause or break cut, a line shown as heard, 10 s of silence, or 40 characters, and sends `joined` when it does. While no line waits for translation, it translates the lines not yet joined plus the live text of the lines without a final again (at least 4 letters; after the last preview ended it waits as long as that preview took, at least 300 ms). A preview answer with Chinese in it is not sent.
+- In every session, the scheduler joins closed lines into one translation up to a sentence end (。？！), a pause or break cut, a line shown as heard, 10 s of silence, or 40 characters, and sends `unit_sealed` for each unit it sends. While no line waits for translation, it translates the lines not yet joined plus the live text of the lines without a final again (at least 4 letters; after the last preview ended it waits as long as that preview took, at least 300 ms). A preview answer with Chinese in it is not sent.
 
 ## Tauri events
 
@@ -117,7 +121,7 @@ The coalescer (`coalesce.rs`):
 
 - It sends a maximum of one `translation_delta` for each id each 33 ms. It keeps only the newest text.
 - It sends all other events immediately, in order. Before it sends an event, it sends the pending deltas.
-- It discards a pending delta when its id gets `translation_final`, `translation_failed`, `skipped`, or is absorbed by `joined`.
+- It discards a pending delta when its id gets `translation_final`, `translation_failed`, `skipped`, or is named as a later line of a `unit_sealed`.
 
 If a bus subscriber is full, the bus removes the oldest `stats` event. If there is no `stats` event, the bus disconnects the subscriber, and the subscriber connects again.
 
@@ -158,7 +162,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 |---|---|
 | `asr_partial` | New id: add a `live` line. `live` line: update the Chinese. |
 | `asr_final` | `english` (terminal), else `pending` |
-| `joined` | Remove the absorbed lines. The leader gets the joined text. |
+| `unit_sealed` | Remove the other lines of the unit. The leader gets the unit's text. |
 | `translation_delta` | `streaming` |
 | `translation_final` | `final` |
 | `translation_failed` | `failed`, with a short reason text |
@@ -188,9 +192,9 @@ The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.j
 |---|---|
 | `status` | `final`, `english`, `skipped` or `failed` |
 | `english` | The translation. `null` if the status is not `final`. |
-| `joined` | Absorbed ids |
+| `joined` | Ids of the other lines of the unit |
 | `timing` | Only for `final` |
 | `reason`, `message` | Only for `failed` |
 | `asr_live` | The live recognizer's `engine`, `text` and mean token `logprob` (null when the engine gives none) |
 
-A joined line concatenates the texts of its parts. Its `logprob` is the mean of the parts, its `fallback` is the first one among the parts, `start_ms` is the earliest and `done_ms` the latest.
+A line with `joined` ids concatenates the texts of its parts. Its `logprob` is the mean of the parts, its `fallback` is the first one among the parts, `start_ms` is the earliest and `done_ms` the latest.

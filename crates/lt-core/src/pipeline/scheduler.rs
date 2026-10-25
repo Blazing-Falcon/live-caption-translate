@@ -41,20 +41,19 @@ struct Scheduler {
 }
 
 impl Scheduler {
-    /// Lines that wait for a unit are translated as one line: the leader takes the text and
-    /// the others leave the display, as in a queue join.
     fn translate_unit(&mut self, unit: Transcript) {
-        if !unit.absorbed.is_empty() {
-            for id in &unit.absorbed {
-                self.observed.remove(id);
-                self.translating.remove(id);
-            }
-            self.publish(PipelineEvent::Joined {
-                id: unit.id,
-                absorbed: unit.absorbed.clone(),
-                text: unit.text.clone(),
-            });
+        for id in &unit.absorbed {
+            self.observed.remove(id);
+            self.translating.remove(id);
         }
+        let mut ids = Vec::with_capacity(unit.absorbed.len() + 1);
+        ids.push(unit.id);
+        ids.extend(unit.absorbed.iter().copied());
+        self.publish(PipelineEvent::UnitSealed {
+            id: unit.id,
+            ids,
+            text: unit.text.clone(),
+        });
         self.ready.push_back(unit);
     }
 
@@ -381,8 +380,10 @@ pub(super) fn scheduler_loop(
                         scheduler.observed.remove(id);
                         scheduler.translating.remove(id);
                     }
-                    PipelineEvent::Joined { absorbed, .. } => {
-                        for id in absorbed {
+                    PipelineEvent::UnitSealed {
+                        id: leader, ids, ..
+                    } => {
+                        for id in ids.iter().filter(|id| *id != leader) {
                             scheduler.observed.remove(id);
                             scheduler.translating.remove(id);
                         }

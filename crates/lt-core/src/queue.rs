@@ -127,7 +127,7 @@ impl TranslationQueue {
         let Some((mut item, _)) = self.waiting.pop_front() else {
             return batch;
         };
-        let mut absorbed = Vec::new();
+        let mut absorbed = false;
         while let Some((next, new_group)) = self.waiting.front() {
             if *new_group {
                 break;
@@ -139,7 +139,7 @@ impl TranslationQueue {
             let Some((next, _)) = self.waiting.pop_front() else {
                 break;
             };
-            absorbed.push(next.transcript.id);
+            absorbed = true;
             item.transcript.absorbed.push(next.transcript.id);
             item.transcript
                 .absorbed
@@ -160,10 +160,13 @@ impl TranslationQueue {
                 item.transcript.class = crate::types::TextClass::Mixed;
             }
         }
-        if !absorbed.is_empty() {
-            batch.events.push(PipelineEvent::Joined {
+        if absorbed {
+            let mut ids = Vec::with_capacity(item.transcript.absorbed.len() + 1);
+            ids.push(item.transcript.id);
+            ids.extend(item.transcript.absorbed.iter().copied());
+            batch.events.push(PipelineEvent::UnitSealed {
                 id: item.transcript.id,
-                absorbed,
+                ids,
                 text: item.transcript.text.clone(),
             });
         }

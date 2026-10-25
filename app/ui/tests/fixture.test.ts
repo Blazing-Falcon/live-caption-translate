@@ -4,12 +4,12 @@ import { describe, expect, it } from "vitest";
 import { createCaptionController } from "../src/lib/captions";
 import fixture from "../src/lib/__fixtures__/events.json";
 import type { PipelineEvent } from "../src/lib/types";
-import { FakeClock, asrFinal, delta, final, joined, testConfig } from "./helpers";
+import { FakeClock, asrFinal, delta, final, sealed, testConfig } from "./helpers";
 
 const events = fixture as unknown as PipelineEvent[];
 
 const EXPECTED_TYPES: PipelineEvent["type"][] = [
-  "speech_started", "asr_partial", "asr_final", "joined", "translation_delta",
+  "speech_started", "asr_partial", "asr_final", "unit_sealed", "translation_delta",
   "translation_final", "skipped", "translation_failed", "dropped", "source_changed", "source_state", "listening_state", "engine_status", "stats",
 ];
 
@@ -34,7 +34,7 @@ describe("lawful full-stream fixtures", () => {
       { type: "speech_started", id: 12, at_ms: 0 },
       asrFinal(12, "我也想办一个。"),
       asrFinal(13, "伟大的公司。"),
-      joined(12, [13], "我也想办一个，伟大的公司。"),
+      sealed(12, [12, 13], "我也想办一个，伟大的公司。"),
       delta(12, "I also want to run"),
       final(12, "I also want to run a great company."),
       asrFinal(14, "然后呢。"),

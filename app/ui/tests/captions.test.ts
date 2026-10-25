@@ -9,7 +9,7 @@ import {
   dropped,
   failed,
   final,
-  joined,
+  sealed,
   partial,
   skipped,
   testConfig,
@@ -40,13 +40,13 @@ describe("caption reducer", () => {
     expect(lines()).toMatchObject([{ state: "final", english: "Hello." }]);
   });
 
-  it("joins absorbed ids into the leader, which keeps the earliest position", () => {
+  it("seals absorbed ids into the leader, which keeps the earliest position", () => {
     const { lines, run } = setup();
     run(asrFinal(10, "我也想"), asrFinal(11, "办一个"), asrFinal(12, "公司"), asrFinal(13, "别的话"));
-    run(joined(10, [11], "我也想，办一个"));
+    run(sealed(10, [10, 11], "我也想，办一个"));
     expect(summary(lines())).toEqual(["10:pending", "12:pending", "13:pending"]);
     expect(lines()[0]?.source).toBe("我也想，办一个");
-    run(joined(10, [12], "我也想，办一个，公司"));
+    run(sealed(10, [10, 11, 12], "我也想，办一个，公司"));
     expect(summary(lines())).toEqual(["10:pending", "13:pending"]);
     expect(lines()[0]?.source).toBe("我也想，办一个，公司");
     run(delta(10, "I also"), final(10, "I also want to run a company."));
@@ -145,7 +145,7 @@ describe("running text", () => {
       ["Hello.", "final"],
       ["The weather is nice today, we go", "preview"],
     ]);
-    run(asrFinal(3, "我们去公园。"), joined(2, [3], "今天天气很好，我们去公园。"), delta(2, "The weather"));
+    run(asrFinal(3, "我们去公园。"), sealed(2, [2, 3], "今天天气很好，我们去公园。"), delta(2, "The weather"));
     expect(english()).toEqual([
       ["Hello.", "final"],
       ["The weather is nice today, we go", "preview"],
@@ -172,7 +172,7 @@ describe("running text", () => {
       [2, "今天天气很好，我们去", "The weather is nice today, we go"],
     ]);
     expect(withPreview(view().lines, view().preview, false).map((line) => line.source)).toEqual(["你好。", "今天天气很好，"]);
-    run(asrFinal(3, "我们去公园。"), joined(2, [3], "今天天气很好，我们去公园。"));
+    run(asrFinal(3, "我们去公园。"), sealed(2, [2, 3], "今天天气很好，我们去公园。"));
     run(final(2, "The weather is nice today, let's go to the park."));
     expect(rows()).toEqual([
       [1, "你好。", "Hello."],
@@ -270,7 +270,7 @@ describe("long synthetic event log", () => {
           const other = ids.find((candidate) => candidate > id);
           if (other !== undefined) {
             awaiting.delete(other);
-            emit(joined(id, [other], `合并${id}`));
+            emit(sealed(id, [id, other], `合并${id}`));
           }
         } else if (action < 0.85) {
           awaiting.delete(id);

@@ -29,9 +29,10 @@ def ordering(events):
     for item in events:
         event = item["event"]
         kind = event["type"]
-        if kind == "joined":
-            for absorbed in event["absorbed"]:
-                state.setdefault(absorbed, {})["absorbed"] = True
+        if kind == "unit_sealed":
+            for absorbed in event["ids"]:
+                if absorbed != event["id"]:
+                    state.setdefault(absorbed, {})["absorbed"] = True
             continue
         if "id" not in event:
             continue

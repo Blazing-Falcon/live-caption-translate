@@ -42,7 +42,7 @@ pub struct Summary<'a> {
     pub lag_first_median: Option<f64>,
     pub lag_done_median: Option<f64>,
     pub lag_done_p90: Option<f64>,
-    /// Lines the translation queue joined into an earlier one.
+    /// Lines translated as part of an earlier line's unit.
     pub joins: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub second_pass: Option<SecondPassSummary>,
@@ -79,16 +79,20 @@ impl ReplayReport {
             self.second_pass.push(second_pass.clone());
         }
         match event {
-            PipelineEvent::Joined { id, absorbed, .. } => {
-                self.joins += absorbed.len() as u64;
-                let mut count = self.absorbed.remove(id).unwrap_or(0);
+            PipelineEvent::UnitSealed { id, ids, .. } => {
+                // `ids` is the whole unit, so a re-seal names the earlier lines again; the map
+                // holds what an earlier seal counted.
                 let mut ends = self.ends.remove(id).unwrap_or_default();
-                for child in absorbed {
-                    count += self.absorbed.remove(child).unwrap_or(0) + 1;
+                let previous = self.absorbed.remove(id).unwrap_or(0);
+                let count = ids.len() as u64 - 1;
+                for child in ids.iter().filter(|child| *child != id) {
                     ends.extend(self.ends.remove(child).unwrap_or_default());
                 }
-                self.ends.insert(*id, ends);
-                self.absorbed.insert(*id, count);
+                self.joins += count.saturating_sub(previous);
+                if count > 0 {
+                    self.ends.insert(*id, ends);
+                    self.absorbed.insert(*id, count);
+                }
             }
             PipelineEvent::TranslationFinal { id, timing, .. } => {
                 let state = if self.absorbed.contains_key(id) {
@@ -97,8 +101,7 @@ impl ReplayReport {
                     "final"
                 };
                 let constituents = self.terminal(*id, state);
-                // The Python summary measures every constituent from its own
-                // end, including members of queue joins. Preserve that policy.
+                // Every line of the unit is measured from its own end, as the Python summary does.
                 let ends = self
                     .ends
                     .remove(id)

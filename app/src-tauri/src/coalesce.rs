@@ -49,8 +49,11 @@ impl Coalescer {
                 {
                     self.discard(id.0);
                     self.last_sent.remove(&id.0);
-                } else if let PipelineEvent::Joined { absorbed, .. } = &other {
-                    for id in absorbed {
+                } else if let PipelineEvent::UnitSealed {
+                    id: leader, ids, ..
+                } = &other
+                {
+                    for id in ids.iter().filter(|id| *id != leader) {
                         self.discard(id.0);
                         self.last_sent.remove(&id.0);
                     }
@@ -147,7 +150,7 @@ mod tests {
                 PipelineEvent::TranslationFinal { id, .. } => format!("f{}", id.0),
                 PipelineEvent::AsrFinal { id, .. } => format!("a{}", id.0),
                 PipelineEvent::Skipped { id, .. } => format!("s{}", id.0),
-                PipelineEvent::Joined { id, .. } => format!("j{}", id.0),
+                PipelineEvent::UnitSealed { id, .. } => format!("u{}", id.0),
                 _ => "other".into(),
             })
             .collect()
@@ -238,13 +241,13 @@ mod tests {
         c.push(d(6, "a"), t0);
         c.push(d(6, "b"), t0 + Duration::from_millis(1));
         let out = c.push(
-            PipelineEvent::Joined {
+            PipelineEvent::UnitSealed {
                 id: UtteranceId(7),
-                absorbed: vec![UtteranceId(6)],
+                ids: vec![UtteranceId(7), UtteranceId(6)],
                 text: "t".into(),
             },
             t0 + Duration::from_millis(2),
         );
-        assert_eq!(texts(&out), ["j7"]);
+        assert_eq!(texts(&out), ["u7"]);
     }
 }

@@ -88,8 +88,11 @@ pub fn compute(events: &[TimedEvent], instants: &[u64]) -> WordMetrics {
                     .entry(format!("{cut:?}").to_lowercase())
                     .or_default() += 1;
             }
-            PipelineEvent::Joined { id, absorbed, .. } => {
-                tracks.entry(*id).or_default().absorbed.extend(absorbed);
+            PipelineEvent::UnitSealed { id, ids, .. } => {
+                let track = tracks.entry(*id).or_default();
+                track
+                    .absorbed
+                    .extend(ids.iter().copied().filter(|child| *child != *id));
             }
             PipelineEvent::TranslationFinal { id, .. } => {
                 tracks.entry(*id).or_default().final_at = Some(timed.t_ms);
@@ -112,7 +115,7 @@ pub fn compute(events: &[TimedEvent], instants: &[u64]) -> WordMetrics {
         metrics.system_cpu_pct = Some(round2(system / stat_count));
     }
 
-    // Coverage: (from_ms, to_ms, available_at_ms). A joined line covers its parts.
+    // Coverage: (from_ms, to_ms, available_at_ms). A sealed unit covers every line it names.
     let mut cover: Vec<(u64, u64, u64)> = Vec::new();
     for (id, track) in &tracks {
         let Some(done) = track.final_at else {
@@ -176,15 +179,15 @@ mod tests {
     #[test]
     fn delays_run_from_each_instant_to_the_final_that_covers_it() {
         // Clause 1 covers 1000..2000 and its final lands at t=3000. Clause 2 (2000..2600) is
-        // joined into clause 1. An instant at 2700 is not covered.
+        // sealed with clause 1. An instant at 2700 is not covered.
         let log = vec![
             at(2_400, asr_final(1, 1_000, 2_000, CutReason::Commit)),
             at(2_700, asr_final(2, 2_000, 2_600, CutReason::Pause)),
             at(
                 2_700,
-                PipelineEvent::Joined {
+                PipelineEvent::UnitSealed {
                     id: UtteranceId(1),
-                    absorbed: vec![UtteranceId(2)],
+                    ids: vec![UtteranceId(1), UtteranceId(2)],
                     text: "你好你好".into(),
                 },
             ),

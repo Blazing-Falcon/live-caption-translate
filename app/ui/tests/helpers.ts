@@ -107,10 +107,10 @@ export const failed = (id: number, reason: FailReason, message = ""): PipelineEv
   message,
 });
 export const skipped = (id: number): PipelineEvent => ({ type: "skipped", id, reason: "catch_up" });
-export const joined = (id: number, absorbed: number[], text: string): PipelineEvent => ({
-  type: "joined",
+export const sealed = (id: number, ids: number[], text: string): PipelineEvent => ({
+  type: "unit_sealed",
   id,
-  absorbed,
+  ids,
   text,
 });
 

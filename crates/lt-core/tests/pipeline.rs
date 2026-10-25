@@ -469,14 +469,18 @@ fn finals(events: &[PipelineEvent]) -> Vec<(UtteranceId, String, CutReason)> {
 }
 
 /// The per-id order of docs/ipc.md: one start; live text only before the final; one final;
-/// previews only of started lines that have no terminal yet;
-/// English finals, drops, skips, joins and translation results are terminal;
-/// nothing follows a terminal event; and every line ends with one.
+/// previews only of started lines that have no terminal yet; English finals, drops, skips and
+/// translation results are terminal; nothing follows a terminal event; and every line ends with
+/// one. A translated line is named by a `UnitSealed` after its `AsrFinal` and before its
+/// translation events; a heard line seals the running unit before its own final.
 fn assert_order(events: &[PipelineEvent]) {
     #[derive(Default)]
     struct Line {
         started: bool,
         asr_final: bool,
+        translated: bool,
+        /// The unit that named this line, and the ids that unit named so far.
+        unit: Option<(UtteranceId, Vec<UtteranceId>)>,
         terminal: bool,
     }
     let mut lines: BTreeMap<UtteranceId, Line> = BTreeMap::new();
@@ -495,9 +499,22 @@ fn assert_order(events: &[PipelineEvent]) {
                 );
             }
             PipelineEvent::AsrFinal { id, class, .. } => {
+                if !class.is_translated() {
+                    // A heard line ends the running unit before it is published.
+                    let unsealed: Vec<_> = lines
+                        .range(..*id)
+                        .filter(|(_, line)| line.translated && line.unit.is_none())
+                        .map(|(id, _)| *id)
+                        .collect();
+                    assert!(
+                        unsealed.is_empty(),
+                        "heard line {id:?} before the seal of {unsealed:?}"
+                    );
+                }
                 let line = lines.entry(*id).or_default();
                 assert!(!line.asr_final && !line.terminal, "repeated final: {id:?}");
                 line.asr_final = true;
+                line.translated = class.is_translated();
                 line.terminal = !class.is_translated();
             }
             PipelineEvent::Dropped { id, .. } => {
@@ -508,23 +525,39 @@ fn assert_order(events: &[PipelineEvent]) {
                 );
                 line.terminal = true;
             }
-            PipelineEvent::Joined { id, absorbed, .. } => {
-                let leader = &lines[id];
-                assert!(
-                    leader.asr_final && !leader.terminal,
-                    "bad join leader: {id:?}"
+            PipelineEvent::UnitSealed { id, ids, .. } => {
+                assert_eq!(ids.first(), Some(id), "unit not led by its first line");
+                assert_eq!(
+                    ids.iter().min(),
+                    Some(id),
+                    "unit not led by its earliest line"
                 );
-                for id in absorbed {
-                    let line = lines.get_mut(id).expect("absorbed an unknown id");
-                    assert!(line.asr_final && !line.terminal, "absorbed twice: {id:?}");
-                    line.terminal = true;
+                for named in ids {
+                    let line = lines.get_mut(named).expect("sealed an unknown id");
+                    assert!(line.asr_final, "sealed before its final: {named:?}");
+                    match &line.unit {
+                        // The queue seals the unit again with the lines it joined, which only
+                        // adds lines and moves the leader to an earlier one.
+                        Some((leader, previous)) => {
+                            assert!(
+                                previous.iter().all(|id| ids.contains(id)),
+                                "a re-seal dropped an id: {named:?}"
+                            );
+                            assert!(id <= leader, "a re-seal moved the leader later: {named:?}");
+                        }
+                        None => assert!(!line.terminal, "sealed after a terminal: {named:?}"),
+                    }
+                    if named != id {
+                        line.terminal = true;
+                    }
+                    line.unit = Some((*id, ids.clone()));
                 }
             }
             PipelineEvent::TranslationDelta { id, .. } => {
                 let line = &lines[id];
                 assert!(
-                    line.asr_final && !line.terminal,
-                    "delta after a terminal: {id:?}"
+                    line.unit.is_some() && !line.terminal,
+                    "delta before the seal or after a terminal: {id:?}"
                 );
             }
             PipelineEvent::TranslationPreview { id, ids, .. } => {
@@ -542,6 +575,11 @@ fn assert_order(events: &[PipelineEvent]) {
             | PipelineEvent::Skipped { id, .. } => {
                 let line = lines.get_mut(id).expect("terminal for an unknown id");
                 assert!(line.asr_final && !line.terminal, "bad terminal: {id:?}");
+                // Shutdown fails a line whose unit was never sent, which no seal named.
+                assert!(
+                    line.unit.is_some() || matches!(event, PipelineEvent::TranslationFailed { .. }),
+                    "translation event before the seal: {id:?}"
+                );
                 line.terminal = true;
             }
             _ => {}
@@ -627,7 +665,7 @@ fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken()
     let first = finals(&events)[0].0;
     assert!(events.iter().any(|event| matches!(
         event,
-        PipelineEvent::Joined { id, absorbed, text } if *id == first && absorbed.len() == 1 && text == sentence
+        PipelineEvent::UnitSealed { id, ids, text } if *id == first && ids.len() == 2 && text == sentence
     )));
     // A preview is a request for text that is still growing, so its clause has no final yet.
     assert!(

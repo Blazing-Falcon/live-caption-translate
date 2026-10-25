@@ -58,7 +58,10 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
     assert_eq!(item.transcript.text, line.replacen('。', "，", 1) + &line);
     assert_eq!(item.transcript.absorbed, vec![UtteranceId(2)]);
     assert_eq!(item.transcript.timing.end, StreamTime::from_seconds(2.0));
-    assert!(matches!(&batch.events[0], PipelineEvent::Joined { .. }));
+    assert!(matches!(
+        &batch.events[0],
+        PipelineEvent::UnitSealed { ids, .. } if *ids == vec![UtteranceId(1), UtteranceId(2)]
+    ));
     assert_eq!(
         queue
             .take(StreamTime::from_seconds(3.0))

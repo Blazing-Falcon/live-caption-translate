@@ -134,8 +134,8 @@ impl Metrics {
                     },
                 );
             }
-            PipelineEvent::Joined { id, absorbed, .. } => {
-                for gone in absorbed {
+            PipelineEvent::UnitSealed { id, ids, .. } => {
+                for gone in ids.iter().filter(|gone| *gone != id) {
                     if let Some(track) = self.tracks.remove(gone) {
                         let leader = self.tracks.entry(*id).or_default();
                         if leader.end_ms == 0 {
@@ -167,9 +167,9 @@ impl Metrics {
                     self.unfinished.remove(id);
                 }
             }
-            PipelineEvent::Joined { id, absorbed, .. } => {
+            PipelineEvent::UnitSealed { id, ids, .. } => {
                 let mut end = self.unfinished.remove(id);
-                for absorbed in absorbed {
+                for absorbed in ids.iter().filter(|absorbed| *absorbed != id) {
                     if let Some(absorbed_end) = self.unfinished.remove(absorbed) {
                         end = Some(end.map_or(absorbed_end, |end| end.max(absorbed_end)));
                     }

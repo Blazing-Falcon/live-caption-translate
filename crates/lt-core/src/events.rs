@@ -93,9 +93,10 @@ pub enum PipelineEvent {
         logprob: Option<f32>,
         second_pass: SecondPass,
     },
-    Joined {
+    /// Every line of one translation unit, `id` first, sent for its final translation.
+    UnitSealed {
         id: UtteranceId,
-        absorbed: Vec<UtteranceId>,
+        ids: Vec<UtteranceId>,
         text: String,
     },
     TranslationDelta {
@@ -183,9 +184,9 @@ mod tests {
                     refine_ms: 104,
                 },
             },
-            PipelineEvent::Joined {
+            PipelineEvent::UnitSealed {
                 id: UtteranceId(12),
-                absorbed: vec![UtteranceId(13)],
+                ids: vec![UtteranceId(12), UtteranceId(13)],
                 text: "我也想办一个，伟大的公司。".into(),
             },
             PipelineEvent::TranslationDelta {
