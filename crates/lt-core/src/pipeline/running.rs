@@ -75,7 +75,6 @@ impl RunningText {
             unit.timing.asr_done_ms = unit.timing.asr_done_ms.max(line.timing.asr_done_ms);
             unit.timing.asr_ms = unit.timing.asr_ms.saturating_add(line.timing.asr_ms);
             unit.cut = line.cut;
-            unit.fragment = line.fragment;
             if line.class == TextClass::Mixed {
                 unit.class = TextClass::Mixed;
             }
@@ -114,7 +113,6 @@ impl RunningText {
         let first = self.active.first();
         let transcript = Transcript {
             id: ids[0],
-            fragment: !text.trim_end().ends_with(SENTENCE_ENDS),
             text,
             lang_tag: None,
             class,

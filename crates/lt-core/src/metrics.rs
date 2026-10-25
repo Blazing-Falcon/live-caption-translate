@@ -294,7 +294,6 @@ mod tests {
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
             logprob: None,
-            fragment: false,
             second_pass: crate::types::SecondPass::default(),
         }
     }

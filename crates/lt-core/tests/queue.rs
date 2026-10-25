@@ -48,7 +48,6 @@ fn transcript(id: u64, text: &str, end: f64) -> Transcript {
         absorbed: Vec::new(),
         cut: lt_core::types::CutReason::Pause,
         logprob: None,
-        fragment: false,
         second_pass: lt_core::types::SecondPass::default(),
     }
 }
@@ -79,21 +78,6 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
             .id,
         UtteranceId(3)
     );
-
-    // A joined line ends with its last clause, so only that clause decides whether the
-    // translator is told the line stopped mid-thought.
-    for (leader, last) in [(true, false), (false, true)] {
-        let mut queue = TranslationQueue::new(Config::default().translate);
-        let mut first = transcript(1, "我希望我们", 1.0);
-        first.fragment = leader;
-        let mut second = transcript(2, "一起去", 2.0);
-        second.fragment = last;
-        queue.push(first, 0).unwrap();
-        queue.push(second, 0).unwrap();
-        let item = queue.take(StreamTime::from_seconds(2.0)).item.unwrap();
-        assert_eq!(item.transcript.absorbed, vec![UtteranceId(2)]);
-        assert_eq!(item.transcript.fragment, last);
-    }
 
     // Lines on either side of a break, or of a gap of more than 10 s, belong to different
     // contexts and are never translated as one sentence.
@@ -416,20 +400,17 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
 
 struct ScriptedTranslator {
     clock: ManualClock,
-    fragments: Vec<String>,
+    chunks: Vec<String>,
     final_text: String,
     wait_after_stream: bool,
     reached_end: Arc<AtomicBool>,
 }
 
 impl ScriptedTranslator {
-    fn new(clock: ManualClock, fragments: &[&str], final_text: &str) -> Self {
+    fn new(clock: ManualClock, chunks: &[&str], final_text: &str) -> Self {
         Self {
             clock,
-            fragments: fragments
-                .iter()
-                .map(|fragment| (*fragment).into())
-                .collect(),
+            chunks: chunks.iter().map(|chunk| (*chunk).into()).collect(),
             final_text: final_text.into(),
             wait_after_stream: false,
             reached_end: Arc::new(AtomicBool::new(false)),
@@ -455,10 +436,10 @@ impl Translator for ScriptedTranslator {
         on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut> {
         let mut text = String::new();
-        for fragment in &self.fragments {
+        for chunk in &self.chunks {
             request.control.check()?;
             self.clock.advance(StreamTime::from_millis(100));
-            text.push_str(fragment);
+            text.push_str(chunk);
             on_delta(&text);
             request.control.check()?;
         }

@@ -87,9 +87,6 @@ config_table!(TranslateConfig {
     queue_join_max_chars: u32 = 120,
     skip_lag_s: f32 = 6.0,
     window_chars: u32 = 60,
-    /// Append an ellipsis to a clause that stopped mid-thought, so the translator does not
-    /// invent an ending.
-    fragment_ellipsis: bool = true,
 });
 config_table!(OverlayConfig {
     visible: bool = true,
@@ -272,6 +269,9 @@ fn retire_v2(value: &mut toml::Value) {
     }
     if take(root, "filter.skip_music").is_some() {
         tracing::info!("filter.skip_music was removed");
+    }
+    if take(root, "translate.fragment_ellipsis").is_some() {
+        tracing::info!("translate.fragment_ellipsis was removed");
     }
 }
 

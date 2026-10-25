@@ -180,10 +180,6 @@ pub struct Transcript {
     /// Mean token log-probability, when the engine gives one.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logprob: Option<f32>,
-    /// The clause stopped mid-thought: the words say it is still going, or the next clause
-    /// opens with a connective. The translator is told, so it does not invent an ending.
-    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    pub fragment: bool,
     pub second_pass: SecondPass,
 }
 

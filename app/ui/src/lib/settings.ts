@@ -53,7 +53,6 @@ export interface Config extends ExtraFields {
     queue_join_max_chars: number;
     skip_lag_s: number;
     window_chars: number;
-    fragment_ellipsis: boolean;
   };
   overlay: ExtraFields & {
     visible: boolean;
@@ -297,8 +296,7 @@ export const DEFAULT_CONFIG: Config = {
     "timeout_s": 10.0,
     "queue_join_max_chars": 120,
     "skip_lag_s": 6.0,
-    "window_chars": 60,
-    "fragment_ellipsis": true
+    "window_chars": 60
   },
   "overlay": {
     "visible": true,

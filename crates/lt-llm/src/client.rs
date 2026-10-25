@@ -411,8 +411,7 @@ fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Op
 ///
 /// A caption ends where a clause ends, and the speaker usually goes on in the next one. Subtitle
 /// style does not mark a sentence that continues in the next subtitle with an ellipsis, but the
-/// model adds one to a clause that ends at a comma, and echoes the `…` the queue puts on a
-/// clause that stopped mid-thought.
+/// model adds one to a clause that ends at a comma.
 fn strip_marker_residue(text: &str) -> String {
     let mut cleaned = text.to_owned();
     for marker in LEAKED_MARKERS {

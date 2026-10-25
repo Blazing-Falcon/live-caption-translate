@@ -651,7 +651,7 @@ fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken()
     assert!(
         requests
             .iter()
-            .any(|text| text.ends_with('…') && sentence.starts_with(text.trim_end_matches('…'))),
+            .any(|text| text != sentence && sentence.starts_with(text)),
         "no preview while the sentence was spoken: {requests:?}"
     );
 }

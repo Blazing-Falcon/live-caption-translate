@@ -85,8 +85,6 @@ export type PipelineEvent =
       cut: CutReason;
       /** Mean token log-probability; only engines that give one send it. */
       logprob?: number;
-      /** The clause stopped mid-thought: its words say the speaker was still going. */
-      fragment?: boolean;
       /** `text` is already the final text. */
       second_pass: SecondPass;
     }

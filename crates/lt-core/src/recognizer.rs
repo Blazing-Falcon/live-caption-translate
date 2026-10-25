@@ -309,7 +309,6 @@ impl Recognizer {
             text: join_tokens(&tokens.tokens[range]),
             lang_tag: None,
             class: TextClass::Chinese,
-            fragment: false,
             timing: StageTiming {
                 start: clause.start,
                 end,

@@ -290,6 +290,7 @@ skip_music = true
 model = "q4_0"
 threads = 3
 glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], confirmed = true }]
+fragment_ellipsis = false
 "#,
     )
     .unwrap();
@@ -307,6 +308,7 @@ glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], co
     assert!(saved["filter"].get("skip_music").is_none());
     assert!(saved["translate"].get("model").is_none());
     assert!(saved["translate"].get("glossary").is_none());
+    assert!(saved["translate"].get("fragment_ellipsis").is_none());
 }
 
 #[test]

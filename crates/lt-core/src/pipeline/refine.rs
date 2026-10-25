@@ -97,8 +97,7 @@ pub(super) fn refine_loop(
                     closed,
                     max_wait,
                 );
-                let next_head = open.after(transcript.id);
-                finalize(transcript, &live, config, next_head.as_deref())
+                finalize(transcript, &live, config)
             }
             RefineInput::Message(message) => message,
         };
@@ -176,19 +175,10 @@ fn elapsed_ms(since: Instant) -> u32 {
 
 /// Clean, classify and filter a closed clause on its final text. `live` is the recognizer's
 /// text, recorded when the final text differs from it.
-fn finalize(
-    mut transcript: Transcript,
-    live: &str,
-    config: &Config,
-    next_head: Option<&str>,
-) -> AsrMessage {
+fn finalize(mut transcript: Transcript, live: &str, config: &Config) -> AsrMessage {
     transcript.text = clean(&transcript.text, &config.filter.fillers);
     let live = clean(live, &config.filter.fillers);
     transcript.second_pass.live_text = (live != transcript.text).then_some(live);
-    // A pause cut that stopped mid-thought gets an ellipsis instead of an invented ending. A
-    // commit cut ends at a mark or a comma by definition, so it is not a fragment.
-    transcript.fragment = transcript.cut == crate::types::CutReason::Pause
-        && crate::fragments::looks_unfinished(&transcript.text, next_head);
     let Some(class) = classify(&transcript.text) else {
         return AsrMessage::Dropped(transcript.id, DropReason::Empty);
     };

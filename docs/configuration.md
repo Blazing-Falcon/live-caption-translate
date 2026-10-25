@@ -12,7 +12,7 @@ Rules:
 - A file that does not load (not valid TOML, not UTF-8, or not readable) is renamed to `config.toml.bad-<seconds>`, and the app starts with the defaults. A notice gives the new name.
 - The app writes `config.toml.tmp` and renames it, so a save is atomic.
 - A file with `config_version = 1` is migrated when it loads. Renamed keys keep their values (`asr.stream_pause_s` becomes `asr.pause_s`, `latency.low_priority` becomes `performance.low_priority`). `translate.threads = 0` becomes `2`. Keys that version 2 does not have are removed, and the app logs one info line with their names. The next save writes version 2.
-- Choices that the app removed load without a warning: `translate.model`, `translate.glossary`, `asr.chunk_ms`, `asr.decoding`, `asr.second_pass`, `asr.second_pass_min_logprob` and `filter.skip_music` are dropped. The second pass now runs on every line, so a saved `asr.second_pass = "off"` changes nothing. The app logs one info line.
+- Choices that the app removed load without a warning: `translate.model`, `translate.glossary`, `translate.fragment_ellipsis`, `asr.chunk_ms`, `asr.decoding`, `asr.second_pass`, `asr.second_pass_min_logprob` and `filter.skip_music` are dropped. The second pass now runs on every line, so a saved `asr.second_pass = "off"` changes nothing. The app logs one info line.
 
 **Applies** tells when a change has an effect:
 
@@ -64,7 +64,6 @@ timeout_s = 10.0
 queue_join_max_chars = 120
 skip_lag_s = 6.0
 window_chars = 60               # 0 = translate each line alone
-fragment_ellipsis = true        # mark a clause that stopped mid-thought with an ellipsis
 
 [overlay]
 visible = true
@@ -160,7 +159,6 @@ The second pass always runs: each closed line is decoded again by the offline X-
 | `queue_join_max_chars` | 20–300 | pipeline | Maximum text joined from waiting items. Items are not joined across a pause, a device change or a gap of more than 10 s. |
 | `skip_lag_s` | 2–30 | pipeline | Lag at which the translator skips older items |
 | `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters, whole lines only. The window grows between resets and starts over when the next line would exceed it, so the server keeps its prompt cache. They go as earlier chat turns with their English as shown, so only the new line is translated. `0`: off. Measured on 300 subtitle lines with COMET, the window is a small quality *loss* (0.7754 alone against 0.7717 with two lines and 0.7718 with five, 75 lines worse against 59 better): keep it for what it gives the reader, not as a translation improvement. |
-| `fragment_ellipsis` | true or false | pipeline | Append `…` to a clause that stopped mid-thought, so the translator does not invent an ending. A clause whose words say it is still going, or whose next clause opens with a connective, gets the mark; an echoed ellipsis is removed from the answer. |
 
 ### overlay
 

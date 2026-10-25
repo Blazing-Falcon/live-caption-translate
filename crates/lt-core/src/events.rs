@@ -92,9 +92,6 @@ pub enum PipelineEvent {
         /// Mean token log-probability, when the live engine gives one.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         logprob: Option<f32>,
-        /// The clause stopped mid-thought: its words say the speaker was still going.
-        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-        fragment: bool,
         second_pass: SecondPass,
     },
     Joined {
@@ -177,7 +174,6 @@ mod tests {
                 asr_ms: 330,
                 cut: CutReason::Pause,
                 logprob: None,
-                fragment: false,
                 second_pass: SecondPass {
                     outcome: SecondPassOutcome::Used,
                     live_text: Some("我也想半一个".into()),

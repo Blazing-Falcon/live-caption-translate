@@ -208,9 +208,6 @@ impl TranslationQueue {
                 .absorbed
                 .extend(next.transcript.absorbed.iter().copied());
             item.transcript.text = joined;
-            // The joined text ends where the absorbed clause ends, so whether it stopped
-            // mid-thought is that clause's answer, not the leader's.
-            item.transcript.fragment = next.transcript.fragment;
             item.transcript.timing.end = next.transcript.timing.end;
             item.transcript.timing.asr_done_ms = item
                 .transcript
@@ -371,15 +368,7 @@ pub fn translate_one(
         cancelled,
         abort: Arc::new(AtomicBool::new(false)),
     };
-    // A clause that stops mid-thought is marked so the translator does not invent an ending;
-    // an ellipsis it echoes back is removed from the answer below.
-    let marked;
-    let text = if config.fragment_ellipsis && source.fragment {
-        marked = format!("{}…", source.text);
-        marked.as_str()
-    } else {
-        source.text.as_str()
-    };
+    let text = source.text.as_str();
     let request = TranslateRequest {
         id: source.id,
         text,

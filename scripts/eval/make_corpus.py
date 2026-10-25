@@ -32,8 +32,8 @@ OUT = ROOT / ".agent/experiments/corpus"
 
 HAN = re.compile(r"[㐀-䶿一-鿿]")
 LATIN_WORD = re.compile(r"[A-Za-z]{2,}")
-# Our captions: p50 12 Han characters, p90 20. Keep a band around that, and drop lines that are a
-# fragment of a longer sentence or carry no Han at all.
+# Our captions: p50 12 Han characters, p90 20. Keep a band around that, and drop lines that are
+# part of a longer sentence or carry no Han at all.
 MIN_HAN, MAX_HAN = 6, 24
 
 

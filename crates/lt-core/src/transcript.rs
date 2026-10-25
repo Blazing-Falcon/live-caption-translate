@@ -84,8 +84,6 @@ struct Pending {
     lang: Option<String>,
     source: String,
     cut: CutReason,
-    /// The clause stopped mid-thought.
-    fragment: bool,
     live: LiveRecord,
     /// One record for each clause of the line, in order.
     second: Vec<SecondRecord>,
@@ -142,8 +140,6 @@ struct UtteranceRecord<'a> {
     reason: Option<FailReason>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message: Option<&'a str>,
-    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    fragment: bool,
     asr_live: &'a LiveRecord,
     #[serde(skip_serializing_if = "<[SecondRecord]>::is_empty")]
     asr_second: &'a [SecondRecord],
@@ -167,7 +163,6 @@ impl Pending {
             timing: None,
             reason: None,
             message: None,
-            fragment: self.fragment,
             asr_live: &self.live,
             asr_second: &self.second,
         }
@@ -213,7 +208,6 @@ impl<W: Write> TranscriptWriter<W> {
                 end_ms,
                 cut,
                 logprob,
-                fragment,
                 second_pass,
                 ..
             } => {
@@ -233,7 +227,6 @@ impl<W: Write> TranscriptWriter<W> {
                     lang: lang.clone(),
                     source: text.clone(),
                     cut: *cut,
-                    fragment: *fragment,
                     live: LiveRecord {
                         engine: self.live_engine.clone(),
                         text: second_pass
@@ -563,7 +556,6 @@ mod tests {
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
             logprob: None,
-            fragment: false,
             second_pass: SecondPass::default(),
         }
     }
@@ -644,7 +636,6 @@ mod tests {
                     end_ms: 1_500,
                     asr_ms: 100,
                     cut: CutReason::Commit,
-                    fragment: false,
                     logprob: None,
                     second_pass: SecondPass::default(),
                 },
@@ -668,57 +659,6 @@ mod tests {
         assert_eq!(records.len(), 2, "header and one utterance: {output}");
         assert_eq!(records[1]["cut"], "commit");
         assert!(!output.contains("Huawei") && !output.contains("这次华为\""));
-    }
-
-    /// The pipeline's own fragment decision reaches the transcript, which is what the evaluation
-    /// scorer reads. Inferring it from the text stopped working once a line could keep live text
-    /// the recognizer never punctuated.
-    #[test]
-    fn a_fragment_line_records_its_flag() {
-        let mut writer = TranscriptWriter::new(Vec::new(), header()).unwrap();
-        let id = UtteranceId(9);
-        writer
-            .on_event(
-                &PipelineEvent::AsrFinal {
-                    id,
-                    text: "我希望我们".into(),
-                    class: TextClass::Chinese,
-                    lang: Some("zh".into()),
-                    start_ms: 0,
-                    end_ms: 1_200,
-                    asr_ms: 100,
-                    cut: CutReason::Pause,
-                    fragment: true,
-                    logprob: None,
-                    second_pass: SecondPass::default(),
-                },
-                WALL,
-            )
-            .unwrap();
-        writer
-            .on_event(
-                &PipelineEvent::TranslationFinal {
-                    id,
-                    text: "I hope we…".into(),
-                    timing: crate::types::Timing {
-                        speech_end_ms: 1_200,
-                        asr_done_ms: 1_300,
-                        queued_ms: 1_300,
-                        sent_ms: 1_300,
-                        first_token_ms: Some(1_400),
-                        done_ms: 1_500,
-                        prompt_tokens: 20,
-                        cached_tokens: 23,
-                        generated_tokens: 4,
-                    },
-                },
-                WALL,
-            )
-            .unwrap();
-        let output = String::from_utf8(writer.finish().unwrap()).unwrap();
-        let record: serde_json::Value =
-            serde_json::from_str(output.lines().last().unwrap()).unwrap();
-        assert_eq!(record["fragment"], true, "{output}");
     }
 
     #[test]

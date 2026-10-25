@@ -37,9 +37,7 @@ From the transcript alone, so a run can be rescored without the audio:
   `second_pass_p50` is only meaningful with the outcomes beside it: a `late` line reports a
   near-zero stage time, so a run with many of them shows a low p50 because it did less work, not
   because the decode got faster;
-- shape: duration, Han characters, inter-line gaps, share of gaps at or above `asr.pause_s`;
-- fragments: lines the pipeline flagged as stopping mid-thought and still translated. The flag is
-  new: a transcript recorded before it has no field, so those runs report zero rather than a guess.
+- shape: duration, Han characters, inter-line gaps, share of gaps at or above `asr.pause_s`.
 
 With a reference (`--zh` and `--en`) it also reports a character error rate over the joined text.
 That is coarse: the reference and the replay do not cut the same clauses.

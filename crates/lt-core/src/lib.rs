@@ -8,7 +8,6 @@ pub mod engines;
 pub mod error;
 pub mod events;
 pub mod fakes;
-pub mod fragments;
 pub mod metrics;
 pub mod pipeline;
 pub mod queue;
