@@ -14,17 +14,27 @@ npm --prefix app/ui test     # fast UI tests
 
 ## Rules
 
-- `scripts/check.ps1` must pass before a change is complete. Do not disable a lint or a test to make it pass.
-- Fixtures are the reference (`reference/fixtures`, `testdata`, `crates/*/tests/fixtures`, `app/ui/src/lib/__fixtures__`). Do not edit a fixture to make a test pass. Change the code. If a fixture is wrong, stop and tell why.
-- Do not invent numbers. A latency, CPU, memory or accuracy value must come from a run. Give the machine, the command and the date. If you did not measure it, write "not measured".
-- Add a test only if a failure means a real defect that nothing else finds: a contract between parts (wire format, config defaults, event order, prompts), a recorded reference (fixtures), a failure that is otherwise invisible (data loss, leaked processes, deadlocks, unbounded memory), or logic that broke before. Do not test constants, small helpers or UI layout.
-- Real-model tests skip without their variables. A skipped test is not a pass. Tell which tests you ran.
-- If you change a config key, update `docs/configuration.md`. A test compares its default block with `DEFAULT_CONFIG`. If you change an event or a command, update `docs/ipc.md`.
-- Keep OS code in `lt-audio` and the app. Keep engine code in `lt-sherpa` and `lt-llm`. `lt-core` has neither.
-- Each engine has one owner thread. The core has no async runtime. Use bounded channels.
-- No network use except model downloads and the local llama-servers. No telemetry.
-- Do not commit models, `testdata/fetched/`, `.deps/` or build output.
-- Comments tell why. They do not refer to tasks or documents.
+These are defaults. When one makes a change worse, break it. Say why in the commit body and in
+`.agent/decisions.md`, and propose a better rule here.
+
+- A change is done when `scripts/check.ps1` passes. A wrong check is fixed or deleted in the same
+  change, with the reason; never silence a check to hide a defect.
+- Fixtures record real behavior. Regenerate one when the contract it records changes on purpose,
+  and say how. Never edit one to hide a bug.
+- A latency, CPU, memory or accuracy number comes from a run: machine, command, date. Otherwise
+  write "not measured".
+- Tests guard contracts between parts, recorded references, failures nothing else would show (data
+  loss, leaks, deadlocks, layout jumps), and bugs that came back. Prefer end-to-end tests. A skipped
+  real-model test is not a pass; say which tests ran.
+- A change to a config key, event or command updates `docs/configuration.md` or `docs/ipc.md` in
+  the same commit.
+- OS code lives in `lt-audio` and the app, engine code in `lt-sherpa` and `lt-llm`. `lt-core` has
+  neither.
+- One owner thread per engine. No async runtime in the core. Bounded channels.
+- No network use except model downloads and the local llama-server. No telemetry.
+- Never commit models, `testdata/fetched/`, `.deps/` or build output.
+- Write no comment unless the reason is not obvious from the code. One or two lines. No history,
+  measurements, task names or document references in code; those go in `.agent/` or `docs/`.
 
 ## Where to find code
 
