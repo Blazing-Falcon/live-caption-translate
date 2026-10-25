@@ -63,13 +63,7 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
 
 /// Translator server settings need a new llama-server, not only a new pipeline.
 pub fn server_changed(old: &Config, new: &Config) -> bool {
-    let key = |config: &Config| {
-        json!([
-            config.translate.server_url,
-            config.translate.threads,
-            config.performance.low_priority,
-        ])
-    };
+    let key = |config: &Config| json!([config.translate.threads, config.performance.low_priority]);
     key(old) != key(new)
 }
 

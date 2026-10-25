@@ -66,7 +66,7 @@ fn mt(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()>
     use std::time::Instant;
     let models = engines::models_dir(args.models.as_deref(), &config);
     let bus = EventBus::default();
-    let (mut translator, supervisor, _) =
+    let (mut translator, mut supervisor, _) =
         engines::translator(&config, &models, args.server.as_deref(), &bus, &cancelled)?;
     let control = || TranslationControl {
         deadline: Instant::now() + lt_core::engines::REQUEST_TIMEOUT,
@@ -133,9 +133,7 @@ fn mt(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()>
         "{}",
         serde_json::json!({"type":"summary","sentences":processed,"exact_matches":matches})
     );
-    if let Some(mut supervisor) = supervisor {
-        supervisor.stop()?;
-    }
+    supervisor.stop()?;
     Ok(())
 }
 #[cfg(not(feature = "llm"))]

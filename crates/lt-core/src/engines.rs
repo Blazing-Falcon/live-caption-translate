@@ -145,31 +145,20 @@ pub trait Translator: Send {
 }
 
 type AsrFactory = fn(&Config) -> Result<Box<dyn StreamingAsr>>;
-type TranslatorFactory = fn(&Config) -> Result<Box<dyn Translator>>;
 
 #[derive(Default)]
 pub struct EngineRegistry {
     asr: Option<AsrFactory>,
-    translator: Option<TranslatorFactory>,
 }
 
 impl EngineRegistry {
     pub fn register_asr(&mut self, factory: AsrFactory) {
         self.asr = Some(factory);
     }
-    pub fn register_translator(&mut self, factory: TranslatorFactory) {
-        self.translator = Some(factory);
-    }
     pub fn build_asr(&self, config: &Config) -> Result<Box<dyn StreamingAsr>> {
         self.asr.ok_or_else(|| Error::UnknownEngine {
             kind: "ASR",
             name: "xasr_stream".into(),
-        })?(config)
-    }
-    pub fn build_translator(&self, config: &Config) -> Result<Box<dyn Translator>> {
-        self.translator.ok_or_else(|| Error::UnknownEngine {
-            kind: "translator",
-            name: "hymt2".into(),
         })?(config)
     }
 }

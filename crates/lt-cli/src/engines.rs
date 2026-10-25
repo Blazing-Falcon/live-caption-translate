@@ -92,7 +92,7 @@ pub fn build(
             asr,
             second_pass,
             translator,
-            supervisor,
+            supervisor: Some(supervisor),
             pid,
         })
     }
@@ -106,7 +106,7 @@ pub fn build(
 #[cfg(feature = "llm")]
 pub type TranslationEngine = (
     Box<dyn Translator>,
-    Option<lt_llm::supervisor::Supervisor>,
+    lt_llm::supervisor::Supervisor,
     Arc<AtomicU32>,
 );
 
@@ -119,15 +119,6 @@ pub fn translator(
     cancelled: &AtomicBool,
 ) -> Result<TranslationEngine> {
     check_cancel(cancelled)?;
-    if !config.translate.server_url.is_empty() {
-        let mut registry = lt_core::engines::EngineRegistry::default();
-        lt_llm::register_engines(&mut registry);
-        return Ok((
-            registry.build_translator(config)?,
-            None,
-            Arc::new(AtomicU32::new(0)),
-        ));
-    }
     let binary = binary.map(Path::to_path_buf).unwrap_or_else(default_binary);
     let (id, file) = lt_core::config::TranslateConfig::MODEL;
     let options = lt_llm::supervisor::ServerOptions::new(
@@ -140,13 +131,9 @@ pub fn translator(
     supervisor
         .wait_ready_cancellable(std::time::Duration::from_secs(65), cancelled)
         .context("Starting local translator")?;
-    let mut registry = lt_core::engines::EngineRegistry::default();
-    lt_llm::register_engines(&mut registry);
-    let mut engine_config = config.clone();
-    engine_config.translate.server_url = supervisor.url().into();
-    let translator = registry.build_translator(&engine_config)?;
+    let translator = lt_llm::OpenAiCompatTranslator::new(supervisor.url())?;
     let pid = supervisor.child_pid();
-    Ok((translator, Some(supervisor), pid))
+    Ok((Box::new(translator), supervisor, pid))
 }
 
 #[cfg(feature = "llm")]

@@ -60,23 +60,11 @@ pub fn start_supervisor(
     Ok(supervisor)
 }
 
-/// A client for either the supervised server or the configured external URL.
+/// A client for the server the supervisor owns.
 pub fn translator(
-    config: &Config,
-    supervisor: Option<&Supervisor>,
+    supervisor: &Supervisor,
 ) -> Result<(Box<dyn Translator>, Arc<AtomicU32>), String> {
-    let mut registry = EngineRegistry::default();
-    lt_llm::register_engines(&mut registry);
-    let mut engine_config = config.clone();
-    let pid = match supervisor {
-        Some(supervisor) => {
-            engine_config.translate.server_url = supervisor.url().into();
-            supervisor.child_pid()
-        }
-        None => Arc::new(AtomicU32::new(0)),
-    };
-    let translator = registry
-        .build_translator(&engine_config)
-        .map_err(|e| e.to_string())?;
-    Ok((translator, pid))
+    let translator =
+        lt_llm::OpenAiCompatTranslator::new(supervisor.url()).map_err(|e| e.to_string())?;
+    Ok((Box::new(translator), supervisor.child_pid()))
 }

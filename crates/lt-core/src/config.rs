@@ -196,16 +196,12 @@ impl Default for AsrConfig {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TranslateConfig {
-    pub server_url: String,
     pub threads: u32,
 }
 
 impl Default for TranslateConfig {
     fn default() -> Self {
-        Self {
-            server_url: String::new(),
-            threads: 4,
-        }
+        Self { threads: 4 }
     }
 }
 

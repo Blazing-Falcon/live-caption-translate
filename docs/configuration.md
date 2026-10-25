@@ -19,7 +19,7 @@ Rules:
 |---|---|
 | `live` | Immediately |
 | `capture` | The capture sources open again. The pipeline continues. |
-| `pipeline` | The pipeline restarts. The llama-server restarts only if one of these changes: `translate.server_url`, `translate.threads` or `performance.low_priority`. |
+| `pipeline` | The pipeline restarts. The llama-server restarts only if one of these changes: `translate.threads` or `performance.low_priority`. |
 | `restart` | At the next app start |
 
 ## Full Default File
@@ -43,7 +43,6 @@ pause_s = 0.8                   # silence that ends a line
 second_pass_threads = 2         # 1 to the logical CPUs of the PC
 
 [translate]
-server_url = ""                 # "" = spawn the bundled llama-server; otherwise use this [OI]-compatible base URL
 threads = 4                     # 1 to the logical CPUs of the PC
 
 [overlay]
@@ -113,9 +112,10 @@ The second pass always runs: each closed line is decoded again by the offline X-
 
 ### translate
 
+The app always starts and supervises the bundled llama-server.
+
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `server_url` | URL | pipeline | Empty: start and supervise the bundled llama-server. Set: use this [OI]-compatible server. |
 | `threads` | 1–64 | pipeline | llama-server threads. The app uses at most the PC's logical CPUs. |
 
 ### overlay

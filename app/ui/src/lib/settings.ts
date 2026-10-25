@@ -29,7 +29,6 @@ export interface Config {
     second_pass_threads: number;
   };
   translate: {
-    server_url: string;
     threads: number;
   };
   overlay: {
@@ -244,7 +243,6 @@ export const DEFAULT_CONFIG: Config = {
     "second_pass_threads": 2
   },
   "translate": {
-    "server_url": "",
     "threads": 4
   },
   "overlay": {

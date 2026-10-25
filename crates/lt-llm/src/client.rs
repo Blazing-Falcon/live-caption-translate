@@ -1,7 +1,6 @@
 //! Bounded SSE translation over a cancellable, strictly loopback HTTP transport.
 use crate::prompts::HyMt2Prompts;
 use lt_core::{
-    config::Config,
     engines::{
         max_tokens, TranslateRequest, TranslationControl, TranslationOut, Translator,
         TranslatorCaps,
@@ -157,20 +156,11 @@ pub struct OpenAiCompatTranslator {
 }
 
 impl OpenAiCompatTranslator {
-    /// Pass the bundled supervisor's selected URL, or the configured local URL.
+    /// `base_url` is the URL the bundled supervisor selected.
     pub fn new(base_url: &str) -> Result<Self> {
         Ok(Self {
             endpoint: Endpoint::new(base_url)?,
         })
-    }
-
-    pub fn from_config(config: &Config) -> Result<Self> {
-        if config.translate.server_url.is_empty() {
-            return Err(Error::Config(
-                "Start the bundled translation server before building its client".into(),
-            ));
-        }
-        Self::new(&config.translate.server_url)
     }
 
     fn translate_inner(

@@ -54,6 +54,7 @@ struct Session {
 pub struct Controller {
     shared: Arc<Shared>,
     session: Option<Session>,
+    /// None while no server runs; a running server outlives pipeline restarts.
     supervisor: Option<Supervisor>,
 }
 
@@ -160,7 +161,7 @@ impl Controller {
             // It gave up after repeated crashes; a new start tries a new server.
             self.stop_supervisor();
         }
-        if config.translate.server_url.is_empty() && self.supervisor.is_none() {
+        if self.supervisor.is_none() {
             // Quit sets `quitting` before its command waits here, so a slow model load
             // cannot hold up the exit.
             match engines::start_supervisor(
@@ -177,7 +178,11 @@ impl Controller {
                 }
             }
         }
-        let (translator, pid) = engines::translator(&config, self.supervisor.as_ref())?;
+        let (translator, pid) = engines::translator(
+            self.supervisor
+                .as_ref()
+                .expect("a start leaves a running supervisor"),
+        )?;
         let (source, mode, label) = make_source(&config)?;
         let transcript = self.start_transcript(&config, mode, &label)?;
         let sampler = ProcessSampler::new(pid).map_err(|e| e.to_string())?;

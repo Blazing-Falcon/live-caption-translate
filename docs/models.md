@@ -111,4 +111,4 @@ The memory figures on this page are working set (`WorkingSetSize`), which counts
 | Timeout | 10 s |
 | Other | temperature 0, repeat penalty 1.05, prompt cache, identical instruction text each time |
 
-`translate.server_url` or `LT_LLAMA_SERVER` select a different server.
+`LT_LLAMA_SERVER` selects a different `llama-server` binary.
