@@ -68,6 +68,21 @@ impl Scheduler {
         self.bus.publish(event);
     }
 
+    fn publish_asr_final(&mut self, transcript: &Transcript) {
+        self.publish(PipelineEvent::AsrFinal {
+            id: transcript.id,
+            text: transcript.text.clone(),
+            class: transcript.class,
+            lang: transcript.lang_tag.clone(),
+            start_ms: transcript.timing.start.millis(),
+            end_ms: transcript.timing.end.millis(),
+            asr_ms: transcript.timing.asr_ms,
+            cut: transcript.cut,
+            logprob: transcript.logprob,
+            second_pass: transcript.second_pass.clone(),
+        });
+    }
+
     fn partial(&mut self, id: UtteranceId, text: String, class: TextClass, end: StreamTime) {
         let end_ms = end.millis();
         self.publish(PipelineEvent::AsrPartial {
@@ -137,26 +152,17 @@ impl Scheduler {
             AsrMessage::Transcript(transcript) => {
                 self.running_text.closed(transcript.id);
                 self.observed.insert(transcript.id);
-                self.publish(PipelineEvent::AsrFinal {
-                    id: transcript.id,
-                    text: transcript.text.clone(),
-                    class: transcript.class,
-                    lang: transcript.lang_tag.clone(),
-                    start_ms: transcript.timing.start.millis(),
-                    end_ms: transcript.timing.end.millis(),
-                    asr_ms: transcript.timing.asr_ms,
-                    cut: transcript.cut,
-                    logprob: transcript.logprob,
-                    second_pass: transcript.second_pass.clone(),
-                });
                 if transcript.class.is_translated() {
+                    self.publish_asr_final(&transcript);
                     self.translating.insert(transcript.id);
                     for unit in self.running_text.push(transcript) {
                         self.translate_unit(unit);
                     }
                 } else {
-                    // A line shown as heard ends the running unit before it.
+                    // A line shown as heard seals the running unit before its own final, so the
+                    // unit's events never follow the line that ended it.
                     self.freeze_running();
+                    self.publish_asr_final(&transcript);
                     self.observed.remove(&transcript.id);
                 }
             }
@@ -169,6 +175,7 @@ impl Scheduler {
             AsrMessage::Failed(id, message) => {
                 // There is no ASR-failure line type in the wire contract; the
                 // engine error is explicit and no nonexistent ASR text is sent.
+                self.running_text.closed(id);
                 self.observed.remove(&id);
                 self.asr_failed = true;
                 self.publish(PipelineEvent::EngineStatus {
