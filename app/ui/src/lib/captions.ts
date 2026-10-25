@@ -62,8 +62,16 @@ export interface ChipMessage {
   text: string;
 }
 
+/** Running text: the English of the lines not yet translated for good, `id` first of `ids`. */
+export interface Preview {
+  id: UtteranceId;
+  ids: readonly UtteranceId[];
+  text: string;
+}
+
 export interface CaptionView {
   lines: readonly CaptionLineView[];
+  preview: Preview | null;
   fadingIds: ReadonlySet<number>;
   status: StatusLine | null;
   chip: ChipMessage | null;
@@ -239,8 +247,9 @@ export function visibleLines<T extends CaptionLine>(
 export interface FlowPiece {
   id: UtteranceId;
   text: string;
-  /** "dim" is text that will not be translated; "live" is Chinese still being spoken. */
-  kind: "final" | "streaming" | "dim" | "live" | "pending";
+  /** "dim" is text that will not be translated; "live" is Chinese still being spoken;
+   * "preview" is English that the next translation replaces. */
+  kind: "final" | "streaming" | "dim" | "live" | "pending" | "preview";
 }
 
 export interface FlowText {
@@ -249,10 +258,18 @@ export interface FlowText {
 }
 
 /** The lines as two running paragraphs, oldest first. Every line keeps its place, so a
- * line's English appears where its Chinese was and replaces its pending dots in place. */
-export function flowText(lines: readonly CaptionLine[], showSource: boolean, liveSource: boolean): FlowText {
+ * line's English appears where its Chinese was and replaces its pending dots in place. The
+ * preview stands for the English of every line it covers until their final translation, so
+ * the text does not jump back to dots or restart while the final streams. */
+export function flowText(
+  lines: readonly CaptionLine[],
+  showSource: boolean,
+  liveSource: boolean,
+  preview: Preview | null = null,
+): FlowText {
   const source: FlowPiece[] = [];
   const english: FlowPiece[] = [];
+  let previewShown = false;
   for (const line of lines) {
     const { id } = line;
     if (line.state === "english") {
@@ -267,6 +284,12 @@ export function flowText(lines: readonly CaptionLine[], showSource: boolean, liv
       if (liveSource && line.source !== "") source.push({ id, text: line.source, kind: "live" });
     } else if (showSource && line.source !== "") {
       source.push({ id, text: line.source, kind: "final" });
+    }
+    const covered = preview !== null && preview.ids.includes(id);
+    if (covered && (line.state === "live" || line.state === "pending" || line.state === "streaming")) {
+      if (!previewShown) english.push({ id: preview.id, text: preview.text, kind: "preview" });
+      previewShown = true;
+      continue;
     }
     if (line.state === "final" || line.state === "streaming") {
       if (line.english !== "" || line.state === "streaming") english.push({ id, text: line.english, kind: line.state });
@@ -290,6 +313,8 @@ interface SettingsSlice {
   pauseHotkey: string;
   settingsHotkey: string;
   expireMs: number;
+  /** Running text stays until newer text pushes it out, like live captions. */
+  pinned: boolean;
   appNames: string[];
 }
 
@@ -330,6 +355,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   let announcement = "";
   let lastStatusText: string | null = null;
   let disposed = false;
+  let preview: Preview | null = null;
 
   let app: AppSlice = {
     modelsReady: true,
@@ -343,11 +369,13 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     pauseHotkey: "",
     settingsHotkey: "",
     expireMs: 8000,
+    pinned: false,
     appNames: [],
   };
 
   const store = writable<CaptionView>({
     lines: [],
+    preview: null,
     fadingIds: new Set(),
     status: null,
     chip: null,
@@ -380,6 +408,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         const swap = swaps.get(line.id);
         return swap === undefined ? line : { ...line, swap };
       }),
+      preview,
       fadingIds: new Set(fading),
       status: current,
       chip: current === null ? chip : null,
@@ -437,7 +466,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
 
   function armExpiry(): void {
     expiryTimer = clearTimer(expiryTimer);
-    if (expiryFrom === null || expirable().length === 0) return;
+    if (settings.pinned || expiryFrom === null || expirable().length === 0) return;
     const hold = Math.max(settings.expireMs, readingHoldMs());
     const delay = Math.max(0, expiryFrom + hold - clock.now());
     expiryTimer = clock.setTimer(onExpire, delay);
@@ -512,8 +541,17 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     expiryFrom = clock.now();
   }
 
+  /** The final translation of any covered line replaces the preview. */
+  function endPreview(id: number): void {
+    if (preview?.ids.includes(id)) preview = null;
+  }
+
   function applyLineEvent(event: PipelineEvent): boolean {
     switch (event.type) {
+      case "translation_preview":
+        if (!lines.has(event.id)) return false;
+        preview = { id: event.id, ids: event.ids, text: event.text };
+        return true;
       case "asr_partial": {
         const line = lines.get(event.id);
         if (line === undefined) {
@@ -585,22 +623,26 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       }
       case "translation_final":
         if (!isActive(event.id)) return false;
+        endPreview(event.id);
         settled();
         update(event.id, { state: "final", english: event.text });
         announcement = event.text;
         return true;
       case "translation_failed":
         if (!isActive(event.id)) return false;
+        endPreview(event.id);
         settled();
         update(event.id, { state: "failed", reason: failReasonText(event.reason, event.message) });
         return true;
       case "skipped":
         if (!isActive(event.id)) return false;
+        endPreview(event.id);
         settled();
         update(event.id, { state: "skipped" });
         return true;
       case "dropped": {
         if (lines.get(event.id)?.state !== "live") return false;
+        endPreview(event.id);
         lines.delete(event.id);
         return true;
       }
@@ -626,6 +668,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       case "translation_final":
       case "translation_failed":
       case "skipped":
+      case "translation_preview":
         if (!applyLineEvent(event)) {
           warn(`ignored ${event.type} for utterance ${event.id}`);
           return;
@@ -681,8 +724,10 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       pauseHotkey: config.hotkeys.pause,
       settingsHotkey: config.hotkeys.settings,
       expireMs: Math.max(0, config.overlay.expire_s * 1000),
+      pinned: config.overlay.style === "flow",
       appNames: config.capture.apps.map((entry) => entry.name),
     };
+    if (settings.pinned) cancelFade();
     armExpiry();
     emit();
   }
@@ -691,6 +736,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     if (disposed) return;
     lines.clear();
     fading.clear();
+    preview = null;
     chip = null;
     emit();
     disposed = true;

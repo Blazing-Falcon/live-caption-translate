@@ -131,6 +131,39 @@ describe("running text", () => {
     expect(hidden.source).toEqual([]);
     expect(hidden.english).toEqual(flow.english);
   });
+
+  // The preview stands for every line it covers; shown next to their own English or dots, the
+  // same words would appear twice, and a lost preview would leave the reader with nothing.
+  it("shows one preview for the lines it covers until their final translation", () => {
+    const { view, run } = setup({ configure: (config) => { config.overlay.style = "flow"; } });
+    const english = () => flowText(view().lines, true, true, view().preview).english.map((piece) => [piece.text, piece.kind]);
+    run(asrFinal(1, "你好。"), final(1, "Hello."));
+    run(asrFinal(2, "今天天气很好，"), partial(3, "我们去"));
+    run({ type: "translation_preview", id: 2, ids: [2, 3], text: "The weather is nice today, we go" });
+    expect(english()).toEqual([
+      ["Hello.", "final"],
+      ["The weather is nice today, we go", "preview"],
+    ]);
+    run(asrFinal(3, "我们去公园。"), joined(2, [3], "今天天气很好，我们去公园。"), delta(2, "The weather"));
+    expect(english()).toEqual([
+      ["Hello.", "final"],
+      ["The weather is nice today, we go", "preview"],
+    ]);
+    run(final(2, "The weather is nice today, let's go to the park."));
+    expect(view().preview).toBeNull();
+    expect(english()).toEqual([
+      ["Hello.", "final"],
+      ["The weather is nice today, let's go to the park.", "final"],
+    ]);
+  });
+
+  it("keeps its text through silence", () => {
+    const c = setup({ configure: (config) => { config.overlay.style = "flow"; } });
+    c.run(asrFinal(1, "一"), final(1, "One"));
+    c.clock.advance(600_000);
+    expect(summary(c.lines())).toEqual(["1:final"]);
+    expect(c.view().fadingIds.size).toBe(0);
+  });
 });
 
 describe("expiry", () => {

@@ -178,19 +178,22 @@
     <span>Show Chinese while someone is speaking</span>
   </label>
 
-  <label class="field">
-    <span>Clear captions after {expireS} s without new captions</span>
-    <input
-      class="range"
-      type="range"
-      min={OVERLAY_LIMITS.expire_s.min}
-      max={OVERLAY_LIMITS.expire_s.max}
-      step="1"
-      value={expireS}
-      oninput={(event) => (expireDraft = Number(event.currentTarget.value))}
-      onchange={(event) => commitNumber("overlay.expire_s", event, "expire_s", 1, () => (expireDraft = null))}
-    />
-  </label>
+  <!-- Running text keeps its text, like live captions, so it has nothing to clear. -->
+  {#if overlay.style !== "flow"}
+    <label class="field">
+      <span>Clear captions after {expireS} s without new captions</span>
+      <input
+        class="range"
+        type="range"
+        min={OVERLAY_LIMITS.expire_s.min}
+        max={OVERLAY_LIMITS.expire_s.max}
+        step="1"
+        value={expireS}
+        oninput={(event) => (expireDraft = Number(event.currentTarget.value))}
+        onchange={(event) => commitNumber("overlay.expire_s", event, "expire_s", 1, () => (expireDraft = null))}
+      />
+    </label>
+  {/if}
 
   {#if overlay.style === "flow"}
     <label class="field">

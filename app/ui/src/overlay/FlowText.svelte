@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { flowText, type StatusLine } from "../lib/captions";
+  import { flowText, type Preview, type StatusLine } from "../lib/captions";
   import type { CaptionLine as Line } from "../lib/types";
   import CaptionLine from "./CaptionLine.svelte";
 
   interface Props {
     lines: readonly Line[];
+    preview?: Preview | null;
     fadingIds?: ReadonlySet<number>;
     status?: StatusLine | null;
     showSource?: boolean;
@@ -14,6 +15,7 @@
 
   let {
     lines,
+    preview = null,
     fadingIds = new Set<number>(),
     status = null,
     showSource = true,
@@ -21,7 +23,7 @@
     flowLines = 3,
   }: Props = $props();
 
-  const flow = $derived(flowText(lines, showSource, liveSource));
+  const flow = $derived(flowText(lines, showSource, liveSource, preview));
   const streaming = $derived(flow.english.at(-1)?.kind === "streaming");
 
   let section: HTMLElement | undefined = $state();
@@ -52,33 +54,35 @@
 
 <svelte:window bind:innerHeight={viewportHeight} />
 
-{#if status || flow.source.length > 0 || flow.english.length > 0}
-  <section
-    bind:this={section}
-    class="flow"
-    aria-label="Live captions"
-    data-testid="flow-text"
-    style:--flow-lines={shownLines}
-  >
-    {#if status}
-      <CaptionLine {status} />
-    {/if}
-    {#if flow.source.length > 0}
-      <div class="para source">
-        <p>
-          {#each flow.source as piece (piece.id)}<span class:fading={fadingIds.has(piece.id)} class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
-        </p>
-      </div>
-    {/if}
-    {#if flow.english.length > 0}
-      <div class="para english">
-        <p>
-          {#each flow.english as piece, index (piece.id)}{index > 0 ? " " : ""}<span class={piece.kind} class:fading={fadingIds.has(piece.id)}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
-        </p>
-      </div>
-    {/if}
-  </section>
-{/if}
+<!-- Running text is pinned like live captions: the frame keeps its place and size through
+     silence, so the reader's eyes never have to find it again. -->
+<section
+  bind:this={section}
+  class="flow"
+  aria-label="Live captions"
+  data-testid="flow-text"
+  style:--flow-lines={shownLines}
+>
+  {#if status}
+    <CaptionLine {status} />
+  {/if}
+  {#if showSource || liveSource}
+    <div class="para source">
+      <p>
+        {#each flow.source as piece (piece.id)}<span class:fading={fadingIds.has(piece.id)} class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
+      </p>
+    </div>
+  {/if}
+  <div class="para english">
+    <p>
+      {#if flow.english.length > 0}
+        {#each flow.english as piece, index (`${piece.kind}-${piece.id}`)}{index > 0 ? " " : ""}<span class={piece.kind} class:fading={fadingIds.has(piece.id)}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
+      {:else if !status && flow.source.length === 0}
+        <span class="waiting">Waiting for speech</span>
+      {/if}
+    </p>
+  </div>
+</section>
 
 <style>
   .flow {
@@ -99,7 +103,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    max-height: calc(var(--flow-lines) * var(--flow-line-height) * 1em);
+    height: calc(var(--flow-lines) * var(--flow-line-height) * 1em);
     overflow: hidden;
     line-height: var(--flow-line-height);
     transition: opacity var(--fade-ms) linear;
@@ -137,6 +141,15 @@
   }
 
   .pending {
+    color: var(--ov-pending);
+  }
+
+  /* English that the next translation may still change. */
+  .preview {
+    color: var(--ov-text-secondary);
+  }
+
+  .waiting {
     color: var(--ov-pending);
   }
 

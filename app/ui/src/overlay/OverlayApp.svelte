@@ -43,6 +43,7 @@
       <div class="bar-slot">
         <FlowText
           lines={$captions.lines}
+          preview={$captions.preview}
           fadingIds={$captions.fadingIds}
           status={$captions.status}
           showSource={$config.overlay.show_source}

@@ -99,6 +99,7 @@ export type PipelineEvent =
   | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }
   | { type: "translation_final"; id: UtteranceId; text: string; timing: Timing }
+  | { type: "translation_preview"; id: UtteranceId; ids: UtteranceId[]; text: string }
   | { type: "skipped"; id: UtteranceId; reason: SkipReason }
   | { type: "translation_failed"; id: UtteranceId; reason: FailReason; message: string }
   | { type: "dropped"; id: UtteranceId; reason: DropReason }

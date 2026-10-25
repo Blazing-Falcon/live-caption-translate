@@ -164,10 +164,11 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `translation_failed` | `failed`, with a short reason text |
 | `skipped` | `skipped` |
 | `dropped` | Remove the line if it is `live` |
+| `translation_preview` | No state change. The store keeps the newest preview; running text shows it once, in place of the English, dots or streaming text of every line it covers. `translation_final`, `translation_failed`, `skipped` or `dropped` of a covered line clears it. |
 
 Other rules:
 
-- Terminal lines fade together `overlay.expire_s` after the last speech or translation result, so a late translation still shows for that time. Unfinished lines do not expire.
+- Terminal lines fade together `overlay.expire_s` after the last speech or translation result, so a late translation still shows for that time. Unfinished lines do not expire. Running text never expires: older text leaves only when newer text needs its rows.
 - The store keeps a maximum of 24 terminal lines and 32 unfinished lines.
 - The bar shows the last 2 lines. The panel shows `panel_lines` lines (4–6).
 
