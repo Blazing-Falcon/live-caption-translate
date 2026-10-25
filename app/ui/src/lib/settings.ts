@@ -43,6 +43,7 @@ export interface Config extends ExtraFields {
     chunk_ms: 160 | 480 | 960;
     threads: number;
     pause_s: number;
+    decoding: "greedy" | "beam";
     second_pass: "off" | "xasr" | "qwen3";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
@@ -336,6 +337,7 @@ export const DEFAULT_CONFIG: Config = {
     "chunk_ms": 480,
     "threads": 1,
     "pause_s": 0.8,
+    "decoding": "greedy",
     "second_pass": "xasr",
     "second_pass_threads": 2,
     "second_pass_max_wait_s": 1.5,

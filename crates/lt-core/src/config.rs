@@ -67,6 +67,9 @@ config_table!(AsrConfig {
     chunk_ms: u32 = 480,
     threads: u32 = 1,
     pause_s: f32 = 0.8,
+    /// The live recognizer's search: "greedy" never changes a shown word; "beam" may revise the
+    /// last words of the live line.
+    decoding: String = "greedy".into(),
     second_pass: String = "xasr".into(),
     second_pass_threads: u32 = 2,
     second_pass_max_wait_s: f32 = 1.5,
@@ -426,6 +429,7 @@ impl Config {
         }
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
+        choice!(asr, decoding, &["greedy", "beam"]);
         choice!(asr, second_pass, &["off", "xasr", "qwen3"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);

@@ -46,6 +46,7 @@ norm_gate_dbfs = -60.0
 chunk_ms = 480                  # 160 | 480 | 960
 threads = 1                     # 1 to the logical CPUs of the PC
 pause_s = 0.8                   # silence that ends a line
+decoding = "greedy"             # "greedy" | "beam": the live recognizer's search
 second_pass = "xasr"            # "off" | "xasr" | "qwen3": read each closed line again offline
 second_pass_threads = 2         # 1 to the logical CPUs of the PC
 second_pass_max_wait_s = 1.5    # after this, the line keeps the live text
@@ -141,6 +142,7 @@ The default values are in the file above.
 | `chunk_ms` | `160`, `480`, `960` | pipeline | Streaming X-ASR model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
 | `threads` | 1–64 | pipeline | ONNX Runtime threads for the recognizer. The app uses at most the PC's logical CPUs. |
 | `pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
+| `decoding` | `greedy`, `beam` | pipeline | The live recognizer's search. `greedy` never changes a word once shown. `beam` (modified beam search, 4 paths) may revise the last words of the live line; on the four test sets it made 257 character errors against 261 and 0.0865 against 0.0962 on mixed Chinese and English, but wrote fewer sentence ends, which end lines (Python replay of the app's stream loop, sherpa-onnx 1.13.8, Ryzen 7 5700X, 2026-10-25). |
 | `second_pass` | `off`, `xasr`, `qwen3` | pipeline | When a line ends, a second recognizer reads its audio again. Its text replaces the live Chinese before translation if it matches the live text closely enough. `xasr`: the offline X-ASR model in the app, which also reads 5 s of speech before the line. `qwen3`: Qwen3-ASR 0.6B in a second llama-server (optional download). |
 | `second_pass_threads` | 1–64 | pipeline | Threads for the second-pass model. The app uses at most the PC's logical CPUs. Offline X-ASR per line, median: 406 ms on 1 thread, 197 on 2, 158 on 4 (40 conversation lines, Python, Ryzen 7 5700X, 2026-10-25). |
 | `second_pass_max_wait_s` | 0.5–5.0 | pipeline | A line that waits longer than this for the second pass keeps the live text |

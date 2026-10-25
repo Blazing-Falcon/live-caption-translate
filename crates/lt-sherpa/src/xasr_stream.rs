@@ -1,5 +1,6 @@
-//! Streaming X-ASR: sherpa's online zipformer transducer. It hears all audio continuously,
-//! keeps its state between pieces, and its emitted tokens never change.
+//! Streaming X-ASR: sherpa's online zipformer transducer. It hears all audio continuously and
+//! keeps its state between pieces. With greedy search its emitted tokens never change; beam
+//! search can revise the last ones.
 
 use crate::runtime::{cstring, engine_error, path_cstring, prepare};
 use lt_core::{
@@ -59,7 +60,11 @@ impl XAsrStream {
         let joiner = path_cstring(&joiner, "X-ASR streaming joiner path")?;
         let tokens = path_cstring(&tokens, "X-ASR streaming tokens path")?;
         let provider = cstring("cpu")?;
-        let decoding = cstring("greedy_search")?;
+        let decoding = cstring(if settings.decoding == "beam" {
+            "modified_beam_search"
+        } else {
+            "greedy_search"
+        })?;
         // SAFETY: this repr(C) config contains only raw pointers, integers and floats; the
         // all-zero representation is valid and selects no other model family.
         let mut config: sys::OnlineRecognizerConfig = unsafe { std::mem::zeroed() };
