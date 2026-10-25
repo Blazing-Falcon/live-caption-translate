@@ -337,10 +337,10 @@ impl Controller {
         if old.translate.glossary != new.translate.glossary {
             session.pipeline.set_glossary(&new.translate.glossary);
         }
-        if old.overlay.style != new.overlay.style {
+        if old.overlay.running_text() != new.overlay.running_text() {
             session
                 .pipeline
-                .set_running_text(new.overlay.style == "flow");
+                .set_running_text(new.overlay.running_text());
         }
         Ok(())
     }

@@ -44,7 +44,7 @@ struct Scheduler {
     metrics: Metrics,
     latest_stats: Arc<Mutex<PipelineStats>>,
     asr_failed: bool,
-    /// Set while the overlay shows running text.
+    /// Set while the overlay shows running text or the caption panel.
     running: Arc<AtomicBool>,
     running_text: RunningText,
     /// The lines the preview in flight covers.

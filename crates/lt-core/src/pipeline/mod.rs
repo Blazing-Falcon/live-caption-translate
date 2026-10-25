@@ -79,7 +79,7 @@ impl Pipeline {
             tracing::warn!(message, "Pipeline config adjusted");
         }
         let glossary = SharedGlossary::new(&config.translate.glossary);
-        let running = Arc::new(AtomicBool::new(config.overlay.style == "flow"));
+        let running = Arc::new(AtomicBool::new(config.overlay.running_text()));
         let cancelled = Arc::new(AtomicBool::new(false));
         let finished = Arc::new(AtomicBool::new(false));
         let clock = Arc::new(SessionClock::default());

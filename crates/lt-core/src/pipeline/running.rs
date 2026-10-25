@@ -1,6 +1,6 @@
-//! Running text: closed lines are translated together up to a sentence end, and the part not
-//! yet translated for good is translated again whenever the translator is free, so English
-//! follows the speech instead of waiting for each line to close.
+//! Running text, also used by the caption panel: closed lines are translated together up to a
+//! sentence end, and the part not yet translated for good is translated again whenever the
+//! translator is free, so English follows the speech instead of waiting for each line to close.
 
 use crate::{
     text::classify,

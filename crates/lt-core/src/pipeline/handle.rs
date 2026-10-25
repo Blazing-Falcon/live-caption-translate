@@ -72,8 +72,8 @@ impl PipelineHandle {
         self.glossary.replace(entries);
     }
 
-    /// Translate as running text (the overlay's `flow` style) or line by line, from the next
-    /// line on.
+    /// Translate as running text (the caption panel and running-text styles) or line by line,
+    /// from the next line on.
     pub fn set_running_text(&self, running: bool) {
         self.running.store(running, Ordering::Relaxed);
     }

@@ -351,12 +351,20 @@ impl Translator for SeededTranslator {
     }
 }
 
+/// The subtitle bar's settings: each line is translated once, alone. The caption panel (the
+/// default) and running text join a sentence's lines and add previews.
+fn line_by_line() -> Config {
+    let mut config = Config::default();
+    config.overlay.style = "bar".into();
+    config
+}
+
 fn start(
     source: VecSource,
     asr: impl StreamingAsr + 'static,
     translator: impl Translator + 'static,
 ) -> (PipelineHandle, EventReceiver) {
-    start_with(Config::default(), source, asr, None, translator)
+    start_with(line_by_line(), source, asr, None, translator)
 }
 
 fn start_with(
@@ -821,7 +829,7 @@ fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_
         ]),
         started,
     };
-    let mut config = Config::default();
+    let mut config = line_by_line();
     config.asr.second_pass_max_wait_s = 0.5;
     // This test is about what happens to a line the second pass does decode, so the confidence
     // gate is off: 0 decodes every line whatever the stream reports.
@@ -884,7 +892,7 @@ fn stop_joins_every_thread_while_the_second_pass_decodes() {
         started,
     };
     // The confidence gate is off: this test needs lines to reach the decoder.
-    let mut config = Config::default();
+    let mut config = line_by_line();
     config.asr.second_pass_min_logprob = 0.0;
     let (mut handle, events) = start_with(
         config,
@@ -922,7 +930,7 @@ fn the_second_pass_runs_only_on_lines_the_live_recognizer_was_unsure_of() {
         };
         let mut stream = FakeStream::new(vec!["他们来了。".into()], PAUSE_S);
         stream.logprob = logprob;
-        let mut config = Config::default();
+        let mut config = line_by_line();
         config.asr.second_pass_min_logprob = -0.5;
         let (mut handle, events) = start_with(
             config,
@@ -1038,11 +1046,12 @@ fn random_translation_timing_and_failures_keep_every_ordering_rule() {
                 0.5 + 0.1 * round as f32,
             ));
         }
-        // Even seeds show running text, which adds joins and previews.
-        let mut config = Config::default();
-        if seed % 2 == 0 {
-            config.overlay.style = "flow".into();
-        }
+        // Even seeds use the default caption panel, which adds joins and previews.
+        let config = if seed % 2 == 0 {
+            Config::default()
+        } else {
+            line_by_line()
+        };
         let (mut handle, events) = start_with(
             config,
             VecSource::new(samples),

@@ -170,6 +170,14 @@ impl AsrConfig {
     }
 }
 
+impl OverlayConfig {
+    /// The caption panel and running text translate a sentence's lines together and show the
+    /// words still being spoken as a preview; the subtitle bar translates each line once.
+    pub fn running_text(&self) -> bool {
+        matches!(self.style.as_str(), "panel" | "flow")
+    }
+}
+
 impl TranslateConfig {
     /// llama-server threads, at most the logical CPUs of this PC.
     pub fn server_threads(&self) -> u32 {
