@@ -175,7 +175,6 @@ fn request<'a>(text: &'a str, control: TranslationControl) -> TranslateRequest<'
     TranslateRequest {
         id: UtteranceId(1),
         text,
-        context: &[],
         max_tokens: None,
         control,
     }
@@ -200,8 +199,8 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
         sent_tx.send(sent).unwrap();
         stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream; charset=utf-8\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n").unwrap();
         chunk(&mut stream, b": heartbeat\r\n\r\ndata: {\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}]}\r\n\r\n");
-        let first = "data: {\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello胖\"}}]}\n\n";
-        let at = first.find('胖').unwrap() + 1;
+        let first = "data: {\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello→\"}}]}\n\n";
+        let at = first.find('→').unwrap() + 1;
         chunk(&mut stream, &first.as_bytes()[..at]);
         delay(&stop, Duration::from_millis(250));
         chunk(&mut stream, &first.as_bytes()[at..]);
@@ -231,8 +230,8 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
             "stop":LEAKED_MARKERS,
         })
     );
-    assert_eq!(deltas, ["Hello胖", "Hello胖 world."]);
-    assert_eq!(output.text, "Hello胖 world.");
+    assert_eq!(deltas, ["Hello→", "Hello→ world."]);
+    assert_eq!(output.text, "Hello→ world.");
     assert_eq!(
         (
             output.prompt_tokens,
@@ -241,65 +240,6 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
         ),
         (17, 31, 9)
     );
-    server.finish();
-}
-
-fn respond(stream: &mut TcpStream, pieces: &[&str]) {
-    stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n").unwrap();
-    for piece in pieces {
-        let event = json!({"choices":[{"index":0,"delta":{"content":piece}}]});
-        chunk(stream, format!("data: {event}\n\n").as_bytes());
-    }
-    chunk(stream, b"data: [DONE]\n\n");
-    let _ = stream.write_all(b"0\r\n\r\n");
-}
-
-/// Earlier lines go as chat turns. An empty answer must not lose the line, and an answer that
-/// copies an earlier line's English must not show as this line's.
-#[test]
-fn earlier_lines_go_as_chat_turns_and_an_empty_or_copied_answer_falls_back() {
-    let (sent_tx, sent_rx) = mpsc::channel();
-    let mut replies = vec![
-        vec!["Then", " we'll eat."],
-        vec![" "],
-        vec!["Then we'll eat."],
-        vec!["We're going", " to the park,"],
-        vec!["Then we'll eat."],
-    ]
-    .into_iter();
-    let server = MockServer::serve(5, move |mut stream, _| {
-        sent_tx.send(read_request(&mut stream).1).unwrap();
-        respond(&mut stream, &replies.next().unwrap());
-    });
-    let mut translator = OpenAiCompatTranslator::new(&server.url).unwrap();
-    let earlier = [(
-        "我们去公园，".to_owned(),
-        "We're going to the park,".to_owned(),
-    )];
-    let turns = json!({
-        "messages":[
-            {"role":"user","content":HyMt2Prompts::user_message("我们去公园，")},
-            {"role":"assistant","content":"We're going to the park,"},
-            {"role":"user","content":"然后吃饭。"},
-        ],
-        "stream":true,"temperature":0.0,"top_k":1,"top_p":1.0,"min_p":0.0,"repeat_penalty":1.05,
-        "max_tokens":24,"cache_prompt":true,
-        "stream_options":{"include_usage":true},
-        "stop":LEAKED_MARKERS,
-    });
-    let alone = json!([{"role":"user","content":HyMt2Prompts::user_message("然后吃饭。")}]);
-    for retried in [false, true, true] {
-        let request = TranslateRequest {
-            context: &earlier,
-            ..request("然后吃饭。", control(WATCHDOG))
-        };
-        let output = translator.translate(&request, &mut |_| {}).unwrap();
-        assert_eq!(output.text, "Then we'll eat.");
-        assert_eq!(sent_rx.recv_timeout(WATCHDOG).unwrap(), turns);
-        if retried {
-            assert_eq!(sent_rx.recv_timeout(WATCHDOG).unwrap()["messages"], alone);
-        }
-    }
     server.finish();
 }
 

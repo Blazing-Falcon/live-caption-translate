@@ -220,11 +220,11 @@ impl StreamingAsr for AmplitudeStream {
     }
 }
 
-/// Each request's text and the number of earlier lines sent with it.
-type RequestLog = Arc<Mutex<Vec<(String, usize)>>>;
+/// Each request's text.
+type RequestLog = Arc<Mutex<Vec<String>>>;
 
-/// Records its requests and accepts earlier lines as context. With a gate, its first request
-/// blocks until the gate opens or the pipeline cancels it.
+/// Records its requests. With a gate, its first request blocks until the gate opens or the
+/// pipeline cancels it.
 struct RecordingTranslator {
     requests: RequestLog,
     gate: Option<(Sender<()>, Receiver<()>)>,
@@ -256,7 +256,6 @@ impl RecordingTranslator {
 impl Translator for RecordingTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            context: true,
             max_input_chars: 300,
         }
     }
@@ -268,10 +267,7 @@ impl Translator for RecordingTranslator {
         request: &TranslateRequest<'_>,
         on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut> {
-        self.requests
-            .lock()
-            .unwrap()
-            .push((request.text.into(), request.context.len()));
+        self.requests.lock().unwrap().push(request.text.into());
         if let Some((entered, gate)) = self.gate.take() {
             entered.send(()).unwrap();
             loop {
@@ -315,7 +311,6 @@ impl SeededTranslator {
 impl Translator for SeededTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            context: false,
             max_input_chars: 300,
         }
     }
@@ -620,12 +615,7 @@ fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken()
     finish(&mut handle);
     let events: Vec<_> = events.try_iter().collect();
     assert_order(&events);
-    let requests: Vec<String> = requests
-        .lock()
-        .unwrap()
-        .iter()
-        .map(|(text, _)| text.clone())
-        .collect();
+    let requests: Vec<String> = requests.lock().unwrap().clone();
     let sentence = "今天天气很好我们一起去公园玩，然后回家吃饭再看电影。";
     assert!(requests.iter().any(|text| text == sentence), "{requests:?}");
     assert!(
@@ -684,12 +674,7 @@ fn chinese_is_translated_english_is_shown_as_heard_and_fillers_are_dropped() {
         )),
         "English speech got a translation"
     );
-    let texts: Vec<String> = requests
-        .lock()
-        .unwrap()
-        .iter()
-        .map(|(text, _)| text.clone())
-        .collect();
+    let texts: Vec<String> = requests.lock().unwrap().clone();
     assert!(
         texts.iter().any(|text| text.contains("你好")),
         "the Chinese line was not translated: {texts:?}"
@@ -729,12 +714,7 @@ fn lines_waiting_past_the_skip_lag_are_skipped_and_the_newest_is_translated() {
     finish(&mut handle);
     recorded.extend(events.try_iter());
     assert_order(&recorded);
-    let texts: Vec<_> = requests
-        .lock()
-        .unwrap()
-        .iter()
-        .map(|(text, _)| text.clone())
-        .collect();
+    let texts: Vec<_> = requests.lock().unwrap().clone();
     assert!(texts.contains(&phrases[13]), "{texts:?}");
     assert_eq!(
         count(&recorded, |event| matches!(
@@ -752,9 +732,9 @@ fn lines_waiting_past_the_skip_lag_are_skipped_and_the_newest_is_translated() {
 }
 
 /// Pausing ends the open line, which is still translated. After a source change and resume, ids
-/// keep counting up and the translation window starts over: the next line goes alone.
+/// keep counting up and the next line is translated on its own.
 #[test]
-fn pause_ends_the_open_line_and_resume_starts_a_new_window() {
+fn pause_ends_the_open_line_and_resume_keeps_ids_counting() {
     let (translator, requests) = RecordingTranslator::new();
     // Speech without the silence after it: only the pause can end this line.
     let mut device = VecSource::new(tones(1)[..8 * 512].to_vec());
@@ -798,7 +778,7 @@ fn pause_ends_the_open_line_and_resume_starts_a_new_window() {
     )));
     assert_eq!(
         *requests.lock().unwrap(),
-        [("你好。".to_owned(), 0), ("再见。".to_owned(), 0)]
+        ["你好。".to_owned(), "再见。".to_owned()]
     );
 }
 
@@ -954,7 +934,6 @@ struct PanickingTranslator;
 impl Translator for PanickingTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            context: false,
             max_input_chars: 300,
         }
     }

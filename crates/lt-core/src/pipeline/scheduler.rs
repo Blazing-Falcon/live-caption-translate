@@ -2,7 +2,6 @@ use super::{running::RunningText, send_cooperative, FrontendNotice, CONTROL_CAPA
 use crate::{
     bus::EventBus,
     clock::Clock,
-    config::Config,
     engines::Translator,
     error::Result,
     events::{DropReason, EngineKind, EngineState, FailReason, PipelineEvent},
@@ -24,7 +23,6 @@ use std::{
 };
 
 struct Scheduler {
-    config: Config,
     queue: TranslationQueue,
     ready: VecDeque<Transcript>,
     bus: EventBus,
@@ -216,7 +214,6 @@ impl Scheduler {
         let (transcript, ids) = self.running_text.preview(Instant::now())?;
         self.previewing = Some(ids.clone());
         Some(QueuedTranscript {
-            window: self.queue.preview_window(transcript.text.chars().count()),
             transcript,
             queued_ms,
             preview: Some(ids),
@@ -245,7 +242,6 @@ impl ResourceSampler for CachedSampler {
 
 #[allow(clippy::too_many_arguments)]
 pub(super) fn scheduler_loop(
-    config: Config,
     translator: Box<dyn Translator>,
     front: Receiver<FrontendNotice>,
     asr: Receiver<AsrMessage>,
@@ -265,8 +261,7 @@ pub(super) fn scheduler_loop(
         }) as Box<dyn ResourceSampler>
     }));
     let mut scheduler = Scheduler {
-        queue: TranslationQueue::new(config.translate.clone()),
-        config: config.clone(),
+        queue: TranslationQueue::new(),
         ready: VecDeque::new(),
         bus: bus.clone(),
         observed: BTreeSet::new(),
@@ -487,7 +482,7 @@ pub(super) fn scheduler_loop(
         });
     }
     scheduler.ready.clear();
-    scheduler.queue = TranslationQueue::new(scheduler.config.translate.clone());
+    scheduler.queue = TranslationQueue::new();
     scheduler.in_flight = false;
     scheduler.refresh_stats(clock.now());
     stopped

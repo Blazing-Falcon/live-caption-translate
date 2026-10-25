@@ -135,7 +135,6 @@ impl Pipeline {
         let scheduler_cancel = cancelled.clone();
         let scheduler_clock = clock.clone();
         let scheduler_bus = bus.clone();
-        let scheduler_config = config.clone();
         let scheduler_listening = listening.clone();
         let scheduler_latest = latest_stats.clone();
         let scheduler_thread =
@@ -144,7 +143,6 @@ impl Pipeline {
                 .spawn(move || {
                     let _finished = Finished(finished);
                     scheduler::scheduler_loop(
-                        scheduler_config,
                         translator,
                         front_rx,
                         asr_rx,

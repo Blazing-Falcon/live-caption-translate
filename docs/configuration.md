@@ -45,7 +45,6 @@ second_pass_threads = 2         # 1 to the logical CPUs of the PC
 [translate]
 server_url = ""                 # "" = spawn the bundled llama-server; otherwise use this [OI]-compatible base URL
 threads = 4                     # 1 to the logical CPUs of the PC
-window_chars = 60               # 0 = translate each line alone
 
 [overlay]
 visible = true
@@ -118,7 +117,6 @@ The second pass always runs: each closed line is decoded again by the offline X-
 |---|---|---|---|
 | `server_url` | URL | pipeline | Empty: start and supervise the bundled llama-server. Set: use this [OI]-compatible server. |
 | `threads` | 1–64 | pipeline | llama-server threads. The app uses at most the PC's logical CPUs. |
-| `window_chars` | 0–60 | pipeline | Translate each line together with the earlier lines that fit in this many characters, whole lines only. `0`: translate each line alone. |
 
 ### overlay
 

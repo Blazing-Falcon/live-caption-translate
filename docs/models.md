@@ -71,7 +71,7 @@ ASCEND clips (20), whole clips, 2026-10-25, `cargo test -p lt-sherpa --release -
 
 Measured on the 26 lines of a drama clip, each line alone, 2 threads, `--load-mode none`, 2026-10-15, Ryzen 7 5700X. Both translated all lines correctly; each was better on a few.
 
-The 1.25-bit model and earlier lines, on 81 lines of a drama session, 30 characters of earlier lines, 2026-10-15, same PC:
+The 1.25-bit model and earlier lines, on 81 lines of a drama session, 30 characters of earlier lines, 2026-10-15, same PC (earlier lines as prompt context were removed on 2026-10-26):
 
 | Earlier lines given as | Per line | Memory | Result |
 |---|---|---|---|
@@ -79,7 +79,7 @@ The 1.25-bit model and earlier lines, on 81 lines of a drama session, 30 charact
 | joined with `<br>`, English prefilled (the form Q4_0 used) | | | other scripts and runaway answers on some lines |
 | Hy-MT2's "Background Information" prompt | 811 ms | 1016 MB | the prompt echoed or the background translated on 10 lines |
 | chat turns, the instruction in every turn | 1391 ms | 1255 MB | no failures |
-| chat turns, the instruction in the first turn only (used) | 852 ms | 1047 MB | no failures; "I really like it" (a comic) instead of "him", "you" instead of "myself" |
+| chat turns, the instruction in the first turn only | 852 ms | 1047 MB | no failures; "I really like it" (a comic) instead of "him", "you" instead of "myself" |
 
 **llama-server:** the supervisor starts the server with:
 

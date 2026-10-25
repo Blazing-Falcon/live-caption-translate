@@ -183,36 +183,9 @@ impl OpenAiCompatTranslator {
                 "Translation input exceeds the 300 character limit",
             ));
         }
-        if request.context.is_empty() {
-            let mut output = self.stream(alone(request.text), request, on_delta)?;
-            finish(&mut output);
-            return Ok(output);
-        }
-        let messages = HyMt2Prompts::turns(request.context, request.text)
-            .into_iter()
-            .map(|(role, content)| json!({"role": role, "content": content}))
-            .collect();
-        let mut turns = self.stream(messages, request, on_delta)?;
-        finish(&mut turns);
-        let problem = answer_problem(&turns, request);
-        if problem.is_none() {
-            return Ok(turns);
-        }
-        tracing::debug!(
-            id = request.id.0,
-            problem = problem.unwrap_or_default(),
-            "Translating the line alone"
-        );
-        let mut alone = self.stream(alone(request.text), request, on_delta)?;
-        alone.prompt_tokens += turns.prompt_tokens;
-        alone.cached_tokens += turns.cached_tokens;
-        alone.generated_tokens += turns.generated_tokens;
-        finish(&mut alone);
-        // A second failure keeps the answer that is not wrong in the same way.
-        if answer_problem(&alone, request).is_some() && answer_problem(&turns, request).is_none() {
-            return Ok(turns);
-        }
-        Ok(alone)
+        let mut output = self.stream(alone(request.text), request, on_delta)?;
+        finish(&mut output);
+        Ok(output)
     }
 
     /// One streamed request.
@@ -320,7 +293,6 @@ impl OpenAiCompatTranslator {
 impl Translator for OpenAiCompatTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            context: true,
             max_input_chars: 300,
         }
     }
@@ -329,7 +301,6 @@ impl Translator for OpenAiCompatTranslator {
         let request = TranslateRequest {
             id: UtteranceId(0),
             text: "你好。",
-            context: &[],
             max_tokens: None,
             control: control.clone(),
         };
@@ -344,12 +315,16 @@ impl Translator for OpenAiCompatTranslator {
     ) -> Result<TranslationOut> {
         let span = tracing::debug_span!("translation_http", id = request.id.0);
         let _entered = span.enter();
-        self.translate_inner(request, on_delta)
+        let output = self.translate_inner(request, on_delta)?;
+        if let Some(problem) = answer_problem(&output, request) {
+            tracing::debug!(id = request.id.0, problem, "Unusable translation answer");
+            return Err(translation_error("Could not translate this line"));
+        }
+        Ok(output)
     }
 }
 
-/// The supervisor can reuse cancellation-aware local HTTP for readiness polls.
-/// One line without earlier lines.
+/// One line, as the only user turn.
 fn alone(text: &str) -> Vec<serde_json::Value> {
     vec![json!({"role": "user", "content": HyMt2Prompts::user_message(text)})]
 }
@@ -364,13 +339,6 @@ fn finish(output: &mut TranslationOut) {
 fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Option<&'static str> {
     if output.text.is_empty() {
         return Some("empty");
-    }
-    if request
-        .context
-        .iter()
-        .any(|(_, english)| english.trim() == output.text)
-    {
-        return Some("copied an earlier line");
     }
     if output.truncated {
         return Some("truncated");
@@ -856,7 +824,6 @@ mod residue_tests {
         let request = TranslateRequest {
             id: UtteranceId(1),
             text: "这个翻译是错的。",
-            context: &[],
             max_tokens: None,
             control: TranslationControl {
                 deadline: Instant::now() + Duration::from_secs(1),

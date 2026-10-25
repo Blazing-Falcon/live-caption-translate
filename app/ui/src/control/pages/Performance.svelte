@@ -11,11 +11,9 @@
   } from "../../lib/format";
   import {
     asrPatch,
-    WINDOW_LIMITS,
     performancePatch,
     threadsPatch,
     transcriptPatch,
-    windowCharsPatch,
     type Config,
   } from "../../lib/settings";
 
@@ -44,20 +42,6 @@
     const select = event.currentTarget as HTMLSelectElement;
     const saved = await session.save("asr.second_pass_threads", asrPatch({ second_pass_threads: Number(select.value) }));
     if (!saved) select.value = String(config.asr.second_pass_threads);
-  }
-
-  async function chooseWindow(event: Event): Promise<void> {
-    const input = event.currentTarget as HTMLInputElement;
-    const saved = get(liveConfig)?.translate.window_chars ?? config.translate.window_chars;
-    // An empty or unreadable field reads as "" here; it must not save 0 and turn the window off.
-    if (input.value.trim() === "" || !Number.isFinite(Number(input.value))) {
-      input.value = String(saved);
-      return;
-    }
-    const patch = windowCharsPatch(Number(input.value));
-    await session.save("translate.window_chars", patch);
-    // Show what was saved: a clamped value, or the old one after a failed save.
-    input.value = String(get(liveConfig)?.translate.window_chars ?? config.translate.window_chars);
   }
 
   async function toggleTranscript(event: Event): Promise<void> {
@@ -128,25 +112,6 @@
       </select>
     </label>
     <div class="option">
-      <label class="field">
-        <span>Translate with earlier lines (characters)</span>
-        <input
-          class="input window"
-          type="number"
-          min={WINDOW_LIMITS.min}
-          max={WINDOW_LIMITS.max}
-          step="1"
-          value={config.translate.window_chars}
-          aria-describedby="help-window"
-          data-testid="translate-window"
-          onchange={chooseWindow}
-        />
-      </label>
-      <p id="help-window" class="help small">
-        Each line is translated together with the earlier lines that fit in this many characters, so the translator knows what came before. Only the new line's English is shown. 0 translates each line alone; more characters make the English appear a little later.
-      </p>
-    </div>
-    <div class="option">
       <label class="check-row">
         <input
           type="checkbox"
@@ -207,10 +172,6 @@
 
   .option .check-row + .help {
     padding-left: 26px;
-  }
-
-  .window {
-    width: 96px;
   }
 
   .model-name {

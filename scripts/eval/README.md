@@ -9,7 +9,7 @@ Scores a replay against the metrics this project cares about, per domain, never 
 ./scripts/eval/run.ps1 -Id base -Domain drama
 
 # One domain with a config override, quality only (no timing).
-./scripts/eval/run.ps1 -Id t1-nocontext -Domain drama -Config .agent/experiments/configs/window-0.toml -Fast
+./scripts/eval/run.ps1 -Id t1-pause06 -Domain drama -Config .agent/experiments/configs/pause-06.toml -Fast
 
 # Conversation, the first 5 minutes.
 ./scripts/eval/run.ps1 -Id ramc -Domain ramc -Seconds 300

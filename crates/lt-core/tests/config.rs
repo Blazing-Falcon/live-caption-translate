@@ -185,7 +185,7 @@ fn every_bounded_number_clamps_to_the_limits_table() {
     let (config, messages) = Config::from_json(json!({
         "config_version":100,
         "asr":{"threads":-10,"pause_s":99},
-        "translate":{"threads":99,"window_chars":99},
+        "translate":{"threads":99},
         "overlay":{"font_px":0,"background":99,"panel_lines":0,"flow_lines":11},
         "transcript":{"retention_days":-1},"logging":{"keep_files":-1}
     }))
@@ -194,14 +194,13 @@ fn every_bounded_number_clamps_to_the_limits_table() {
     assert_eq!(config.asr.threads, 1);
     assert_eq!(config.asr.pause_s, 3.0);
     assert_eq!(config.translate.threads, 64);
-    assert_eq!(config.translate.window_chars, 60);
     assert_eq!(config.overlay.font_px, 12);
     assert_eq!(config.overlay.background, 1.0);
     assert_eq!(config.overlay.panel_lines, 1);
     assert_eq!(config.overlay.flow_lines, 10);
     assert_eq!(config.transcript.retention_days, 0);
     assert_eq!(config.logging.keep_files, 0);
-    assert_eq!(warnings(&messages).len(), 10, "{messages:?}");
+    assert_eq!(warnings(&messages).len(), 9, "{messages:?}");
 }
 
 #[test]
@@ -248,7 +247,6 @@ skip_music = true
 fillers = ["呃"]
 [translate]
 threads = 3
-window_chars = 20
 temperature = 0.5
 [overlay]
 style = "flow"
@@ -266,7 +264,6 @@ level = "debug"
     assert_eq!(config.asr.pause_s, 1.2);
     assert_eq!(config.asr.second_pass_threads, 3);
     assert_eq!(config.translate.threads, 3);
-    assert_eq!(config.translate.window_chars, 20);
     assert_eq!(config.overlay.style, OverlayStyle::Flow);
     assert_eq!(config.overlay.font_px, 30);
     assert_eq!(config.logging.level, LogLevel::Debug);

@@ -132,15 +132,13 @@ mod tests {
     fn only_server_settings_restart_the_translator_process() {
         let old = Config::default();
         let mut new = old.clone();
-        new.translate.window_chars = 20;
-        assert!(!server_changed(&old, &new));
         new.translate.threads = 3;
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
         new.performance.low_priority = false;
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
-        new.translate.window_chars = 40;
+        new.asr.pause_s = 0.6;
         assert!(!server_changed(&old, &new));
     }
 }

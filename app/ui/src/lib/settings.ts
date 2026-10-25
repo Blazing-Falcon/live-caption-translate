@@ -31,7 +31,6 @@ export interface Config {
   translate: {
     server_url: string;
     threads: number;
-    window_chars: number;
   };
   overlay: {
     visible: boolean;
@@ -206,14 +205,6 @@ export function threadsPatch(table: "asr" | "translate", threads: number): Confi
   return { [table]: { threads: clamp(Math.round(threads), 1, MAX_THREADS) } };
 }
 
-/** Characters of earlier lines translated together with each new line; 0 turns it off. */
-export const WINDOW_LIMITS = { min: 0, max: 60 } as const;
-
-export function windowCharsPatch(chars: number): ConfigPatch {
-  const value = Number.isFinite(chars) ? Math.round(chars) : 0;
-  return { translate: { window_chars: clamp(value, WINDOW_LIMITS.min, WINDOW_LIMITS.max) } };
-}
-
 export function transcriptPatch(enabled: boolean): ConfigPatch {
   return { transcript: { enabled } };
 }
@@ -254,8 +245,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   "translate": {
     "server_url": "",
-    "threads": 4,
-    "window_chars": 60
+    "threads": 4
   },
   "overlay": {
     "visible": true,

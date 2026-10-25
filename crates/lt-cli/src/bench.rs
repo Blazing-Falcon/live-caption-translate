@@ -100,7 +100,6 @@ fn mt(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()>
             &TranslateRequest {
                 id: UtteranceId(id as u64),
                 text,
-                context: &[],
                 max_tokens: None,
                 control: control(),
             },

@@ -156,7 +156,6 @@ impl Drop for ActiveGuard {
 impl Translator for FakeTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
-            context: false,
             max_input_chars: 300,
         }
     }

@@ -82,8 +82,6 @@ pub trait OfflineAsr: Send {
 
 #[derive(Clone, Debug)]
 pub struct TranslatorCaps {
-    /// Accepts earlier lines in `TranslateRequest::context`.
-    pub context: bool,
     pub max_input_chars: usize,
 }
 
@@ -121,9 +119,6 @@ pub struct TranslateRequest<'a> {
     pub id: UtteranceId,
     /// Chinese or mixed source text; the output is English.
     pub text: &'a str,
-    /// Earlier lines as (source, English shown), oldest first. Engines
-    /// without `caps().context` get none.
-    pub context: &'a [(String, String)],
     /// Overrides the engine's default output budget.
     pub max_tokens: Option<u32>,
     pub control: TranslationControl,

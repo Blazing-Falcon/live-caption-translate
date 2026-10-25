@@ -703,7 +703,6 @@ mod tests {
         let request = TranslateRequest {
             id: UtteranceId(1),
             text: "你好。",
-            context: &[],
             max_tokens: None,
             control: control(&Arc::new(AtomicBool::new(false)), WATCHDOG),
         };

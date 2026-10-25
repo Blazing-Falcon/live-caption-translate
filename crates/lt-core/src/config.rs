@@ -198,7 +198,6 @@ impl Default for AsrConfig {
 pub struct TranslateConfig {
     pub server_url: String,
     pub threads: u32,
-    pub window_chars: u32,
 }
 
 impl Default for TranslateConfig {
@@ -206,7 +205,6 @@ impl Default for TranslateConfig {
         Self {
             server_url: String::new(),
             threads: 4,
-            window_chars: 60,
         }
     }
 }
@@ -410,7 +408,6 @@ limits! {
     asr.pause_s => 0.3, 3.0;
     asr.second_pass_threads => 1, MAX_THREADS;
     translate.threads => 1, MAX_THREADS;
-    translate.window_chars => 0, 60;
     overlay.font_px => 12, 40;
     overlay.background => 0.0, 1.0;
     overlay.panel_lines => 1, 10;

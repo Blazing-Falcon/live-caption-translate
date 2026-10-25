@@ -3,7 +3,6 @@
 use crate::{
     bus::EventBus,
     clock::Clock,
-    config::TranslateConfig,
     engines::{TranslateRequest, TranslationControl, Translator},
     error::{Error, Result},
     events::{EngineKind, EngineState, FailReason, PipelineEvent, SkipReason, Timing},
@@ -21,25 +20,20 @@ use std::{
     time::{Duration, Instant},
 };
 
-/// After a silence this long the talk has likely moved on, and earlier lines
-/// would steer the translation the wrong way.
-const WINDOW_GAP_S: f64 = 10.0;
+/// After a silence this long the talk has likely moved on, so waiting lines are not joined
+/// across it.
+const JOIN_GAP_S: f64 = 10.0;
 /// Older waiting lines are skipped once the live audio is this far ahead.
 pub const SKIP_LAG_S: f64 = 6.0;
 /// The most text one request joins from the waiting lines.
 const JOIN_MAX_CHARS: usize = 120;
-/// Recent English kept for windows; a window holds at most `window_chars` (60) lines.
-const SHOWN_CAPACITY: usize = 64;
 
 #[derive(Clone, Debug)]
 pub struct QueuedTranscript {
     pub transcript: Transcript,
     pub queued_ms: u64,
-    /// Earlier lines (id, source) to translate with this one, oldest first.
-    /// The translator thread adds the English it gave them.
-    pub window: Vec<(UtteranceId, String)>,
-    /// Running text: the lines this preview covers. A preview streams no deltas, never becomes
-    /// context, and ends in `TranslationPreview` or nothing.
+    /// Running text: the lines this preview covers. A preview streams no deltas and ends in
+    /// `TranslationPreview` or nothing.
     pub preview: Option<Vec<UtteranceId>>,
 }
 
@@ -50,12 +44,10 @@ pub struct QueueBatch {
     pub skipped: u32,
 }
 
+#[derive(Default)]
 pub struct TranslationQueue {
-    config: TranslateConfig,
-    /// Each waiting line, and whether it starts a new context (see `new_context`).
+    /// Each waiting line, and whether it starts a new join group (see `new_group`).
     waiting: VecDeque<(QueuedTranscript, bool)>,
-    /// Queued lines with their end times, newest last.
-    earlier: VecDeque<(StreamTime, UtteranceId, String)>,
     /// Breaks after the end of the newest queued line, oldest first.
     breaks: VecDeque<StreamTime>,
     /// End of the newest queued line.
@@ -64,42 +56,34 @@ pub struct TranslationQueue {
 
 impl TranslationQueue {
     pub const CAPACITY: usize = 256;
-    pub fn new(config: TranslateConfig) -> Self {
-        Self {
-            config,
-            waiting: VecDeque::new(),
-            earlier: VecDeque::new(),
-            breaks: VecDeque::new(),
-            last_end: None,
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
     pub fn push(&mut self, transcript: Transcript, queued_ms: u64) -> Result<()> {
         if self.waiting.len() == Self::CAPACITY {
             return Err(Error::Engine("Translation queue is full".into()));
         }
-        let new_context = self.new_context(&transcript);
-        let window = self.window(&transcript, new_context);
+        let new_group = self.new_group(&transcript);
         self.waiting.push_back((
             QueuedTranscript {
                 transcript,
                 queued_ms,
-                window,
                 preview: None,
             },
-            new_context,
+            new_group,
         ));
         Ok(())
     }
 
-    /// Lines before a discontinuity are not context for lines after it. Lines
-    /// reach the queue after their notice, so the break is kept by time.
+    /// Lines before a discontinuity are not joined with lines after it. Lines reach the queue
+    /// after their notice, so the break is kept by time.
     pub fn discontinuity(&mut self, at: StreamTime) {
         self.breaks.push_back(at);
     }
 
-    /// A break or a long gap comes before this line, so earlier lines are another context: they
-    /// are neither its window nor joined with it.
-    fn new_context(&mut self, transcript: &Transcript) -> bool {
+    /// A break or a long gap comes before this line, so it must not be joined with the line
+    /// before it.
+    fn new_group(&mut self, transcript: &Transcript) -> bool {
         let start = transcript.timing.start;
         // Every kept break is at or after the previous line's end.
         let after_break = self.breaks.front().is_some_and(|at| *at <= start);
@@ -112,59 +96,9 @@ impl TranslationQueue {
         }
         let after_gap = self
             .last_end
-            .is_some_and(|end| start.saturating_sub(end).seconds() > WINDOW_GAP_S);
+            .is_some_and(|end| start.saturating_sub(end).seconds() > JOIN_GAP_S);
         self.last_end = Some(transcript.timing.end);
         after_break || after_gap
-    }
-
-    /// The earlier lines to translate with this one. The window is append-only between resets:
-    /// every line since the last reset stays, and a line that would overflow `window_chars`
-    /// starts a new window instead of pushing the oldest out. llama-server reuses the KV of the
-    /// prompt prefix it saw last, so a window that only grows keeps that cache; a window that
-    /// slides changes the prefix on every line and misses on every line.
-    fn window(&mut self, transcript: &Transcript, new_context: bool) -> Vec<(UtteranceId, String)> {
-        let limit = self.config.window_chars as usize;
-        if limit == 0 {
-            return Vec::new();
-        }
-        if new_context {
-            self.earlier.clear();
-        }
-        let used: usize = self
-            .earlier
-            .iter()
-            .map(|(_, _, line)| line.chars().count())
-            .sum();
-        if used.saturating_add(transcript.text.chars().count()) > limit {
-            self.earlier.clear();
-        }
-        let window = self
-            .earlier
-            .iter()
-            .map(|(_, id, line)| (*id, line.clone()))
-            .collect();
-        self.earlier.push_back((
-            transcript.timing.end,
-            transcript.id,
-            transcript.text.clone(),
-        ));
-        window
-    }
-    /// The window for a preview of `chars` characters: the lines the next final would get,
-    /// without adding the preview to them.
-    pub fn preview_window(&self, chars: usize) -> Vec<(UtteranceId, String)> {
-        let used: usize = self
-            .earlier
-            .iter()
-            .map(|(_, _, line)| line.chars().count())
-            .sum();
-        if used.saturating_add(chars) > self.config.window_chars as usize {
-            return Vec::new();
-        }
-        self.earlier
-            .iter()
-            .map(|(_, id, line)| (*id, line.clone()))
-            .collect()
     }
 
     pub fn len(&self) -> usize {
@@ -194,8 +128,8 @@ impl TranslationQueue {
             return batch;
         };
         let mut absorbed = Vec::new();
-        while let Some((next, new_context)) = self.waiting.front() {
-            if *new_context {
+        while let Some((next, new_group)) = self.waiting.front() {
+            if *new_group {
                 break;
             }
             let joined = join_text(&item.transcript.text, &next.transcript.text);
@@ -329,37 +263,13 @@ fn stop_runaway_streaming(text: &str) -> Option<String> {
     stop_runaway(&text[..boundary])
 }
 
-/// The window's lines with the English shown for them. A line without English
-/// (skipped, failed or joined into another) ends the window there.
-fn window_context(
-    window: &[(UtteranceId, String)],
-    shown: &VecDeque<(UtteranceId, String)>,
-) -> Vec<(String, String)> {
-    let mut context = Vec::new();
-    for (id, source) in window.iter().rev() {
-        let Some((_, english)) = shown.iter().rev().find(|(shown_id, _)| shown_id == id) else {
-            break;
-        };
-        context.push((source.clone(), english.clone()));
-    }
-    context.reverse();
-    context
-}
-
-/// What a request needs beyond the line itself: the earlier lines it may use.
-pub struct Translation<'a> {
-    pub context: &'a [(String, String)],
-}
-
 pub fn translate_one(
     translator: &mut dyn Translator,
     item: &QueuedTranscript,
-    translation: &Translation<'_>,
     clock: &dyn Clock,
     bus: &EventBus,
     cancelled: Arc<AtomicBool>,
 ) -> PipelineEvent {
-    let Translation { context } = *translation;
     let source = &item.transcript;
     let span = tracing::info_span!("translation", id = source.id.0);
     let _utterance = span.enter();
@@ -373,11 +283,6 @@ pub fn translate_one(
     let request = TranslateRequest {
         id: source.id,
         text,
-        context: if translator.caps().context {
-            context
-        } else {
-            &[]
-        },
         max_tokens: None,
         control: control.clone(),
     };
@@ -550,34 +455,22 @@ impl TranslatorWorker {
                     },
                     message: warmup.err().map(|error| error.to_string()),
                 });
-                let mut shown: VecDeque<(UtteranceId, String)> = VecDeque::new();
                 while !worker_cancelled.load(Ordering::Relaxed) {
                     let item = match work.recv_timeout(Duration::from_millis(20)) {
                         Ok(item) => item,
                         Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
                         Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
                     };
-                    let context = window_context(&item.window, &shown);
-                    let translation = Translation { context: &context };
                     let event = translate_one(
                         translator.as_mut(),
                         &item,
-                        &translation,
                         clock.as_ref(),
                         &bus,
                         worker_cancelled.clone(),
                     );
                     let event = match item.preview {
                         Some(ids) => preview_event(event, ids),
-                        None => {
-                            if let PipelineEvent::TranslationFinal { id, text, .. } = &event {
-                                if shown.len() == SHOWN_CAPACITY {
-                                    shown.pop_front();
-                                }
-                                shown.push_back((*id, text.clone()));
-                            }
-                            Some(event)
-                        }
+                        None => Some(event),
                     };
                     // Cooperative channel send: shutdown must not wait for scheduler.
                     let mut pending = event;
