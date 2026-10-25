@@ -190,6 +190,10 @@ pub enum CaptureMode {
     Apps,
 }
 
+impl CaptureMode {
+    pub const NAMES: &'static [&'static str] = &["system", "apps"];
+}
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct SourceInfo {
     pub mode: CaptureMode,

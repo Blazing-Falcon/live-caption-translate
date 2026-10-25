@@ -277,10 +277,7 @@ fn run_manager(
     output.cancelled = cancelled.clone();
     let mut mixer = ClockMixer::new(epoch.stream_time);
     let mut normalizer = LevelNormalizer::new(audio.clone());
-    let root_audio = AudioConfig {
-        normalize: false,
-        ..audio
-    };
+    let root_audio = AudioConfig { normalize: false };
     let mut roots = BTreeMap::<u32, RootStream>::new();
     let mut next_refresh = Instant::now();
     let mut last_state = None;

@@ -1,20 +1,24 @@
 //! Cleanup, script routing and conservative false-trigger filtering.
 
-use crate::config::FilterConfig;
 use crate::events::DropReason;
 use crate::types::{TextClass, Transcript};
+
+/// Words removed when they stand alone.
+pub const FILLERS: &[&str] = &["呃", "嗯", "额", "uh", "um"];
+/// A one-character result from a clause shorter than this is noise, unless it is allowed.
+const SINGLE_CHAR_MAX_S: f32 = 0.6;
+const SINGLE_CHAR_ALLOW: &[&str] = &["对", "好", "是", "行", "不", "哦"];
 
 /// Remove engine markup and standalone fillers while preserving spoken words.
 ///
 /// A Chinese filler is standalone only when neither neighbor is a Chinese
 /// character. English fillers use word boundaries and ignore ASCII case.
 /// Repeated characters within speech remain untouched.
-pub fn clean(text: &str, fillers: &[String]) -> String {
+pub fn clean(text: &str) -> String {
     let stripped = strip_engine_tokens(text);
     let characters: Vec<char> = stripped.chars().collect();
-    let mut fillers: Vec<Vec<char>> = fillers
+    let mut fillers: Vec<Vec<char>> = FILLERS
         .iter()
-        .filter(|filler| !filler.is_empty())
         .map(|filler| filler.chars().collect())
         .collect();
     // Prefer a configured phrase over its shorter prefix at the same position.
@@ -104,12 +108,8 @@ pub fn latin_words(text: &str) -> usize {
 
 /// Apply the rules in order: empty text, then brief single-character false triggers. The input
 /// may still contain markup or fillers; decisions always use its cleaned text.
-pub fn drop_reason(
-    transcript: &Transcript,
-    duration_s: f64,
-    config: &FilterConfig,
-) -> Option<DropReason> {
-    let text = clean(&transcript.text, &config.fillers);
+pub fn drop_reason(transcript: &Transcript, duration_s: f64) -> Option<DropReason> {
+    let text = clean(&transcript.text);
     if classify_with_lang(&text, transcript.lang_tag.as_deref()).is_none() {
         return Some(DropReason::Empty);
     }
@@ -118,11 +118,11 @@ pub fn drop_reason(
         .chars()
         .filter(|character| !character.is_whitespace() && !is_punctuation(*character));
     if let Some(character) = spoken_characters.next() {
-        // Compare at the config's f32 precision so the literal 0.6 s boundary
+        // Compare at the constant's f32 precision so its 0.6 s boundary
         // is not treated as shorter because f32(0.6) rounds upward.
         if spoken_characters.next().is_none()
-            && (duration_s as f32) < config.single_char_max_s
-            && !config.single_char_allow.contains(&character.to_string())
+            && (duration_s as f32) < SINGLE_CHAR_MAX_S
+            && !SINGLE_CHAR_ALLOW.contains(&character.to_string().as_str())
         {
             return Some(DropReason::SingleChar);
         }
@@ -230,7 +230,6 @@ mod tests {
 
     #[test]
     fn cleanup_and_classification_table() {
-        let config = FilterConfig::default();
         let cases = [
             (
                 "也不是也不完全是AI。",
@@ -302,7 +301,7 @@ mod tests {
             ("I", "I", None),
         ];
         for (input, expected_clean, expected_class) in cases {
-            let cleaned = clean(input, &config.fillers);
+            let cleaned = clean(input);
             assert_eq!(cleaned, expected_clean, "cleanup: {input:?}");
             assert_eq!(classify(&cleaned), expected_class, "routing: {input:?}");
         }
@@ -312,7 +311,6 @@ mod tests {
     fn all_recorded_asr_fixture_outputs() {
         // Frozen sv2024_auto outputs from asr-expected.json, embedded here so
         // tests never depend on files outside the repository.
-        let config = FilterConfig::default();
         let cases = [
             ("也不是也不完全是AI。", "也不是也不完全是AI。", TextClass::Mixed),
             ("veification code输进去之后就可以。", "veification code输进去之后就可以。", TextClass::Mixed),
@@ -341,7 +339,7 @@ mod tests {
             ("大四上学期好像是反正好像是6月份的时候才开始准备I。", "大四上学期好像是反正好像是6月份的时候才开始准备I。", TextClass::Chinese),
         ];
         for (input, expected_clean, expected_class) in cases {
-            let cleaned = clean(input, &config.fillers);
+            let cleaned = clean(input);
             assert_eq!(cleaned, expected_clean, "{input:?}");
             assert_eq!(classify(&cleaned), Some(expected_class), "{input:?}");
         }
@@ -349,7 +347,6 @@ mod tests {
 
     #[test]
     fn drop_precedence_and_duration_table() {
-        let config = FilterConfig::default();
         let cases = [
             ("", None, 1.0, Some(DropReason::Empty)),
             ("123。", Some("en"), 1.0, Some(DropReason::Empty)),
@@ -376,7 +373,7 @@ mod tests {
         ];
         for (text, lang, duration, expected) in cases {
             assert_eq!(
-                drop_reason(&transcript(text, lang), duration, &config),
+                drop_reason(&transcript(text, lang), duration),
                 expected,
                 "{text:?}, {duration}"
             );

@@ -196,7 +196,7 @@ impl Controller {
                     pipeline,
                     transcript,
                 });
-                if config.capture.mode == "apps" && !apps_supported() {
+                if config.capture.mode == CaptureMode::Apps && !apps_supported() {
                     bus.publish(PipelineEvent::SourceState {
                         state: SourceStateKind::Unsupported,
                         detail: Some("Selected apps needs Windows 11".into()),
@@ -236,7 +236,7 @@ impl Controller {
             asr: lt_core::transcript::recognizer_name(),
             asr_second: lt_core::transcript::SECOND_PASS_NAME.into(),
             translator: lt_core::transcript::translator_name(),
-            config: SessionConfig::from(config),
+            config: SessionConfig::default(),
         };
         let writer =
             TranscriptWriter::new(BufWriter::new(file), header).map_err(|e| e.to_string())?;
@@ -342,7 +342,7 @@ fn make_source(config: &Config) -> Result<(Box<dyn AudioSource>, CaptureMode, St
         let source = WavSource::new(path, Pace::RealTime).map_err(|e| e.to_string())?;
         return Ok((Box::new(source), CaptureMode::System, "Replay".into()));
     }
-    if config.capture.mode == "apps" && apps_supported() {
+    if config.capture.mode == CaptureMode::Apps && apps_supported() {
         let names: Vec<_> = config
             .capture
             .apps

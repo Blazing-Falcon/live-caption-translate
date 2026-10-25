@@ -3,7 +3,7 @@ use crate::{
     app::{lock, Shared},
     controller::Cmd,
 };
-use lt_core::events::ListeningStateKind;
+use lt_core::{events::ListeningStateKind, types::CaptureMode};
 use std::sync::Arc;
 use tauri::{
     menu::{CheckMenuItem, Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu},
@@ -141,8 +141,12 @@ impl Tray {
             },
             hotkey(&config.hotkeys.move_lock)
         ));
-        let _ = self.system.set_checked(config.capture.mode != "apps");
-        let _ = self.apps.set_checked(config.capture.mode == "apps");
+        let _ = self
+            .system
+            .set_checked(config.capture.mode == CaptureMode::System);
+        let _ = self
+            .apps
+            .set_checked(config.capture.mode == CaptureMode::Apps);
     }
 }
 

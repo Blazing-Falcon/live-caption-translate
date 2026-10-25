@@ -97,7 +97,7 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         } else {
             lt_core::transcript::translator_name()
         },
-        config: SessionConfig::from(&config),
+        config: SessionConfig::default(),
     };
     let writer = TranscriptWriter::new(output, header)?;
     let subscriber =

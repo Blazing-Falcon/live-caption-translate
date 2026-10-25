@@ -91,7 +91,7 @@ llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c 
 ```
 
 - `--override-kv` corrects the GGUF's end token (the correct id is 120020). Only the translator gets it.
-- `<ctx>` is `translate.ctx` (1024 by default).
+- `<ctx>` is 1024, fixed in the app.
 - `-ub 128 -b 512` lower the prefill activation buffers, which grow with the micro-batch, from llama.cpp's 512 (`-ub`) and 2048 (`-b`). This is commit charge, not working set: the weights are most of the working set and these flags do not touch them. Prefill may split into more batches.
 - `<threads>` is `translate.threads` (4 by default), at most the PC's logical CPUs.
 - Do not add `--no-repack`. llama.cpp repacks some weight types for x86; for the Q4_0 file the app used before, that made Hy-MT2 much faster.

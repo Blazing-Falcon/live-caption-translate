@@ -4,7 +4,6 @@ use super::{
 };
 use crate::{
     bus::EventBus,
-    config::Config,
     engines::StreamingAsr,
     error::Result,
     events::{EngineKind, EngineState, PipelineEvent},
@@ -96,7 +95,6 @@ impl AudioRing {
 
 pub(super) fn asr_loop(
     mut asr: Box<dyn StreamingAsr>,
-    config: &Config,
     inputs: Receiver<RecognizerInput>,
     outputs: AsrOutputs,
     bus: &EventBus,
@@ -108,7 +106,7 @@ pub(super) fn asr_loop(
         state: EngineState::Ready,
         message: None,
     });
-    let mut recognizer = Recognizer::new(config);
+    let mut recognizer = Recognizer::new();
     let mut ring = AudioRing::default();
     let mut produced = Vec::new();
     // The clause after the one being refined has usually started by the time the second pass

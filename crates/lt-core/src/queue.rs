@@ -24,6 +24,10 @@ use std::{
 /// After a silence this long the talk has likely moved on, and earlier lines
 /// would steer the translation the wrong way.
 const WINDOW_GAP_S: f64 = 10.0;
+/// Older waiting lines are skipped once the live audio is this far ahead.
+pub const SKIP_LAG_S: f64 = 6.0;
+/// The most text one request joins from the waiting lines.
+const JOIN_MAX_CHARS: usize = 120;
 /// Recent English kept for windows; a window holds at most `window_chars` (60) lines.
 const SHOWN_CAPACITY: usize = 64;
 
@@ -173,8 +177,7 @@ impl TranslationQueue {
     pub fn take(&mut self, live: StreamTime) -> QueueBatch {
         let mut batch = QueueBatch::default();
         let skip = self.waiting.front().is_some_and(|(item, _)| {
-            live.saturating_sub(item.transcript.timing.end).seconds()
-                > f64::from(self.config.skip_lag_s)
+            live.saturating_sub(item.transcript.timing.end).seconds() > SKIP_LAG_S
         });
         if skip {
             while self.waiting.len() > 1 {
@@ -196,7 +199,7 @@ impl TranslationQueue {
                 break;
             }
             let joined = join_text(&item.transcript.text, &next.transcript.text);
-            if joined.chars().count() > self.config.queue_join_max_chars as usize {
+            if joined.chars().count() > JOIN_MAX_CHARS {
                 break;
             }
             let Some((next, _)) = self.waiting.pop_front() else {
@@ -343,11 +346,9 @@ fn window_context(
     context
 }
 
-/// What a request needs beyond the line itself: the earlier lines it may use and the queue's
-/// settings.
+/// What a request needs beyond the line itself: the earlier lines it may use.
 pub struct Translation<'a> {
     pub context: &'a [(String, String)],
-    pub config: &'a TranslateConfig,
 }
 
 pub fn translate_one(
@@ -358,13 +359,13 @@ pub fn translate_one(
     bus: &EventBus,
     cancelled: Arc<AtomicBool>,
 ) -> PipelineEvent {
-    let Translation { context, config } = *translation;
+    let Translation { context } = *translation;
     let source = &item.transcript;
     let span = tracing::info_span!("translation", id = source.id.0);
     let _utterance = span.enter();
     let sent_ms = clock.now().millis();
     let control = TranslationControl {
-        deadline: Instant::now() + Duration::from_secs_f32(config.timeout_s),
+        deadline: Instant::now() + crate::engines::REQUEST_TIMEOUT,
         cancelled,
         abort: Arc::new(AtomicBool::new(false)),
     };
@@ -519,7 +520,6 @@ pub struct TranslatorWorker {
 impl TranslatorWorker {
     pub fn start(
         mut translator: Box<dyn Translator>,
-        config: TranslateConfig,
         clock: Arc<dyn Clock>,
         bus: EventBus,
         cancelled: Arc<AtomicBool>,
@@ -536,7 +536,7 @@ impl TranslatorWorker {
                     message: None,
                 });
                 let control = TranslationControl {
-                    deadline: Instant::now() + Duration::from_secs_f32(config.timeout_s),
+                    deadline: Instant::now() + crate::engines::REQUEST_TIMEOUT,
                     cancelled: worker_cancelled.clone(),
                     abort: Arc::new(AtomicBool::new(false)),
                 };
@@ -558,10 +558,7 @@ impl TranslatorWorker {
                         Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
                     };
                     let context = window_context(&item.window, &shown);
-                    let translation = Translation {
-                        context: &context,
-                        config: &config,
-                    };
+                    let translation = Translation { context: &context };
                     let event = translate_one(
                         translator.as_mut(),
                         &item,

@@ -41,7 +41,7 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
         Applies::Restart,
         field(&capture_old, "autostart") != field(&capture_new, "autostart"),
     );
-    for name in ["audio", "asr", "filter", "translate", "performance"] {
+    for name in ["audio", "asr", "translate", "performance"] {
         raise(Applies::Pipeline, table(old, name) != table(new, name));
     }
     let (transcript_old, transcript_new) = (table(old, "transcript"), table(new, "transcript"));
@@ -67,7 +67,6 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
         json!([
             config.translate.server_url,
             config.translate.threads,
-            config.translate.ctx,
             config.performance.low_priority,
         ])
     };
@@ -77,7 +76,10 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lt_core::config::CaptureApp;
+    use lt_core::{
+        config::{CaptureApp, LogLevel},
+        types::CaptureMode,
+    };
 
     fn changed(edit: impl FnOnce(&mut Config)) -> Applies {
         let old = Config::default();
@@ -97,7 +99,7 @@ mod tests {
             Applies::Live
         );
         assert_eq!(
-            changed(|c| c.capture.mode = "apps".into()),
+            changed(|c| c.capture.mode = CaptureMode::Apps),
             Applies::Capture
         );
         assert_eq!(
@@ -112,14 +114,14 @@ mod tests {
         assert_eq!(changed(|c| c.overlay.live_source = false), Applies::Live);
         assert_eq!(changed(|c| c.capture.autostart = false), Applies::Restart);
         assert_eq!(
-            changed(|c| c.logging.level = "debug".into()),
+            changed(|c| c.logging.level = LogLevel::Debug),
             Applies::Restart
         );
         assert_eq!(changed(|c| c.models.dir = "x".into()), Applies::Restart);
         // The most disruptive change wins.
         assert_eq!(
             changed(|c| {
-                c.capture.mode = "apps".into();
+                c.capture.mode = CaptureMode::Apps;
                 c.asr.pause_s = 0.6;
             }),
             Applies::Pipeline
@@ -130,9 +132,9 @@ mod tests {
     fn only_server_settings_restart_the_translator_process() {
         let old = Config::default();
         let mut new = old.clone();
-        new.translate.timeout_s = 20.0;
+        new.translate.window_chars = 20;
         assert!(!server_changed(&old, &new));
-        new.translate.ctx = 2048;
+        new.translate.threads = 3;
         assert!(server_changed(&old, &new));
         let mut new = old.clone();
         new.performance.low_priority = false;

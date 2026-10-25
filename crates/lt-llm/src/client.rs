@@ -1,7 +1,7 @@
 //! Bounded SSE translation over a cancellable, strictly loopback HTTP transport.
 use crate::prompts::HyMt2Prompts;
 use lt_core::{
-    config::{Config, TranslateConfig},
+    config::Config,
     engines::{
         max_tokens, TranslateRequest, TranslationControl, TranslationOut, Translator,
         TranslatorCaps,
@@ -148,25 +148,19 @@ fn local_address(uri: &Uri) -> Result<SocketAddr> {
     Ok(SocketAddr::new(ip, port))
 }
 
+/// Greedy decoding: the translator repeats the prompt at any sampling.
+const TEMPERATURE: f32 = 0.0;
+const REPEAT_PENALTY: f32 = 1.05;
+
 pub struct OpenAiCompatTranslator {
     endpoint: Endpoint,
-    config: TranslateConfig,
 }
 
 impl OpenAiCompatTranslator {
     /// Pass the bundled supervisor's selected URL, or the configured local URL.
-    pub fn new(base_url: &str, config: TranslateConfig) -> Result<Self> {
-        let endpoint = Endpoint::new(base_url)?;
-        let mut full = Config {
-            translate: config,
-            ..Config::default()
-        };
-        for message in full.validate() {
-            tracing::warn!(message, "Translation client config adjusted");
-        }
+    pub fn new(base_url: &str) -> Result<Self> {
         Ok(Self {
-            endpoint,
-            config: full.translate,
+            endpoint: Endpoint::new(base_url)?,
         })
     }
 
@@ -176,7 +170,7 @@ impl OpenAiCompatTranslator {
                 "Start the bundled translation server before building its client".into(),
             ));
         }
-        Self::new(&config.translate.server_url, config.translate.clone())
+        Self::new(&config.translate.server_url)
     }
 
     fn translate_inner(
@@ -233,18 +227,18 @@ impl OpenAiCompatTranslator {
             deadline: request
                 .control
                 .deadline
-                .min(Instant::now() + Duration::from_secs_f32(self.config.timeout_s)),
+                .min(Instant::now() + lt_core::engines::REQUEST_TIMEOUT),
             ..request.control.clone()
         };
         let body = json!({
             "messages": messages,
             "stream":true,
-            "temperature":readable_float(self.config.temperature),
+            "temperature":readable_float(TEMPERATURE),
             "top_k":1,
             "top_p":1.0,
             "min_p":0.0,
-            "repeat_penalty":readable_float(self.config.repeat_penalty),
-            "max_tokens":max_tokens(request.text, self.config.max_tokens_cap),
+            "repeat_penalty":readable_float(REPEAT_PENALTY),
+            "max_tokens":max_tokens(request.text),
             "cache_prompt":true,
             "stream_options":{"include_usage":true},
             "stop":LEAKED_MARKERS,

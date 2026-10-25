@@ -608,7 +608,7 @@ fn clauses_end_at_commas_sentence_ends_and_pauses_and_show_live_text() {
 fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken() {
     let chars = sentence_chars();
     let mut config = Config::default();
-    config.overlay.style = "flow".into();
+    config.overlay.style = lt_core::config::OverlayStyle::Flow;
     let (translator, requests) = RecordingTranslator::new();
     let (mut handle, events) = start_with(
         config,
@@ -845,15 +845,13 @@ fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_
             Reply::Fail,
             Reply::Text(""),
             Reply::Text("前面。他们来啦。后面"),
-            // The lines behind this decode wait longer than the 0.5 s limit.
-            Reply::Slow("天气很好。", Duration::from_millis(1_500)),
+            // The lines behind this decode wait longer than the second pass's limit.
+            Reply::Slow("天气很好。", Duration::from_millis(2_500)),
         ]),
         started,
     };
-    let mut config = Config::default();
-    config.asr.second_pass_max_wait_s = 0.5;
     let (mut handle, events) = start_with(
-        config,
+        Config::default(),
         VecSource::new(tones(live.len())),
         fake_stream(&live),
         Box::new(second_pass),

@@ -35,7 +35,7 @@ From the transcript alone, so a run can be rescored without the audio:
 - prompt-cache misses: requests that reused no more than the frozen instruction;
 - second-pass outcomes, and how many edits were identical, punctuation-only or character edits.
   `second_pass_p50` is only meaningful with the outcomes beside it: a `late` line waited past
-  `asr.second_pass_max_wait_s` without a decode, so a run with many of them shows a high stage time
+  the second pass's 1.5 s limit without a decode, so a run with many of them shows a high stage time
   that is queue wait, not a slow decode;
 - shape: duration, Han characters, inter-line gaps, share of gaps at or above `asr.pause_s`.
 

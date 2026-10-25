@@ -1,7 +1,7 @@
 //! Overlay placement in device-independent pixels, relative to a monitor's work area.
 //! Saving relative to the monitor keeps mixed-DPI desktops from dividing the whole
 //! desktop origin by an unrelated scale factor.
-use lt_core::config::OverlayRect;
+use lt_core::config::{OverlayRect, OverlayStyle};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Monitor {
@@ -34,9 +34,9 @@ fn dip(value: u32, scale: f64) -> f64 {
 }
 
 /// Default placement: the panel docked to an edge, running text bottom-centered (max 960 wide).
-pub fn default_rect(style: &str, edge_right: bool, monitor: &Monitor) -> OverlayRect {
+pub fn default_rect(style: OverlayStyle, edge_right: bool, monitor: &Monitor) -> OverlayRect {
     let (work_w, work_h) = (dip(monitor.w, monitor.scale), dip(monitor.h, monitor.scale));
-    let (x, y, w, h) = if style == "panel" {
+    let (x, y, w, h) = if style == OverlayStyle::Panel {
         let w = PANEL_W.min(work_w - 48.0).max(MIN_W);
         let h = 600.0_f64.min(work_h - 48.0).max(MIN_H);
         let x = if edge_right { work_w - w - 24.0 } else { 24.0 };
@@ -52,7 +52,6 @@ pub fn default_rect(style: &str, edge_right: bool, monitor: &Monitor) -> Overlay
         y: y.round(),
         w: w.round(),
         h: h.round(),
-        ..OverlayRect::default()
     }
 }
 
@@ -80,7 +79,6 @@ pub fn from_physical(window: Physical, monitor: &Monitor) -> OverlayRect {
         y: (f64::from(window.y - monitor.y) / monitor.scale).round(),
         w: dip(window.w, monitor.scale).round(),
         h: dip(window.h, monitor.scale).round(),
-        ..OverlayRect::default()
     }
 }
 
@@ -117,7 +115,6 @@ mod tests {
             y: -50.0,
             w: 9000.0,
             h: 10.0,
-            ..OverlayRect::default()
         };
         let p = to_physical(&wild, &m);
         assert!(p.x >= 0 && p.x as u32 + p.w <= 1280);

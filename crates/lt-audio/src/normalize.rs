@@ -3,6 +3,13 @@
 use lt_core::{config::AudioConfig, types::SAMPLE_RATE};
 
 const TARGET_RMS: f64 = 0.1;
+/// Time to decrease gain for loud input.
+const ATTACK_S: f32 = 1.0;
+/// Time to increase gain for quiet input.
+const RELEASE_S: f32 = 5.0;
+const MAX_GAIN_DB: f32 = 20.0;
+/// No gain below this level, so silence stays silent.
+const GATE_DBFS: f32 = -60.0;
 
 pub struct LevelNormalizer {
     config: AudioConfig,
@@ -33,25 +40,24 @@ impl LevelNormalizer {
             .sum::<f64>()
             / samples.len() as f64;
         let rms = energy.sqrt();
-        let gate = 10_f64.powf(f64::from(self.config.norm_gate_dbfs) / 20.0);
+        let gate = 10_f64.powf(f64::from(GATE_DBFS) / 20.0);
         if !rms.is_finite() || rms <= gate {
             return;
         }
-        let desired =
-            (20.0 * (TARGET_RMS / rms).log10()).min(f64::from(self.config.norm_max_gain_db));
+        let desired = (20.0 * (TARGET_RMS / rms).log10()).min(f64::from(MAX_GAIN_DB));
         let gain_db = self
             .gain_db
             .map_or(desired, |previous| {
                 let time = if desired < previous {
-                    self.config.norm_attack_s
+                    ATTACK_S
                 } else {
-                    self.config.norm_release_s
+                    RELEASE_S
                 };
                 let seconds = samples.len() as f64 / SAMPLE_RATE as f64;
                 let fraction = 1.0 - (-seconds / f64::from(time).max(0.001)).exp();
                 previous + fraction * (desired - previous)
             })
-            .min(f64::from(self.config.norm_max_gain_db));
+            .min(f64::from(MAX_GAIN_DB));
         self.gain_db = Some(gain_db);
         let gain = 10_f64.powf(gain_db / 20.0) as f32;
         for sample in samples {

@@ -9,7 +9,11 @@ use crate::{
     tray::Tray,
 };
 use crossbeam_channel::Sender;
-use lt_core::{bus::EventBus, config::Config, types::PipelineStats};
+use lt_core::{
+    bus::EventBus,
+    config::{Config, Message, MessageLevel},
+    types::PipelineStats,
+};
 use serde::Serialize;
 use std::sync::{atomic::AtomicBool, Mutex, MutexGuard};
 use tauri::{AppHandle, Emitter};
@@ -19,6 +23,21 @@ pub struct SetConfigResult {
     pub config: Config,
     pub applied: Applies,
     pub messages: Vec<String>,
+}
+
+/// The saved config with its warnings; an info message names a setting the app dropped, and
+/// only warnings reach the UI.
+fn warning_texts(messages: Vec<Message>) -> Vec<String> {
+    messages
+        .into_iter()
+        .filter_map(|message| match message.level {
+            MessageLevel::Warn => Some(message.text),
+            MessageLevel::Info => {
+                tracing::info!(message = %message.text, "Config");
+                None
+            }
+        })
+        .collect()
 }
 
 pub struct Shared {
@@ -56,7 +75,12 @@ impl Shared {
     /// Applies a patch, saves atomically, announces it, and tells the controller when
     /// capture or the pipeline must change. Returns the normalized config.
     pub fn patch_config(&self, patch: serde_json::Value) -> Result<SetConfigResult, String> {
-        self.change_config(|config| config.merge_patch(patch).map_err(|e| e.to_string()))
+        self.change_config(|config| {
+            config
+                .merge_patch(patch)
+                .map(warning_texts)
+                .map_err(|e| e.to_string())
+        })
     }
 
     /// Back to the defaults; see `Config::reset` for what stays.

@@ -3,7 +3,7 @@ use anyhow::Context;
 use anyhow::{bail, Result};
 use lt_core::{
     bus::EventBus,
-    config::Config,
+    config::{Config, Message},
     engines::{OfflineAsr, StreamingAsr, Translator},
     fakes::{FakeOffline, FakeStream, FakeTranslator},
 };
@@ -26,17 +26,15 @@ pub struct Engines {
     pub supervisor: Option<lt_llm::supervisor::Supervisor>,
 }
 
-pub fn config(path: Option<&Path>) -> Result<Config> {
+pub fn config(path: Option<&Path>) -> Result<(Config, Vec<Message>)> {
     let environment_path = std::env::var_os("LT_CONFIG")
         .filter(|path| !path.is_empty())
         .map(PathBuf::from);
     let path = path.or(environment_path.as_deref());
-    let (config, messages) =
-        path.map_or_else(|| Ok((Config::default(), Vec::new())), Config::load)?;
-    for message in messages {
-        eprintln!("Config: {message}");
+    match path {
+        Some(path) => Ok(Config::load(path)?),
+        None => Ok((Config::default(), Vec::new())),
     }
-    Ok(config)
 }
 
 /// The parsed override already gives explicit CLI arguments precedence over

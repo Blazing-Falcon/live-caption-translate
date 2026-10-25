@@ -4,7 +4,6 @@
 
 use super::{send_cooperative, POLL};
 use crate::{
-    config::Config,
     engines::OfflineAsr,
     error::Result,
     events::DropReason,
@@ -21,6 +20,10 @@ use std::{
     },
     time::{Duration, Instant},
 };
+
+/// A clause that waits longer than this for the second pass keeps its live text, so the
+/// queue catches up when the PC is busy.
+const MAX_WAIT: Duration = Duration::from_millis(1_500);
 
 /// The audio of a clause with its margins.
 pub(super) struct Window {
@@ -69,12 +72,10 @@ pub(super) enum RefineInput {
 
 pub(super) fn refine_loop(
     mut engine: Box<dyn OfflineAsr>,
-    config: &Config,
     inputs: Receiver<RefineInput>,
     output: Sender<AsrMessage>,
     cancelled: &AtomicBool,
 ) -> Result<()> {
-    let max_wait = Duration::from_secs_f32(config.asr.second_pass_max_wait_s);
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
             Ok(input) => input,
@@ -95,9 +96,9 @@ pub(super) fn refine_loop(
                     &window,
                     &open,
                     closed,
-                    max_wait,
+                    MAX_WAIT,
                 );
-                finalize(transcript, &live, config)
+                finalize(transcript, &live)
             }
             RefineInput::Message(message) => message,
         };
@@ -175,9 +176,9 @@ fn elapsed_ms(since: Instant) -> u32 {
 
 /// Clean, classify and filter a closed clause on its final text. `live` is the recognizer's
 /// text, recorded when the final text differs from it.
-fn finalize(mut transcript: Transcript, live: &str, config: &Config) -> AsrMessage {
-    transcript.text = clean(&transcript.text, &config.filter.fillers);
-    let live = clean(live, &config.filter.fillers);
+fn finalize(mut transcript: Transcript, live: &str) -> AsrMessage {
+    transcript.text = clean(&transcript.text);
+    let live = clean(live);
     transcript.second_pass.live_text = (live != transcript.text).then_some(live);
     let Some(class) = classify(&transcript.text) else {
         return AsrMessage::Dropped(transcript.id, DropReason::Empty);
@@ -192,7 +193,7 @@ fn finalize(mut transcript: Transcript, live: &str, config: &Config) -> AsrMessa
         .timing
         .end
         .saturating_sub(transcript.timing.start);
-    match drop_reason(&transcript, duration.seconds(), &config.filter) {
+    match drop_reason(&transcript, duration.seconds()) {
         Some(reason) => AsrMessage::Dropped(transcript.id, reason),
         None => AsrMessage::Transcript(transcript),
     }

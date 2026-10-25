@@ -1,4 +1,6 @@
-use lt_core::config::Config;
+use lt_core::config::{
+    CaptureConfig, Config, LogLevel, MessageLevel, OverlayConfig, OverlayStyle, PanelEdge,
+};
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
@@ -23,6 +25,14 @@ impl Drop for TempConfig {
             let _ = fs::remove_dir_all(parent);
         }
     }
+}
+
+fn warnings(messages: &[lt_core::config::Message]) -> Vec<&str> {
+    messages
+        .iter()
+        .filter(|message| message.level == MessageLevel::Warn)
+        .map(|message| message.text.as_str())
+        .collect()
 }
 
 #[test]
@@ -57,23 +67,18 @@ fn typescript_defaults_round_trip_through_rust_json_without_missing_or_unknown_k
 }
 
 #[test]
-fn unknown_values_survive_nested_patches_and_disk_round_trips() {
-    let input = r#"
+fn unknown_keys_are_dropped_and_named_in_one_info_message() {
+    let (config, messages) = Config::from_toml(
+        r#"
 config_version = 2
-future = { nested = { flag = true, numbers = [1, 2, 3] } }
+future = { nested = { flag = true } }
 [capture]
 future_capture = "saved"
-apps = [{exe="chrome.exe",name="Chrome", future_app={revision=7}}]
+apps = [{exe="chrome.exe",name="Chrome",future_app={revision=7}}]
 [audio]
 future_audio = 2026-10-07T12:30:00Z
-[asr]
-future_asr = 2
-[filter]
-future_filter = "filter"
 [translate]
 future_translate = {deep={value=42}}
-[overlay]
-future_overlay = ["value"]
 [overlay.panel_rect]
 monitor="display"
 x=-123.25
@@ -81,41 +86,36 @@ y=40.5
 w=960.0
 h=140.0
 future_rect={version=4}
-[hotkeys]
-future_hotkeys = true
-[transcript]
-future_transcript = 4
-[logging]
-future_logging = "log"
-[models]
-future_models = "model"
-"#;
-    let temp = TempConfig::new();
-    let (mut config, messages) = Config::from_toml(input).unwrap();
-    assert_eq!(messages.len(), 13, "{messages:?}");
-    assert!(config.audio.extra["future_audio"].is_datetime());
-    config.merge_patch(json!({"translate":{"ctx":2048,"future_translate":{"deep":{"other":true}}},"overlay":{"panel_rect":{"x":-222.5}}})).unwrap();
-    config.save(&temp.0).unwrap();
-    let (reloaded, _) = Config::load(&temp.0).unwrap();
-    assert_eq!(config, reloaded);
-    assert_eq!(
-        reloaded.translate.extra["future_translate"]["deep"]["value"].as_integer(),
-        Some(42)
-    );
-    assert_eq!(
-        reloaded.translate.extra["future_translate"]["deep"]["other"].as_bool(),
-        Some(true)
-    );
-    assert_eq!(reloaded.overlay.panel_rect.as_ref().unwrap().x, -222.5);
-    assert_eq!(
-        reloaded.overlay.panel_rect.as_ref().unwrap().extra["future_rect"]["version"].as_integer(),
-        Some(4)
-    );
-    assert!(reloaded.audio.extra["future_audio"].is_datetime());
+"#,
+    )
+    .unwrap();
+    assert!(warnings(&messages).is_empty(), "{messages:?}");
+    let info: Vec<&str> = messages
+        .iter()
+        .filter(|message| message.level == MessageLevel::Info)
+        .map(|message| message.text.as_str())
+        .collect();
+    assert_eq!(info.len(), 1, "{messages:?}");
+    for path in [
+        "future",
+        "capture.future_capture",
+        "capture.apps[0].future_app",
+        "audio.future_audio",
+        "translate.future_translate",
+        "overlay.panel_rect.future_rect",
+    ] {
+        assert!(info[0].contains(path), "{path} missing from {:?}", info[0]);
+    }
+    assert_eq!(config.overlay.panel_rect.as_ref().unwrap().x, -123.25);
+    assert_eq!(config.capture.apps[0].name, "Chrome");
+    let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
+    assert!(saved.get("future").is_none());
+    assert!(saved["audio"].get("future_audio").is_none());
+    assert!(saved["overlay"]["panel_rect"].get("future_rect").is_none());
 }
 
 #[test]
-fn invalid_types_and_enums_recover_each_key_without_discarding_neighbors() {
+fn invalid_types_and_choices_recover_each_key_without_discarding_neighbors() {
     let (config, messages) = Config::from_toml(
         r#"
 config_version = "bad"
@@ -128,8 +128,6 @@ apps = [{exe=42,name="Named App",new_field=true}]
 normalize = 123
 [asr]
 threads = 2.5
-[filter]
-fillers = ["um", 4]
 [overlay]
 style = "float"
 panel_edge = "top"
@@ -141,58 +139,69 @@ source = "elsewhere"
 "#,
     )
     .unwrap();
-    assert_eq!(config.config_version, 2);
-    assert_eq!(config.capture.mode, "system");
+    assert_eq!(config.config_version, 3);
+    assert_eq!(config.capture.mode, CaptureConfig::default().mode);
     assert!(config.capture.autostart);
     assert_eq!(config.capture.device, "selected-device");
     assert_eq!(config.capture.apps[0].exe, "");
     assert_eq!(config.capture.apps[0].name, "Named App");
-    assert_eq!(
-        config.capture.apps[0].extra["new_field"].as_bool(),
-        Some(true)
-    );
     assert!(config.audio.normalize);
     assert_eq!(config.asr.threads, 1);
-    assert_eq!(config.filter.fillers, Config::default().filter.fillers);
-    assert_eq!(config.overlay.style, "panel");
-    assert_eq!(config.overlay.panel_edge, "right");
+    assert_eq!(config.overlay.style, OverlayStyle::Panel);
+    assert_eq!(config.overlay.panel_edge, PanelEdge::Right);
     assert!(config.overlay.panel_rect.is_none());
-    assert_eq!(config.logging.level, "info");
+    assert_eq!(config.logging.level, LogLevel::Info);
     assert_eq!(config.models.source, "huggingface");
-    assert_eq!(messages.len(), 12, "{messages:?}");
+    let warnings = warnings(&messages);
+    for key in [
+        "config_version",
+        "capture.mode",
+        "capture.autostart",
+        "capture.apps[0].exe",
+        "audio.normalize",
+        "asr.threads",
+        "overlay.style",
+        "overlay.panel_edge",
+        "overlay.panel_rect",
+        "logging.level",
+        "models.source",
+    ] {
+        assert!(
+            warnings.iter().any(|message| message.starts_with(key)),
+            "{key} missing from {warnings:?}"
+        );
+    }
+    assert!(
+        messages.iter().any(|message| {
+            message.text
+                == "dropped unknown settings: capture.apps[0].new_field, overlay.panel_rect"
+        }),
+        "{messages:?}"
+    );
 }
 
 #[test]
-fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_values() {
+fn every_bounded_number_clamps_to_the_limits_table() {
     let (config, messages) = Config::from_json(json!({
         "config_version":100,
-        "audio":{"norm_attack_s":-1,"norm_release_s":99,"norm_max_gain_db":99,"norm_gate_dbfs":-100},
-        "asr":{"threads":-10},
-        "translate":{"threads":99,"ctx":0,"temperature":99,"repeat_penalty":0,"max_tokens_cap":99_999,"timeout_s":0,"queue_join_max_chars":0,"skip_lag_s":0},
+        "asr":{"threads":-10,"pause_s":99},
+        "translate":{"threads":99,"window_chars":99},
         "overlay":{"font_px":0,"background":99,"panel_lines":0,"flow_lines":11},
         "transcript":{"retention_days":-1},"logging":{"keep_files":-1}
-    })).unwrap();
-    assert_eq!(config.config_version, 2);
-    assert_eq!(config.audio.norm_attack_s, 0.1);
-    assert_eq!(config.audio.norm_release_s, 20.0);
-    assert_eq!(config.audio.norm_max_gain_db, 30.0);
-    assert_eq!(config.audio.norm_gate_dbfs, -90.0);
+    }))
+    .unwrap();
+    assert_eq!(config.config_version, 3);
     assert_eq!(config.asr.threads, 1);
+    assert_eq!(config.asr.pause_s, 3.0);
     assert_eq!(config.translate.threads, 64);
-    assert_eq!(config.translate.ctx, 512);
-    assert_eq!(config.translate.temperature, 1.0);
-    assert_eq!(config.translate.repeat_penalty, 1.0);
-    assert_eq!(config.translate.max_tokens_cap, 1024);
-    assert_eq!(config.translate.timeout_s, 2.0);
-    assert_eq!(config.translate.queue_join_max_chars, 20);
-    assert_eq!(config.translate.skip_lag_s, 2.0);
+    assert_eq!(config.translate.window_chars, 60);
     assert_eq!(config.overlay.font_px, 12);
     assert_eq!(config.overlay.background, 1.0);
     assert_eq!(config.overlay.panel_lines, 1);
     assert_eq!(config.overlay.flow_lines, 10);
     assert_eq!(config.transcript.retention_days, 0);
     assert_eq!(config.logging.keep_files, 0);
-    assert_eq!(messages.len(), 20, "{messages:?}");
+    assert_eq!(warnings(&messages).len(), 10, "{messages:?}");
 }
 
 #[test]
@@ -218,118 +227,108 @@ fn failed_atomic_replace_preserves_existing_destination() {
     assert!(!temp.0.with_file_name("config.toml.tmp").exists());
 }
 
-/// A version 1 file keeps the values that still exist, under their new names, loses the removed
-/// keys without warnings, and keeps keys it did not know.
+/// A saved version 2 file keeps the values that still exist, loses the keys the app no longer
+/// has, and is written as version 3 by the next save.
 #[test]
-fn version_1_settings_migrate_to_version_2() {
-    let (config, messages) = Config::from_toml(
-        r#"
-config_version = 1
-future = "kept"
-[vad]
-engine = "ten"
-[asr]
-engine = "xasr_stream"
-language = "auto"
-threads = 3
-second_pass = "off"
-stream_chunk_ms = 960
-stream_pause_s = 1.2
-[filter]
-drop_music = true
-fillers = ["呃"]
-[routing]
-translate_other = ["ja"]
-[join]
-hold_max_chars = 8
-[translate]
-engine = "hymt2"
-threads = 0
-window_chars = 0
-target = "en"
-[overlay]
-style = "flow"
-draft_display = "all"
-[latency]
-mode = "off"
-low_priority = false
-step_down = true
-"#,
-    )
-    .unwrap();
-    assert_eq!(config.config_version, 2);
-    assert_eq!(config.asr.pause_s, 1.2);
-    assert_eq!(config.asr.threads, 3);
-    assert_eq!(config.filter.fillers, ["呃"]);
-    // Version 1 wrote 0 for automatic threads, which meant 2.
-    assert_eq!(config.translate.threads, 2);
-    assert_eq!(config.translate.window_chars, 0);
-    assert_eq!(config.overlay.style, "flow");
-    assert!(!config.performance.low_priority);
-    assert_eq!(config.extra.keys().collect::<Vec<_>>(), ["future"]);
-    assert!(config.asr.extra.is_empty() && config.overlay.extra.is_empty());
-    assert_eq!(messages, ["future: unknown key preserved"]);
-    let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
-    assert_eq!(saved["config_version"].as_integer(), Some(2));
-}
-
-#[test]
-fn removed_choices_in_a_saved_file_take_the_default_without_a_warning() {
+fn a_version_2_file_loads_with_its_known_values() {
     let (config, messages) = Config::from_toml(
         r#"
 config_version = 2
+[capture]
+mode = "apps"
+apps = [{exe = "chrome.exe", name = "Chrome"}]
 [asr]
-chunk_ms = 960
-decoding = "beam"
+threads = 3
+pause_s = 1.2
 second_pass = "off"
 second_pass_min_logprob = -0.5
 second_pass_threads = 3
 [filter]
 skip_music = true
+fillers = ["呃"]
 [translate]
-model = "q4_0"
 threads = 3
-glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], confirmed = true }]
-fragment_ellipsis = false
+window_chars = 20
+temperature = 0.5
 [overlay]
-style = "bar"
+style = "flow"
+font_px = 30
 expire_s = 20.0
-[overlay.bar_rect]
-monitor = "A"
-x = 10.0
-y = 20.0
-w = 960.0
-h = 140.0
+[logging]
+level = "debug"
 "#,
     )
     .unwrap();
+    assert_eq!(config.config_version, 3);
+    assert_eq!(config.capture.mode, lt_core::types::CaptureMode::Apps);
+    assert_eq!(config.capture.apps.len(), 1);
+    assert_eq!(config.asr.threads, 3);
+    assert_eq!(config.asr.pause_s, 1.2);
     assert_eq!(config.asr.second_pass_threads, 3);
     assert_eq!(config.translate.threads, 3);
-    assert_eq!(config.overlay.style, "panel");
-    assert!(config.asr.extra.is_empty());
-    assert!(config.filter.extra.is_empty());
-    assert!(config.translate.extra.is_empty());
-    assert!(config.overlay.extra.is_empty());
-    assert!(messages.is_empty(), "{messages:?}");
+    assert_eq!(config.translate.window_chars, 20);
+    assert_eq!(config.overlay.style, OverlayStyle::Flow);
+    assert_eq!(config.overlay.font_px, 30);
+    assert_eq!(config.logging.level, LogLevel::Debug);
+    assert!(warnings(&messages).is_empty(), "{messages:?}");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
-    assert!(saved["asr"].get("chunk_ms").is_none());
-    assert!(saved["asr"].get("decoding").is_none());
+    assert_eq!(saved["config_version"].as_integer(), Some(3));
     assert!(saved["asr"].get("second_pass").is_none());
-    assert!(saved["asr"].get("second_pass_min_logprob").is_none());
-    assert!(saved["filter"].get("skip_music").is_none());
-    assert!(saved["translate"].get("model").is_none());
-    assert!(saved["translate"].get("glossary").is_none());
-    assert!(saved["translate"].get("fragment_ellipsis").is_none());
+    assert!(saved["translate"].get("temperature").is_none());
     assert!(saved["overlay"].get("expire_s").is_none());
-    assert!(saved["overlay"].get("bar_rect").is_none());
-    assert_eq!(saved["overlay"]["style"].as_str(), Some("panel"));
+}
+
+#[test]
+fn a_version_1_file_takes_no_migration_path() {
+    let (config, messages) = Config::from_toml(
+        r#"
+config_version = 1
+[vad]
+engine = "ten"
+[asr]
+engine = "xasr_stream"
+threads = 3
+stream_chunk_ms = 960
+[translate]
+threads = 0
+[overlay]
+style = "flow"
+"#,
+    )
+    .unwrap();
+    assert_eq!(config.config_version, 3);
+    assert_eq!(config.asr.threads, 3);
+    // A version 1 file wrote 0 for automatic threads, which is clamped like any other value.
+    assert_eq!(config.translate.threads, 1);
+    assert_eq!(config.overlay.style, OverlayStyle::Flow);
+    assert!(warnings(&messages).len() == 1, "{messages:?}");
+    let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
+    assert_eq!(saved["config_version"].as_integer(), Some(3));
+}
+
+#[test]
+fn a_removed_overlay_style_loads_as_panel() {
+    let (config, messages) = Config::from_toml(
+        r#"
+config_version = 2
+[overlay]
+style = "bar"
+"#,
+    )
+    .unwrap();
+    assert_eq!(config.overlay.style, OverlayStyle::Panel);
+    assert!(warnings(&messages).is_empty(), "{messages:?}");
+    assert!(messages
+        .iter()
+        .any(|message| message.level == MessageLevel::Info));
+    assert_eq!(config, Config::default());
 }
 
 #[test]
 fn reset_restores_the_defaults_but_keeps_positions_apps_and_the_models_folder() {
     let (config, _) = Config::from_toml(
         r#"
-config_version = 2
+config_version = 3
 [capture]
 mode = "apps"
 apps = [{exe = "chrome.exe", name = "Chrome"}]
@@ -348,7 +347,7 @@ dir = "D:/models"
     let defaults = Config::default();
     assert_eq!(reset.capture.mode, defaults.capture.mode);
     assert_eq!(reset.translate.threads, defaults.translate.threads);
-    assert_eq!(reset.overlay.style, defaults.overlay.style);
+    assert_eq!(reset.overlay.style, OverlayConfig::default().style);
     assert_eq!(reset.overlay.font_px, defaults.overlay.font_px);
     assert_eq!(reset.capture.apps, config.capture.apps);
     assert_eq!(reset.overlay.panel_rect, config.overlay.panel_rect);

@@ -1,6 +1,5 @@
 //! Terminal-only end-to-end HTTP/SSE tests; no model or external service needed.
 use lt_core::{
-    config::TranslateConfig,
     engines::{TranslateRequest, TranslationControl, Translator},
     error::Error,
     events::FailReason,
@@ -213,9 +212,7 @@ fn exact_prompt_request_streamed_deltas_chunked_utf8_and_usage() {
         chunk(&mut stream, b"data: {\"choices\":[],\"usage\":{\"prompt_tokens\":48,\"completion_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":31}}}\n\ndata: [DONE]\n\n");
         let _ = stream.write_all(b"0\r\n\r\n");
     });
-    let mut translator =
-        OpenAiCompatTranslator::new(&format!("{}/v1/", server.url), TranslateConfig::default())
-            .unwrap();
+    let mut translator = OpenAiCompatTranslator::new(&format!("{}/v1/", server.url)).unwrap();
     let mut deltas = Vec::new();
     let output = translator
         .translate(&request("你好。", control(WATCHDOG)), &mut |text| {
@@ -274,8 +271,7 @@ fn earlier_lines_go_as_chat_turns_and_an_empty_or_copied_answer_falls_back() {
         sent_tx.send(read_request(&mut stream).1).unwrap();
         respond(&mut stream, &replies.next().unwrap());
     });
-    let mut translator =
-        OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
+    let mut translator = OpenAiCompatTranslator::new(&server.url).unwrap();
     let earlier = [(
         "我们去公园，".to_owned(),
         "We're going to the park,".to_owned(),
@@ -324,8 +320,7 @@ fn cancellation_during_headers_or_a_partial_sse_line_stops_the_request() {
         let url = server.url.clone();
         let (result_tx, result_rx) = mpsc::channel();
         let worker = thread::spawn(move || {
-            let mut translator =
-                OpenAiCompatTranslator::new(&url, TranslateConfig::default()).unwrap();
+            let mut translator = OpenAiCompatTranslator::new(&url).unwrap();
             let result = translator.translate(&request("你好。", worker_token), &mut |_| {});
             result_tx.send(result).unwrap();
         });
@@ -348,8 +343,7 @@ fn deadline_covers_stalled_headers_and_a_body_that_never_completes() {
             }
             delay(&stop, STALL);
         });
-        let mut translator =
-            OpenAiCompatTranslator::new(&server.url, TranslateConfig::default()).unwrap();
+        let mut translator = OpenAiCompatTranslator::new(&server.url).unwrap();
         let started = Instant::now();
         assert_reason(
             translator.translate(
@@ -371,7 +365,7 @@ fn connection_refused_is_server_unavailable_and_remote_urls_are_rejected() {
     let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
     let url = format!("http://{}", listener.local_addr().unwrap());
     drop(listener);
-    let mut translator = OpenAiCompatTranslator::new(&url, TranslateConfig::default()).unwrap();
+    let mut translator = OpenAiCompatTranslator::new(&url).unwrap();
     // Windows retries a refused local connection; the deadline before any connection then
     // reports the same reason, so this short deadline only bounds the test.
     assert_reason(
@@ -395,15 +389,8 @@ fn connection_refused_is_server_unavailable_and_remote_urls_are_rejected() {
         "http://[::1]:65536",
         "http://127.0.0.1:",
     ] {
-        assert!(
-            OpenAiCompatTranslator::new(invalid, TranslateConfig::default()).is_err(),
-            "{invalid}"
-        );
+        assert!(OpenAiCompatTranslator::new(invalid).is_err(), "{invalid}");
     }
-    assert!(
-        OpenAiCompatTranslator::new("http://[::1]:8080/v1", TranslateConfig::default()).is_ok()
-    );
-    assert!(
-        OpenAiCompatTranslator::new("http://localhost:8080/v1", TranslateConfig::default()).is_ok()
-    );
+    assert!(OpenAiCompatTranslator::new("http://[::1]:8080/v1").is_ok());
+    assert!(OpenAiCompatTranslator::new("http://localhost:8080/v1").is_ok());
 }

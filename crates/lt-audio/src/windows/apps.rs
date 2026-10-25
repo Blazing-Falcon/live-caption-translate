@@ -701,7 +701,6 @@ mod tests {
         CaptureApp {
             exe: exe.into(),
             name: display_name(exe),
-            ..CaptureApp::default()
         }
     }
 

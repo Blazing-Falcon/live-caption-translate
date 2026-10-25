@@ -1,7 +1,6 @@
 //! Optional native acceptance: enabled only when LT_LLAMA_SERVER is configured.
 use lt_core::{
     bus::EventBus,
-    config::TranslateConfig,
     engines::{TranslateRequest, TranslationControl, Translator},
     types::UtteranceId,
 };
@@ -32,7 +31,7 @@ fn frozen_translation_sentences_against_configured_llama_server() {
             let directory = std::env::var_os("LT_MODELS_DIR")
                 .map(PathBuf::from)
                 .unwrap_or_else(|| workspace.join("models"));
-            let (id, file) = TranslateConfig::MODEL;
+            let (id, file) = lt_core::config::TranslateConfig::MODEL;
             directory.join(id).join(file)
         });
     assert!(
@@ -41,9 +40,9 @@ fn frozen_translation_sentences_against_configured_llama_server() {
         model.display()
     );
     // Three MT threads leave one core for the app/ASR within the user's budget.
-    let config = TranslateConfig {
+    let config = lt_core::config::TranslateConfig {
         threads: 3,
-        ..TranslateConfig::default()
+        ..Default::default()
     };
     let mut supervisor = Supervisor::start(
         ServerOptions::new(PathBuf::from(binary), model, &config),
@@ -51,7 +50,7 @@ fn frozen_translation_sentences_against_configured_llama_server() {
     )
     .unwrap();
     supervisor.wait_ready(Duration::from_secs(70)).unwrap();
-    let mut translator = OpenAiCompatTranslator::new(supervisor.url(), config).unwrap();
+    let mut translator = OpenAiCompatTranslator::new(supervisor.url()).unwrap();
     let fixture: Value = serde_json::from_str(include_str!(
         "../../../reference/fixtures/mt-sentences.json"
     ))

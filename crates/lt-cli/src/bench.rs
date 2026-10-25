@@ -63,13 +63,13 @@ fn mt(args: BenchArgs, config: Config, cancelled: Arc<AtomicBool>) -> Result<()>
         engines::{TranslateRequest, TranslationControl},
         types::UtteranceId,
     };
-    use std::time::{Duration, Instant};
+    use std::time::Instant;
     let models = engines::models_dir(args.models.as_deref(), &config);
     let bus = EventBus::default();
     let (mut translator, supervisor, _) =
         engines::translator(&config, &models, args.server.as_deref(), &bus, &cancelled)?;
     let control = || TranslationControl {
-        deadline: Instant::now() + Duration::from_secs_f32(config.translate.timeout_s),
+        deadline: Instant::now() + lt_core::engines::REQUEST_TIMEOUT,
         cancelled: cancelled.clone(),
         abort: Arc::new(AtomicBool::new(false)),
     };

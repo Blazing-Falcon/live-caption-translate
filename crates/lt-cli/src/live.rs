@@ -18,7 +18,6 @@ pub fn live(args: LiveArgs, mut config: Config, cancelled: Arc<AtomicBool>) -> R
             .map(|exe| CaptureApp {
                 exe: exe.clone(),
                 name: exe.clone(),
-                ..CaptureApp::default()
             })
             .collect();
     }
@@ -118,7 +117,7 @@ fn run_session(
             asr: recognizer_name(),
             asr_second: lt_core::transcript::SECOND_PASS_NAME.into(),
             translator: lt_core::transcript::translator_name(),
-            config: SessionConfig::from(&config),
+            config: SessionConfig::default(),
         };
         let writer = TranscriptWriter::new(
             BufWriter::new(

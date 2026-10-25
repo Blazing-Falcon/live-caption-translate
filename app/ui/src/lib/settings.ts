@@ -1,14 +1,10 @@
 /** Mirrors lt-core::config; Rust validates patches before persisting them. */
-interface ExtraFields {
-  [key: string]: unknown;
-}
-
-export interface CaptureApp extends ExtraFields {
+export interface CaptureApp {
   exe: string;
   name: string;
 }
 
-export interface OverlayRect extends ExtraFields {
+export interface OverlayRect {
   monitor: string;
   x: number;
   y: number;
@@ -16,45 +12,28 @@ export interface OverlayRect extends ExtraFields {
   h: number;
 }
 
-export interface Config extends ExtraFields {
+export interface Config {
   config_version: number;
-  capture: ExtraFields & {
+  capture: {
     mode: "system" | "apps";
     device: string;
     apps: CaptureApp[];
     autostart: boolean;
   };
-  audio: ExtraFields & {
+  audio: {
     normalize: boolean;
-    norm_attack_s: number;
-    norm_release_s: number;
-    norm_max_gain_db: number;
-    norm_gate_dbfs: number;
   };
-  asr: ExtraFields & {
+  asr: {
     threads: number;
     pause_s: number;
     second_pass_threads: number;
-    second_pass_max_wait_s: number;
   };
-  filter: ExtraFields & {
-    single_char_max_s: number;
-    single_char_allow: string[];
-    fillers: string[];
-  };
-  translate: ExtraFields & {
+  translate: {
     server_url: string;
     threads: number;
-    ctx: number;
-    temperature: number;
-    repeat_penalty: number;
-    max_tokens_cap: number;
-    timeout_s: number;
-    queue_join_max_chars: number;
-    skip_lag_s: number;
     window_chars: number;
   };
-  overlay: ExtraFields & {
+  overlay: {
     visible: boolean;
     style: "panel" | "flow";
     font_px: number;
@@ -67,24 +46,24 @@ export interface Config extends ExtraFields {
     panel_rect?: OverlayRect;
     flow_rect?: OverlayRect;
   };
-  performance: ExtraFields & {
+  performance: {
     low_priority: boolean;
   };
-  hotkeys: ExtraFields & {
+  hotkeys: {
     move_lock: string;
     show_hide: string;
     pause: string;
     settings: string;
   };
-  transcript: ExtraFields & {
+  transcript: {
     enabled: boolean;
     retention_days: number;
   };
-  logging: ExtraFields & {
+  logging: {
     level: "error" | "warn" | "info" | "debug" | "trace";
     keep_files: number;
   };
-  models: ExtraFields & {
+  models: {
     source: "huggingface" | "modelscope";
     dir: string;
   };
@@ -126,8 +105,8 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-const CONFIG_TABLES = [
-  "capture", "audio", "asr", "filter", "translate",
+const CONFIG_SECTIONS = [
+  "capture", "audio", "asr", "translate",
   "overlay", "performance", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
@@ -140,12 +119,12 @@ export function parseConfig(value: unknown): Config {
   if (!isRecord(value) || typeof value.config_version !== "number") {
     throw new Error("The app returned an unreadable settings file.");
   }
-  for (const table of CONFIG_TABLES) {
+  for (const table of CONFIG_SECTIONS) {
     if (!isRecord(value[table])) {
       throw new Error(`The settings are missing the [${table}] section.`);
     }
   }
-  return value as Config;
+  return value as unknown as Config;
 }
 
 /** Deep merge with the patch semantics the UI assumes: arrays replace, null removes a key. */
@@ -258,7 +237,7 @@ export function formatAccelerator(accelerator: string): string {
 
 /** Kept as a JSON initializer so the Rust parity test can read it directly. */
 export const DEFAULT_CONFIG: Config = {
-  "config_version": 2,
+  "config_version": 3,
   "capture": {
     "mode": "system",
     "device": "default",
@@ -266,33 +245,16 @@ export const DEFAULT_CONFIG: Config = {
     "autostart": true
   },
   "audio": {
-    "normalize": true,
-    "norm_attack_s": 1.0,
-    "norm_release_s": 5.0,
-    "norm_max_gain_db": 20.0,
-    "norm_gate_dbfs": -60.0
+    "normalize": true
   },
   "asr": {
     "threads": 1,
     "pause_s": 0.8,
-    "second_pass_threads": 2,
-    "second_pass_max_wait_s": 1.5
-  },
-  "filter": {
-    "single_char_max_s": 0.6,
-    "single_char_allow": ["对", "好", "是", "行", "不", "哦"],
-    "fillers": ["呃", "嗯", "额", "uh", "um"]
+    "second_pass_threads": 2
   },
   "translate": {
     "server_url": "",
     "threads": 4,
-    "ctx": 1024,
-    "temperature": 0.0,
-    "repeat_penalty": 1.05,
-    "max_tokens_cap": 256,
-    "timeout_s": 10.0,
-    "queue_join_max_chars": 120,
-    "skip_lag_s": 6.0,
     "window_chars": 60
   },
   "overlay": {

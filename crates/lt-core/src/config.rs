@@ -1,138 +1,355 @@
 //! Typed defaults, forgiving validation, and atomic persisted configuration.
 //!
-//! Unknown fields are retained at every table boundary for forward compatibility. Version 1
-//! files are migrated to version 2 when they load.
-use crate::error::{Error, Result};
+//! A wrong type or an unknown choice takes its default, and a number is clamped to its bounds.
+//! Keys the app does not know are dropped on load and named in one message.
+use crate::{
+    error::{Error, Result},
+    types::CaptureMode,
+};
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
-use std::collections::BTreeMap;
 use std::fs::{self, File};
 use std::io::Write;
 use std::path::Path;
 
-pub type ExtraFields = BTreeMap<String, toml::Value>;
+/// The version this build reads and writes. An older file loads as it is and is saved as this.
+pub const CONFIG_VERSION: u32 = 3;
 
 /// The most threads a setting accepts; engines also stay within the PC's logical CPUs.
 pub const MAX_THREADS: u32 = 64;
 
-macro_rules! config_table {
-    ($name:ident { $($(#[$attribute:meta])* $field:ident: $ty:ty = $default:expr),* $(,)? }) => {
-        #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-        #[serde(default)]
-        pub struct $name {
-            $($(#[$attribute])* pub $field: $ty,)*
-            #[serde(flatten)]
-            pub extra: ExtraFields,
-        }
-        impl Default for $name {
-            fn default() -> Self {
-                Self { $($field: $default,)* extra: BTreeMap::new() }
-            }
-        }
-    };
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum OverlayStyle {
+    #[default]
+    Panel,
+    Flow,
 }
 
-config_table!(Config {
-    config_version: u32 = 2,
-    capture: CaptureConfig = CaptureConfig::default(),
-    audio: AudioConfig = AudioConfig::default(),
-    asr: AsrConfig = AsrConfig::default(),
-    filter: FilterConfig = FilterConfig::default(),
-    translate: TranslateConfig = TranslateConfig::default(),
-    overlay: OverlayConfig = OverlayConfig::default(),
-    performance: PerformanceConfig = PerformanceConfig::default(),
-    hotkeys: HotkeysConfig = HotkeysConfig::default(),
-    transcript: TranscriptConfig = TranscriptConfig::default(),
-    logging: LoggingConfig = LoggingConfig::default(),
-    models: ModelsConfig = ModelsConfig::default(),
-});
-config_table!(CaptureConfig {
-    mode: String = "system".into(),
-    device: String = "default".into(),
-    apps: Vec<CaptureApp> = Vec::new(),
-    autostart: bool = true,
-});
-config_table!(CaptureApp {
-    exe: String = String::new(),
-    name: String = String::new(),
-});
-config_table!(AudioConfig {
-    normalize: bool = true,
-    norm_attack_s: f32 = 1.0,
-    norm_release_s: f32 = 5.0,
-    norm_max_gain_db: f32 = 20.0,
-    norm_gate_dbfs: f32 = -60.0,
-});
-config_table!(AsrConfig {
-    threads: u32 = 1,
-    pause_s: f32 = 0.8,
-    second_pass_threads: u32 = 2,
-    second_pass_max_wait_s: f32 = 1.5,
-});
-config_table!(FilterConfig {
-    single_char_max_s: f32 = 0.6,
-    single_char_allow: Vec<String> = ["对", "好", "是", "行", "不", "哦"].map(String::from).to_vec(),
-    fillers: Vec<String> = ["呃", "嗯", "额", "uh", "um"].map(String::from).to_vec(),
-});
-config_table!(TranslateConfig {
-    server_url: String = String::new(),
-    threads: u32 = 4,
-    ctx: u32 = 1024,
-    temperature: f32 = 0.0,
-    repeat_penalty: f32 = 1.05,
-    /// Above `2 * 120 + 8`, the budget of the longest line the queue joins by default, so only
-    /// a runaway answer reaches it.
-    max_tokens_cap: u32 = 256,
-    timeout_s: f32 = 10.0,
-    queue_join_max_chars: u32 = 120,
-    skip_lag_s: f32 = 6.0,
-    window_chars: u32 = 60,
-});
-config_table!(OverlayConfig {
-    visible: bool = true,
-    style: String = "panel".into(),
-    font_px: u32 = 26,
-    background: f32 = 0.82,
-    show_source: bool = true,
-    panel_edge: String = "right".into(),
-    panel_lines: u32 = 5,
-    flow_lines: u32 = 3,
-    live_source: bool = true,
+impl OverlayStyle {
+    const NAMES: &'static [&'static str] = &["panel", "flow"];
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum PanelEdge {
+    Left,
+    #[default]
+    Right,
+}
+
+impl PanelEdge {
+    const NAMES: &'static [&'static str] = &["left", "right"];
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum LogLevel {
+    Error,
+    Warn,
+    #[default]
+    Info,
+    Debug,
+    Trace,
+}
+
+impl LogLevel {
+    const NAMES: &'static [&'static str] = &["error", "warn", "info", "debug", "trace"];
+
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Error => "error",
+            Self::Warn => "warn",
+            Self::Info => "info",
+            Self::Debug => "debug",
+            Self::Trace => "trace",
+        }
+    }
+}
+
+impl std::fmt::Display for LogLevel {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(self.as_str())
+    }
+}
+
+/// How a load or a patch went: `Info` names a setting the app dropped, `Warn` a value it fixed.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum MessageLevel {
+    Info,
+    Warn,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Message {
+    pub level: MessageLevel,
+    pub text: String,
+}
+
+impl Message {
+    fn info(text: String) -> Self {
+        Self {
+            level: MessageLevel::Info,
+            text,
+        }
+    }
+
+    fn warn(text: String) -> Self {
+        Self {
+            level: MessageLevel::Warn,
+            text,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Config {
+    pub config_version: u32,
+    pub capture: CaptureConfig,
+    pub audio: AudioConfig,
+    pub asr: AsrConfig,
+    pub translate: TranslateConfig,
+    pub overlay: OverlayConfig,
+    pub performance: PerformanceConfig,
+    pub hotkeys: HotkeysConfig,
+    pub transcript: TranscriptConfig,
+    pub logging: LoggingConfig,
+    pub models: ModelsConfig,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            config_version: CONFIG_VERSION,
+            capture: CaptureConfig::default(),
+            audio: AudioConfig::default(),
+            asr: AsrConfig::default(),
+            translate: TranslateConfig::default(),
+            overlay: OverlayConfig::default(),
+            performance: PerformanceConfig::default(),
+            hotkeys: HotkeysConfig::default(),
+            transcript: TranscriptConfig::default(),
+            logging: LoggingConfig::default(),
+            models: ModelsConfig::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct CaptureConfig {
+    pub mode: CaptureMode,
+    pub device: String,
+    pub apps: Vec<CaptureApp>,
+    pub autostart: bool,
+}
+
+impl Default for CaptureConfig {
+    fn default() -> Self {
+        Self {
+            mode: CaptureMode::System,
+            device: "default".into(),
+            apps: Vec::new(),
+            autostart: true,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct CaptureApp {
+    pub exe: String,
+    pub name: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct AudioConfig {
+    pub normalize: bool,
+}
+
+impl Default for AudioConfig {
+    fn default() -> Self {
+        Self { normalize: true }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct AsrConfig {
+    pub threads: u32,
+    pub pause_s: f32,
+    pub second_pass_threads: u32,
+}
+
+impl Default for AsrConfig {
+    fn default() -> Self {
+        Self {
+            threads: 1,
+            pause_s: 0.8,
+            second_pass_threads: 2,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct TranslateConfig {
+    pub server_url: String,
+    pub threads: u32,
+    pub window_chars: u32,
+}
+
+impl Default for TranslateConfig {
+    fn default() -> Self {
+        Self {
+            server_url: String::new(),
+            threads: 4,
+            window_chars: 60,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct OverlayConfig {
+    pub visible: bool,
+    pub style: OverlayStyle,
+    pub font_px: u32,
+    pub background: f32,
+    pub show_source: bool,
+    pub panel_edge: PanelEdge,
+    pub panel_lines: u32,
+    pub flow_lines: u32,
+    pub live_source: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    panel_rect: Option<OverlayRect> = None,
+    pub panel_rect: Option<OverlayRect>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    flow_rect: Option<OverlayRect> = None,
-});
-config_table!(PerformanceConfig {
-    low_priority: bool = true,
-});
-config_table!(OverlayRect {
-    monitor: String = String::new(),
-    x: f64 = 0.0,
-    y: f64 = 0.0,
-    w: f64 = 960.0,
-    h: f64 = 140.0,
-});
-config_table!(HotkeysConfig {
-    move_lock: String = "Ctrl+Shift+L".into(),
-    show_hide: String = "Ctrl+Shift+H".into(),
-    pause: String = "Ctrl+Shift+P".into(),
+    pub flow_rect: Option<OverlayRect>,
+}
+
+impl Default for OverlayConfig {
+    fn default() -> Self {
+        Self {
+            visible: true,
+            style: OverlayStyle::Panel,
+            font_px: 26,
+            background: 0.82,
+            show_source: true,
+            panel_edge: PanelEdge::Right,
+            panel_lines: 5,
+            flow_lines: 3,
+            live_source: true,
+            panel_rect: None,
+            flow_rect: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct OverlayRect {
+    pub monitor: String,
+    pub x: f64,
+    pub y: f64,
+    pub w: f64,
+    pub h: f64,
+}
+
+impl Default for OverlayRect {
+    fn default() -> Self {
+        Self {
+            monitor: String::new(),
+            x: 0.0,
+            y: 0.0,
+            w: 960.0,
+            h: 140.0,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct PerformanceConfig {
+    pub low_priority: bool,
+}
+
+impl Default for PerformanceConfig {
+    fn default() -> Self {
+        Self { low_priority: true }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct HotkeysConfig {
+    pub move_lock: String,
+    pub show_hide: String,
+    pub pause: String,
     /// The overlay lets clicks through, so without a key the control window is reachable only
     /// from the tray.
-    settings: String = "Ctrl+Shift+S".into(),
-});
-config_table!(TranscriptConfig {
-    enabled: bool = true,
-    retention_days: u32 = 30,
-});
-config_table!(LoggingConfig {
-    level: String = "info".into(),
-    keep_files: u32 = 5,
-});
-config_table!(ModelsConfig {
-    source: String = "huggingface".into(),
-    dir: String = String::new(),
-});
+    pub settings: String,
+}
+
+impl Default for HotkeysConfig {
+    fn default() -> Self {
+        Self {
+            move_lock: "Ctrl+Shift+L".into(),
+            show_hide: "Ctrl+Shift+H".into(),
+            pause: "Ctrl+Shift+P".into(),
+            settings: "Ctrl+Shift+S".into(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct TranscriptConfig {
+    pub enabled: bool,
+    pub retention_days: u32,
+}
+
+impl Default for TranscriptConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            retention_days: 30,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct LoggingConfig {
+    pub level: LogLevel,
+    pub keep_files: u32,
+}
+
+impl Default for LoggingConfig {
+    fn default() -> Self {
+        Self {
+            level: LogLevel::Info,
+            keep_files: 5,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ModelsConfig {
+    pub source: String,
+    pub dir: String,
+}
+
+impl Default for ModelsConfig {
+    fn default() -> Self {
+        Self {
+            source: "huggingface".into(),
+            dir: String::new(),
+        }
+    }
+}
 
 /// The logical CPUs of this PC: the most threads an engine gets.
 pub fn logical_cpus() -> u32 {
@@ -165,128 +382,69 @@ impl TranslateConfig {
     );
 }
 
-/// Version 1 keys that version 2 keeps under a new name.
-const V1_RENAMED: [(&str, &str); 2] = [
-    ("asr.stream_pause_s", "asr.pause_s"),
-    ("latency.low_priority", "performance.low_priority"),
-];
+/// Every bounded number and its bounds. The TOML pre-pass and `validate` both read this list.
+macro_rules! limits {
+    ($($table:ident.$field:ident => $min:expr, $max:expr;)*) => {
+        const LIMITS: &[(&str, f64, f64)] = &[
+            $((concat!(stringify!($table), ".", stringify!($field)), $min as f64, $max as f64)),*
+        ];
 
-/// Version 1 keys and tables that version 2 does not have.
-const V1_REMOVED: [&str; 15] = [
-    "vad",
-    "routing",
-    "join",
-    "latency",
-    "asr.engine",
-    "asr.language",
-    "asr.use_itn",
-    "asr.stream_chunk_ms",
-    "asr.second_pass",
-    "asr.second_pass_threads",
-    "asr.second_pass_timeout_s",
-    "filter.drop_music",
-    "translate.engine",
-    "translate.target",
-    "overlay.draft_display",
-];
-
-/// Turn a version 1 document into version 2: renamed keys keep their values, removed keys are
-/// dropped and logged once. Keys that version 1 did not know stay, as for any unknown key.
-fn migrate_v1(value: &mut toml::Value) {
-    let Some(root) = value.as_table_mut() else {
-        return;
-    };
-    let version = root
-        .get("config_version")
-        .and_then(toml::Value::as_integer)
-        .unwrap_or(1);
-    if version != 1 {
-        return;
-    }
-    for (from, to) in V1_RENAMED {
-        if let Some(moved) = take(root, from) {
-            let (table, key) = to.split_once('.').unwrap_or(("", to));
-            if let Some(target) = root
-                .entry(table)
-                .or_insert_with(|| toml::Value::Table(toml::Table::new()))
-                .as_table_mut()
-            {
-                target.insert(key.into(), moved);
-            }
+        fn clamp_all(config: &mut Config, messages: &mut Vec<String>) {
+            let defaults = Config::default();
+            $(
+                clamp_number(
+                    &mut config.$table.$field,
+                    $min,
+                    $max,
+                    defaults.$table.$field,
+                    concat!(stringify!($table), ".", stringify!($field)),
+                    messages,
+                );
+            )*
         }
-    }
-    // Version 1 used 0 for "automatic", which meant 2 threads.
-    if let Some(threads) = root
-        .get_mut("translate")
-        .and_then(|translate| translate.get_mut("threads"))
-        .filter(|threads| threads.as_integer() == Some(0))
-    {
-        *threads = toml::Value::Integer(2);
-    }
-    let dropped: Vec<&str> = V1_REMOVED
-        .into_iter()
-        .filter(|path| take(root, path).is_some())
-        .collect();
-    root.insert("config_version".into(), toml::Value::Integer(2));
-    tracing::info!(?dropped, "settings migrated from version 1");
+    };
 }
 
-/// Version 2 values that the app no longer has take the default without a warning: the user
-/// did not choose them wrong, the app dropped them.
-fn retire_v2(value: &mut toml::Value) {
-    let Some(root) = value.as_table_mut() else {
-        return;
-    };
-    if take(root, "asr.second_pass").is_some() {
-        tracing::info!("asr.second_pass was removed");
-    }
-    if take(root, "asr.second_pass_min_logprob").is_some() {
-        tracing::info!("asr.second_pass_min_logprob was removed");
-    }
-    // One translation model is left, so its key is gone.
-    if take(root, "translate.model").is_some() {
-        tracing::info!("translate.model was removed");
-    }
-    if take(root, "translate.glossary").is_some() {
-        tracing::info!("translate.glossary was removed");
-    }
-    if take(root, "asr.chunk_ms").is_some() {
-        tracing::info!("asr.chunk_ms was removed");
-    }
-    if take(root, "asr.decoding").is_some() {
-        tracing::info!("asr.decoding was removed");
-    }
-    if take(root, "filter.skip_music").is_some() {
-        tracing::info!("filter.skip_music was removed");
-    }
-    if take(root, "translate.fragment_ellipsis").is_some() {
-        tracing::info!("translate.fragment_ellipsis was removed");
-    }
-    if take(root, "overlay.expire_s").is_some() {
-        tracing::info!("overlay.expire_s was removed");
-    }
-    if take(root, "overlay.bar_rect").is_some() {
-        tracing::info!("overlay.bar_rect was removed");
-    }
-    if let Some(overlay) = root.get_mut("overlay").and_then(toml::Value::as_table_mut) {
-        if overlay.get("style").and_then(toml::Value::as_str) == Some("bar") {
-            overlay.insert("style".into(), toml::Value::String("panel".into()));
-            tracing::info!("overlay.style \"bar\" was removed; using \"panel\"");
-        }
-    }
+limits! {
+    asr.threads => 1, MAX_THREADS;
+    asr.pause_s => 0.3, 3.0;
+    asr.second_pass_threads => 1, MAX_THREADS;
+    translate.threads => 1, MAX_THREADS;
+    translate.window_chars => 0, 60;
+    overlay.font_px => 12, 40;
+    overlay.background => 0.0, 1.0;
+    overlay.panel_lines => 1, 10;
+    overlay.flow_lines => 1, 10;
+    transcript.retention_days => 0, u32::MAX;
+    logging.keep_files => 0, u32::MAX;
 }
 
-/// Remove `table.key` (or a whole top-level table) and return its value.
-fn take(root: &mut toml::Table, path: &str) -> Option<toml::Value> {
-    match path.split_once('.') {
-        Some((table, key)) => root.get_mut(table)?.as_table_mut()?.remove(key),
-        None => root.remove(path),
-    }
+/// A saved choice that the app now spells differently.
+const VALUE_MIGRATIONS: &[(&str, &str, &str)] = &[("overlay.style", "bar", "panel")];
+
+const MODEL_SOURCES: &[&str] = &["huggingface", "modelscope"];
+
+fn choices(path: &str) -> Option<&'static [&'static str]> {
+    Some(match path {
+        "capture.mode" => CaptureMode::NAMES,
+        "overlay.style" => OverlayStyle::NAMES,
+        "overlay.panel_edge" => PanelEdge::NAMES,
+        "logging.level" => LogLevel::NAMES,
+        "models.source" => MODEL_SOURCES,
+        _ => return None,
+    })
+}
+
+fn limits(path: &str) -> Option<(f64, f64)> {
+    LIMITS
+        .iter()
+        .find(|(name, _, _)| *name == path)
+        .map(|(_, min, max)| (*min, *max))
 }
 
 impl Config {
     /// A missing file is a first run and returns built-in defaults.
-    pub fn load(path: impl AsRef<Path>) -> Result<(Self, Vec<String>)> {
+    pub fn load(path: impl AsRef<Path>) -> Result<(Self, Vec<Message>)> {
         match fs::read_to_string(path.as_ref()) {
             Ok(contents) => Self::from_toml(&contents),
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
@@ -296,49 +454,60 @@ impl Config {
         }
     }
 
-    pub fn from_toml(contents: &str) -> Result<(Self, Vec<String>)> {
+    pub fn from_toml(contents: &str) -> Result<(Self, Vec<Message>)> {
         let value = toml::from_str::<toml::Value>(contents).map_err(config_error)?;
         Self::from_value(value)
     }
 
-    pub fn from_json(value: JsonValue) -> Result<(Self, Vec<String>)> {
+    pub fn from_json(value: JsonValue) -> Result<(Self, Vec<Message>)> {
         let mut config = Self::default();
         let messages = config.merge_patch(value)?;
         Ok((config, messages))
     }
 
-    fn from_value(mut value: toml::Value) -> Result<(Self, Vec<String>)> {
-        if !value.is_table() {
+    fn from_value(mut value: toml::Value) -> Result<(Self, Vec<Message>)> {
+        let Some(table) = value.as_table_mut() else {
             return Err(Error::Config(
                 "configuration must be an object/table".into(),
             ));
-        }
+        };
         let mut messages = Vec::new();
-        migrate_v1(&mut value);
-        retire_v2(&mut value);
-        let schema = schema()?;
-        normalize_types(&mut value, &schema, "", &mut messages);
-        let mut config: Self = value.clone().try_into().map_err(config_error)?;
-        // serde's flattened-field buffer erases TOML's native datetime type.
-        // Recover unknown values from the parsed document before validation.
-        config.restore_extra(&value, &schema);
-        messages.extend(config.validate());
-        for message in &messages {
-            tracing::warn!(message = %message, "config validation");
+        let mut dropped = Vec::new();
+        if table
+            .remove("config_version")
+            .is_some_and(|version| !version.is_integer())
+        {
+            messages.push(Message::warn(format!(
+                "config_version: invalid type; using {CONFIG_VERSION}"
+            )));
         }
+        let schema = schema()?;
+        if let Some(schema) = schema.as_table() {
+            normalize_table(table, schema, "", &mut messages, &mut dropped);
+        }
+        if !dropped.is_empty() {
+            messages.push(Message::info(format!(
+                "dropped unknown settings: {}",
+                dropped.join(", ")
+            )));
+        }
+        table.insert(
+            "config_version".into(),
+            toml::Value::Integer(i64::from(CONFIG_VERSION)),
+        );
+        let mut config: Self = value.try_into().map_err(config_error)?;
+        messages.extend(config.validate().into_iter().map(Message::warn));
         Ok((config, messages))
     }
 
     /// Deep object merge; arrays replace wholesale and null resets a key.
     /// Failed patches leave this configuration untouched.
-    pub fn merge_patch(&mut self, patch: JsonValue) -> Result<Vec<String>> {
+    pub fn merge_patch(&mut self, patch: JsonValue) -> Result<Vec<Message>> {
         if !patch.is_object() {
             return Err(Error::Config(
                 "configuration patch must be an object".into(),
             ));
         }
-        // Document serialization recognizes TOML's datetime marker, unlike the
-        // generic Value serializer used behind flattened serde fields.
         let mut value = toml::from_str::<toml::Value>(&self.to_toml()?).map_err(config_error)?;
         apply_patch(&mut value, patch)?;
         let (next, messages) = Self::from_value(value)?;
@@ -388,69 +557,10 @@ impl Config {
         write_result.map_err(Error::Io)
     }
 
-    /// Clamp bounded numbers and replace invalid enum values with defaults.
+    /// Clamp bounded numbers and the saved overlay rects.
     pub fn validate(&mut self) -> Vec<String> {
         let mut messages = Vec::new();
-        let defaults = Self::default();
-        macro_rules! number {
-            ($table:ident, $field:ident, $min:expr, $max:expr) => {
-                clamp_number(
-                    &mut self.$table.$field,
-                    $min,
-                    $max,
-                    defaults.$table.$field,
-                    concat!(stringify!($table), ".", stringify!($field)),
-                    &mut messages,
-                );
-            };
-        }
-        macro_rules! choice {
-            ($table:ident, $field:ident, $values:expr) => {
-                validate_choice(
-                    &mut self.$table.$field,
-                    $values,
-                    &defaults.$table.$field,
-                    concat!(stringify!($table), ".", stringify!($field)),
-                    &mut messages,
-                );
-            };
-        }
-        clamp_number(
-            &mut self.config_version,
-            2,
-            2,
-            2,
-            "config_version",
-            &mut messages,
-        );
-        choice!(capture, mode, &["system", "apps"]);
-        number!(audio, norm_attack_s, 0.1, 5.0);
-        number!(audio, norm_release_s, 0.5, 20.0);
-        number!(audio, norm_max_gain_db, 0.0, 30.0);
-        number!(audio, norm_gate_dbfs, -90.0, -30.0);
-        number!(asr, threads, 1, MAX_THREADS);
-        number!(asr, pause_s, 0.3, 3.0);
-        number!(asr, second_pass_threads, 1, MAX_THREADS);
-        number!(asr, second_pass_max_wait_s, 0.5, 5.0);
-        // No maximum is specified for this duration; it must remain finite.
-        number!(filter, single_char_max_s, 0.0, f32::MAX);
-        number!(translate, threads, 1, MAX_THREADS);
-        number!(translate, ctx, 512, 4096);
-        number!(translate, temperature, 0.0, 1.0);
-        number!(translate, repeat_penalty, 1.0, 1.3);
-        number!(translate, max_tokens_cap, 32, 1024);
-        number!(translate, timeout_s, 2.0, 60.0);
-        number!(translate, queue_join_max_chars, 20, 300);
-        number!(translate, skip_lag_s, 2.0, 30.0);
-        number!(translate, window_chars, 0, 60);
-        number!(overlay, font_px, 12, 40);
-        number!(overlay, background, 0.0, 1.0);
-        number!(overlay, panel_lines, 1, 10);
-        number!(overlay, flow_lines, 1, 10);
-        choice!(overlay, style, &["panel", "flow"]);
-        choice!(overlay, panel_edge, &["left", "right"]);
-        choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
-        choice!(models, source, &["huggingface", "modelscope"]);
+        clamp_all(self, &mut messages);
         for (name, rect) in [
             ("overlay.panel_rect", &mut self.overlay.panel_rect),
             ("overlay.flow_rect", &mut self.overlay.flow_rect),
@@ -491,97 +601,7 @@ impl Config {
                 );
             }
         }
-        self.unknown_messages(&mut messages);
         messages
-    }
-
-    fn unknown_messages(&self, messages: &mut Vec<String>) {
-        unknown_fields(&self.extra, "", messages);
-        macro_rules! table {
-            ($($name:ident),* $(,)?) => { $(unknown_fields(&self.$name.extra, stringify!($name), messages);)* };
-        }
-        table!(
-            capture,
-            audio,
-            asr,
-            filter,
-            translate,
-            overlay,
-            performance,
-            hotkeys,
-            transcript,
-            logging,
-            models
-        );
-        for (index, app) in self.capture.apps.iter().enumerate() {
-            unknown_fields(&app.extra, &format!("capture.apps[{index}]"), messages);
-        }
-        if let Some(rect) = &self.overlay.panel_rect {
-            unknown_fields(&rect.extra, "overlay.panel_rect", messages);
-        }
-        if let Some(rect) = &self.overlay.flow_rect {
-            unknown_fields(&rect.extra, "overlay.flow_rect", messages);
-        }
-    }
-
-    fn restore_extra(&mut self, value: &toml::Value, schema: &toml::Value) {
-        self.extra = extract_unknown(value, schema);
-        macro_rules! table {
-            ($($name:ident),* $(,)?) => { $(
-                if let (Some(value), Some(schema)) = (value.get(stringify!($name)), schema.get(stringify!($name))) {
-                    self.$name.extra = extract_unknown(value, schema);
-                }
-            )* };
-        }
-        table!(
-            capture,
-            audio,
-            asr,
-            filter,
-            translate,
-            overlay,
-            performance,
-            hotkeys,
-            transcript,
-            logging,
-            models
-        );
-        if let Some(apps) = value
-            .get("capture")
-            .and_then(|capture| capture.get("apps"))
-            .and_then(toml::Value::as_array)
-        {
-            let schema = toml::Value::Table(toml::Table::from_iter([
-                ("exe".into(), toml::Value::String(String::new())),
-                ("name".into(), toml::Value::String(String::new())),
-            ]));
-            for (app, value) in self.capture.apps.iter_mut().zip(apps) {
-                app.extra = extract_unknown(value, &schema);
-            }
-        }
-        if let (Some(overlay), Some(schema)) = (value.get("overlay"), schema.get("overlay")) {
-            for (key, rect) in [
-                ("panel_rect", &mut self.overlay.panel_rect),
-                ("flow_rect", &mut self.overlay.flow_rect),
-            ] {
-                if let (Some(rect), Some(value), Some(schema)) =
-                    (rect, overlay.get(key), schema.get(key))
-                {
-                    rect.extra = extract_unknown(value, schema);
-                }
-            }
-        }
-    }
-}
-
-fn extract_unknown(value: &toml::Value, schema: &toml::Value) -> ExtraFields {
-    match value.as_table() {
-        Some(table) => table
-            .iter()
-            .filter(|(key, _)| schema.get(key.as_str()).is_none())
-            .map(|(key, value)| (key.clone(), value.clone()))
-            .collect(),
-        None => BTreeMap::new(),
     }
 }
 
@@ -602,127 +622,181 @@ fn schema() -> Result<toml::Value> {
     Ok(schema)
 }
 
-fn normalize_types(
+fn capture_app_schema() -> toml::Table {
+    toml::Table::from_iter([
+        ("exe".into(), toml::Value::String(String::new())),
+        ("name".into(), toml::Value::String(String::new())),
+    ])
+}
+
+/// Replace every value in `table` that does not fit its default, and drop keys the schema lacks.
+fn normalize_table(
+    table: &mut toml::Table,
+    schema: &toml::Table,
+    path: &str,
+    messages: &mut Vec<Message>,
+    dropped: &mut Vec<String>,
+) {
+    let mut unknown = Vec::new();
+    for (key, value) in table.iter_mut() {
+        let child = if path.is_empty() {
+            key.clone()
+        } else {
+            format!("{path}.{key}")
+        };
+        let Some(default) = schema.get(key) else {
+            unknown.push(key.clone());
+            continue;
+        };
+        if matches!(child.as_str(), "overlay.panel_rect" | "overlay.flow_rect") && !value.is_table()
+        {
+            messages.push(Message::warn(format!(
+                "{child}: invalid type; using default placement"
+            )));
+            unknown.push(key.clone());
+            continue;
+        }
+        normalize_value(value, default, &child, messages, dropped);
+    }
+    for key in unknown {
+        table.remove(&key);
+        dropped.push(if path.is_empty() {
+            key
+        } else {
+            format!("{path}.{key}")
+        });
+    }
+}
+
+fn normalize_value(
     value: &mut toml::Value,
     default: &toml::Value,
     path: &str,
-    messages: &mut Vec<String>,
+    messages: &mut Vec<Message>,
+    dropped: &mut Vec<String>,
 ) {
-    if let (Some(table), Some(default_table)) = (value.as_table_mut(), default.as_table()) {
-        for (key, field_default) in default_table {
-            if path == "overlay"
-                && matches!(key.as_str(), "panel_rect" | "flow_rect")
-                && table.get(key).is_some_and(|field| !field.is_table())
-            {
-                table.remove(key);
-                messages.push(format!(
-                    "{path}.{key}: invalid type; using default placement"
-                ));
-                continue;
-            }
-            if let Some(field) = table.get_mut(key) {
-                let path = if path.is_empty() {
-                    key.clone()
-                } else {
-                    format!("{path}.{key}")
-                };
-                normalize_types(field, field_default, &path, messages);
+    match default {
+        toml::Value::Table(default_table) => {
+            if let Some(table) = value.as_table_mut() {
+                normalize_table(table, default_table, path, messages, dropped);
+            } else {
+                *value = default.clone();
+                messages.push(Message::warn(format!(
+                    "{path}: invalid type; using default"
+                )));
             }
         }
-        return;
-    }
-    let valid = match (&*value, default) {
-        (toml::Value::String(_), toml::Value::String(_))
-        | (toml::Value::Boolean(_), toml::Value::Boolean(_)) => true,
-        (toml::Value::Integer(number), toml::Value::Integer(_)) => {
-            let (min, max) = integer_range(path);
-            let clamped = (*number).clamp(min, max);
-            if clamped != *number {
-                messages.push(format!("{path}: {number} clamped to {clamped}"));
+        toml::Value::Array(_) => {
+            let valid = value
+                .as_array()
+                .is_some_and(|items| items.iter().all(toml::Value::is_table));
+            if !valid {
+                *value = default.clone();
+                messages.push(Message::warn(format!(
+                    "{path}: invalid type; using default"
+                )));
+                return;
+            }
+            let app_schema = capture_app_schema();
+            if let Some(items) = value.as_array_mut() {
+                for (index, item) in items.iter_mut().enumerate() {
+                    if let Some(table) = item.as_table_mut() {
+                        normalize_table(
+                            table,
+                            &app_schema,
+                            &format!("{path}[{index}]"),
+                            messages,
+                            dropped,
+                        );
+                    }
+                }
+            }
+        }
+        toml::Value::String(_) => {
+            let Some(text) = value.as_str().map(str::to_owned) else {
+                *value = default.clone();
+                messages.push(Message::warn(format!(
+                    "{path}: invalid type; using default"
+                )));
+                return;
+            };
+            if let Some((_, _, to)) = VALUE_MIGRATIONS
+                .iter()
+                .find(|(name, from, _)| *name == path && *from == text)
+            {
+                *value = toml::Value::String((*to).to_owned());
+                messages.push(Message::info(format!("{path} \"{text}\" is now \"{to}\"")));
+                return;
+            }
+            if let Some(allowed) = choices(path) {
+                if !allowed.contains(&text.as_str()) {
+                    let default = default.as_str().unwrap_or_default();
+                    messages.push(Message::warn(format!(
+                        "{path}: invalid value {text:?}; using {default:?}"
+                    )));
+                    *value = toml::Value::String(default.to_owned());
+                }
+            }
+        }
+        toml::Value::Boolean(_) => {
+            if !value.is_bool() {
+                *value = default.clone();
+                messages.push(Message::warn(format!(
+                    "{path}: invalid type; using default"
+                )));
+            }
+        }
+        toml::Value::Integer(_) => {
+            let Some(number) = value.as_integer() else {
+                *value = default.clone();
+                messages.push(Message::warn(format!(
+                    "{path}: invalid type; using default"
+                )));
+                return;
+            };
+            if let Some((min, max)) = limits(path) {
+                let clamped = number.clamp(min as i64, max as i64);
+                if clamped != number {
+                    messages.push(Message::warn(format!(
+                        "{path}: {number} clamped to {clamped}"
+                    )));
+                }
                 *value = toml::Value::Integer(clamped);
             }
-            true
         }
-        (toml::Value::Integer(number), toml::Value::Float(_)) => {
-            let number = *number as f64;
-            normalize_float(value, number, path, messages)
-        }
-        (toml::Value::Float(number), toml::Value::Float(_)) => {
-            let number = *number;
-            normalize_float(value, number, path, messages)
-        }
-        (toml::Value::Array(items), toml::Value::Array(_)) => {
-            if path == "capture.apps" {
-                items.iter().all(toml::Value::is_table)
-            } else {
-                items.iter().all(toml::Value::is_str)
+        toml::Value::Float(_) => {
+            let number = match *value {
+                toml::Value::Integer(number) => number as f64,
+                toml::Value::Float(number) => number,
+                _ => {
+                    *value = default.clone();
+                    messages.push(Message::warn(format!(
+                        "{path}: invalid type; using default"
+                    )));
+                    return;
+                }
+            };
+            if !number.is_finite() {
+                *value = default.clone();
+                messages.push(Message::warn(format!(
+                    "{path}: nonfinite value; using default"
+                )));
+                return;
             }
+            let clamped = limits(path).map_or(number, |(min, max)| number.clamp(min, max));
+            if clamped != number {
+                messages.push(Message::warn(format!(
+                    "{path}: {number} clamped to {clamped}"
+                )));
+            }
+            *value = toml::Value::Float(clamped);
         }
-        _ => false,
-    };
-    if !valid {
-        messages.push(format!(
-            "{path}: invalid type or nonfinite value; using default"
-        ));
-        *value = default.clone();
-        return;
-    }
-    if let Some(items) = value.as_array_mut().filter(|_| path == "capture.apps") {
-        // CaptureApp's default consists solely of two empty strings.
-        let app_schema = toml::Value::Table(toml::Table::from_iter([
-            ("exe".into(), toml::Value::String(String::new())),
-            ("name".into(), toml::Value::String(String::new())),
-        ]));
-        for (index, item) in items.iter_mut().enumerate() {
-            normalize_types(item, &app_schema, &format!("{path}[{index}]"), messages);
+        _ => {
+            *value = default.clone();
+            messages.push(Message::warn(format!(
+                "{path}: invalid type; using default"
+            )));
         }
-    }
-}
-
-fn normalize_float(
-    value: &mut toml::Value,
-    number: f64,
-    path: &str,
-    messages: &mut Vec<String>,
-) -> bool {
-    if !number.is_finite() {
-        return false;
-    }
-    let (min, max) = match path {
-        "audio.norm_attack_s" => (0.1, 5.0),
-        "audio.norm_release_s" => (0.5, 20.0),
-        "audio.norm_max_gain_db" => (0.0, 30.0),
-        "audio.norm_gate_dbfs" => (-90.0, -30.0),
-        "translate.temperature" | "overlay.background" => (0.0, 1.0),
-        "translate.repeat_penalty" => (1.0, 1.3),
-        "translate.timeout_s" => (2.0, 60.0),
-        "translate.skip_lag_s" => (2.0, 30.0),
-        "asr.second_pass_max_wait_s" => (0.5, 5.0),
-        "filter.single_char_max_s" => (0.0, f64::from(f32::MAX)),
-        _ => (f64::MIN, f64::MAX),
-    };
-    let clamped = number.clamp(min, max);
-    if number != clamped {
-        messages.push(format!("{path}: {number} clamped to {clamped}"));
-    }
-    *value = toml::Value::Float(clamped);
-    true
-}
-
-fn integer_range(path: &str) -> (i64, i64) {
-    match path {
-        "config_version" => (2, 2),
-        "asr.threads" | "asr.second_pass_threads" | "translate.threads" => {
-            (1, i64::from(MAX_THREADS))
-        }
-        "translate.ctx" => (512, 4096),
-        "translate.max_tokens_cap" => (32, 1024),
-        "translate.queue_join_max_chars" => (20, 300),
-        "translate.window_chars" => (0, 60),
-        "overlay.font_px" => (12, 40),
-        "overlay.panel_lines" => (1, 10),
-        "overlay.flow_lines" => (1, 10),
-        _ => (0, i64::from(u32::MAX)),
     }
 }
 
@@ -744,6 +818,7 @@ impl ConfigNumber for f64 {
         self.is_finite()
     }
 }
+
 fn clamp_number<T: ConfigNumber>(
     value: &mut T,
     min: T,
@@ -765,32 +840,6 @@ fn clamp_number<T: ConfigNumber>(
     }
     if original.is_finite() && *value != original {
         messages.push(format!("{path}: {original} clamped to {value}"));
-    }
-}
-
-fn validate_choice(
-    value: &mut String,
-    allowed: &[&str],
-    default: &str,
-    path: &str,
-    messages: &mut Vec<String>,
-) {
-    if !allowed.contains(&value.as_str()) {
-        messages.push(format!(
-            "{path}: invalid value {value:?}; using default {default:?}"
-        ));
-        *value = default.into();
-    }
-}
-
-fn unknown_fields(fields: &ExtraFields, path: &str, messages: &mut Vec<String>) {
-    for key in fields.keys() {
-        let path = if path.is_empty() {
-            key.clone()
-        } else {
-            format!("{path}.{key}")
-        };
-        messages.push(format!("{path}: unknown key preserved"));
     }
 }
 

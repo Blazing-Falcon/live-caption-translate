@@ -32,6 +32,8 @@ const LOAD_ARGS: [&str; 4] = ["--load-mode", "none", "--cache-ram", "0"];
 /// here is one short prompt, so 128 rows are enough. This lowers commit charge; the weights are
 /// the working set and it does not touch them. `-b` must not be below `-ub`.
 const BATCH_ARGS: [&str; 4] = ["-ub", "128", "-b", "512"];
+/// The prompt context llama-server allocates (`-c`).
+const CONTEXT: u32 = 1024;
 const NAME: &str = "Translator";
 
 #[derive(Clone, Debug)]
@@ -40,7 +42,6 @@ pub struct ServerOptions {
     pub model: PathBuf,
     pub threads: u32,
     pub context: u32,
-    pub translate: TranslateConfig,
     pub load_timeout: Duration,
     /// Run the child at below-normal priority (`performance.low_priority`).
     pub below_normal: bool,
@@ -55,8 +56,7 @@ impl ServerOptions {
             binary,
             model,
             threads: config.server_threads(),
-            context: config.ctx,
-            translate: config.clone(),
+            context: CONTEXT,
             load_timeout: Duration::from_secs(60),
             below_normal: false,
             #[cfg(test)]
@@ -330,12 +330,8 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         }
         sleep_checked(&state.cancelled, Duration::from_millis(100));
     }
-    let warm_up_control = control(
-        &state.cancelled,
-        Duration::from_secs_f64(f64::from(options.translate.timeout_s)),
-    );
-    crate::client::OpenAiCompatTranslator::new(&state.url, options.translate.clone())?
-        .warm_up(&warm_up_control)?;
+    let warm_up_control = control(&state.cancelled, lt_core::engines::REQUEST_TIMEOUT);
+    crate::client::OpenAiCompatTranslator::new(&state.url)?.warm_up(&warm_up_control)?;
     state.ready.store(true, Ordering::Release);
     status(&state.bus, EngineState::Ready, None);
     let mut unhealthy = 0;
@@ -703,11 +699,7 @@ mod tests {
         }
         assert!(restarting && ready);
         assert_ne!(supervisor.child_pid().load(Ordering::Acquire), first_pid);
-        let mut translator = crate::client::OpenAiCompatTranslator::new(
-            supervisor.url(),
-            TranslateConfig::default(),
-        )
-        .unwrap();
+        let mut translator = crate::client::OpenAiCompatTranslator::new(supervisor.url()).unwrap();
         let request = TranslateRequest {
             id: UtteranceId(1),
             text: "你好。",

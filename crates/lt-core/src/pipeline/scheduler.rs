@@ -281,13 +281,7 @@ pub(super) fn scheduler_loop(
         running_text: RunningText::default(),
         previewing: None,
     };
-    let mut worker = TranslatorWorker::start(
-        translator,
-        config.translate,
-        clock.clone(),
-        bus,
-        cancelled.clone(),
-    )?;
+    let mut worker = TranslatorWorker::start(translator, clock.clone(), bus, cancelled.clone())?;
     let mut front_done = false;
     let mut asr_done = false;
     let mut pending_asr = None;

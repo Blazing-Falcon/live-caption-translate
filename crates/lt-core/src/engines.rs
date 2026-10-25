@@ -179,11 +179,16 @@ impl EngineRegistry {
     }
 }
 
+/// One request's time limit, including the stream.
+pub const REQUEST_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(10);
+/// Above `2 * 120 + 8`, the budget of the longest line the queue joins, so only a runaway
+/// answer reaches it.
+const MAX_TOKENS_CAP: u32 = 256;
+
 /// An output budget from the source length. English takes about 1.5 tokens per source
 /// character (p99 3.0 on our session), so `2 * chars + 8` bounds a runaway without cutting a
-/// real answer. The cap must stay above the budget of the longest line the queue joins: a
-/// joined line cut at the cap is retried with the same budget and cut again.
-pub fn max_tokens(text: &str, cap: u32) -> u32 {
+/// real answer. A joined line cut at the cap is retried with the same budget and cut again.
+pub fn max_tokens(text: &str) -> u32 {
     let wanted = text.chars().count().saturating_mul(2).saturating_add(8);
-    wanted.max(24).min(cap as usize) as u32
+    wanted.max(24).min(MAX_TOKENS_CAP as usize) as u32
 }

@@ -1,6 +1,5 @@
 //! Shared UTF-8 JSONL session/terminal records for replay and the desktop app.
 use crate::bus::{EventBus, EventReceiver};
-use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::events::{FailReason, PipelineEvent};
 use crate::types::{CaptureMode, CutReason, SecondPass, TextClass, Timing, UtteranceId};
@@ -26,10 +25,10 @@ pub struct SessionConfig {
     pub skip_lag_s: f64,
 }
 
-impl From<&Config> for SessionConfig {
-    fn from(config: &Config) -> Self {
+impl Default for SessionConfig {
+    fn default() -> Self {
         Self {
-            skip_lag_s: readable_f32(config.translate.skip_lag_s),
+            skip_lag_s: crate::queue::SKIP_LAG_S,
         }
     }
 }
@@ -46,15 +45,6 @@ pub fn recognizer_name() -> String {
 
 /// The second-pass recognizer named in session headers.
 pub const SECOND_PASS_NAME: &str = "xasr_offline";
-
-fn readable_f32(value: f32) -> f64 {
-    // f32's shortest decimal round-trips the setting without exposing binary
-    // widening artifacts such as 0.4000000059604645 in the session header.
-    match value.to_string().parse::<f64>() {
-        Ok(decimal) => decimal,
-        Err(_) => f64::from(value),
-    }
-}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SessionHeader {

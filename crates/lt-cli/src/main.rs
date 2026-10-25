@@ -11,7 +11,7 @@ use anyhow::bail;
 use anyhow::{Context, Result};
 use args::{Cli, Commands, ModelCommands};
 use clap::Parser;
-use lt_core::config::Config;
+use lt_core::config::{Config, MessageLevel};
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
@@ -25,16 +25,23 @@ fn main() -> Result<()> {
         Commands::Live(args) => args.config.as_deref(),
         Commands::Models { .. } => None,
     };
-    let config = engines::config(config_path)?;
+    let (config, messages) = engines::config(config_path)?;
     let filter = std::env::var("LT_LOG")
         .or_else(|_| std::env::var("RUST_LOG"))
-        .unwrap_or_else(|_| config.logging.level.clone());
+        .unwrap_or_else(|_| config.logging.level.to_string());
     tracing_subscriber::fmt()
         .with_writer(std::io::stderr)
         .with_env_filter(
             tracing_subscriber::EnvFilter::try_new(filter).context("Invalid logging filter")?,
         )
         .init();
+    for message in &messages {
+        if message.level == MessageLevel::Warn {
+            tracing::warn!(message = %message.text, "Config");
+        } else {
+            tracing::info!(message = %message.text, "Config");
+        }
+    }
     let cancelled = Arc::new(AtomicBool::new(false));
     let signal_flag = cancelled.clone();
     ctrlc::set_handler(move || signal_flag.store(true, Ordering::Release))

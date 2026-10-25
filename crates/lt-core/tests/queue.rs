@@ -1,7 +1,7 @@
 use lt_core::{
     bus::EventBus,
     clock::{Clock, ManualClock},
-    config::{Config, TranslateConfig},
+    config::TranslateConfig,
     events::{EngineState, FailReason, PipelineEvent},
     fakes::FakeTranslator,
     queue::{
@@ -26,11 +26,8 @@ use std::{
 const WATCHDOG: Duration = Duration::from_secs(30);
 
 /// A request with no earlier lines.
-fn translation(config: &TranslateConfig) -> Translation<'_> {
-    Translation {
-        context: &[],
-        config,
-    }
+fn translation() -> Translation<'static> {
+    Translation { context: &[] }
 }
 
 fn transcript(id: u64, text: &str, end: f64) -> Transcript {
@@ -54,18 +51,18 @@ fn transcript(id: u64, text: &str, end: f64) -> Transcript {
 
 #[test]
 fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
-    let mut cfg = Config::default().translate;
-    cfg.queue_join_max_chars = 7;
-    let mut queue = TranslationQueue::new(cfg);
+    // Two 60-character lines fill the 120-character join limit; the third starts a new request.
+    let line = format!("{}。", "你".repeat(59));
+    let mut queue = TranslationQueue::new(TranslateConfig::default());
     for id in 1..=3 {
         queue
-            .push(transcript(id, "你好。", id as f64), id * 1000)
+            .push(transcript(id, &line, f64::from(id as u32)), id * 1000)
             .unwrap();
     }
     let batch = queue.take(StreamTime::from_seconds(3.0));
     let item = batch.item.unwrap();
     assert_eq!(item.transcript.id, UtteranceId(1));
-    assert_eq!(item.transcript.text, "你好，你好。");
+    assert_eq!(item.transcript.text, line.replacen('。', "，", 1) + &line);
     assert_eq!(item.transcript.absorbed, vec![UtteranceId(2)]);
     assert_eq!(item.transcript.timing.end, StreamTime::from_seconds(2.0));
     assert!(matches!(&batch.events[0], PipelineEvent::Joined { .. }));
@@ -81,7 +78,7 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
 
     // Lines on either side of a break, or of a gap of more than 10 s, belong to different
     // contexts and are never translated as one sentence.
-    let mut queue = TranslationQueue::new(Config::default().translate);
+    let mut queue = TranslationQueue::new(TranslateConfig::default());
     queue.push(transcript(1, "你好。", 1.0), 0).unwrap();
     queue.discontinuity(StreamTime::from_seconds(1.5));
     queue.push(transcript(2, "再见。", 3.0), 0).unwrap();
@@ -99,8 +96,10 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
 /// other check.
 #[test]
 fn window_grows_until_full_and_restarts_after_a_gap_or_a_break() {
-    let mut config = Config::default().translate;
-    config.window_chars = 10;
+    let config = TranslateConfig {
+        window_chars: 10,
+        ..TranslateConfig::default()
+    };
     let mut queue = TranslationQueue::new(config);
     let next = |queue: &mut TranslationQueue, id: u64, text: &str, end: f64| {
         queue.push(transcript(id, text, end), 0).unwrap();
@@ -142,8 +141,10 @@ fn window_grows_until_full_and_restarts_after_a_gap_or_a_break() {
 /// line. A sliding window would change the prefix on every line.
 #[test]
 fn consecutive_windows_extend_each_other_until_the_window_fills() {
-    let mut config = Config::default().translate;
-    config.window_chars = 60;
+    let config = TranslateConfig {
+        window_chars: 60,
+        ..TranslateConfig::default()
+    };
     let mut queue = TranslationQueue::new(config);
     let mut previous: Vec<String> = Vec::new();
     for (id, text) in [
@@ -172,7 +173,7 @@ fn consecutive_windows_extend_each_other_until_the_window_fills() {
 
 #[test]
 fn skip_at_more_than_six_seconds_only_and_keep_newest() {
-    let mut queue = TranslationQueue::new(Config::default().translate);
+    let mut queue = TranslationQueue::new(TranslateConfig::default());
     queue.push(transcript(1, "你好。", 1.0), 1000).unwrap();
     queue.push(transcript(2, "再见。", 2.0), 2000).unwrap();
     let batch = queue.take(StreamTime::from_seconds(7.5));
@@ -186,7 +187,7 @@ fn skip_at_more_than_six_seconds_only_and_keep_newest() {
     ));
     assert_eq!(batch.item.unwrap().transcript.id, UtteranceId(2));
     for live in [6.9, 7.0] {
-        let mut queue = TranslationQueue::new(Config::default().translate);
+        let mut queue = TranslationQueue::new(TranslateConfig::default());
         queue.push(transcript(1, "你好。", 1.0), 1000).unwrap();
         queue.push(transcript(2, "再见。", 2.0), 2000).unwrap();
         assert_eq!(queue.take(StreamTime::from_seconds(live)).skipped, 0);
@@ -229,7 +230,7 @@ fn wrappers_runaway_echo_and_leaked_chinese_are_checked() {
         let event = translate_one(
             &mut fake,
             &item,
-            &translation(&Config::default().translate),
+            &translation(),
             &clock,
             &bus,
             Arc::new(AtomicBool::new(false)),
@@ -289,7 +290,6 @@ fn worker_pairs_window_lines_with_their_own_english_and_stops_at_a_line_without_
     let stop = Arc::new(AtomicBool::new(false));
     let mut worker = TranslatorWorker::start(
         Box::new(ContextRecorder { seen: seen.clone() }),
-        Config::default().translate,
         clock,
         EventBus::default(),
         stop,
@@ -340,11 +340,8 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
     fake.responses
         .insert("你好。".into(), "Hello there.".into());
     let metrics = fake.metrics.clone();
-    // Only the endless request reaches this; the other one returns at once.
-    let mut config = Config::default().translate;
-    config.timeout_s = 0.5;
     let stop = Arc::new(AtomicBool::new(false));
-    let mut worker = TranslatorWorker::start(Box::new(fake), config, clock, bus, stop).unwrap();
+    let mut worker = TranslatorWorker::start(Box::new(fake), clock, bus, stop).unwrap();
     worker
         .input
         .send(QueuedTranscript {
@@ -475,9 +472,6 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     fake.wait_after_stream = true;
     let reached_end = fake.reached_end.clone();
     let cancelled = Arc::new(AtomicBool::new(false));
-    // The abort ends the request long before this; reaching it fails the test below.
-    let mut config = Config::default().translate;
-    config.timeout_s = 5.0;
     let item = QueuedTranscript {
         transcript: transcript(1, "你好。", 1.0),
         queued_ms: 1200,
@@ -489,7 +483,7 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     let event = translate_one(
         &mut fake,
         &item,
-        &translation(&config),
+        &translation(),
         &clock,
         &bus,
         cancelled.clone(),
@@ -506,14 +500,7 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
     // An abort belongs to one request; the same pipeline cancellation flag can
     // be reused for the next request without suppressing it.
     let mut next = ScriptedTranslator::new(clock.clone(), &["Goodbye."], "Goodbye.");
-    let next_event = translate_one(
-        &mut next,
-        &item,
-        &translation(&config),
-        &clock,
-        &bus,
-        cancelled,
-    );
+    let next_event = translate_one(&mut next, &item, &translation(), &clock, &bus, cancelled);
     assert!(
         matches!(next_event, PipelineEvent::TranslationFinal { text, .. } if text == "Goodbye.")
     );

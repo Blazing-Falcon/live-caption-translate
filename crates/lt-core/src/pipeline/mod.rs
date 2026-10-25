@@ -103,7 +103,6 @@ impl Pipeline {
 
         let asr_cancel = cancelled.clone();
         let asr_bus = bus.clone();
-        let asr_config = config.clone();
         let asr_notices = asr::AsrNotices {
             notices: front_tx.clone(),
             clause_counts: clause_counts.clone(),
@@ -118,7 +117,6 @@ impl Pipeline {
             .spawn(move || {
                 asr::asr_loop(
                     asr,
-                    &asr_config,
                     audio_rx,
                     asr_outputs,
                     &asr_bus,
@@ -129,18 +127,9 @@ impl Pipeline {
         handle.threads.push(asr_thread);
 
         let refine_cancel = cancelled.clone();
-        let refine_config = config.clone();
         let refine_thread = thread::Builder::new()
             .name("lt-refine".into())
-            .spawn(move || {
-                refine::refine_loop(
-                    second_pass,
-                    &refine_config,
-                    refine_rx,
-                    asr_tx,
-                    &refine_cancel,
-                )
-            })?;
+            .spawn(move || refine::refine_loop(second_pass, refine_rx, asr_tx, &refine_cancel))?;
         handle.threads.push(refine_thread);
 
         let scheduler_cancel = cancelled.clone();

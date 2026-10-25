@@ -1362,10 +1362,7 @@ mod tests {
             worker,
             output,
             SourceEvents::new(bus),
-            AudioConfig {
-                normalize: false,
-                ..Default::default()
-            },
+            AudioConfig { normalize: false },
         )
         .unwrap();
         let frames: Vec<_> = receiver.try_iter().collect();

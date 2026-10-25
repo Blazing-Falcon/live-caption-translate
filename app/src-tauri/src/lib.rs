@@ -20,7 +20,10 @@ mod webview2;
 mod windows;
 
 use app::{lock, Shared};
-use lt_core::{bus::EventBus, config::Config};
+use lt_core::{
+    bus::EventBus,
+    config::{Config, Message, MessageLevel},
+};
 use std::{
     sync::{atomic::Ordering, Arc, Mutex, OnceLock},
     time::SystemTime,
@@ -50,7 +53,7 @@ fn set_aside(path: &std::path::Path, error: &lt_core::error::Error) -> String {
 
 fn init_logging(paths: &paths::Paths, config: &Config) {
     let filter = std::env::var("LT_LOG").unwrap_or_else(|_| {
-        let level = &config.logging.level;
+        let level = config.logging.level;
         format!("warn,live_translation_lib={level},lt_core={level},lt_audio={level},lt_llm={level},lt_sherpa={level}")
     });
     let appender = tracing_appender::rolling::Builder::new()
@@ -99,12 +102,21 @@ pub fn run() {
             let (config, messages) = Config::load(&paths.config_file).unwrap_or_else(|error| {
                 (
                     Config::default(),
-                    vec![set_aside(&paths.config_file, &error)],
+                    vec![Message {
+                        level: MessageLevel::Warn,
+                        text: set_aside(&paths.config_file, &error),
+                    }],
                 )
             });
             init_logging(&paths, &config);
-            for message in &messages {
-                tracing::warn!(message, "Config");
+            let mut notices = Vec::new();
+            for message in messages {
+                if message.level == MessageLevel::Warn {
+                    tracing::warn!(message = %message.text, "Config");
+                    notices.push(message.text);
+                } else {
+                    tracing::info!(message = %message.text, "Config");
+                }
             }
             let models = paths.models(&config);
             let state = state::AppState {
@@ -127,7 +139,7 @@ pub fn run() {
                 overlay: Default::default(),
                 tray: Mutex::new(None),
                 quitting: Default::default(),
-                startup_messages: Mutex::new(messages),
+                startup_messages: Mutex::new(notices),
             });
             app.manage(shared.clone());
             controller::spawn(shared.clone(), controller_rx)?;

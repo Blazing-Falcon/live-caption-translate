@@ -435,10 +435,7 @@ mod tests {
         }
     }
     fn no_normalize() -> AudioConfig {
-        AudioConfig {
-            normalize: false,
-            ..AudioConfig::default()
-        }
+        AudioConfig { normalize: false }
     }
 
     #[test]

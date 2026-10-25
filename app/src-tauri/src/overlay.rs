@@ -3,7 +3,7 @@ use crate::{
     app::Shared,
     geometry::{self, Monitor, Physical},
 };
-use lt_core::config::{Config, OverlayRect};
+use lt_core::config::{Config, OverlayRect, OverlayStyle, PanelEdge};
 use std::sync::atomic::{AtomicBool, Ordering};
 use tauri::{
     AppHandle, Manager, PhysicalPosition, PhysicalSize, WebviewUrl, WebviewWindow,
@@ -65,10 +65,10 @@ impl Overlay {
         let Some((monitors, primary)) = monitors(&window) else {
             return;
         };
-        let style = config.overlay.style.as_str();
+        let style = config.overlay.style;
         let saved = match style {
-            "panel" => config.overlay.panel_rect.as_ref(),
-            _ => config.overlay.flow_rect.as_ref(),
+            OverlayStyle::Panel => config.overlay.panel_rect.as_ref(),
+            OverlayStyle::Flow => config.overlay.flow_rect.as_ref(),
         };
         let name = saved.map_or("", |rect| rect.monitor.as_str());
         let Some(monitor) = geometry::pick(name, &monitors, primary) else {
@@ -77,7 +77,9 @@ impl Overlay {
         // A rect saved for a vanished monitor is relative to that one; the default is safer.
         let rect = match saved {
             Some(rect) if rect.monitor == monitor.name => rect.clone(),
-            _ => geometry::default_rect(style, config.overlay.panel_edge != "left", monitor),
+            _ => {
+                geometry::default_rect(style, config.overlay.panel_edge != PanelEdge::Left, monitor)
+            }
         };
         let target = geometry::to_physical(&rect, monitor);
         let _ = window.set_position(PhysicalPosition::new(target.x, target.y));
@@ -129,11 +131,11 @@ impl Overlay {
             },
             monitor,
         );
-        let style = shared.config().overlay.style.clone();
+        let style = shared.config().overlay.style;
         shared.update_config(|config: &mut Config| {
-            let slot: &mut Option<OverlayRect> = match style.as_str() {
-                "panel" => &mut config.overlay.panel_rect,
-                _ => &mut config.overlay.flow_rect,
+            let slot: &mut Option<OverlayRect> = match style {
+                OverlayStyle::Panel => &mut config.overlay.panel_rect,
+                OverlayStyle::Flow => &mut config.overlay.flow_rect,
             };
             *slot = Some(rect);
         })

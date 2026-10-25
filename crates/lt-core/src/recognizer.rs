@@ -9,7 +9,6 @@
 
 use crate::{
     commit::{cut_at, decide, is_word_token, join_tokens, CommitSettings, Decision, MIN_CLAUSE_S},
-    config::Config,
     engines::{mean_log_prob, StreamResult, StreamingAsr},
     events::DropReason,
     text::{classify, clean},
@@ -99,7 +98,6 @@ struct Clause {
 }
 
 pub struct Recognizer {
-    config: Config,
     next_id: u64,
     /// Stream time of engine time 0; `None` until audio arrives after a break.
     origin: Option<StreamTime>,
@@ -112,10 +110,15 @@ pub struct Recognizer {
     consumed: usize,
 }
 
+impl Default for Recognizer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Recognizer {
-    pub fn new(config: &Config) -> Self {
+    pub fn new() -> Self {
         Self {
-            config: config.clone(),
             next_id: 0,
             origin: None,
             heard: StreamTime::ZERO,
@@ -271,10 +274,7 @@ impl Recognizer {
         let Some(clause) = self.clause.as_mut() else {
             return;
         };
-        let text = clean(
-            &join_tokens(&tokens.tokens[self.consumed..count]),
-            &self.config.filter.fillers,
-        );
+        let text = clean(&join_tokens(&tokens.tokens[self.consumed..count]));
         if text.is_empty() || text == clause.last_partial {
             return;
         }
@@ -419,7 +419,7 @@ mod tests {
             part_start_s: 0.0,
             part_first: 0,
         };
-        let mut recognizer = Recognizer::new(&Config::default());
+        let mut recognizer = Recognizer::new();
         let mut out = Vec::new();
         let base = StreamTime::from_seconds(10.0);
         let total = (end_s * 16_000.0) as usize;
@@ -578,7 +578,7 @@ mod tests {
             part: 0,
             pieces: 0,
         };
-        let mut recognizer = Recognizer::new(&Config::default());
+        let mut recognizer = Recognizer::new();
         let mut out = Vec::new();
         for (index, at) in [0_u64, 1_600, 3_200].into_iter().enumerate() {
             let input = RecognizerInput::Audio {
