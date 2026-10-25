@@ -144,7 +144,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
 | `set_overlay_visible` | `visible` | | Show or hide the overlay |
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
-| `quit` | | | Stop the pipeline and servers, then exit |
+| `quit` | | | Stop the pipeline and the translation server, then exit |
 
 `AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible` and `logical_cpus` (the most threads a setting can use).
 

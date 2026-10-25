@@ -46,7 +46,7 @@ function Get-LtVerifiedFile([string]$Url, [string]$Path, [string]$Sha256, [long]
     if ($actual -ne $Sha256) { throw "$Path SHA-256 mismatch: $actual" }
 }
 
-# Pinned llama.cpp release; both llama-server processes run this build.
+# Pinned llama.cpp release; the translation server runs this build.
 $ltLlama = @{
     Url    = 'https://github.com/ggml-org/llama.cpp/releases/download/b11429/llama-b11429-bin-win-cpu-x64.zip'
     Name   = 'llama-b11429-bin-win-cpu-x64.zip'
