@@ -222,6 +222,31 @@ export interface CaptionSwap {
 /** A caption line with what the display needs beyond the text itself. */
 export interface CaptionLineView extends CaptionLine {
   swap?: CaptionSwap;
+  /** English that the next translation replaces: the preview of the lines this row stands for. */
+  preview?: string;
+}
+
+/** The panel's rows with the lines a preview covers shown as one row, in the place of the first:
+ * its Chinese is theirs joined and its English is the preview, as the row will look once they are
+ * translated together. Lines already translated for good keep their own rows. */
+export function withPreview(
+  lines: readonly CaptionLineView[],
+  preview: Preview | null,
+  liveSource: boolean,
+): CaptionLineView[] {
+  if (preview === null) return [...lines];
+  const covered = (line: CaptionLineView): boolean =>
+    preview.ids.includes(line.id) && (line.state === "live" || line.state === "pending" || line.state === "streaming");
+  const parts = lines.filter(covered);
+  const first = parts[0];
+  if (first === undefined) return [...lines];
+  const source = parts
+    .filter((line) => line.state !== "live" || liveSource)
+    .map((line) => line.source)
+    .join("");
+  const row: CaptionLineView = { ...first, state: "pending", source, english: "", preview: preview.text };
+  delete row.swap;
+  return lines.filter((line) => line === first || !covered(line)).map((line) => (line === first ? row : line));
 }
 
 /** A live line with its Chinese hidden has nothing to show, so it takes no place and no space. */

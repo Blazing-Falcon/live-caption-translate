@@ -164,7 +164,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `translation_failed` | `failed`, with a short reason text |
 | `skipped` | `skipped` |
 | `dropped` | Remove the line if it is `live` |
-| `translation_preview` | No state change. The store keeps the newest preview; running text shows it once, in place of the English, dots or streaming text of every line it covers. `translation_final`, `translation_failed`, `skipped` or `dropped` of a covered line clears it. |
+| `translation_preview` | No state change. The store keeps the newest preview; running text shows it once, in place of the English, dots or streaming text of every line it covers, and the panel shows the covered lines as one row with their Chinese joined and the preview as its English. `translation_final`, `translation_failed`, `skipped` or `dropped` of a covered line clears it. |
 
 Other rules:
 

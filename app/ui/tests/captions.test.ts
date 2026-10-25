@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import { describe, expect, it, vi } from "vitest";
-import { FADE_MS, MAX_HISTORY_LINES, createCaptionController, failReasonText, flowText } from "../src/lib/captions";
+import { FADE_MS, MAX_HISTORY_LINES, createCaptionController, failReasonText, flowText, withPreview } from "../src/lib/captions";
 import type { CaptionLine, FailReason, PipelineEvent } from "../src/lib/types";
 import {
   FakeClock,
@@ -154,6 +154,28 @@ describe("running text", () => {
     expect(english()).toEqual([
       ["Hello.", "final"],
       ["The weather is nice today, let's go to the park.", "final"],
+    ]);
+  });
+
+  // The panel shows the covered lines as the one row they become; left as separate rows, their
+  // English would be missing or shown twice.
+  it("shows the lines a preview covers as one panel row until their final translation", () => {
+    const { view, run } = setup();
+    const rows = () =>
+      withPreview(view().lines, view().preview, true).map((line) => [line.id, line.source, line.preview ?? line.english]);
+    run(asrFinal(1, "你好。"), final(1, "Hello."));
+    run(asrFinal(2, "今天天气很好，"), partial(3, "我们去"));
+    run({ type: "translation_preview", id: 2, ids: [2, 3], text: "The weather is nice today, we go" });
+    expect(rows()).toEqual([
+      [1, "你好。", "Hello."],
+      [2, "今天天气很好，我们去", "The weather is nice today, we go"],
+    ]);
+    expect(withPreview(view().lines, view().preview, false).map((line) => line.source)).toEqual(["你好。", "今天天气很好，"]);
+    run(asrFinal(3, "我们去公园。"), joined(2, [3], "今天天气很好，我们去公园。"));
+    run(final(2, "The weather is nice today, let's go to the park."));
+    expect(rows()).toEqual([
+      [1, "你好。", "Hello."],
+      [2, "今天天气很好，我们去公园。", "The weather is nice today, let's go to the park."],
     ]);
   });
 

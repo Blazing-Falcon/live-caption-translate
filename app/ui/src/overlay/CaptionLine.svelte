@@ -76,7 +76,9 @@
           <p class="source" class:heard={line.state === "live"} lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
         {/if}
       {/if}
-      {#if showEnglish}
+      {#if line.preview}
+        <p class="english preview">{line.preview}</p>
+      {:else if showEnglish}
         <p class="english">{englishText}{#if line.state === "streaming"}<span class="caret" aria-hidden="true"></span>{/if}</p>
       {:else if line.state === "pending"}
         <p class="english dots" aria-hidden="true">···</p>
@@ -193,6 +195,11 @@
 
   .dots {
     color: var(--ov-pending);
+  }
+
+  /* English that the next translation may still change. */
+  .preview {
+    color: var(--ov-text-secondary);
   }
 
   .label {

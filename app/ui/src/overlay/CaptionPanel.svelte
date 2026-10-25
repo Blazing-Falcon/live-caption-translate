@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { visibleLines, type StatusLine } from "../lib/captions";
-  import type { CaptionLine as Line } from "../lib/types";
+  import { visibleLines, withPreview, type CaptionLineView, type Preview, type StatusLine } from "../lib/captions";
   import CaptionLine from "./CaptionLine.svelte";
 
   interface Props {
-    lines: readonly Line[];
+    lines: readonly CaptionLineView[];
+    preview?: Preview | null;
     fadingIds?: ReadonlySet<number>;
     status?: StatusLine | null;
     showSource?: boolean;
@@ -14,6 +14,7 @@
 
   let {
     lines,
+    preview = null,
     fadingIds = new Set<number>(),
     status = null,
     showSource = true,
@@ -23,7 +24,7 @@
 
   // The status is a separate flex item above the history, so the history gives up its oldest
   // line rather than the status; the count is the user's own setting either way.
-  const shown = $derived(visibleLines(lines, "panel", panelLines, liveSource));
+  const shown = $derived(visibleLines(withPreview(lines, preview, liveSource), "panel", panelLines, liveSource));
 </script>
 
 <section class="panel" aria-label="Live captions" data-testid="caption-panel">

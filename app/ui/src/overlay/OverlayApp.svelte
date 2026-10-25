@@ -33,6 +33,7 @@
     {#if $config.overlay.style === "panel"}
       <CaptionPanel
         lines={$captions.lines}
+        preview={$captions.preview}
         fadingIds={$captions.fadingIds}
         status={$captions.status}
         showSource={$config.overlay.show_source}
