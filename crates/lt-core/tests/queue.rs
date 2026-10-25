@@ -82,6 +82,18 @@ fn queue_joins_waiting_items_and_preserves_leader_and_cap_order() {
         assert!(batch.events.is_empty());
         assert_eq!(batch.item.unwrap().transcript.id, UtteranceId(id));
     }
+
+    // Two breaks that arrive before the line between them still separate both sides: the first
+    // break is not consumed by the line it precedes while the second is still queued.
+    let mut queue = TranslationQueue::new();
+    queue.discontinuity(StreamTime::from_seconds(23.5));
+    queue.discontinuity(StreamTime::from_seconds(25.5));
+    queue.push(transcript(1, "你好。", 25.0), 0).unwrap();
+    queue.push(transcript(2, "再见。", 27.0), 0).unwrap();
+    for (id, end) in [(1, 25.0), (2, 27.0)] {
+        let batch = queue.take(StreamTime::from_seconds(end));
+        assert_eq!(batch.item.unwrap().transcript.id, UtteranceId(id));
+    }
 }
 
 #[test]

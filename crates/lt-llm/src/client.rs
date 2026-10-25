@@ -328,12 +328,12 @@ fn finish(output: &mut TranslationOut) {
 }
 
 /// Why the answer is not usable as this line's translation, if it is not.
+/// The answer is unusable: it is empty, far longer than any translation, or it answers the
+/// instruction instead of translating. A leftover Chinese proper noun is not one of these: the
+/// pipeline shows it and counts it, so rejecting it would lose a real translation.
 fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Option<&'static str> {
     if output.text.is_empty() {
         return Some("empty");
-    }
-    if lt_core::text::chinese_chars(&output.text) > 0 {
-        return Some("Chinese in the answer");
     }
     let source = request.text.chars().count().max(1);
     if output.text.chars().count() > MAX_LENGTH_RATIO * source {
@@ -807,7 +807,7 @@ mod residue_tests {
     };
 
     /// A reply to the instruction introduces something with a colon. A translation that only
-    /// uses the same words is a translation, and retrying it costs a second request.
+    /// uses the same words is a translation.
     #[test]
     fn a_reply_is_told_apart_from_a_translation_that_shares_its_words() {
         let request = TranslateRequest {

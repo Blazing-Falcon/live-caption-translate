@@ -171,7 +171,7 @@ const MAX_TOKENS_CAP: u32 = 256;
 
 /// An output budget from the source length. English takes about 1.5 tokens per source
 /// character (p99 3.0 on our session), so `2 * chars + 8` bounds a runaway without cutting a
-/// real answer. A joined line cut at the cap is retried with the same budget and cut again.
+/// real answer.
 pub fn max_tokens(text: &str) -> u32 {
     let wanted = text.chars().count().saturating_mul(2).saturating_add(8);
     wanted.max(24).min(MAX_TOKENS_CAP as usize) as u32
