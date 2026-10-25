@@ -6,21 +6,19 @@
 
 | Id | Use | File | Bytes | SHA-256 |
 |---|---|---|---|---|
-| `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition (default) | archive, 4 files | 133,895,136 | in the manifest |
+| `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition | archive, 4 files | 133,895,136 | in the manifest |
 | `hy-mt2-1.8b-ternary-tq2_0` | Translation | download `Hy-MT2-1.8B-1.25Bit.gguf`, kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` | 461,860,800 (606,564,288 kept) | in the manifest |
 | `xasr-offline-int8-2026-06-03` | Second pass (`asr.second_pass = "xasr"`, default) | archive, 4 files | 136,396,739 | in the manifest |
-| `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
-| `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
 Sources (Hugging Face):
 
 - Hy-MT2 1.25-bit: `tencent/Hy-MT2-1.8B-1.25Bit-GGUF`, revision `9df5c824a00a744fb0512a29c640466f4d97dfb0` (AngelSlim 1.25-bit quantization)
-- X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
+- X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-480ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in this archive.
 - X-ASR offline: the same release, `sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03.tar.bz2`.
 
 Rules:
 
-- The first-run download takes the required models: the 480 ms streaming model, the offline X-ASR model and the translator. The other chunk sizes are optional and download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
+- The first-run download takes the required models: the 480 ms streaming model, the offline X-ASR model and the translator. Listening does not start while one of them is missing.
 - Files go to `<models dir>/<id>/<file>`.
 - Downloads continue from `<file>.part` with HTTP range requests. The app checks the SHA-256 and then renames the file.
 - A file with `convert` is a GGUF whose weights are STQ1_0, a ternary type that only an unmerged ARM branch of llama.cpp reads. After its SHA-256 check, the app rewrites those weights as TQ2_0 (the same blocks of 256 weights of -1, 0 or +1 times one fp16 scale, which llama.cpp runs on x86), checks the result's size and SHA-256, keeps it under the `convert` name and deletes the download. Every weight keeps its value; the rest of the file is copied unchanged.
@@ -58,7 +56,7 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 ## Engines
 
-**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search (modified beam search with 4 paths when `asr.decoding = "beam"`), `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.44 s (160 ms), 0.34 s (480 ms) or 0.23 s (960 ms) after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts these delays from the token times.
+**X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two 480 ms chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.34 s after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts this delay from the token times.
 
 **X-ASR offline (second pass, default):** sherpa-onnx offline recognizer in the app, the same zipformer transducer decoded over the whole window, greedy search, `asr.second_pass_threads` (2). The window gets 5 s of earlier speech as context; `trim` keeps the part that belongs to the clause. Its result JSON has no token times or log-probabilities; the app uses only the text. It shares the ONNX Runtime with the streaming model.
 

@@ -85,7 +85,7 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         asr: if args.fake {
             "fake".into()
         } else {
-            recognizer_name(&config)
+            recognizer_name()
         },
         asr_second: if args.fake {
             None

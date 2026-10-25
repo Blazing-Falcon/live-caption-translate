@@ -5,7 +5,7 @@ const MB = 1024 * 1024;
 const MISSING = [
   { id: "hy-mt2-1.8b-ternary-tq2_0", name: "Translation", bytes_total: 578 * MB, bytes_done: 578 * MB, optional: false, state: "ready" },
   { id: "xasr-stream-480ms-int8-2026-06-05", name: "Speech recognition", bytes_total: 128 * MB, bytes_done: 0, optional: false, state: "missing" },
-  { id: "xasr-stream-160ms-int8-2026-06-05", name: "Speech recognition (160 ms)", bytes_total: 128 * MB, bytes_done: 0, optional: true, state: "missing" },
+  { id: "xasr-offline-int8-2026-06-03", name: "Second-pass speech recognition", bytes_total: 130 * MB, bytes_done: 0, optional: false, state: "missing" },
 ] as const;
 
 const expectPatch = (page: Page, patch: unknown): Promise<void> =>
@@ -61,8 +61,7 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await emitNamed(page, "models://progress", [MISSING[0], { ...MISSING[1], bytes_done: 128 * MB, state: "corrupt" }, MISSING[2]]);
     await expect(page.locator(".model").nth(1)).toContainText("Damaged");
     await page.getByRole("button", { name: "Retry" }).click();
-    // A missing optional model must not block the start.
-    const ready = MISSING.map((model) => (model.optional ? model : { ...model, bytes_done: model.bytes_total, state: "ready" }));
+    const ready = MISSING.map((model) => ({ ...model, bytes_done: model.bytes_total, state: "ready" }));
     await emitNamed(page, "models://progress", ready);
     await expect(page.getByRole("tab", { name: "Capture" })).toHaveAttribute("aria-selected", "true");
     await emitNamed(page, "models://progress", ready);

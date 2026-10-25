@@ -64,12 +64,8 @@ config_table!(AudioConfig {
     norm_gate_dbfs: f32 = -60.0,
 });
 config_table!(AsrConfig {
-    chunk_ms: u32 = 480,
     threads: u32 = 1,
     pause_s: f32 = 0.8,
-    /// The live recognizer's search: "greedy" never changes a shown word; "beam" may revise the
-    /// last words of the live line.
-    decoding: String = "greedy".into(),
     second_pass: String = "xasr".into(),
     second_pass_threads: u32 = 2,
     second_pass_max_wait_s: f32 = 1.5,
@@ -191,14 +187,13 @@ impl TranslateConfig {
 }
 
 /// Version 1 keys that version 2 keeps under a new name.
-const V1_RENAMED: [(&str, &str); 3] = [
-    ("asr.stream_chunk_ms", "asr.chunk_ms"),
+const V1_RENAMED: [(&str, &str); 2] = [
     ("asr.stream_pause_s", "asr.pause_s"),
     ("latency.low_priority", "performance.low_priority"),
 ];
 
 /// Version 1 keys and tables that version 2 does not have.
-const V1_REMOVED: [&str; 14] = [
+const V1_REMOVED: [&str; 15] = [
     "vad",
     "routing",
     "join",
@@ -206,6 +201,7 @@ const V1_REMOVED: [&str; 14] = [
     "asr.engine",
     "asr.language",
     "asr.use_itn",
+    "asr.stream_chunk_ms",
     "asr.second_pass",
     "asr.second_pass_threads",
     "asr.second_pass_timeout_s",
@@ -274,6 +270,12 @@ fn retire_v2(value: &mut toml::Value) {
     }
     if take(root, "translate.glossary").is_some() {
         tracing::info!("translate.glossary was removed");
+    }
+    if take(root, "asr.chunk_ms").is_some() {
+        tracing::info!("asr.chunk_ms was removed");
+    }
+    if take(root, "asr.decoding").is_some() {
+        tracing::info!("asr.decoding was removed");
     }
 }
 
@@ -430,16 +432,8 @@ impl Config {
         number!(audio, norm_release_s, 0.5, 20.0);
         number!(audio, norm_max_gain_db, 0.0, 30.0);
         number!(audio, norm_gate_dbfs, -90.0, -30.0);
-        if ![160, 480, 960].contains(&self.asr.chunk_ms) {
-            messages.push(format!(
-                "asr.chunk_ms: invalid value {}; using default {}",
-                self.asr.chunk_ms, defaults.asr.chunk_ms
-            ));
-            self.asr.chunk_ms = defaults.asr.chunk_ms;
-        }
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
-        choice!(asr, decoding, &["greedy", "beam"]);
         choice!(asr, second_pass, &["off", "xasr"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);

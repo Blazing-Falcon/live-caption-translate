@@ -12,7 +12,7 @@ use std::{
 };
 use tauri::Emitter;
 
-/// Every model needed to listen is on disk and verified (other chunk sizes are optional).
+/// Every model needed to listen is on disk and verified.
 pub fn all_ready(dir: &Path) -> bool {
     lt_llm::models::status(dir)
         .map(|models| {
@@ -27,7 +27,7 @@ pub fn all_ready(dir: &Path) -> bool {
 /// Names of the models that the chosen speech and translation settings need
 /// and that are not ready on disk.
 pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
-    let mut wanted = vec![lt_sherpa::xasr_stream_model(config.asr.chunk_ms)];
+    let mut wanted = vec![lt_sherpa::XASR_STREAM_MODEL];
     if config.asr.second_pass == "xasr" {
         wanted.push(lt_sherpa::XASR_OFFLINE_MODEL);
     }
@@ -114,7 +114,7 @@ impl Models {
     }
 
     /// Starts or resumes missing models on a worker thread. Without `ids` that is every required
-    /// model (first run); with `ids`, exactly those (the Performance page's chunk choices).
+    /// model (first run); with `ids`, exactly those (a choice the user made).
     pub fn download(
         &self,
         shared: &Arc<Shared>,

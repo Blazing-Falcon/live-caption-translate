@@ -13,10 +13,9 @@ fn streaming_tokens_only_grow_and_the_text_stays_accurate() {
     let Some((models, audio, clips)) = common::ascend() else {
         return;
     };
-    let settings = AsrConfig::default();
     let mut engine = XAsrStream::new(
-        models.join(lt_sherpa::xasr_stream_model(settings.chunk_ms)),
-        &settings,
+        models.join(lt_sherpa::XASR_STREAM_MODEL),
+        &AsrConfig::default(),
     )
     .unwrap();
     let (mut wrong, mut total) = (0, 0);

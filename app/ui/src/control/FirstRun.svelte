@@ -19,7 +19,6 @@
 
   let fired = false;
 
-  // Speech model choices download from the Performance page, not here.
   const rows = $derived(($models ?? []).filter((row) => !row.optional));
   const totalBytes = $derived(rows.reduce((sum, row) => sum + row.bytes_total, 0));
   const downloading = $derived(rows.some((row) => row.state === "downloading"));

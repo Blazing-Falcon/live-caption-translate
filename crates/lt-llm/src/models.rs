@@ -1067,15 +1067,20 @@ mod tests {
     #[test]
     fn embedded_manifest_is_valid_and_sizes_are_known() {
         let manifest = embedded_manifest().unwrap();
-        assert_eq!(manifest.models.len(), 5);
-        let required: Vec<_> = manifest.models.iter().filter(|m| !m.optional).collect();
-        assert_eq!(required.len(), 3);
-        assert_eq!(required.iter().flat_map(|model| &model.files).count(), 3);
+        assert_eq!(manifest.models.len(), 3);
+        assert!(manifest.models.iter().all(|model| !model.optional));
+        assert_eq!(
+            manifest
+                .models
+                .iter()
+                .flat_map(|model| &model.files)
+                .count(),
+            3
+        );
         let manager = ModelManager::new().unwrap();
         let missing = std::env::temp_dir().join("lt-no-such-models");
         let statuses = manager.status(&missing).unwrap();
-        assert_eq!(statuses.len(), 5);
-        // The other chunk sizes download only when the user selects them.
+        assert_eq!(statuses.len(), 3);
         assert_eq!(manager.default_ids().len(), 3);
         assert!(!ModelManager::new()
             .unwrap()

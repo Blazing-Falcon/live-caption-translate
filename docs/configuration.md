@@ -11,8 +11,8 @@ Rules:
 - An enum value that is not permitted gets the default value.
 - A file that does not load (not valid TOML, not UTF-8, or not readable) is renamed to `config.toml.bad-<seconds>`, and the app starts with the defaults. A notice gives the new name.
 - The app writes `config.toml.tmp` and renames it, so a save is atomic.
-- A file with `config_version = 1` is migrated when it loads. Renamed keys keep their values (`asr.stream_chunk_ms` becomes `asr.chunk_ms`, `asr.stream_pause_s` becomes `asr.pause_s`, `latency.low_priority` becomes `performance.low_priority`). `translate.threads = 0` becomes `2`. Keys that version 2 does not have are removed, and the app logs one info line with their names. The next save writes version 2.
-- Choices that the app removed load without a warning: `translate.model` and `translate.glossary` are dropped, and `asr.second_pass = "sensevoice"` becomes the default. The app logs one info line.
+- A file with `config_version = 1` is migrated when it loads. Renamed keys keep their values (`asr.stream_pause_s` becomes `asr.pause_s`, `latency.low_priority` becomes `performance.low_priority`). `translate.threads = 0` becomes `2`. Keys that version 2 does not have are removed, and the app logs one info line with their names. The next save writes version 2.
+- Choices that the app removed load without a warning: `translate.model`, `translate.glossary`, `asr.chunk_ms` and `asr.decoding` are dropped, and `asr.second_pass = "sensevoice"` becomes the default. The app logs one info line.
 
 **Applies** tells when a change has an effect:
 
@@ -43,10 +43,8 @@ norm_max_gain_db = 20.0
 norm_gate_dbfs = -60.0
 
 [asr]
-chunk_ms = 480                  # 160 | 480 | 960
 threads = 1                     # 1 to the logical CPUs of the PC
 pause_s = 0.8                   # silence that ends a line
-decoding = "greedy"             # "greedy" | "beam": the live recognizer's search
 second_pass = "xasr"            # "off" | "xasr": read each closed line again offline
 second_pass_threads = 2         # 1 to the logical CPUs of the PC
 second_pass_max_wait_s = 1.5    # after this, the line keeps the live text
@@ -136,10 +134,8 @@ The default values are in the file above.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `chunk_ms` | `160`, `480`, `960` | pipeline | Streaming X-ASR model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
 | `threads` | 1–64 | pipeline | ONNX Runtime threads for the recognizer. The app uses at most the PC's logical CPUs. |
 | `pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
-| `decoding` | `greedy`, `beam` | pipeline | The live recognizer's search. `greedy` never changes a word once shown. `beam` (modified beam search, 4 paths) may revise the last words of the live line; on the four test sets it made 257 character errors against 261 and 0.0865 against 0.0962 on mixed Chinese and English, but wrote fewer sentence ends, which end lines (Python replay of the app's stream loop, sherpa-onnx 1.13.8, Ryzen 7 5700X, 2026-10-25). |
 | `second_pass` | `off`, `xasr` | pipeline | When a line ends, a second recognizer reads its audio again. Its text replaces the live Chinese before translation if it matches the live text closely enough. `xasr`: the offline X-ASR model in the app, which also reads 5 s of speech before the line. |
 | `second_pass_threads` | 1–64 | pipeline | Threads for the second-pass model. The app uses at most the PC's logical CPUs. Offline X-ASR per line, median: 406 ms on 1 thread, 197 on 2, 158 on 4 (40 conversation lines, Python, Ryzen 7 5700X, 2026-10-25). |
 | `second_pass_max_wait_s` | 0.5–5.0 | pipeline | A line that waits longer than this for the second pass keeps the live text |

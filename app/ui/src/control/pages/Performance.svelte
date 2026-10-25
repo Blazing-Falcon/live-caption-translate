@@ -12,7 +12,6 @@
     totalMemoryMb,
   } from "../../lib/format";
   import {
-    STREAM_CHUNKS,
     SECOND_PASSES,
     asrPatch,
     WINDOW_LIMITS,
@@ -74,7 +73,7 @@
   }
 
   interface SpeechRow {
-    key: "asr.chunk_ms" | "asr.second_pass";
+    key: "asr.second_pass";
     label: string;
     value: string;
     choices: readonly SpeechChoice<string>[];
@@ -82,13 +81,6 @@
   }
 
   const speechRows = $derived<SpeechRow[]>([
-    {
-      key: "asr.chunk_ms",
-      label: "Chunk size",
-      value: String(config.asr.chunk_ms),
-      choices: STREAM_CHUNKS,
-      patch: (value) => asrPatch({ chunk_ms: Number(value) as Config["asr"]["chunk_ms"] }),
-    },
     {
       key: "asr.second_pass",
       label: "Correct lines after they end",

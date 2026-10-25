@@ -258,7 +258,6 @@ step_down = true
     )
     .unwrap();
     assert_eq!(config.config_version, 2);
-    assert_eq!(config.asr.chunk_ms, 960);
     assert_eq!(config.asr.pause_s, 1.2);
     assert_eq!(config.asr.threads, 3);
     assert_eq!(config.filter.fillers, ["呃"]);
@@ -280,6 +279,8 @@ fn removed_choices_in_a_saved_file_take_the_default_without_a_warning() {
         r#"
 config_version = 2
 [asr]
+chunk_ms = 960
+decoding = "beam"
 second_pass = "sensevoice"
 second_pass_threads = 3
 [translate]
@@ -292,9 +293,12 @@ glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], co
     assert_eq!(config.asr.second_pass, Config::default().asr.second_pass);
     assert_eq!(config.asr.second_pass_threads, 3);
     assert_eq!(config.translate.threads, 3);
+    assert!(config.asr.extra.is_empty());
     assert!(config.translate.extra.is_empty());
     assert!(messages.is_empty(), "{messages:?}");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
+    assert!(saved["asr"].get("chunk_ms").is_none());
+    assert!(saved["asr"].get("decoding").is_none());
     assert!(saved["translate"].get("model").is_none());
     assert!(saved["translate"].get("glossary").is_none());
 }

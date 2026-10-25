@@ -44,8 +44,8 @@ pub fn mean_log_prob(log_probs: &[f32]) -> Option<f32> {
 pub struct StreamResult {
     /// When this part began, in seconds since the stream started.
     pub start_s: f64,
-    /// Token times are seconds from `start_s`. With greedy decoding emitted tokens never change;
-    /// beam search can revise its last tokens, so a result can also be shorter than the one before.
+    /// Token times are seconds from `start_s`. Emitted tokens never change; a later result only
+    /// adds tokens.
     pub tokens: TokenTranscript,
 }
 

@@ -194,17 +194,6 @@ impl Recognizer {
         let base = origin.seconds() + result.start_s;
         let at = |index: usize| base + f64::from(tokens.timestamps[index]);
         let audio_end = self.end_of_audio();
-        // Beam search can take back tokens a closed clause already holds. That text is final, so
-        // a shorter result has nothing new until the stream passes it again.
-        if count < self.consumed {
-            if close {
-                if self.clause.is_some() {
-                    self.close(tokens, count..count, audio_end, reason, asr_ms, out);
-                }
-                self.consumed = count;
-            }
-            return;
-        }
         loop {
             let rest = self.consumed..count;
             if rest.is_empty() {
@@ -481,66 +470,6 @@ mod tests {
             .enumerate()
             .map(|(index, token)| (*token, at + index as f64 * step_s))
             .collect()
-    }
-
-    /// Returns each scripted result in turn, like beam search revising its best path.
-    struct RevisingStream {
-        results: Vec<&'static str>,
-        next: usize,
-    }
-
-    impl StreamingAsr for RevisingStream {
-        fn accept(&mut self, _samples: &[f32]) -> Result<()> {
-            self.next += 1;
-            Ok(())
-        }
-        fn result(&mut self) -> Result<StreamResult> {
-            let text = self.results[(self.next - 1).min(self.results.len() - 1)];
-            let tokens: Vec<String> = text.chars().map(String::from).collect();
-            Ok(StreamResult {
-                start_s: 0.0,
-                tokens: TokenTranscript {
-                    text: text.into(),
-                    timestamps: (0..tokens.len()).map(|i| 0.3 + 0.2 * i as f32).collect(),
-                    log_probs: vec![-0.1; tokens.len()],
-                    tokens,
-                },
-            })
-        }
-        fn is_endpoint(&mut self) -> bool {
-            false
-        }
-        fn reset(&mut self) {}
-        fn finish(&mut self) -> Result<StreamResult> {
-            self.result()
-        }
-    }
-
-    /// A revision that takes back tokens a closed clause already holds keeps that clause and
-    /// goes on with the open one.
-    #[test]
-    fn a_revision_shorter_than_the_closed_text_keeps_the_closed_clause() {
-        let mut engine = RevisingStream {
-            results: vec!["今天天气很好。我们", "今天天", "今天天气很好。我们去"],
-            next: 0,
-        };
-        let mut recognizer = Recognizer::new(&Config::default());
-        let mut out = Vec::new();
-        for index in 0..3 {
-            let input = RecognizerInput::Audio {
-                at: StreamTime(index * 1_600),
-                samples: vec![0.0; 1_600],
-            };
-            recognizer.handle(&mut engine, input, &mut out);
-        }
-        let finals: Vec<_> = out
-            .iter()
-            .filter_map(|item| match item {
-                RecognizerOutput::Message(AsrMessage::Transcript(t)) => Some(t.text.as_str()),
-                _ => None,
-            })
-            .collect();
-        assert_eq!(finals, ["今天天气很好。"]);
     }
 
     /// Clauses end at a sentence mark and at a pause, not at an early comma; the live text shows

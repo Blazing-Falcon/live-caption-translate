@@ -32,10 +32,8 @@ export interface Config extends ExtraFields {
     norm_gate_dbfs: number;
   };
   asr: ExtraFields & {
-    chunk_ms: 160 | 480 | 960;
     threads: number;
     pause_s: number;
-    decoding: "greedy" | "beam";
     second_pass: "off" | "xasr";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
@@ -264,12 +262,6 @@ export interface SpeechChoice<T extends string> {
   help: string;
 }
 
-export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
-  { value: "160", label: "160 ms", model: "xasr-stream-160ms-int8-2026-06-05", help: "Words appear soonest, about 0.15 s before 480 ms. About twice the CPU and slightly more errors." },
-  { value: "480", label: "480 ms", model: "xasr-stream-480ms-int8-2026-06-05", help: "The default. Fewest errors, medium CPU." },
-  { value: "960", label: "960 ms", model: "xasr-stream-960ms-int8-2026-06-05", help: "Least CPU, about 30% less than 480 ms. Words appear about 0.2 s later." },
-];
-
 export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
   { value: "off", label: "Off", model: null, help: "The live Chinese is final. The English appears soonest." },
   { value: "xasr", label: "X-ASR offline", model: "xasr-offline-int8-2026-06-03", help: "The default. The same recognizer reads each finished line again with the speech before it and fixes misheard words. About 0.2 s per line." },
@@ -301,10 +293,8 @@ export const DEFAULT_CONFIG: Config = {
     "norm_gate_dbfs": -60.0
   },
   "asr": {
-    "chunk_ms": 480,
     "threads": 1,
     "pause_s": 0.8,
-    "decoding": "greedy",
     "second_pass": "xasr",
     "second_pass_threads": 2,
     "second_pass_max_wait_s": 1.5,

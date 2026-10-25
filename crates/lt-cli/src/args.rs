@@ -89,7 +89,7 @@ pub struct BenchArgs {
 }
 #[derive(Clone, Copy, ValueEnum)]
 pub enum BenchEngine {
-    /// The streaming recognizer, `asr.chunk_ms`.
+    /// The streaming recognizer.
     Asr,
     Mt,
 }

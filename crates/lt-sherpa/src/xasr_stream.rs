@@ -1,6 +1,5 @@
 //! Streaming X-ASR: sherpa's online zipformer transducer. It hears all audio continuously and
-//! keeps its state between pieces. With greedy search its emitted tokens never change; beam
-//! search can revise the last ones.
+//! keeps its state between pieces. With greedy search its emitted tokens never change.
 
 use crate::runtime::{cstring, engine_error, path_cstring, prepare};
 use lt_core::{
@@ -17,29 +16,22 @@ use std::{
 };
 
 const NAME: &str = "X-ASR streaming";
+/// Length of one encoder chunk; the model is trained for this size.
+const CHUNK_S: f32 = 0.48;
 /// Silence that ends an utterance when nothing was said (sherpa's default).
 const IDLE_ENDPOINT_S: f32 = 2.4;
 /// Longest utterance before sherpa resets. Its cut can split a word, so it is far above the
 /// commit rule's cap, which normally ends clauses first.
 const MAX_UTTERANCE_S: f32 = 60.0;
+/// The median delay of this model's first word after silence behind Silero's speech onset.
+/// Times count audio frames, so the delay does not depend on the PC.
+const TOKEN_LAG_S: f32 = 0.34;
 
 pub struct XAsrStream {
     recognizer: NonNull<sys::OnlineRecognizer>,
     stream: Option<NonNull<sys::OnlineStream>>,
     /// Silence added before the end of input: the encoder needs a full chunk plus look-ahead.
     tail: Vec<f32>,
-    /// Seconds the model reports a word after it starts; subtracted from token times.
-    lag_s: f32,
-}
-
-/// The median delay of this model's first word after silence behind Silero's speech onset, for
-/// each chunk size. Times count audio frames, so the delay does not depend on the PC.
-fn token_lag_s(chunk_ms: u32) -> f32 {
-    match chunk_ms {
-        160 => 0.44,
-        960 => 0.23,
-        _ => 0.34,
-    }
 }
 
 // SAFETY: the recognizer and its stream move to one ASR worker together and every call takes
@@ -60,11 +52,7 @@ impl XAsrStream {
         let joiner = path_cstring(&joiner, "X-ASR streaming joiner path")?;
         let tokens = path_cstring(&tokens, "X-ASR streaming tokens path")?;
         let provider = cstring("cpu")?;
-        let decoding = cstring(if settings.decoding == "beam" {
-            "modified_beam_search"
-        } else {
-            "greedy_search"
-        })?;
+        let decoding = cstring("greedy_search")?;
         // SAFETY: this repr(C) config contains only raw pointers, integers and floats; the
         // all-zero representation is valid and selects no other model family.
         let mut config: sys::OnlineRecognizerConfig = unsafe { std::mem::zeroed() };
@@ -77,7 +65,6 @@ impl XAsrStream {
         config.model_config.num_threads = settings.engine_threads() as i32;
         config.model_config.provider = provider.as_ptr();
         config.decoding_method = decoding.as_ptr();
-        config.max_active_paths = 4;
         config.enable_endpoint = 1;
         config.rule1_min_trailing_silence = IDLE_ENDPOINT_S;
         config.rule2_min_trailing_silence = settings.pause_s;
@@ -90,12 +77,10 @@ impl XAsrStream {
                 "{NAME} could not initialize; check its model files"
             ))
         })?;
-        let chunk_s = f64::from(settings.chunk_ms) / 1_000.0;
         Ok(Self {
             recognizer,
             stream: None,
-            tail: vec![0.0; ((2.0 * chunk_s + 0.5) * 16_000.0) as usize],
-            lag_s: token_lag_s(settings.chunk_ms),
+            tail: vec![0.0; ((2.0 * CHUNK_S + 0.5) * 16_000.0) as usize],
         })
     }
 
@@ -158,7 +143,7 @@ impl XAsrStream {
             // A token can hold part of a UTF-8 character; failing the whole result would fail
             // every later result of this part too, so the broken bytes are left out instead.
             let json = json.to_string_lossy().replace('\u{FFFD}', "");
-            parse_result(&json, self.lag_s)
+            parse_result(&json, TOKEN_LAG_S)
         };
         // SAFETY: the matching destroy function, called once.
         unsafe { sys::SherpaOnnxDestroyOnlineStreamResultJson(pointer.as_ptr()) };

@@ -40,8 +40,8 @@ pub fn translator_name() -> String {
 }
 
 /// The recognizer named in session headers and `asr_live` records.
-pub fn recognizer_name(config: &Config) -> String {
-    format!("xasr_stream_{}ms", config.asr.chunk_ms)
+pub fn recognizer_name() -> String {
+    "xasr_stream_480ms".into()
 }
 
 /// The second-pass recognizer named in session headers, if it is on.
