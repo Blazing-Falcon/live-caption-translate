@@ -22,7 +22,7 @@ use std::{
 };
 
 /// The audio the second pass may read. The longest clause is the 30 s wait cap; this also
-/// holds its margins.
+/// holds its margins and the engine's context before them.
 const RING_S: u64 = 45;
 /// The second pass reads a clause with this much audio before it: the clause start is an
 /// estimate from the first word's late token time.
@@ -44,6 +44,8 @@ pub(super) struct AsrOutputs {
     pub(super) clauses: Sender<RefineInput>,
     /// Keep audio for the second pass.
     pub(super) keep_audio: bool,
+    /// Audio before the window that the second pass reads as context (`OfflineAsr::context_s`).
+    pub(super) context_s: f64,
 }
 
 /// The newest audio on the stream clock. A gap or a break starts it over, so a window never
@@ -150,7 +152,10 @@ pub(super) fn asr_loop(
                 RecognizerOutput::Message(AsrMessage::Transcript(transcript)) => {
                     let window = ring.window(
                         StreamTime::from_seconds(
-                            (transcript.timing.start.seconds() - WINDOW_BEFORE_S).max(0.0),
+                            (transcript.timing.start.seconds()
+                                - WINDOW_BEFORE_S
+                                - outputs.context_s)
+                                .max(0.0),
                         ),
                         StreamTime::from_seconds(transcript.timing.end.seconds() + WINDOW_AFTER_S),
                     );

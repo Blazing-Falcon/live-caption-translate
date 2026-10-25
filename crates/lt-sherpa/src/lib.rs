@@ -1,11 +1,16 @@
-//! Streaming X-ASR speech recognition on sherpa-onnx's shared ONNX Runtime. The second pass
-//! (Qwen3-ASR) runs in llama-server (`lt-llm`).
+//! X-ASR speech recognition on sherpa-onnx's shared ONNX Runtime: the streaming recognizer and
+//! its offline second pass. The optional Qwen3-ASR second pass runs in llama-server (`lt-llm`).
 
 mod runtime;
+mod xasr_offline;
 mod xasr_stream;
 
 pub use runtime::{default_runtime_path, initialize_shared_runtime, onnxruntime_version};
+pub use xasr_offline::XAsrOffline;
 pub use xasr_stream::XAsrStream;
+
+/// The manifest model of `asr.second_pass = "xasr"`.
+pub const XASR_OFFLINE_MODEL: &str = "xasr-offline-int8-2026-06-03";
 
 /// The streaming X-ASR model for `asr.chunk_ms`.
 pub fn xasr_stream_model(chunk_ms: u32) -> &'static str {
@@ -24,6 +29,14 @@ pub fn register_engines(registry: &mut lt_core::engines::EngineRegistry) {
             &config.asr,
         )?))
     });
+}
+
+/// The offline X-ASR second pass, from `models` (the folder that holds every model).
+pub fn xasr_offline(
+    models: &std::path::Path,
+    config: &lt_core::config::Config,
+) -> lt_core::error::Result<XAsrOffline> {
+    XAsrOffline::new(models.join(XASR_OFFLINE_MODEL), &config.asr)
 }
 
 fn models_dir(config: &lt_core::config::Config) -> std::path::PathBuf {

@@ -76,7 +76,7 @@ Notes:
 | `done_p50_ms`, `done_p95_ms`, `first_p50_ms` | Speech end to final and to first delta, last 50 finals |
 | `word_final_p50_ms` | Median delay from a spoken word to its English, last 60 s |
 | `skipped_total`, `failed_total` | Session counters |
-| `cpu_app_pct`, `cpu_translator_pct`, `cpu_speech_pct` | Percent of one core, last second: the app, the translation server and the second-pass server (0 when it is off) |
+| `cpu_app_pct`, `cpu_translator_pct`, `cpu_speech_pct` | Percent of one core, last second: the app, the translation server and the Qwen3-ASR second-pass server (0 unless it runs; the offline X-ASR second pass counts as the app) |
 | `cpu_system_pct` | Whole-PC CPU, last second |
 | `rss_app_mb`, `rss_translator_mb`, `rss_speech_mb` | Memory (working set) of the same three processes |
 | `private_app_mb`, `private_translator_mb`, `private_speech_mb` | Private bytes (commit charge) of the same three processes |

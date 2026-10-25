@@ -28,8 +28,10 @@ pub fn all_ready(dir: &Path) -> bool {
 /// and that are not ready on disk.
 pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
     let mut wanted = vec![lt_sherpa::xasr_stream_model(config.asr.chunk_ms)];
-    if config.asr.second_pass == "qwen3" {
-        wanted.push(lt_llm::speech::QWEN3_MODEL);
+    match config.asr.second_pass.as_str() {
+        "xasr" => wanted.push(lt_sherpa::XASR_OFFLINE_MODEL),
+        "qwen3" => wanted.push(lt_llm::speech::QWEN3_MODEL),
+        _ => {}
     }
     wanted.push(lt_core::config::TranslateConfig::MODEL.0);
     match lt_llm::models::status(dir) {

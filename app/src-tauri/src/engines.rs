@@ -16,14 +16,15 @@ use std::{
 };
 
 /// The live recognizer, the second-pass recognizer unless it is off, and the pid of the
-/// second-pass server (zero when it is off).
+/// second-pass server (zero unless Qwen3-ASR runs in one).
 pub type Speech = (
     Box<dyn StreamingAsr>,
     Option<Box<dyn OfflineAsr>>,
     Arc<AtomicU32>,
 );
 
-/// Qwen3-ASR runs in its own llama-server (`binary`); quitting (`cancelled`) stops its start.
+/// Offline X-ASR runs in the app; Qwen3-ASR runs in its own llama-server (`binary`), and quitting
+/// (`cancelled`) stops its start.
 pub fn speech(
     config: &Config,
     models: &Path,
@@ -37,8 +38,14 @@ pub fn speech(
     let asr = registry
         .build_asr(&engine_config)
         .map_err(|e| e.to_string())?;
-    if config.asr.second_pass != "qwen3" {
-        return Ok((asr, None, Arc::default()));
+    match config.asr.second_pass.as_str() {
+        "xasr" => {
+            let engine =
+                lt_sherpa::xasr_offline(models, config).map_err(|e| format!("Second pass: {e}"))?;
+            return Ok((asr, Some(Box::new(engine)), Arc::default()));
+        }
+        "qwen3" => {}
+        _ => return Ok((asr, None, Arc::default())),
     }
     let server = lt_llm::speech::Qwen3Server::start(
         binary,

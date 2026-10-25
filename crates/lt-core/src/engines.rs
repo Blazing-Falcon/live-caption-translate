@@ -74,6 +74,12 @@ pub struct OfflineText {
 pub trait OfflineAsr: Send {
     /// `language`: decode as this language (such as "zh") instead of detecting it.
     fn decode(&mut self, samples: &[f32], language: Option<&str>) -> Result<OfflineText>;
+
+    /// Seconds of audio before a clause's window that the engine also reads. Earlier speech gives
+    /// a short clause the context its words depend on; `trim` leaves out the text it adds.
+    fn context_s(&self) -> f64 {
+        0.0
+    }
 }
 
 #[derive(Clone, Debug)]

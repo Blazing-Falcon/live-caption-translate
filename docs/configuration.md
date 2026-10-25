@@ -46,10 +46,10 @@ norm_gate_dbfs = -60.0
 chunk_ms = 480                  # 160 | 480 | 960
 threads = 1                     # 1 to the logical CPUs of the PC
 pause_s = 0.8                   # silence that ends a line
-second_pass = "qwen3"           # "off" | "qwen3": read each closed line again offline
-second_pass_threads = 4         # 1 to the logical CPUs of the PC
+second_pass = "xasr"            # "off" | "xasr" | "qwen3": read each closed line again offline
+second_pass_threads = 2         # 1 to the logical CPUs of the PC
 second_pass_max_wait_s = 1.5    # after this, the line keeps the live text
-second_pass_min_logprob = -0.6  # skip the second pass for a line the live model was surer of than this
+second_pass_min_logprob = 0.0   # skip the second pass for a line the live model was surer of than this; 0 reads every line
 
 [filter]
 skip_music = false              # do not translate a line that looks like song lyrics
@@ -141,10 +141,10 @@ The default values are in the file above.
 | `chunk_ms` | `160`, `480`, `960` | pipeline | Streaming X-ASR model. 160: words appear soonest, about twice the CPU of 480. 480: fewest errors. 960: least CPU. |
 | `threads` | 1–64 | pipeline | ONNX Runtime threads for the recognizer. The app uses at most the PC's logical CPUs. |
 | `pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
-| `second_pass` | `off`, `qwen3` | pipeline | When a line ends, Qwen3-ASR 0.6B reads its audio again in a second llama-server. Its text replaces the live Chinese before translation if it matches the live text closely enough. |
-| `second_pass_threads` | 1–64 | pipeline | Threads for the second-pass model. The app uses at most the PC's logical CPUs. With 4 here plus 4 for the translator and 1 for the recognizer, a 4-core PC oversubscribes: measured on four pinned CPUs, end-to-end p50 is 1480 ms against 1428 on sixteen, and p90 2246 against 1964. Set this to 2 on a 4-core machine. |
+| `second_pass` | `off`, `xasr`, `qwen3` | pipeline | When a line ends, a second recognizer reads its audio again. Its text replaces the live Chinese before translation if it matches the live text closely enough. `xasr`: the offline X-ASR model in the app, which also reads 5 s of speech before the line. `qwen3`: Qwen3-ASR 0.6B in a second llama-server (optional download). |
+| `second_pass_threads` | 1–64 | pipeline | Threads for the second-pass model. The app uses at most the PC's logical CPUs. Offline X-ASR per line, median: 406 ms on 1 thread, 197 on 2, 158 on 4 (40 conversation lines, Python, Ryzen 7 5700X, 2026-10-25). |
 | `second_pass_max_wait_s` | 0.5–5.0 | pipeline | A line that waits longer than this for the second pass keeps the live text |
-| `second_pass_min_logprob` | -5.0–0.0 | pipeline | Run the second pass only on a line whose mean token log-probability is below this. `0` decodes every line. Measured on two domains: at -0.6 it keeps the whole gain on scripted drama and stops costing accuracy on spontaneous conversation, and its decode is skipped on 68% of drama lines and 95% of conversation lines. |
+| `second_pass_min_logprob` | -5.0–0.0 | pipeline | Run the second pass only on a line whose mean token log-probability is below this. `0` decodes every line. With `xasr`, reading every line made the fewest errors (238 against 263 live, drama, conversation and FLEURS pooled); with `qwen3`, -0.6 was the measured setting. |
 
 ### filter
 

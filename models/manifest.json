@@ -42,6 +42,45 @@
       "optional": false
     },
     {
+      "id": "xasr-offline-int8-2026-06-03",
+      "name": "Second-pass speech recognition (X-ASR offline zh-en, int8)",
+      "role": "asr",
+      "license": "Apache-2.0 (upstream github.com/Gilgamesh-J/X-ASR LICENSE and the Hugging Face card of GilgameshWind/X-ASR-zh-en, checked 2026-10-10; the sherpa-onnx archive states no license)",
+      "page": "https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models",
+      "files": [
+        {
+          "name": "sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03.tar.bz2",
+          "size": 136396739,
+          "sha256": "5d02c36d7b44e886b7c8f0d8e051f8713acab96c264bb6ef9e718be39a6a2224",
+          "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03.tar.bz2",
+          "mirror": "",
+          "extract": [
+            {
+              "name": "encoder-epoch-99-avg-1.int8.onnx",
+              "size": 161015713,
+              "sha256": "7f6aa62056efd8af9da13e0faa81cd3f284d2fb2e3b63de56fd2dfd3450910dc"
+            },
+            {
+              "name": "decoder-epoch-99-avg-1.onnx",
+              "size": 11309084,
+              "sha256": "72f47405d3c1033bebccbef82f90071e7b4ba3e71b9c986f2b74244b25723aed"
+            },
+            {
+              "name": "joiner-epoch-99-avg-1.int8.onnx",
+              "size": 2581422,
+              "sha256": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3"
+            },
+            {
+              "name": "tokens.txt",
+              "size": 58806,
+              "sha256": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c"
+            }
+          ]
+        }
+      ],
+      "optional": false
+    },
+    {
       "id": "hy-mt2-1.8b-ternary-tq2_0",
       "name": "Translation (Tencent Hy-MT2 1.8B, 1.25-bit)",
       "role": "translator",
@@ -102,7 +141,7 @@
           "mirror": ""
         }
       ],
-      "optional": false
+      "optional": true
     },
     {
       "id": "xasr-stream-960ms-int8-2026-06-05",

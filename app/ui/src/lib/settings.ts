@@ -43,7 +43,7 @@ export interface Config extends ExtraFields {
     chunk_ms: 160 | 480 | 960;
     threads: number;
     pause_s: number;
-    second_pass: "off" | "qwen3";
+    second_pass: "off" | "xasr" | "qwen3";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
     second_pass_min_logprob: number;
@@ -303,7 +303,8 @@ export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
 
 export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
   { value: "off", label: "Off", model: null, help: "The live Chinese is final. The English appears soonest." },
-  { value: "qwen3", label: "Qwen3-ASR 0.6B", model: "qwen3-asr-0.6b-q4_k_m", help: "The default. Fixes misheard words on the lines the recognizer was unsure of; a line it already heard clearly keeps its text and its English appears at once. About 1.2 GB more memory and half a CPU core." },
+  { value: "xasr", label: "X-ASR offline", model: "xasr-offline-int8-2026-06-03", help: "The default. The same recognizer reads each finished line again with the speech before it and fixes misheard words. About 0.2 s per line." },
+  { value: "qwen3", label: "Qwen3-ASR 0.6B", model: "qwen3-asr-0.6b-q4_k_m", help: "A larger model in its own server. About 1.2 GB more memory and about 1 s per line." },
 ];
 
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
@@ -335,10 +336,10 @@ export const DEFAULT_CONFIG: Config = {
     "chunk_ms": 480,
     "threads": 1,
     "pause_s": 0.8,
-    "second_pass": "qwen3",
-    "second_pass_threads": 4,
+    "second_pass": "xasr",
+    "second_pass_threads": 2,
     "second_pass_max_wait_s": 1.5,
-    "second_pass_min_logprob": -0.6
+    "second_pass_min_logprob": 0.0
   },
   "filter": {
     "skip_music": false,

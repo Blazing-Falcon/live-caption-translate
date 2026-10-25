@@ -67,12 +67,12 @@ config_table!(AsrConfig {
     chunk_ms: u32 = 480,
     threads: u32 = 1,
     pause_s: f32 = 0.8,
-    second_pass: String = "qwen3".into(),
-    second_pass_threads: u32 = 4,
+    second_pass: String = "xasr".into(),
+    second_pass_threads: u32 = 2,
     second_pass_max_wait_s: f32 = 1.5,
     /// Run the second pass only on a clause whose live text the streaming recognizer was less
     /// sure of than this (mean token log-probability). `0` decodes every clause.
-    second_pass_min_logprob: f32 = -0.6,
+    second_pass_min_logprob: f32 = 0.0,
 });
 config_table!(FilterConfig {
     /// Do not translate a line that looks like song lyrics. Marking such a line is separate and
@@ -426,7 +426,7 @@ impl Config {
         }
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
-        choice!(asr, second_pass, &["off", "qwen3"]);
+        choice!(asr, second_pass, &["off", "xasr", "qwen3"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
         number!(asr, second_pass_min_logprob, -5.0, 0.0);

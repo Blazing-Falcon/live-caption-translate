@@ -91,7 +91,11 @@ pub fn build(
         engine_config.models.dir = models.to_string_lossy().into_owned();
         let asr = registry.build_asr(&engine_config)?;
         let mut speech_pid = Arc::new(AtomicU32::new(0));
-        let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass == "qwen3" {
+        let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass == "xasr" {
+            Some(Box::new(
+                lt_sherpa::xasr_offline(models, config).context("Starting the second pass")?,
+            ))
+        } else if config.asr.second_pass == "qwen3" {
             let server = binary.map(Path::to_path_buf).unwrap_or_else(default_binary);
             let server = lt_llm::speech::Qwen3Server::start(
                 &server,

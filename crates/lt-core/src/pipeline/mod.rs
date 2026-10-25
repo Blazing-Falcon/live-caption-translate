@@ -62,8 +62,8 @@ pub struct Pipeline;
 
 impl Pipeline {
     /// Subscribe to `bus` before this call: a short replay can finish before it returns.
-    /// `second_pass` reads a closed clause again when the live recognizer was unsure of it;
-    /// `None` keeps the live text.
+    /// `second_pass` reads each closed clause again (only the ones the live recognizer was unsure
+    /// of when `asr.second_pass_min_logprob` is below 0); `None` keeps the live text.
     /// `sampler` adds process CPU and memory to the stats.
     pub fn start(
         mut config: Config,
@@ -115,6 +115,9 @@ impl Pipeline {
             partials: asr_tx.clone(),
             clauses: refine_tx,
             keep_audio: second_pass.is_some(),
+            context_s: second_pass
+                .as_ref()
+                .map_or(0.0, |engine| engine.context_s()),
         };
         let asr_thread = thread::Builder::new()
             .name("lt-asr".into())
