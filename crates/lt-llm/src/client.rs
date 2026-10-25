@@ -320,6 +320,8 @@ impl Translator for OpenAiCompatTranslator {
             tracing::debug!(id = request.id.0, problem, "Unusable translation answer");
             return Err(translation_error("Could not translate this line"));
         }
+        // An answer cut at the output budget is still readable English; the line is shown short
+        // rather than replaced by a failure.
         Ok(output)
     }
 }
@@ -339,9 +341,6 @@ fn finish(output: &mut TranslationOut) {
 fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Option<&'static str> {
     if output.text.is_empty() {
         return Some("empty");
-    }
-    if output.truncated {
-        return Some("truncated");
     }
     if lt_core::text::chinese_chars(&output.text) > 0 {
         return Some("Chinese in the answer");
