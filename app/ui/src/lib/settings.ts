@@ -8,14 +8,6 @@ export interface CaptureApp extends ExtraFields {
   name: string;
 }
 
-export interface GlossaryEntry extends ExtraFields {
-  zh: string;
-  en: string;
-  note: string;
-  variants: string[];
-  confirmed: boolean;
-}
-
 export interface OverlayRect extends ExtraFields {
   monitor: string;
   x: number;
@@ -67,7 +59,6 @@ export interface Config extends ExtraFields {
     skip_lag_s: number;
     window_chars: number;
     fragment_ellipsis: boolean;
-    glossary: GlossaryEntry[];
   };
   overlay: ExtraFields & {
     visible: boolean;
@@ -257,29 +248,6 @@ export function transcriptPatch(enabled: boolean): ConfigPatch {
   return { transcript: { enabled } };
 }
 
-/** Splits the "also heard as" field; a Chinese keyboard types the full-width comma and 、 as a list mark. */
-export function splitVariants(text: string): string[] {
-  const seen = new Set<string>();
-  const variants: string[] = [];
-  for (const part of text.split(/[,，、]/)) {
-    const variant = part.trim();
-    if (variant === "" || seen.has(variant)) continue;
-    seen.add(variant);
-    variants.push(variant);
-  }
-  return variants;
-}
-
-/** Joins a variant list for the field, which splits it again with `splitVariants`. */
-export function formatVariants(variants: readonly string[]): string {
-  return variants.join(", ");
-}
-
-/** A patch carries the whole list: the app replaces the stored array rather than merging rows. */
-export function glossaryPatch(entries: GlossaryEntry[]): ConfigPatch {
-  return { translate: { glossary: entries } };
-}
-
 export function performancePatch(values: DeepPartial<Config["performance"]>): ConfigPatch {
   return { performance: values };
 }
@@ -360,8 +328,7 @@ export const DEFAULT_CONFIG: Config = {
     "queue_join_max_chars": 120,
     "skip_lag_s": 6.0,
     "window_chars": 60,
-    "fragment_ellipsis": true,
-    "glossary": []
+    "fragment_ellipsis": true
   },
   "overlay": {
     "visible": true,

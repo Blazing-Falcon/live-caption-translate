@@ -8,7 +8,6 @@ use crate::{
     engines::OfflineAsr,
     error::Result,
     events::DropReason,
-    glossary::SharedGlossary,
     lyrics::LyricDetector,
     recognizer::AsrMessage,
     refine::{cut_at_next_clause, only_pronoun_differs, trim},
@@ -74,7 +73,6 @@ pub(super) fn refine_loop(
     config: &Config,
     inputs: Receiver<RefineInput>,
     output: Sender<AsrMessage>,
-    glossary: &SharedGlossary,
     cancelled: &AtomicBool,
 ) -> Result<()> {
     let max_wait = Duration::from_secs_f32(config.asr.second_pass_max_wait_s);
@@ -105,14 +103,7 @@ pub(super) fn refine_loop(
                     );
                 }
                 let next_head = open.after(transcript.id);
-                finalize(
-                    transcript,
-                    &live,
-                    config,
-                    glossary,
-                    &mut lyrics,
-                    next_head.as_deref(),
-                )
+                finalize(transcript, &live, config, &mut lyrics, next_head.as_deref())
             }
             RefineInput::Message(message) => message,
         };
@@ -219,15 +210,10 @@ fn elapsed_ms(since: Instant) -> u32 {
 
 /// Clean, classify and filter a closed clause on its final text. `live` is the recognizer's
 /// text, recorded when the final text differs from it.
-///
-/// The glossary is applied here, after the second pass and before the queue: the Chinese shown,
-/// the Chinese translated and the Chinese in the transcript are then the same string, so one
-/// person cannot appear under two spellings in the same line.
 fn finalize(
     mut transcript: Transcript,
     live: &str,
     config: &Config,
-    glossary: &SharedGlossary,
     lyrics: &mut LyricDetector,
     next_head: Option<&str>,
 ) -> AsrMessage {
@@ -236,7 +222,6 @@ fn finalize(
         let live = clean(live, &config.filter.fillers);
         record.live_text = (live != transcript.text).then_some(live);
     }
-    transcript.text = glossary.normalize(&transcript.text);
     // Confidence is read on the clause as the engine heard it, before any correction.
     transcript.music = lyrics.observe(transcript.logprob);
     // A pause cut that stopped mid-thought gets an ellipsis instead of an invented ending. A

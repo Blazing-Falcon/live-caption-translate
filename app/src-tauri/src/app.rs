@@ -85,8 +85,7 @@ impl Shared {
         let applied = applies::classify(&old, &new);
         let _ = self.handle.emit("config://changed", &new);
         self.on_config_changed(&old, &new);
-        let glossary_changed = old.translate.glossary != new.translate.glossary;
-        if matches!(applied, Applies::Capture | Applies::Pipeline) || glossary_changed {
+        if matches!(applied, Applies::Capture | Applies::Pipeline) {
             self.controller
                 .send(Cmd::Apply {
                     old,

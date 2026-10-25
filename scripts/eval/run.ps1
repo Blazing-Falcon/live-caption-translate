@@ -28,11 +28,11 @@ try {
     $pace = if ($Fast) { 'fast' } else { 'realtime' }
 
     $sources = @{
-        drama  = @{ Wav = '.agent/cn-translate-investigation/translate.wav'; Zh = 'testdata/eval/drama-130s.zh.txt'; En = 'testdata/eval/drama-130s.en.txt'; Names = 'testdata/eval/drama-130s.names.toml' }
-        ramc   = @{ Wav = 'testdata/fetched/ramc/CTS-CN-F2F-2019-11-15-1449.wav'; Zh = ''; En = ''; Names = '' }
-        leijun = @{ Wav = 'testdata/fetched/leijun/lei-jun.wav'; Zh = ''; En = ''; Names = '' }
-        ascend = @{ Wav = 'testdata/fetched/ascend/clip_00.wav'; Zh = ''; En = ''; Names = '' }
-        fleurs = @{ Wav = 'testdata/fetched/fleurs/fleurs-dev-50.wav'; Zh = 'testdata/fetched/fleurs/fleurs-dev-50.zh.txt'; En = ''; Names = '' }
+        drama  = @{ Wav = '.agent/cn-translate-investigation/translate.wav'; Zh = 'testdata/eval/drama-130s.zh.txt'; En = 'testdata/eval/drama-130s.en.txt' }
+        ramc   = @{ Wav = 'testdata/fetched/ramc/CTS-CN-F2F-2019-11-15-1449.wav'; Zh = ''; En = '' }
+        leijun = @{ Wav = 'testdata/fetched/leijun/lei-jun.wav'; Zh = ''; En = '' }
+        ascend = @{ Wav = 'testdata/fetched/ascend/clip_00.wav'; Zh = ''; En = '' }
+        fleurs = @{ Wav = 'testdata/fetched/fleurs/fleurs-dev-50.wav'; Zh = 'testdata/fetched/fleurs/fleurs-dev-50.zh.txt'; En = '' }
     }
 
     foreach ($name in $Domain) {
@@ -54,9 +54,6 @@ try {
         }
         if ($source.En -and (Test-Path -LiteralPath (Join-Path $root $source.En))) {
             $scoreArgs += @('--en', (Join-Path $root $source.En))
-        }
-        if ($source.Names -and (Test-Path -LiteralPath (Join-Path $root $source.Names))) {
-            $scoreArgs += @('--names', (Join-Path $root $source.Names))
         }
         & $python -I @scoreArgs | Tee-Object -FilePath (Join-Path $dir 'score.json')
     }

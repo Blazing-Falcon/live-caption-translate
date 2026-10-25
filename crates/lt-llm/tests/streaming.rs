@@ -177,7 +177,6 @@ fn request<'a>(text: &'a str, control: TranslationControl) -> TranslateRequest<'
         id: UtteranceId(1),
         text,
         context: &[],
-        terms: &[],
         max_tokens: None,
         control,
     }

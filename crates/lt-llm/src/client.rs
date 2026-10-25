@@ -34,14 +34,10 @@ const HTTP_BUFFER_BYTES: usize = 16 * 1024;
 /// An answer this many times longer than its source in characters is not a translation of it.
 const MAX_LENGTH_RATIO: usize = 12;
 /// Openings of a reply that answers the instruction instead of translating the line. They are
-/// lowercase because the check lowercases the answer first. The glossary block's header is here
-/// because the model sometimes repeats it instead of translating; both of Hy-MT2's spellings of
-/// it are listed.
-const REPLY_PHRASES: [&str; 8] = [
+/// lowercase because the check lowercases the answer first.
+const REPLY_PHRASES: [&str; 6] = [
     "please translate",
     "translate the following",
-    "refer to the following translations",
-    "reference the following translations",
     "here is the translation",
     "here's the translation",
     "the translation is",
@@ -193,12 +189,12 @@ impl OpenAiCompatTranslator {
                 "Translation input exceeds the 300 character limit",
             ));
         }
-        if request.context.is_empty() && request.terms.is_empty() {
+        if request.context.is_empty() {
             let mut output = self.stream(alone(request.text), request, on_delta)?;
             finish(&mut output);
             return Ok(output);
         }
-        let messages = HyMt2Prompts::turns_with_terms(request.context, request.terms, request.text)
+        let messages = HyMt2Prompts::turns(request.context, request.text)
             .into_iter()
             .map(|(role, content)| json!({"role": role, "content": content}))
             .collect();
@@ -206,36 +202,6 @@ impl OpenAiCompatTranslator {
         finish(&mut turns);
         let problem = answer_problem(&turns, request);
         if problem.is_none() {
-            let missing = missing_terms(&turns.text, request.terms);
-            if missing.is_empty() {
-                return Ok(turns);
-            }
-            // The prompt asked for these names; a 1.25-bit model does not always obey. One more
-            // try with only the entries it dropped, and the first answer if that fails too.
-            tracing::debug!(
-                id = request.id.0,
-                missing = missing.len(),
-                "Retrying with the glossary entries the answer dropped"
-            );
-            let messages = HyMt2Prompts::turns_with_terms(request.context, &missing, request.text)
-                .into_iter()
-                .map(|(role, content)| json!({"role": role, "content": content}))
-                .collect();
-            if let Ok(mut retry) = self.stream(messages, request, on_delta) {
-                finish(&mut retry);
-                let better = answer_problem(&retry, request).is_none()
-                    && missing_terms(&retry.text, request.terms).len() < missing.len();
-                // Both requests ran, so the kept answer carries the tokens of both.
-                let (mut kept, spent) = if better {
-                    (retry, turns)
-                } else {
-                    (turns, retry)
-                };
-                kept.prompt_tokens += spent.prompt_tokens;
-                kept.cached_tokens += spent.cached_tokens;
-                kept.generated_tokens += spent.generated_tokens;
-                return Ok(kept);
-            }
             return Ok(turns);
         }
         tracing::debug!(
@@ -370,7 +336,6 @@ impl Translator for OpenAiCompatTranslator {
             id: UtteranceId(0),
             text: "你好。",
             context: &[],
-            terms: &[],
             max_tokens: None,
             control: control.clone(),
         };
@@ -439,24 +404,6 @@ fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Op
         return Some("answered instead of translating");
     }
     None
-}
-
-/// The glossary entries whose English the answer does not contain, ignoring case.
-///
-/// A term carries its note in brackets after the English ("President Zhuo (name, male)"), so the
-/// check compares the part before the bracket.
-fn missing_terms(answer: &str, terms: &[(String, String)]) -> Vec<(String, String)> {
-    let answer = answer.to_lowercase();
-    terms
-        .iter()
-        .filter(|(_, english)| {
-            let name = english
-                .split_once(" (")
-                .map_or(english.as_str(), |(name, _)| name);
-            !answer.contains(&name.to_lowercase())
-        })
-        .cloned()
-        .collect()
 }
 
 /// Remove a leaked marker spelling, including a truncated one at the end of the answer, and a
@@ -917,7 +864,6 @@ mod residue_tests {
             id: UtteranceId(1),
             text: "这个翻译是错的。",
             context: &[],
-            terms: &[],
             max_tokens: None,
             control: TranslationControl {
                 deadline: Instant::now() + Duration::from_secs(1),
@@ -940,14 +886,6 @@ mod residue_tests {
         assert_eq!(
             answer_problem(
                 &answer("Here is the translation: This translation is wrong."),
-                &request
-            ),
-            Some("answered instead of translating")
-        );
-        // The glossary block's own header, repeated back.
-        assert_eq!(
-            answer_problem(
-                &answer("Reference the following translations: President Zhuo"),
                 &request
             ),
             Some("answered instead of translating")

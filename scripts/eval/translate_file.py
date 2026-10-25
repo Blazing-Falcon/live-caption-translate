@@ -7,8 +7,7 @@ started on a free port with the app's flags.
   python scripts/eval/translate_file.py --in testdata/eval/drama-130s.zh.txt \
       --out testdata/eval/drama-130s.en.draft.txt
 
-`--prompt-file` replaces the instruction prefix; `{text}` marks where the line goes and
-`{terms}` where the matched glossary block goes. `--terms` is a TOML file of `zh = "en"`.
+`--prompt-file` replaces the instruction prefix; `{text}` marks where the line goes.
 """
 
 import argparse
@@ -85,7 +84,6 @@ def main():
     parser.add_argument("--in", dest="source", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--prompt-file")
-    parser.add_argument("--terms")
     parser.add_argument("--root", default=".")
     parser.add_argument(
         "--model",
@@ -95,12 +93,6 @@ def main():
 
     root = Path(args.root).resolve()
     template = Path(args.prompt_file).read_text(encoding="utf-8") if args.prompt_file else None
-    terms = {}
-    if args.terms:
-        import tomllib
-
-        with Path(args.terms).open("rb") as handle:
-            terms = tomllib.load(handle)
 
     lines = [
         line.strip()
@@ -112,16 +104,10 @@ def main():
     answers = []
     try:
         for index, line in enumerate(lines):
-            matched = [(zh, en) for zh, en in terms.items() if zh in line]
             if template:
                 prompt = template.replace("{text}", line)
-                block = "\n".join(f"{zh} -> {en}" for zh, en in matched)
-                prompt = prompt.replace("{terms}", block)
             else:
                 prompt = PREFIX + line
-                if matched:
-                    block = "\n".join(f"{zh} translates to {en}" for zh, en in matched)
-                    prompt = f"Reference the following translations:\n{block}\n\n{prompt}"
             answer, reason = translate(port, prompt, max(24, min(160, 2 * len(line) + 8)))
             answers.append(answer)
             print(f"{index:3d} [{reason}] {line} -> {answer}", flush=True)

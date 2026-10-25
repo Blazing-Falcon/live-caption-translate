@@ -16,7 +16,7 @@ Scores a replay against the metrics this project cares about, per domain, never 
 
 # Score a run that already exists.
 .agent/venv/Scripts/python.exe -I scripts/eval/score.py .agent/experiments/runs/base-drama/out.jsonl `
-    --label base-drama --names testdata/eval/drama-130s.names.toml `
+    --label base-drama `
     --zh testdata/eval/drama-130s.zh.txt --en testdata/eval/drama-130s.en.txt
 ```
 
@@ -38,7 +38,6 @@ From the transcript alone, so a run can be rescored without the audio:
   skipped reports a near-zero stage time, so a run with many `confident` lines shows a low p50
   because it did less work, not because the decode got faster;
 - shape: duration, Han characters, inter-line gaps, share of gaps at or above `asr.pause_s`;
-- name forms per person, from a names file;
 - lyric lines that were translated anyway;
 - fragments: lines the pipeline flagged as stopping mid-thought and still translated. The flag is
   new: a transcript recorded before it has no field, so those runs report zero rather than a guess.
@@ -50,7 +49,7 @@ That is coarse: the reference and the replay do not cut the same clauses.
 
 | Domain | Audio | Reference |
 |---|---|---|
-| drama | `.agent/cn-translate-investigation/translate.wav` (130.8 s) | 26 Chinese sentences, hand-checked English, names, labels |
+| drama | `.agent/cn-translate-investigation/translate.wav` (130.8 s) | 26 Chinese sentences, hand-checked English, labels |
 | ramc | `testdata/fetched/ramc/CTS-CN-F2F-2019-11-15-1449.wav` (33 min) | human transcript with speaker labels, no English |
 | leijun | `testdata/fetched/leijun/lei-jun.wav` (4.5 min) | `lei-jun.srt`, 70 cues |
 | ascend | `testdata/fetched/ascend/clip_*.wav` (20 clips) | `clips.json` |

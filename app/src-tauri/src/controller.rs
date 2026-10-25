@@ -329,13 +329,9 @@ impl Controller {
                 if !was_listening {
                     self.pause()?;
                 }
-                // The new session read the glossary from `new`.
                 return Ok(());
             }
             Applies::Live | Applies::Restart => {}
-        }
-        if old.translate.glossary != new.translate.glossary {
-            session.pipeline.set_glossary(&new.translate.glossary);
         }
         if old.overlay.running_text() != new.overlay.running_text() {
             session

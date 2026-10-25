@@ -19,17 +19,6 @@ fn table(config: &Config, name: &str) -> Value {
         .unwrap_or(Value::Null)
 }
 
-/// A running pipeline takes a new glossary in place, so the list is not part of what restarts it.
-fn pipeline_table(config: &Config, name: &str) -> Value {
-    let mut value = table(config, name);
-    if name == "translate" {
-        if let Some(translate) = value.as_object_mut() {
-            translate.remove("glossary");
-        }
-    }
-    value
-}
-
 fn field(value: &Value, key: &str) -> Value {
     value.get(key).cloned().unwrap_or(Value::Null)
 }
@@ -53,10 +42,7 @@ pub fn classify(old: &Config, new: &Config) -> Applies {
         field(&capture_old, "autostart") != field(&capture_new, "autostart"),
     );
     for name in ["audio", "asr", "filter", "translate", "performance"] {
-        raise(
-            Applies::Pipeline,
-            pipeline_table(old, name) != pipeline_table(new, name),
-        );
+        raise(Applies::Pipeline, table(old, name) != table(new, name));
     }
     let (transcript_old, transcript_new) = (table(old, "transcript"), table(new, "transcript"));
     raise(
@@ -91,7 +77,7 @@ pub fn server_changed(old: &Config, new: &Config) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lt_core::{config::CaptureApp, glossary::GlossaryEntry};
+    use lt_core::config::CaptureApp;
 
     fn changed(edit: impl FnOnce(&mut Config)) -> Applies {
         let old = Config::default();
@@ -123,10 +109,6 @@ mod tests {
         );
         assert_eq!(changed(|c| c.asr.pause_s = 0.6), Applies::Pipeline);
         assert_eq!(changed(|c| c.translate.threads = 3), Applies::Pipeline);
-        assert_eq!(
-            changed(|c| c.translate.glossary.push(GlossaryEntry::default())),
-            Applies::Live
-        );
         assert_eq!(changed(|c| c.overlay.live_source = false), Applies::Live);
         assert_eq!(changed(|c| c.capture.autostart = false), Applies::Restart);
         assert_eq!(

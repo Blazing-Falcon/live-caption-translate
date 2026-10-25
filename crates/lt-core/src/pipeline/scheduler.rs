@@ -6,7 +6,6 @@ use crate::{
     engines::Translator,
     error::Result,
     events::{DropReason, EngineKind, EngineState, FailReason, PipelineEvent},
-    glossary::SharedGlossary,
     metrics::{Metrics, ResourceSample, ResourceSampler},
     queue::{QueuedTranscript, TranslationQueue, TranslatorWorker},
     recognizer::AsrMessage,
@@ -276,7 +275,6 @@ pub(super) fn scheduler_loop(
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
-    glossary: SharedGlossary,
     running: Arc<AtomicBool>,
 ) -> Result<()> {
     let mut metrics = Metrics::new();
@@ -308,7 +306,6 @@ pub(super) fn scheduler_loop(
     let mut worker = TranslatorWorker::start(
         translator,
         config.translate,
-        glossary,
         clock.clone(),
         bus,
         cancelled.clone(),

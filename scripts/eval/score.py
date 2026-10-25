@@ -1,7 +1,6 @@
 """Score one replay run from its transcript JSONL.
 
-    python scripts/eval/score.py <run>/out.jsonl --names testdata/eval/drama-130s.names.toml
-                                  --zh testdata/eval/drama-130s.zh.txt
+    python scripts/eval/score.py <run>/out.jsonl --zh testdata/eval/drama-130s.zh.txt
 
 Every metric comes from the file alone, so a run can be rescored without the audio.
 Metrics that need a reference are omitted when none is given.
@@ -59,31 +58,11 @@ def cer(reference, hypothesis):
     return edit_distance(reference, hypothesis) / max(1, len(reference))
 
 
-def name_forms(utterances, names):
-    """Distinct English forms per person, from the forms the names file accepts."""
-    result = {}
-    for person, spec in names.items():
-        forms = spec.get("accepted", []) if isinstance(spec, dict) else spec
-        seen = Counter()
-        for row in utterances:
-            english = row.get("english") or ""
-            for form in forms:
-                if form and form in english:
-                    seen[form] += 1
-        result[person] = {
-            "forms": dict(seen),
-            "distinct": len(seen),
-            "lines": sum(seen.values()),
-        }
-    return result
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("jsonl", help="out.jsonl from lt-cli replay")
     parser.add_argument("--zh", help="reference Chinese, one line per sentence")
     parser.add_argument("--en", help="reference English, one line per sentence")
-    parser.add_argument("--names", help="TOML: one table per person, values are accepted forms")
     parser.add_argument("--lyric-ids", help="utterance ids labelled as song lyrics")
     parser.add_argument("--label", default="")
     args = parser.parse_args()
@@ -186,13 +165,6 @@ def main():
         if r.get("fragment") is True and (r.get("english") or "").strip()
     ]
 
-    names = {}
-    if args.names:
-        import tomllib
-
-        with Path(args.names).open("rb") as handle:
-            names = tomllib.load(handle)
-
     result = {
         "label": args.label,
         "file": str(args.jsonl),
@@ -236,7 +208,6 @@ def main():
                 round(sum(1 for g in gaps if g >= 0.8) / len(gaps), 3) if gaps else None
             ),
         },
-        "names": name_forms(finals, names),
         "lyrics": {"labelled": len(lyric_ids), "translated": lyric_translated},
         "fragments": {"count": len(fragments), "ids": fragments},
     }

@@ -7,7 +7,6 @@ use crate::{
     engines::{TranslateRequest, TranslationControl, Translator},
     error::{Error, Result},
     events::{EngineKind, EngineState, FailReason, PipelineEvent, SkipReason, Timing},
-    glossary::SharedGlossary,
     text::chinese_chars,
     types::{StreamTime, Transcript, UtteranceId},
 };
@@ -27,9 +26,6 @@ use std::{
 const WINDOW_GAP_S: f64 = 10.0;
 /// Recent English kept for windows; a window holds at most `window_chars` (60) lines.
 const SHOWN_CAPACITY: usize = 64;
-/// Glossary entries injected for one line. A line naming more people than this is rare, and
-/// every entry costs prompt tokens on a model that reads prompts slowly.
-const MAX_TERMS: usize = 8;
 
 #[derive(Clone, Debug)]
 pub struct QueuedTranscript {
@@ -350,11 +346,10 @@ fn window_context(
     context
 }
 
-/// What a request needs beyond the line itself: the earlier lines it may use, the glossary
-/// entries it mentions, and the queue's settings.
+/// What a request needs beyond the line itself: the earlier lines it may use and the queue's
+/// settings.
 pub struct Translation<'a> {
     pub context: &'a [(String, String)],
-    pub terms: &'a [(String, String)],
     pub config: &'a TranslateConfig,
 }
 
@@ -366,11 +361,7 @@ pub fn translate_one(
     bus: &EventBus,
     cancelled: Arc<AtomicBool>,
 ) -> PipelineEvent {
-    let Translation {
-        context,
-        terms,
-        config,
-    } = *translation;
+    let Translation { context, config } = *translation;
     let source = &item.transcript;
     let span = tracing::info_span!("translation", id = source.id.0);
     let _utterance = span.enter();
@@ -397,7 +388,6 @@ pub fn translate_one(
         } else {
             &[]
         },
-        terms,
         max_tokens: None,
         control: control.clone(),
     };
@@ -541,7 +531,6 @@ impl TranslatorWorker {
     pub fn start(
         mut translator: Box<dyn Translator>,
         config: TranslateConfig,
-        glossary: SharedGlossary,
         clock: Arc<dyn Clock>,
         bus: EventBus,
         cancelled: Arc<AtomicBool>,
@@ -580,10 +569,8 @@ impl TranslatorWorker {
                         Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
                     };
                     let context = window_context(&item.window, &shown);
-                    let terms = glossary.terms(&item.transcript.text, MAX_TERMS);
                     let translation = Translation {
                         context: &context,
-                        terms: &terms,
                         config: &config,
                     };
                     let event = translate_one(

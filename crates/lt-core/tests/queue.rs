@@ -4,7 +4,6 @@ use lt_core::{
     config::{Config, TranslateConfig},
     events::{EngineState, FailReason, PipelineEvent},
     fakes::FakeTranslator,
-    glossary::SharedGlossary,
     queue::{
         stop_runaway, strip_wrappers, translate_one, QueuedTranscript, Translation,
         TranslationQueue, TranslatorWorker,
@@ -26,11 +25,10 @@ use std::{
 /// Only stops a hung test; no assertion depends on how fast this PC is.
 const WATCHDOG: Duration = Duration::from_secs(30);
 
-/// A request with no earlier lines and no glossary.
+/// A request with no earlier lines.
 fn translation(config: &TranslateConfig) -> Translation<'_> {
     Translation {
         context: &[],
-        terms: &[],
         config,
     }
 }
@@ -309,7 +307,6 @@ fn worker_pairs_window_lines_with_their_own_english_and_stops_at_a_line_without_
     let mut worker = TranslatorWorker::start(
         Box::new(ContextRecorder { seen: seen.clone() }),
         Config::default().translate,
-        SharedGlossary::default(),
         clock,
         EventBus::default(),
         stop,
@@ -364,15 +361,7 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
     let mut config = Config::default().translate;
     config.timeout_s = 0.5;
     let stop = Arc::new(AtomicBool::new(false));
-    let mut worker = TranslatorWorker::start(
-        Box::new(fake),
-        config,
-        SharedGlossary::default(),
-        clock,
-        bus,
-        stop,
-    )
-    .unwrap();
+    let mut worker = TranslatorWorker::start(Box::new(fake), config, clock, bus, stop).unwrap();
     worker
         .input
         .send(QueuedTranscript {
