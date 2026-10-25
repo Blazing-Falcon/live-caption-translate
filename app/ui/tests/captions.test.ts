@@ -179,8 +179,8 @@ describe("running text", () => {
     ]);
   });
 
-  it("keeps its text through silence", () => {
-    const c = setup({ configure: (config) => { config.overlay.style = "flow"; } });
+  it.each(["flow", "panel"] as const)("keeps its text through silence (%s)", (style) => {
+    const c = setup({ configure: (config) => { config.overlay.style = style; } });
     c.run(asrFinal(1, "一"), final(1, "One"));
     c.clock.advance(600_000);
     expect(summary(c.lines())).toEqual(["1:final"]);
@@ -189,8 +189,9 @@ describe("running text", () => {
 });
 
 describe("expiry", () => {
+  // Only the subtitle bar clears; the panel and running text keep their text.
   it("never expires pending or streaming rows, and expires them after they settle", () => {
-    const c = setup();
+    const c = setup({ configure: (config) => { config.overlay.style = "bar"; } });
     c.run(asrFinal(1, "一"), asrFinal(2, "二"), asrFinal(3, "三"), final(1, "One"), delta(2, "Tw"));
     c.clock.advance(8000 + FADE_MS);
     expect(summary(c.lines())).toEqual(["2:streaming", "3:pending"]);
@@ -212,7 +213,7 @@ describe("expiry", () => {
   });
 
   it("never expires a live line, and a partial resets the expiry clock", () => {
-    const c = setup();
+    const c = setup({ configure: (config) => { config.overlay.style = "bar"; } });
     c.run(asrFinal(1, "一"), final(1, "One"), partial(2, "二"));
     c.clock.advance(5000);
     c.run(partial(2, "二二"));

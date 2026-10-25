@@ -338,7 +338,8 @@ interface SettingsSlice {
   pauseHotkey: string;
   settingsHotkey: string;
   expireMs: number;
-  /** Running text stays until newer text pushes it out, like live captions. */
+  /** The caption panel and running text keep their text until newer text pushes it out, like
+   * live captions; only the subtitle bar clears after `expire_s`. */
   pinned: boolean;
   appNames: string[];
 }
@@ -749,7 +750,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       pauseHotkey: config.hotkeys.pause,
       settingsHotkey: config.hotkeys.settings,
       expireMs: Math.max(0, config.overlay.expire_s * 1000),
-      pinned: config.overlay.style === "flow",
+      pinned: config.overlay.style !== "bar",
       appNames: config.capture.apps.map((entry) => entry.name),
     };
     if (settings.pinned) cancelFade();

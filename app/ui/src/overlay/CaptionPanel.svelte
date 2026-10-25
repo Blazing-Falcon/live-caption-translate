@@ -32,6 +32,9 @@
     <div class="status-row"><CaptionLine {status} /></div>
   {/if}
   <div class="history">
+    {#if shown.length === 0 && !status}
+      <p class="waiting">Waiting for speech</p>
+    {/if}
     {#each shown as line, index (line.id)}
       <CaptionLine
         {line}
@@ -63,6 +66,14 @@
   .status-row {
     flex: none;
     padding: var(--space-4) 18px 0;
+  }
+
+  .waiting {
+    margin: 0;
+    font-size: calc(var(--font-px, 26) * 1px);
+    font-weight: 500;
+    color: var(--ov-pending);
+    text-shadow: var(--ov-halo);
   }
 
   .history {

@@ -178,8 +178,9 @@
     <span>Show Chinese while someone is speaking</span>
   </label>
 
-  <!-- Running text keeps its text, like live captions, so it has nothing to clear. -->
-  {#if overlay.style !== "flow"}
+  <!-- The caption panel and running text keep their text, like live captions, so only the bar
+       has something to clear. -->
+  {#if overlay.style === "bar"}
     <label class="field">
       <span>Clear captions after {expireS} s without new captions</span>
       <input
