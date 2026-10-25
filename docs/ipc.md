@@ -20,7 +20,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
-| `translation_preview` | `id`, `ids[]`, `text` | Caption panel and running text only (`overlay.style` `panel` or `flow`): the English of the lines not yet translated for good, `id` being the first of `ids`; the last of them may have no final text yet. A newer preview replaces it; so does the final translation of any of its lines. |
+| `translation_preview` | `id`, `ids[]`, `text` | Every session: the English of the lines not yet translated for good, `id` being the first of `ids`; the last of them may have no final text yet. A newer preview replaces it; so does the final translation of any of its lines. |
 | `translation_failed` | `id`, `reason`, `message` | The final translation failed |
 | `skipped` | `id`, `reason` | The translator skipped the line to catch up |
 | `dropped` | `id`, `reason` | The clause has no usable text, or listening stopped |
@@ -99,7 +99,7 @@ asr_final -> joined (as leader)*
 - `joined` comes after the `asr_final` of each id that it names. A leader can get more than one `joined`.
 - Absorbed ids get no translation events.
 - `translation_preview` names only ids that have started and have no terminal event. It can come before an id's `asr_final`.
-- In the caption panel and running text, the scheduler joins closed lines into one translation up to a sentence end (。？！), a pause or break cut, a line shown as heard, 10 s of silence, or 40 characters, and sends `joined` when it does. While no line waits for translation, it translates the lines not yet joined plus the live text of the lines without a final again (at least 4 letters; after the last preview ended it waits as long as that preview took, at least 300 ms). A preview answer with Chinese in it is not sent.
+- In every session, the scheduler joins closed lines into one translation up to a sentence end (。？！), a pause or break cut, a line shown as heard, 10 s of silence, or 40 characters, and sends `joined` when it does. While no line waits for translation, it translates the lines not yet joined plus the live text of the lines without a final again (at least 4 letters; after the last preview ended it waits as long as that preview took, at least 300 ms). A preview answer with Chinese in it is not sent.
 
 ## Tauri events
 
@@ -168,9 +168,9 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 
 Other rules:
 
-- Terminal lines fade together `overlay.expire_s` after the last speech or translation result, so a late translation still shows for that time. Unfinished lines do not expire. The caption panel and running text never expire: older text leaves only when newer text needs the room.
+- Terminal lines stay until newer text needs their room; unfinished lines never leave on their own.
 - The store keeps a maximum of 24 terminal lines and 32 unfinished lines.
-- The bar shows the last 2 lines. The panel shows `panel_lines` lines (4–6).
+- The panel shows `panel_lines` lines (4–6); running text keeps `flow_lines` wrapped lines of each paragraph.
 
 ## Transcript records
 

@@ -6,7 +6,6 @@
   interface Props {
     lines: readonly Line[];
     preview?: Preview | null;
-    fadingIds?: ReadonlySet<number>;
     status?: StatusLine | null;
     showSource?: boolean;
     liveSource?: boolean;
@@ -16,7 +15,6 @@
   let {
     lines,
     preview = null,
-    fadingIds = new Set<number>(),
     status = null,
     showSource = true,
     liveSource = true,
@@ -69,14 +67,14 @@
   {#if showSource || liveSource}
     <div class="para source">
       <p>
-        {#each flow.source as piece (piece.id)}<span class:fading={fadingIds.has(piece.id)} class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
+        {#each flow.source as piece (piece.id)}<span class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
       </p>
     </div>
   {/if}
   <div class="para english">
     <p>
       {#if flow.english.length > 0}
-        {#each flow.english as piece, index (`${piece.kind}-${piece.id}`)}{index > 0 ? " " : ""}<span class={piece.kind} class:fading={fadingIds.has(piece.id)}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
+        {#each flow.english as piece, index (`${piece.kind}-${piece.id}`)}{index > 0 ? " " : ""}<span class={piece.kind}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
       {:else if !status && flow.source.length === 0}
         <span class="waiting">Waiting for speech</span>
       {/if}
@@ -106,15 +104,6 @@
     height: calc(var(--flow-lines) * var(--flow-line-height) * 1em);
     overflow: hidden;
     line-height: var(--flow-line-height);
-    transition: opacity var(--fade-ms) linear;
-  }
-
-  /* The shared clock fades the lines that are expiring. The fade is per piece, not per
-   * paragraph: running text holds several lines at once, so a paragraph-level fade would hide the
-   * newest line whenever an older one expired. */
-  .fading {
-    opacity: 0;
-    transition: opacity var(--fade-ms) linear;
   }
 
   p {
@@ -153,7 +142,7 @@
     color: var(--ov-pending);
   }
 
-  /* Still being recognized: dimmer than settled Chinese, as in the bar and the panel. */
+  /* Still being recognized: dimmer than settled Chinese, as in the panel. */
   .live {
     color: var(--ov-dim);
   }

@@ -47,14 +47,14 @@ describe("DEFAULT_CONFIG", () => {
 describe("applyPatch", () => {
   it("merges nested tables, replaces arrays and removes keys set to null", () => {
     const base = structuredClone(DEFAULT_CONFIG);
-    base.overlay.bar_rect = { monitor: "A", x: 1, y: 2, w: 3, h: 4 };
+    base.overlay.panel_rect = { monitor: "A", x: 1, y: 2, w: 3, h: 4 };
     const next = applyPatch(base, {
-      overlay: { font_px: 30, bar_rect: null },
+      overlay: { font_px: 30, panel_rect: null },
       capture: { apps: [{ exe: "chrome.exe", name: "Chrome" }] },
     });
     expect(next.overlay.font_px).toBe(30);
     expect(next.overlay.style).toBe(DEFAULT_CONFIG.overlay.style);
-    expect(next.overlay.bar_rect).toBeUndefined();
+    expect(next.overlay.panel_rect).toBeUndefined();
     expect(next.capture.apps).toEqual([{ exe: "chrome.exe", name: "Chrome" }]);
     expect(base.overlay.font_px).toBe(26);
   });

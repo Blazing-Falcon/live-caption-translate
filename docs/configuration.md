@@ -12,7 +12,7 @@ Rules:
 - A file that does not load (not valid TOML, not UTF-8, or not readable) is renamed to `config.toml.bad-<seconds>`, and the app starts with the defaults. A notice gives the new name.
 - The app writes `config.toml.tmp` and renames it, so a save is atomic.
 - A file with `config_version = 1` is migrated when it loads. Renamed keys keep their values (`asr.stream_pause_s` becomes `asr.pause_s`, `latency.low_priority` becomes `performance.low_priority`). `translate.threads = 0` becomes `2`. Keys that version 2 does not have are removed, and the app logs one info line with their names. The next save writes version 2.
-- Choices that the app removed load without a warning: `translate.model`, `translate.glossary`, `translate.fragment_ellipsis`, `asr.chunk_ms`, `asr.decoding`, `asr.second_pass`, `asr.second_pass_min_logprob` and `filter.skip_music` are dropped. The second pass now runs on every line, so a saved `asr.second_pass = "off"` changes nothing. The app logs one info line.
+- Choices that the app removed load without a warning: `translate.model`, `translate.glossary`, `translate.fragment_ellipsis`, `asr.chunk_ms`, `asr.decoding`, `asr.second_pass`, `asr.second_pass_min_logprob`, `filter.skip_music`, `overlay.expire_s` and `overlay.bar_rect` are dropped. The second pass now runs on every line, so a saved `asr.second_pass = "off"` changes nothing. A saved `overlay.style = "bar"` becomes `panel`. The app logs one info line.
 
 **Applies** tells when a change has an effect:
 
@@ -67,17 +67,15 @@ window_chars = 60               # 0 = translate each line alone
 
 [overlay]
 visible = true
-style = "panel"                 # "bar" (subtitle bar) | "panel" (caption panel) | "flow" (running text)
+style = "panel"                 # "panel" (caption panel) | "flow" (running text)
 font_px = 26
 background = 0.82               # 0.0 to 1.0
 show_source = true              # show the Chinese line above the English
-expire_s = 8.0
 panel_edge = "right"            # "left" | "right"
 panel_lines = 5
 flow_lines = 3
 live_source = true              # show the Chinese of the clause being spoken
 # Saved positions, written by the app after move mode. Absent = default placement.
-# [overlay.bar_rect]   monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 140   (device-independent pixels)
 # [overlay.panel_rect] monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 420, h = 600
 # [overlay.flow_rect]  monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 360
 
@@ -165,16 +163,15 @@ The second pass always runs: each closed line is decoded again by the offline X-
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
 | `visible` | bool | live | Show the overlay |
-| `style` | `bar`, `panel`, `flow` | live | Subtitle bar, caption panel, or running text: the lines joined into one English paragraph (and one Chinese paragraph with `show_source`), newest at the end. The caption panel and running text translate differently from the bar: a sentence's clauses are translated together, and the words still being spoken are translated again whenever the translator is free, so English appears while someone speaks and may change until its sentence is translated for good. Whole sentences scored higher than their clauses translated one by one (COMET +0.0158 on 150 FLEURS sentences; +0.0096 on 50 replayed, with the 40-character limit), In real-time replays new words reached English after 489 ms (median) instead of 2028 ms on drama and 565 ms instead of 2484 ms on conversation, and the translation server used 128% of one core instead of 36% on drama and 269% instead of 55% on conversation (`lt-cli replay`, 4 translator threads, Ryzen 7 5700X, 2026-10-25). It runs at below-normal priority with "Give games priority" on. Both keep their text through silence. |
+| `style` | `panel`, `flow` | live | Caption panel, or running text: the lines joined into one English paragraph (and one Chinese paragraph with `show_source`), newest at the end. Both translate a sentence's clauses together, and the words still being spoken are translated again whenever the translator is free, so English appears while someone speaks and may change until its sentence is translated for good. Whole sentences scored higher than their clauses translated one by one (COMET +0.0158 on 150 FLEURS sentences; +0.0096 on 50 replayed, with the 40-character limit), In real-time replays new words reached English after 489 ms (median) instead of 2028 ms on drama and 565 ms instead of 2484 ms on conversation, and the translation server used 128% of one core instead of 36% on drama and 269% instead of 55% on conversation (`lt-cli replay`, 4 translator threads, Ryzen 7 5700X, 2026-10-25). It runs at below-normal priority with "Give games priority" on. Both keep their text through silence. |
 | `font_px` | 12–40 | live | English text size. Chinese is 0.65 × this size, at least 12 px. Older lines are 0.8 × this size. |
 | `background` | 0–1 | live | Background opacity. The control window warns below 0.5. |
 | `show_source` | bool | live | Show the Chinese line above the English line |
-| `expire_s` | 3–60 | live | Subtitle bar only: remove lines after this time without new speech or translation. The caption panel and running text keep their text until newer text needs the room. |
 | `panel_edge` | `left`, `right` | live | Default edge for the panel |
 | `panel_lines` | 4–6 | live | Lines in the panel |
 | `flow_lines` | 2–6 | live | Wrapped lines kept of each running-text paragraph. Older text scrolls out at the top. |
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
-| `bar_rect`, `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
+| `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
 
 ### performance
 

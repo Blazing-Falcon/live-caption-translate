@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import { describe, expect, it, vi } from "vitest";
-import { FADE_MS, MAX_HISTORY_LINES, createCaptionController, failReasonText, flowText, withPreview } from "../src/lib/captions";
+import { MAX_HISTORY_LINES, createCaptionController, failReasonText, flowText, withPreview } from "../src/lib/captions";
 import type { CaptionLine, FailReason, PipelineEvent } from "../src/lib/types";
 import {
   FakeClock,
@@ -184,49 +184,10 @@ describe("running text", () => {
     c.run(asrFinal(1, "一"), final(1, "One"));
     c.clock.advance(600_000);
     expect(summary(c.lines())).toEqual(["1:final"]);
-    expect(c.view().fadingIds.size).toBe(0);
   });
 });
 
-describe("expiry", () => {
-  // Only the subtitle bar clears; the panel and running text keep their text.
-  it("never expires pending or streaming rows, and expires them after they settle", () => {
-    const c = setup({ configure: (config) => { config.overlay.style = "bar"; } });
-    c.run(asrFinal(1, "一"), asrFinal(2, "二"), asrFinal(3, "三"), final(1, "One"), delta(2, "Tw"));
-    c.clock.advance(8000 + FADE_MS);
-    expect(summary(c.lines())).toEqual(["2:streaming", "3:pending"]);
-    c.clock.advance(60_000);
-    expect(summary(c.lines())).toEqual(["2:streaming", "3:pending"]);
-    // English that arrives long after the speech still shows for the whole expiry time.
-    c.run(final(2, "Two"));
-    c.clock.advance(7999);
-    expect(c.view().fadingIds.size).toBe(0);
-    c.clock.advance(1);
-    expect(c.view().fadingIds.has(2)).toBe(true);
-    expect(c.view().fadingIds.has(3)).toBe(false);
-    c.clock.advance(FADE_MS);
-    expect(summary(c.lines())).toEqual(["3:pending"]);
-    c.run(skipped(3));
-    c.clock.advance(8000);
-    c.clock.advance(FADE_MS);
-    expect(c.lines()).toHaveLength(0);
-  });
-
-  it("never expires a live line, and a partial resets the expiry clock", () => {
-    const c = setup({ configure: (config) => { config.overlay.style = "bar"; } });
-    c.run(asrFinal(1, "一"), final(1, "One"), partial(2, "二"));
-    c.clock.advance(5000);
-    c.run(partial(2, "二二"));
-    c.clock.advance(7999);
-    expect(c.view().fadingIds.size).toBe(0);
-    c.clock.advance(1);
-    expect([...c.view().fadingIds]).toEqual([1]);
-    c.clock.advance(FADE_MS);
-    expect(summary(c.lines())).toEqual(["2:live"]);
-    c.clock.advance(600_000);
-    expect(summary(c.lines())).toEqual(["2:live"]);
-  });
-
+describe("history", () => {
   it("bounds history and outstanding rows during an hour of continuous speech", () => {
     const c = setup();
     let peak = 0;
@@ -330,9 +291,6 @@ describe("long synthetic event log", () => {
       const active = lines.filter((l) => l.state === "pending" || l.state === "streaming").map((l) => l.id);
       expect(new Set(active)).toEqual(awaiting);
       expect(lines.length).toBeLessThanOrEqual(MAX_HISTORY_LINES + open.size + awaiting.size);
-      for (const l of lines) {
-        if (l.state === "live") expect(s.view().fadingIds.has(l.id)).toBe(false);
-      }
     }
     expect(s.warn).not.toHaveBeenCalled();
     expect(events).toBeGreaterThan(2000);

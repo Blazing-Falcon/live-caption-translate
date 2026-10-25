@@ -351,21 +351,13 @@ impl Translator for SeededTranslator {
     }
 }
 
-/// The subtitle bar's settings: each line is translated once, alone. The caption panel (the
-/// default) and running text join a sentence's lines and add previews.
-fn line_by_line() -> Config {
-    let mut config = Config::default();
-    config.overlay.style = "bar".into();
-    config
-}
-
 fn start(
     source: VecSource,
     asr: impl StreamingAsr + 'static,
     translator: impl Translator + 'static,
 ) -> (PipelineHandle, EventReceiver) {
     start_with(
-        line_by_line(),
+        Config::default(),
         source,
         asr,
         Box::new(FakeOffline),
@@ -658,8 +650,7 @@ fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken()
 
 #[test]
 fn chinese_is_translated_english_is_shown_as_heard_and_fillers_are_dropped() {
-    let translator = FakeTranslator::default();
-    let metrics = translator.metrics.clone();
+    let (translator, requests) = RecordingTranslator::new();
     let (mut handle, events) = start(
         VecSource::new(tones(3)),
         fake_stream(&["你好。", "Okay I see.", "嗯。"]),
@@ -676,7 +667,33 @@ fn chinese_is_translated_english_is_shown_as_heard_and_fillers_are_dropped() {
         })
         .collect();
     assert_eq!(classes, [TextClass::Chinese, TextClass::English]);
-    assert_eq!(metrics.requests.load(Ordering::SeqCst), 1);
+    let english_id = events.iter().find_map(|event| match event {
+        PipelineEvent::AsrFinal {
+            id,
+            class: TextClass::English,
+            ..
+        } => Some(*id),
+        _ => None,
+    });
+    let english_id = english_id.expect("no English line");
+    assert!(
+        !events.iter().any(|event| matches!(
+            event,
+            PipelineEvent::TranslationFinal { id, .. } | PipelineEvent::TranslationDelta { id, .. }
+                if *id == english_id
+        )),
+        "English speech got a translation"
+    );
+    let texts: Vec<String> = requests
+        .lock()
+        .unwrap()
+        .iter()
+        .map(|(text, _)| text.clone())
+        .collect();
+    assert!(
+        texts.iter().any(|text| text.contains("你好")),
+        "the Chinese line was not translated: {texts:?}"
+    );
     assert_eq!(
         count(&events, |event| matches!(
             event,
@@ -689,8 +706,9 @@ fn chinese_is_translated_english_is_shown_as_heard_and_fillers_are_dropped() {
     );
 }
 
-/// While the translator is busy, 13 lines wait. The oldest waited past `skip_lag_s`, so all but
-/// the newest are skipped.
+/// While the translator is busy, the closed lines wait. The oldest waited past `skip_lag_s`, so
+/// all but the newest are skipped. The busy request can be a preview of the first line, which
+/// leaves that line waiting like the others.
 #[test]
 fn lines_waiting_past_the_skip_lag_are_skipped_and_the_newest_is_translated() {
     let phrases: Vec<String> = (0..14)
@@ -717,16 +735,16 @@ fn lines_waiting_past_the_skip_lag_are_skipped_and_the_newest_is_translated() {
         .iter()
         .map(|(text, _)| text.clone())
         .collect();
-    assert_eq!(texts, [phrases[0].clone(), phrases[13].clone()]);
+    assert!(texts.contains(&phrases[13]), "{texts:?}");
     assert_eq!(
         count(&recorded, |event| matches!(
             event,
             PipelineEvent::Skipped { .. }
         )),
-        12
+        13
     );
     let stats = handle.get_stats();
-    assert_eq!(stats.skipped_total, 12);
+    assert_eq!(stats.skipped_total, 13);
     assert_eq!(stats.failed_total, 0);
     assert_eq!(stats.lag_ms, 0);
     assert_eq!(stats.queue_depth, 0);
@@ -832,7 +850,7 @@ fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_
         ]),
         started,
     };
-    let mut config = line_by_line();
+    let mut config = Config::default();
     config.asr.second_pass_max_wait_s = 0.5;
     let (mut handle, events) = start_with(
         config,
@@ -889,7 +907,7 @@ fn stop_joins_every_thread_while_the_second_pass_decodes() {
         started,
     };
     let (mut handle, events) = start_with(
-        line_by_line(),
+        Config::default(),
         VecSource::new(tones(40)),
         FakeStream::new(vec!["你好。".into(); 40], PAUSE_S),
         Box::new(second_pass),
@@ -992,14 +1010,8 @@ fn random_translation_timing_and_failures_keep_every_ordering_rule() {
                 0.5 + 0.1 * round as f32,
             ));
         }
-        // Even seeds use the default caption panel, which adds joins and previews.
-        let config = if seed % 2 == 0 {
-            Config::default()
-        } else {
-            line_by_line()
-        };
         let (mut handle, events) = start_with(
-            config,
+            Config::default(),
             VecSource::new(samples),
             AmplitudeStream::default(),
             Box::new(FakeOffline),

@@ -56,16 +56,14 @@ export interface Config extends ExtraFields {
   };
   overlay: ExtraFields & {
     visible: boolean;
-    style: "bar" | "panel" | "flow";
+    style: "panel" | "flow";
     font_px: number;
     background: number;
     show_source: boolean;
-    expire_s: number;
     panel_edge: "left" | "right";
     panel_lines: number;
     flow_lines: number;
     live_source: boolean;
-    bar_rect?: OverlayRect;
     panel_rect?: OverlayRect;
     flow_rect?: OverlayRect;
   };
@@ -111,7 +109,6 @@ export type ConfigPatch = DeepPartial<Config>;
 export const OVERLAY_LIMITS = {
   font_px: { min: 12, max: 40 },
   background: { min: 0, max: 1 },
-  expire_s: { min: 3, max: 60 },
   panel_lines: { min: 4, max: 6 },
   flow_lines: { min: 2, max: 6 },
 } as const;
@@ -304,7 +301,6 @@ export const DEFAULT_CONFIG: Config = {
     "font_px": 26,
     "background": 0.82,
     "show_source": true,
-    "expire_s": 8.0,
     "panel_edge": "right",
     "panel_lines": 5,
     "flow_lines": 3,

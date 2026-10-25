@@ -4,7 +4,7 @@ Live English captions for Chinese speech on Windows. All processing is on the PC
 
 The app captures the audio that the PC plays (all audio, or only selected apps). It recognizes the Chinese with a streaming X-ASR model and translates it with a local llama.cpp model. The Chinese appears while it is spoken. The English follows when the sentence or phrase ends.
 
-![Subtitle bar with Chinese and English captions](docs/images/overlay.png)
+![Caption panel with Chinese and English captions](docs/images/overlay.png)
 
 Rust core, Tauri 2 shell, Svelte UI. Translation: Hy-MT2 1.8B.
 

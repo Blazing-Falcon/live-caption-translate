@@ -1,26 +1,22 @@
 <script lang="ts">
-  import { ageOpacity, isHiddenLive, type CaptionLineView, type OverlayStyle, type StatusLine } from "../lib/captions";
+  import { ageOpacity, isHiddenLive, type CaptionLineView, type StatusLine } from "../lib/captions";
   import { languageLabel } from "../lib/settings";
   import type { CaptionLine } from "../lib/types";
 
   interface Props {
     line?: CaptionLineView | null;
     status?: StatusLine | null;
-    variant?: OverlayStyle;
     age?: number;
     showSource?: boolean;
     liveSource?: boolean;
-    fading?: boolean;
   }
 
   let {
     line = null,
     status = null,
-    variant = "bar",
     age = 0,
     showSource = true,
     liveSource = true,
-    fading = false,
   }: Props = $props();
 
   // Labels are uppercased by CSS; the DOM keeps sentence case so screen readers do not spell them out.
@@ -50,11 +46,10 @@
 {:else if line && !hidden}
   <article
     class="line"
-    class:fading
     class:skipped={line.state === "skipped"}
     data-id={line.id}
     data-state={line.state}
-    style:--age-opacity={ageOpacity(variant, age)}
+    style:--age-opacity={ageOpacity(age)}
   >
     {#if line.state === "english"}
       <p class="english main">{line.source}</p>
@@ -103,10 +98,6 @@
 
   .line.skipped {
     opacity: calc(var(--age-opacity, 1) * 0.6);
-  }
-
-  .line.fading {
-    opacity: 0;
   }
 
   p {

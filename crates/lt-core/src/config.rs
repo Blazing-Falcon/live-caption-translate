@@ -94,13 +94,10 @@ config_table!(OverlayConfig {
     font_px: u32 = 26,
     background: f32 = 0.82,
     show_source: bool = true,
-    expire_s: f32 = 8.0,
     panel_edge: String = "right".into(),
     panel_lines: u32 = 5,
     flow_lines: u32 = 3,
     live_source: bool = true,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    bar_rect: Option<OverlayRect> = None,
     #[serde(skip_serializing_if = "Option::is_none")]
     panel_rect: Option<OverlayRect> = None,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -152,14 +149,6 @@ impl AsrConfig {
     /// Second-pass recognizer threads, at most the logical CPUs of this PC.
     pub fn second_pass_engine_threads(&self) -> u32 {
         self.second_pass_threads.clamp(1, logical_cpus())
-    }
-}
-
-impl OverlayConfig {
-    /// The caption panel and running text translate a sentence's lines together and show the
-    /// words still being spoken as a preview; the subtitle bar translates each line once.
-    pub fn running_text(&self) -> bool {
-        matches!(self.style.as_str(), "panel" | "flow")
     }
 }
 
@@ -273,6 +262,18 @@ fn retire_v2(value: &mut toml::Value) {
     if take(root, "translate.fragment_ellipsis").is_some() {
         tracing::info!("translate.fragment_ellipsis was removed");
     }
+    if take(root, "overlay.expire_s").is_some() {
+        tracing::info!("overlay.expire_s was removed");
+    }
+    if take(root, "overlay.bar_rect").is_some() {
+        tracing::info!("overlay.bar_rect was removed");
+    }
+    if let Some(overlay) = root.get_mut("overlay").and_then(toml::Value::as_table_mut) {
+        if overlay.get("style").and_then(toml::Value::as_str) == Some("bar") {
+            overlay.insert("style".into(), toml::Value::String("panel".into()));
+            tracing::info!("overlay.style \"bar\" was removed; using \"panel\"");
+        }
+    }
 }
 
 /// Remove `table.key` (or a whole top-level table) and return its value.
@@ -349,7 +350,6 @@ impl Config {
     /// positions, the apps chosen for capture and the models folder.
     pub fn reset(&self) -> Self {
         let mut config = Self::default();
-        config.overlay.bar_rect = self.overlay.bar_rect.clone();
         config.overlay.panel_rect = self.overlay.panel_rect.clone();
         config.overlay.flow_rect = self.overlay.flow_rect.clone();
         config.capture.apps = self.capture.apps.clone();
@@ -445,15 +445,13 @@ impl Config {
         number!(translate, window_chars, 0, 60);
         number!(overlay, font_px, 12, 40);
         number!(overlay, background, 0.0, 1.0);
-        number!(overlay, expire_s, 3.0, 60.0);
         number!(overlay, panel_lines, 4, 6);
         number!(overlay, flow_lines, 2, 6);
-        choice!(overlay, style, &["bar", "panel", "flow"]);
+        choice!(overlay, style, &["panel", "flow"]);
         choice!(overlay, panel_edge, &["left", "right"]);
         choice!(logging, level, &["error", "warn", "info", "debug", "trace"]);
         choice!(models, source, &["huggingface", "modelscope"]);
         for (name, rect) in [
-            ("overlay.bar_rect", &mut self.overlay.bar_rect),
             ("overlay.panel_rect", &mut self.overlay.panel_rect),
             ("overlay.flow_rect", &mut self.overlay.flow_rect),
         ] {
@@ -518,9 +516,6 @@ impl Config {
         for (index, app) in self.capture.apps.iter().enumerate() {
             unknown_fields(&app.extra, &format!("capture.apps[{index}]"), messages);
         }
-        if let Some(rect) = &self.overlay.bar_rect {
-            unknown_fields(&rect.extra, "overlay.bar_rect", messages);
-        }
         if let Some(rect) = &self.overlay.panel_rect {
             unknown_fields(&rect.extra, "overlay.panel_rect", messages);
         }
@@ -566,7 +561,6 @@ impl Config {
         }
         if let (Some(overlay), Some(schema)) = (value.get("overlay"), schema.get("overlay")) {
             for (key, rect) in [
-                ("bar_rect", &mut self.overlay.bar_rect),
                 ("panel_rect", &mut self.overlay.panel_rect),
                 ("flow_rect", &mut self.overlay.flow_rect),
             ] {
@@ -602,7 +596,6 @@ fn schema() -> Result<toml::Value> {
         .get_mut("overlay")
         .and_then(toml::Value::as_table_mut)
     {
-        overlay.insert("bar_rect".into(), rect.clone());
         overlay.insert("panel_rect".into(), rect.clone());
         overlay.insert("flow_rect".into(), rect);
     }
@@ -618,7 +611,7 @@ fn normalize_types(
     if let (Some(table), Some(default_table)) = (value.as_table_mut(), default.as_table()) {
         for (key, field_default) in default_table {
             if path == "overlay"
-                && matches!(key.as_str(), "bar_rect" | "panel_rect" | "flow_rect")
+                && matches!(key.as_str(), "panel_rect" | "flow_rect")
                 && table.get(key).is_some_and(|field| !field.is_table())
             {
                 table.remove(key);
@@ -705,7 +698,6 @@ fn normalize_float(
         "translate.timeout_s" => (2.0, 60.0),
         "translate.skip_lag_s" => (2.0, 30.0),
         "asr.second_pass_max_wait_s" => (0.5, 5.0),
-        "overlay.expire_s" => (3.0, 60.0),
         "filter.single_char_max_s" => (0.0, f64::from(f32::MAX)),
         _ => (f64::MIN, f64::MAX),
     };

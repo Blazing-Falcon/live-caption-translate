@@ -127,13 +127,10 @@ impl Controller {
         }
         let config = self.shared.config();
         let models = self.shared.paths.models(&config);
-        if !crate::models::all_ready(&models) {
-            return Err("Models are not downloaded yet. Open settings to download them.".into());
-        }
         let missing = crate::models::missing_for(&models);
         if !missing.is_empty() {
             return Err(format!(
-                "Download {} on the Performance page, or choose another model.",
+                "Models are not downloaded: {}. Reopen the app to download them.",
                 missing.join(", ")
             ));
         }
@@ -327,11 +324,6 @@ impl Controller {
                 return Ok(());
             }
             Applies::Live | Applies::Restart => {}
-        }
-        if old.overlay.running_text() != new.overlay.running_text() {
-            session
-                .pipeline
-                .set_running_text(new.overlay.running_text());
         }
         Ok(())
     }

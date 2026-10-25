@@ -37,18 +37,12 @@ struct Scheduler {
     metrics: Metrics,
     latest_stats: Arc<Mutex<PipelineStats>>,
     asr_failed: bool,
-    /// Set while the overlay shows running text or the caption panel.
-    running: Arc<AtomicBool>,
     running_text: RunningText,
     /// The lines the preview in flight covers.
     previewing: Option<Vec<UtteranceId>>,
 }
 
 impl Scheduler {
-    fn is_running(&self) -> bool {
-        self.running.load(Ordering::Relaxed)
-    }
-
     /// Lines that wait for a unit are translated as one line: the leader takes the text and
     /// the others leave the display, as in a queue join.
     fn translate_unit(&mut self, unit: Transcript) {
@@ -126,9 +120,7 @@ impl Scheduler {
         {
             // No partial after the id's AsrFinal or Dropped.
             if self.handled_through.is_none_or(|handled| id > handled) {
-                if self.is_running() {
-                    self.running_text.partial(id, text.clone());
-                }
+                self.running_text.partial(id, text.clone());
                 self.partial(id, text, class, end);
             }
             return;
@@ -161,12 +153,8 @@ impl Scheduler {
                 });
                 if transcript.class.is_translated() {
                     self.translating.insert(transcript.id);
-                    if self.is_running() {
-                        for unit in self.running_text.push(transcript) {
-                            self.translate_unit(unit);
-                        }
-                    } else {
-                        self.ready.push_back(transcript);
+                    for unit in self.running_text.push(transcript) {
+                        self.translate_unit(unit);
                     }
                 } else {
                     // A line shown as heard ends the running unit before it.
@@ -222,7 +210,7 @@ impl Scheduler {
     /// Running text: translate the lines not yet translated for good again, when the
     /// translator has nothing else to do.
     fn next_preview(&mut self, queued_ms: u64) -> Option<QueuedTranscript> {
-        if !self.is_running() || !self.ready.is_empty() || !self.queue.is_empty() {
+        if !self.ready.is_empty() || !self.queue.is_empty() {
             return None;
         }
         let (transcript, ids) = self.running_text.preview(Instant::now())?;
@@ -267,7 +255,6 @@ pub(super) fn scheduler_loop(
     listening: Arc<AtomicBool>,
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
-    running: Arc<AtomicBool>,
 ) -> Result<()> {
     let mut metrics = Metrics::new();
     metrics.set_sampler(sampler.map(|inner| {
@@ -291,7 +278,6 @@ pub(super) fn scheduler_loop(
         metrics,
         latest_stats,
         asr_failed: false,
-        running,
         running_text: RunningText::default(),
         previewing: None,
     };
@@ -341,7 +327,7 @@ pub(super) fn scheduler_loop(
             translator_lost(&scheduler, &cancelled);
             break;
         }
-        if !scheduler.is_running() || (asr_done && front_done) {
+        if asr_done && front_done {
             scheduler.freeze_running();
         }
         while scheduler.queue.len() < TranslationQueue::CAPACITY {

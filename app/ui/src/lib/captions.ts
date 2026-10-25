@@ -14,7 +14,6 @@ import type {
   UtteranceId,
 } from "./types";
 
-export const FADE_MS = 400;
 export const CHIP_MS = 3000;
 /** Terminal rows kept after they leave the screen. The panel shows at most 6; running text
  * needs more, because commit cuts make short lines and it keeps up to 6 wrapped lines. */
@@ -72,7 +71,6 @@ export interface Preview {
 export interface CaptionView {
   lines: readonly CaptionLineView[];
   preview: Preview | null;
-  fadingIds: ReadonlySet<number>;
   status: StatusLine | null;
   chip: ChipMessage | null;
   announcement: string;
@@ -184,22 +182,13 @@ export function listeningChipText(source: SourceInfo | null): string {
   return label ? `Listening · ${label}` : "Listening";
 }
 
-export type OverlayStyle = "bar" | "panel";
-
 /** Newest line is full strength; older lines fade by index and stop at the last step. The
  * dimmest step stays at 0.6: below that the English drops under 4.5:1 against white video. */
-const AGE_OPACITY: Record<OverlayStyle, readonly number[]> = {
-  bar: [1, 0.6],
-  panel: [1, 0.75, 0.6],
-};
+const AGE_OPACITY: readonly number[] = [1, 0.75, 0.6];
 
-export function ageOpacity(style: OverlayStyle, age: number): number {
-  const steps = AGE_OPACITY[style];
-  return steps[Math.min(Math.max(age, 0), steps.length - 1)] ?? 1;
+export function ageOpacity(age: number): number {
+  return AGE_OPACITY[Math.min(Math.max(age, 0), AGE_OPACITY.length - 1)] ?? 1;
 }
-
-/** Characters a second that a viewer reads; a line stays up at least this long. */
-const READING_CPS = 15;
 
 /** Whether the second pass changed the live text by at most one character. Its distance counts
  * letters and digits only, so a punctuation-only correction counts as none. */
@@ -256,16 +245,10 @@ export function isHiddenLive(line: CaptionLine, liveSource: boolean): boolean {
 
 export function visibleLines<T extends CaptionLine>(
   lines: readonly T[],
-  style: OverlayStyle,
   wanted: number,
   liveSource = true,
 ): T[] {
-  // The bar's window height is a saved rect that can predate the status row, so its caller
-  // decides how many rows fit; it never shows more than two. The panel's own setting is 4-6.
-  const count =
-    style === "bar"
-      ? Math.min(2, Math.max(1, Math.round(wanted)))
-      : Math.min(6, Math.max(4, Math.round(wanted)));
+  const count = Math.min(6, Math.max(4, Math.round(wanted)));
   return lines.filter((line) => !isHiddenLive(line, liveSource)).slice(-count);
 }
 
@@ -337,10 +320,6 @@ interface AppSlice {
 interface SettingsSlice {
   pauseHotkey: string;
   settingsHotkey: string;
-  expireMs: number;
-  /** The caption panel and running text keep their text until newer text pushes it out, like
-   * live captions; only the subtitle bar clears after `expire_s`. */
-  pinned: boolean;
   appNames: string[];
 }
 
@@ -365,16 +344,10 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   const warn = options.onWarn ?? (() => undefined);
 
   const lines = new Map<number, CaptionLineView>();
-  const fading = new Set<number>();
   /** The text a line shows while its replacement fades in; empty again after `SWAP_MS`. */
   const swaps = new Map<number, CaptionSwap>();
   const swapTimers = new Map<number, unknown>();
   let swapSeq = 0;
-  /** Last speech or translation result: terminal lines fade `expire_s` after it, together. A
-   * translation that ends after the speech still shows for the whole time. */
-  let expiryFrom: number | null = null;
-  let expiryTimer: unknown = null;
-  let fadeTimer: unknown = null;
   let chipTimer: unknown = null;
   let chip: ChipMessage | null = null;
   let chipSeq = 0;
@@ -394,15 +367,12 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   let settings: SettingsSlice = {
     pauseHotkey: "",
     settingsHotkey: "",
-    expireMs: 8000,
-    pinned: false,
     appNames: [],
   };
 
   const store = writable<CaptionView>({
     lines: [],
     preview: null,
-    fadingIds: new Set(),
     status: null,
     chip: null,
     announcement: "",
@@ -435,7 +405,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         return swap === undefined ? line : { ...line, swap };
       }),
       preview,
-      fadingIds: new Set(fading),
       status: current,
       chip: current === null ? chip : null,
       announcement,
@@ -477,58 +446,10 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     }, CHIP_MS);
   }
 
-  function expirable(): number[] {
-    return [...lines.values()].filter((line) => isTerminal(line.state) && !fading.has(line.id)).map((line) => line.id);
-  }
-
-  /** How long the newest line needs at a reading pace. The shared timer would otherwise clear a
-   * long line while it is still being read. */
-  function readingHoldMs(): number {
-    const newest = [...lines.values()].filter((line) => isTerminal(line.state) && !fading.has(line.id)).at(-1);
-    if (newest === undefined) return 0;
-    const shown = newest.english !== "" ? newest.english : newest.source;
-    return (shown.length * 1000) / READING_CPS;
-  }
-
-  function armExpiry(): void {
-    expiryTimer = clearTimer(expiryTimer);
-    if (settings.pinned || expiryFrom === null || expirable().length === 0) return;
-    const hold = Math.max(settings.expireMs, readingHoldMs());
-    const delay = Math.max(0, expiryFrom + hold - clock.now());
-    expiryTimer = clock.setTimer(onExpire, delay);
-  }
-
-  function onExpire(): void {
-    expiryTimer = null;
-    const ids = expirable();
-    if (ids.length === 0) return;
-    if (reducedMotion()) {
-      for (const id of ids) lines.delete(id);
-      emit();
-      return;
-    }
-    for (const id of ids) fading.add(id);
-    fadeTimer = clearTimer(fadeTimer);
-    fadeTimer = clock.setTimer(() => {
-      fadeTimer = null;
-      for (const id of fading) lines.delete(id);
-      fading.clear();
-      emit();
-      armExpiry();
-    }, FADE_MS);
-    emit();
-  }
-
-  function cancelFade(): void {
-    fadeTimer = clearTimer(fadeTimer);
-    fading.clear();
-  }
-
   function prune(): void {
     const terminal = [...lines.values()].filter((line) => isTerminal(line.state));
     for (const line of terminal.slice(0, Math.max(0, terminal.length - MAX_HISTORY_LINES))) {
       lines.delete(line.id);
-      fading.delete(line.id);
     }
     const active = [...lines.values()].filter((line) => !isTerminal(line.state));
     for (const line of active.slice(0, Math.max(0, active.length - MAX_OUTSTANDING_LINES))) {
@@ -561,11 +482,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     return line !== undefined && !isTerminal(line.state);
   }
 
-  function settled(): void {
-    cancelFade();
-    expiryFrom = clock.now();
-  }
-
   /** The final translation of any covered line replaces the preview. */
   function endPreview(id: number): void {
     if (preview?.ids.includes(id)) preview = null;
@@ -580,22 +496,16 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       case "asr_partial": {
         const line = lines.get(event.id);
         if (line === undefined) {
-          cancelFade();
-          expiryFrom = clock.now();
           addLine(newLine(event.id, event.text, "live", null));
           return true;
         }
         if (line.state !== "live") return false;
-        cancelFade();
-        expiryFrom = clock.now();
         update(event.id, { source: event.text });
         return true;
       }
       case "asr_final": {
         const existing = lines.get(event.id);
         if (existing !== undefined && existing.state !== "live") return false;
-        cancelFade();
-        expiryFrom = clock.now();
         const lang = normalizeLang(event.lang);
         const base = existing ?? newLine(event.id, event.text, "pending", lang);
         let state: CaptionLine["state"] = "pending";
@@ -648,20 +558,17 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       case "translation_final":
         if (!isActive(event.id)) return false;
         endPreview(event.id);
-        settled();
         update(event.id, { state: "final", english: event.text });
         announcement = event.text;
         return true;
       case "translation_failed":
         if (!isActive(event.id)) return false;
         endPreview(event.id);
-        settled();
         update(event.id, { state: "failed", reason: failReasonText(event.reason, event.message) });
         return true;
       case "skipped":
         if (!isActive(event.id)) return false;
         endPreview(event.id);
-        settled();
         update(event.id, { state: "skipped" });
         return true;
       case "dropped": {
@@ -682,7 +589,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         // A drop only concerns the store when a live line was already showing; otherwise it is not a line event.
         if (!applyLineEvent(event)) return;
         prune();
-        armExpiry();
         emit();
         return;
       case "asr_partial":
@@ -698,7 +604,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           return;
         }
         prune();
-        armExpiry();
         emit();
         return;
       case "source_changed":
@@ -747,25 +652,18 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     settings = {
       pauseHotkey: config.hotkeys.pause,
       settingsHotkey: config.hotkeys.settings,
-      expireMs: Math.max(0, config.overlay.expire_s * 1000),
-      pinned: config.overlay.style !== "bar",
       appNames: config.capture.apps.map((entry) => entry.name),
     };
-    if (settings.pinned) cancelFade();
-    armExpiry();
     emit();
   }
 
   function dispose(): void {
     if (disposed) return;
     lines.clear();
-    fading.clear();
     preview = null;
     chip = null;
     emit();
     disposed = true;
-    expiryTimer = clearTimer(expiryTimer);
-    fadeTimer = clearTimer(fadeTimer);
     chipTimer = clearTimer(chipTimer);
   }
 

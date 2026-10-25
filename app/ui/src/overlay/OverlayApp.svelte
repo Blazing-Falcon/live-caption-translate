@@ -6,7 +6,6 @@
   import FlowText from "./FlowText.svelte";
   import MoveFrame from "./MoveFrame.svelte";
   import StatusChip from "./StatusChip.svelte";
-  import SubtitleBar from "./SubtitleBar.svelte";
 
   let { session }: { session: Session } = $props();
 
@@ -34,32 +33,20 @@
       <CaptionPanel
         lines={$captions.lines}
         preview={$captions.preview}
-        fadingIds={$captions.fadingIds}
         status={$captions.status}
         showSource={$config.overlay.show_source}
         liveSource={$config.overlay.live_source}
         panelLines={$config.overlay.panel_lines}
       />
-    {:else if $config.overlay.style === "flow"}
-      <div class="bar-slot">
+    {:else}
+      <div class="flow-slot">
         <FlowText
           lines={$captions.lines}
           preview={$captions.preview}
-          fadingIds={$captions.fadingIds}
           status={$captions.status}
           showSource={$config.overlay.show_source}
           liveSource={$config.overlay.live_source}
           flowLines={$config.overlay.flow_lines}
-        />
-      </div>
-    {:else}
-      <div class="bar-slot">
-        <SubtitleBar
-          lines={$captions.lines}
-          fadingIds={$captions.fadingIds}
-          status={$captions.status}
-          showSource={$config.overlay.show_source}
-          liveSource={$config.overlay.live_source}
         />
       </div>
     {/if}
@@ -86,7 +73,7 @@
     padding-bottom: var(--space-2);
   }
 
-  .bar-slot {
+  .flow-slot {
     display: flex;
     justify-content: center;
   }

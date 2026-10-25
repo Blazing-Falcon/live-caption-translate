@@ -74,7 +74,7 @@ future_filter = "filter"
 future_translate = {deep={value=42}}
 [overlay]
 future_overlay = ["value"]
-[overlay.bar_rect]
+[overlay.panel_rect]
 monitor="display"
 x=-123.25
 y=40.5
@@ -94,7 +94,7 @@ future_models = "model"
     let (mut config, messages) = Config::from_toml(input).unwrap();
     assert_eq!(messages.len(), 13, "{messages:?}");
     assert!(config.audio.extra["future_audio"].is_datetime());
-    config.merge_patch(json!({"translate":{"ctx":2048,"future_translate":{"deep":{"other":true}}},"overlay":{"bar_rect":{"x":-222.5}}})).unwrap();
+    config.merge_patch(json!({"translate":{"ctx":2048,"future_translate":{"deep":{"other":true}}},"overlay":{"panel_rect":{"x":-222.5}}})).unwrap();
     config.save(&temp.0).unwrap();
     let (reloaded, _) = Config::load(&temp.0).unwrap();
     assert_eq!(config, reloaded);
@@ -106,9 +106,9 @@ future_models = "model"
         reloaded.translate.extra["future_translate"]["deep"]["other"].as_bool(),
         Some(true)
     );
-    assert_eq!(reloaded.overlay.bar_rect.as_ref().unwrap().x, -222.5);
+    assert_eq!(reloaded.overlay.panel_rect.as_ref().unwrap().x, -222.5);
     assert_eq!(
-        reloaded.overlay.bar_rect.as_ref().unwrap().extra["future_rect"]["version"].as_integer(),
+        reloaded.overlay.panel_rect.as_ref().unwrap().extra["future_rect"]["version"].as_integer(),
         Some(4)
     );
     assert!(reloaded.audio.extra["future_audio"].is_datetime());
@@ -133,7 +133,7 @@ fillers = ["um", 4]
 [overlay]
 style = "float"
 panel_edge = "top"
-bar_rect = false
+panel_rect = false
 [logging]
 level = "verbose"
 [models]
@@ -156,7 +156,7 @@ source = "elsewhere"
     assert_eq!(config.filter.fillers, Config::default().filter.fillers);
     assert_eq!(config.overlay.style, "panel");
     assert_eq!(config.overlay.panel_edge, "right");
-    assert!(config.overlay.bar_rect.is_none());
+    assert!(config.overlay.panel_rect.is_none());
     assert_eq!(config.logging.level, "info");
     assert_eq!(config.models.source, "huggingface");
     assert_eq!(messages.len(), 12, "{messages:?}");
@@ -169,7 +169,7 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
         "audio":{"norm_attack_s":-1,"norm_release_s":99,"norm_max_gain_db":99,"norm_gate_dbfs":-100},
         "asr":{"threads":-10},
         "translate":{"threads":99,"ctx":0,"temperature":99,"repeat_penalty":0,"max_tokens_cap":99_999,"timeout_s":0,"queue_join_max_chars":0,"skip_lag_s":0},
-        "overlay":{"font_px":0,"background":99,"expire_s":0,"panel_lines":0},
+        "overlay":{"font_px":0,"background":99,"panel_lines":0},
         "transcript":{"retention_days":-1},"logging":{"keep_files":-1}
     })).unwrap();
     assert_eq!(config.config_version, 2);
@@ -188,11 +188,10 @@ fn every_bounded_numeric_setting_clamps_and_dependent_limits_follow_validated_va
     assert_eq!(config.translate.skip_lag_s, 2.0);
     assert_eq!(config.overlay.font_px, 12);
     assert_eq!(config.overlay.background, 1.0);
-    assert_eq!(config.overlay.expire_s, 3.0);
     assert_eq!(config.overlay.panel_lines, 4);
     assert_eq!(config.transcript.retention_days, 0);
     assert_eq!(config.logging.keep_files, 0);
-    assert_eq!(messages.len(), 20, "{messages:?}");
+    assert_eq!(messages.len(), 19, "{messages:?}");
 }
 
 #[test]
@@ -291,14 +290,25 @@ model = "q4_0"
 threads = 3
 glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], confirmed = true }]
 fragment_ellipsis = false
+[overlay]
+style = "bar"
+expire_s = 20.0
+[overlay.bar_rect]
+monitor = "A"
+x = 10.0
+y = 20.0
+w = 960.0
+h = 140.0
 "#,
     )
     .unwrap();
     assert_eq!(config.asr.second_pass_threads, 3);
     assert_eq!(config.translate.threads, 3);
+    assert_eq!(config.overlay.style, "panel");
     assert!(config.asr.extra.is_empty());
     assert!(config.filter.extra.is_empty());
     assert!(config.translate.extra.is_empty());
+    assert!(config.overlay.extra.is_empty());
     assert!(messages.is_empty(), "{messages:?}");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
     assert!(saved["asr"].get("chunk_ms").is_none());
@@ -309,6 +319,9 @@ fragment_ellipsis = false
     assert!(saved["translate"].get("model").is_none());
     assert!(saved["translate"].get("glossary").is_none());
     assert!(saved["translate"].get("fragment_ellipsis").is_none());
+    assert!(saved["overlay"].get("expire_s").is_none());
+    assert!(saved["overlay"].get("bar_rect").is_none());
+    assert_eq!(saved["overlay"]["style"].as_str(), Some("panel"));
 }
 
 #[test]
@@ -322,7 +335,7 @@ apps = [{exe = "chrome.exe", name = "Chrome"}]
 [translate]
 threads = 2
 [overlay]
-style = "bar"
+style = "flow"
 font_px = 34
 panel_rect = {monitor = "A", x = 10, y = 20, w = 300, h = 400}
 [models]

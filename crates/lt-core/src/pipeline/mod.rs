@@ -76,7 +76,6 @@ impl Pipeline {
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
         }
-        let running = Arc::new(AtomicBool::new(config.overlay.running_text()));
         let cancelled = Arc::new(AtomicBool::new(false));
         let finished = Arc::new(AtomicBool::new(false));
         let clock = Arc::new(SessionClock::default());
@@ -97,7 +96,6 @@ impl Pipeline {
             threads: Vec::with_capacity(4),
             latest_stats: latest_stats.clone(),
             clause_counts: clause_counts.clone(),
-            running: running.clone(),
         };
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
@@ -167,7 +165,6 @@ impl Pipeline {
                         scheduler_listening,
                         scheduler_latest,
                         sampler,
-                        running,
                     )
                 })?;
         handle.threads.push(scheduler_thread);

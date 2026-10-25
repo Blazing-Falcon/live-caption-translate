@@ -27,14 +27,12 @@
 
   let fontDraft = $state<number | null>(null);
   let backgroundDraft = $state<number | null>(null);
-  let expireDraft = $state<number | null>(null);
   let hotkeyDrafts = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "", settings: "" });
   let hotkeyBase = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "", settings: "" });
 
   const overlay = $derived(config.overlay);
   const fontPx = $derived(fontDraft ?? overlay.font_px);
   const backgroundPct = $derived(Math.round((backgroundDraft ?? overlay.background) * 100));
-  const expireS = $derived(expireDraft ?? overlay.expire_s);
   const visible = $derived($appState?.overlay_visible ?? overlay.visible);
   const moving = $derived($appState?.overlay_moving ?? false);
 
@@ -57,7 +55,7 @@
   async function commitNumber(
     key: string,
     event: Event,
-    field: "font_px" | "background" | "expire_s",
+    field: "font_px" | "background",
     scale: number,
     clear: () => void,
   ): Promise<void> {
@@ -122,10 +120,6 @@
     <span>Style</span>
     <div class="segmented">
       <label>
-        <input type="radio" name="style" value="bar" checked={overlay.style === "bar"} onchange={(event) => chooseStyle(event, "bar")} />
-        <span>Subtitle bar</span>
-      </label>
-      <label>
         <input type="radio" name="style" value="panel" checked={overlay.style === "panel"} onchange={(event) => chooseStyle(event, "panel")} />
         <span>Caption panel</span>
       </label>
@@ -177,24 +171,6 @@
     <input type="checkbox" checked={overlay.live_source} onchange={toggleLiveSource} />
     <span>Show Chinese while someone is speaking</span>
   </label>
-
-  <!-- The caption panel and running text keep their text, like live captions, so only the bar
-       has something to clear. -->
-  {#if overlay.style === "bar"}
-    <label class="field">
-      <span>Clear captions after {expireS} s without new captions</span>
-      <input
-        class="range"
-        type="range"
-        min={OVERLAY_LIMITS.expire_s.min}
-        max={OVERLAY_LIMITS.expire_s.max}
-        step="1"
-        value={expireS}
-        oninput={(event) => (expireDraft = Number(event.currentTarget.value))}
-        onchange={(event) => commitNumber("overlay.expire_s", event, "expire_s", 1, () => (expireDraft = null))}
-      />
-    </label>
-  {/if}
 
   {#if overlay.style === "flow"}
     <label class="field">

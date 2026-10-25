@@ -4,7 +4,7 @@ import { NOW, emitEvent, open } from "./support";
 test.describe("overlay (browser simulation with mocked transport)", () => {
 
   test("shows a live line, then pending, streaming and the final in the same elements", async ({ page }) => {
-    const external = await open(page, "overlay", { config: { overlay: { style: "bar" } } });
+    const external = await open(page, "overlay", { config: { overlay: { style: "panel" } } });
     await emitEvent(page, NOW.partial(1, "这次华为发布的呢是整个"));
     await expect(page.locator('[data-state="live"] .source')).toHaveText("这次华为发布的呢是整个");
     await expect(page.locator(".english")).toHaveCount(0);
@@ -26,7 +26,7 @@ test.describe("overlay (browser simulation with mocked transport)", () => {
     await english.evaluate((el) => {
       (el as HTMLElement & { __tag?: string }).__tag = "english";
     });
-    const barHeight = (await page.locator(".bar").boundingBox())?.height;
+    const panelHeight = (await page.locator(".panel").boundingBox())?.height;
 
     await emitEvent(page, NOW.final(1, "This time, Huawei released the whole Mate 90 family."));
     await expect(english).toHaveText("This time, Huawei released the whole Mate 90 family.");
@@ -39,7 +39,7 @@ test.describe("overlay (browser simulation with mocked transport)", () => {
     }));
     expect(after).toEqual({ article: "article", english: "english", slideUp: 0, caret: false, count: 1 });
     expect(await english.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(244, 244, 242)");
-    expect((await page.locator(".bar").boundingBox())?.height).toBe(barHeight);
+    expect((await page.locator(".panel").boundingBox())?.height).toBe(panelHeight);
     expect(external).toEqual([]);
   });
 

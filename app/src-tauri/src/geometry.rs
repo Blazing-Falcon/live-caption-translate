@@ -33,7 +33,7 @@ fn dip(value: u32, scale: f64) -> f64 {
     f64::from(value) / scale
 }
 
-/// Default placement: bar bottom-centered (max 960 wide), panel docked to an edge.
+/// Default placement: the panel docked to an edge, running text bottom-centered (max 960 wide).
 pub fn default_rect(style: &str, edge_right: bool, monitor: &Monitor) -> OverlayRect {
     let (work_w, work_h) = (dip(monitor.w, monitor.scale), dip(monitor.h, monitor.scale));
     let (x, y, w, h) = if style == "panel" {
@@ -43,11 +43,8 @@ pub fn default_rect(style: &str, edge_right: bool, monitor: &Monitor) -> Overlay
         (x, 24.0, w, h)
     } else {
         let w = 960.0_f64.min(work_w * 0.9).max(MIN_W);
-        // Two utterances with source lines plus the status chip row need about 190 DIPs; 200
-        // clipped the older line once one of them wrapped, which a long sentence does at the
-        // default width. Running text needs room for up to 6 wrapped lines of English and Chinese.
-        let h: f64 = if style == "flow" { 360.0 } else { 240.0 };
-        let h = h.min(work_h - 48.0).max(MIN_H);
+        // Running text needs room for up to 6 wrapped lines of English and Chinese.
+        let h = 360.0_f64.min(work_h - 48.0).max(MIN_H);
         ((work_w - w) / 2.0, work_h - h - 40.0, w, h)
     };
     OverlayRect {

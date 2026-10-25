@@ -61,16 +61,9 @@ pub struct PipelineHandle {
     pub(super) threads: Vec<JoinHandle<Result<()>>>,
     pub(super) latest_stats: Arc<Mutex<PipelineStats>>,
     pub(super) clause_counts: Arc<ClauseCounters>,
-    pub(super) running: Arc<AtomicBool>,
 }
 
 impl PipelineHandle {
-    /// Translate as running text (the caption panel and running-text styles) or line by line,
-    /// from the next line on.
-    pub fn set_running_text(&self, running: bool) {
-        self.running.store(running, Ordering::Relaxed);
-    }
-
     pub fn subscribe(&self, capacity: usize) -> EventReceiver {
         self.bus.subscribe(capacity)
     }

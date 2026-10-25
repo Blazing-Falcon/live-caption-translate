@@ -5,7 +5,6 @@
   interface Props {
     lines: readonly CaptionLineView[];
     preview?: Preview | null;
-    fadingIds?: ReadonlySet<number>;
     status?: StatusLine | null;
     showSource?: boolean;
     liveSource?: boolean;
@@ -15,7 +14,6 @@
   let {
     lines,
     preview = null,
-    fadingIds = new Set<number>(),
     status = null,
     showSource = true,
     liveSource = true,
@@ -24,7 +22,7 @@
 
   // The status is a separate flex item above the history, so the history gives up its oldest
   // line rather than the status; the count is the user's own setting either way.
-  const shown = $derived(visibleLines(withPreview(lines, preview, liveSource), "panel", panelLines, liveSource));
+  const shown = $derived(visibleLines(withPreview(lines, preview, liveSource), panelLines, liveSource));
 </script>
 
 <section class="panel" aria-label="Live captions" data-testid="caption-panel">
@@ -40,9 +38,7 @@
         {line}
         {showSource}
         {liveSource}
-        variant="panel"
         age={shown.length - 1 - index}
-        fading={fadingIds.has(line.id)}
       />
     {/each}
   </div>
