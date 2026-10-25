@@ -44,10 +44,8 @@ pub fn recognizer_name() -> String {
     "xasr_stream_480ms".into()
 }
 
-/// The second-pass recognizer named in session headers, if it is on.
-pub fn second_pass_name(config: &Config) -> Option<String> {
-    (config.asr.second_pass != "off").then(|| config.asr.second_pass.clone())
-}
+/// The second-pass recognizer named in session headers.
+pub const SECOND_PASS_NAME: &str = "xasr_offline";
 
 fn readable_f32(value: f32) -> f64 {
     // f32's shortest decimal round-trips the setting without exposing binary
@@ -64,9 +62,7 @@ pub struct SessionHeader {
     pub started_at: String,
     pub source: SessionSource,
     pub asr: String,
-    /// The second-pass recognizer; absent when it is off.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub asr_second: Option<String>,
+    pub asr_second: String,
     pub translator: String,
     pub config: SessionConfig,
 }
@@ -248,19 +244,16 @@ impl<W: Write> TranscriptWriter<W> {
                     live: LiveRecord {
                         engine: self.live_engine.clone(),
                         text: second_pass
-                            .as_ref()
-                            .and_then(|pass| pass.live_text.clone())
+                            .live_text
+                            .clone()
                             .unwrap_or_else(|| text.clone()),
                         logprob: *logprob,
                         logprobs: logprob.iter().copied().collect(),
                     },
-                    second: second_pass
-                        .iter()
-                        .map(|pass| SecondRecord {
-                            text: text.clone(),
-                            pass: pass.clone(),
-                        })
-                        .collect(),
+                    second: vec![SecondRecord {
+                        text: text.clone(),
+                        pass: second_pass.clone(),
+                    }],
                 };
                 match class {
                     TextClass::Chinese | TextClass::Mixed => {
@@ -537,11 +530,11 @@ mod tests {
 
     const WALL: &str = "2026-10-07T21:14:51+07:00";
     const GOLDEN: &str = concat!(
-        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"skip_lag_s\":6.0}}\n",
-        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null}}\n",
-        "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"こんにちは。\",\"logprob\":null}}\n",
-        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null}}\n",
-        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9},\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"我也想办一个。伟大的公司。\",\"logprob\":null}}\n",
+        "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"asr_second\":\"xasr_offline\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"skip_lag_s\":6.0}}\n",
+        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null},\"asr_second\":[{\"text\":\"Hello world.\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
+        "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"こんにちは。\",\"logprob\":null},\"asr_second\":[{\"text\":\"こんにちは。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
+        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null},\"asr_second\":[{\"text\":\"来不及。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
+        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9},\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"我也想办一个。伟大的公司。\",\"logprob\":null},\"asr_second\":[{\"text\":\"我也想办一个。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0},{\"text\":\"伟大的公司。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
     );
 
     fn header() -> SessionHeader {
@@ -553,7 +546,7 @@ mod tests {
                 label: "Chrome".into(),
             },
             asr: "sensevoice-2024-07-17-int8".into(),
-            asr_second: None,
+            asr_second: SECOND_PASS_NAME.into(),
             translator: "hy-mt2-1.8b-q4_0".into(),
             config: SessionConfig { skip_lag_s: 6.0 },
         }
@@ -579,7 +572,7 @@ mod tests {
             logprob: None,
             music: false,
             fragment: false,
-            second_pass: None,
+            second_pass: SecondPass::default(),
         }
     }
 
@@ -662,7 +655,7 @@ mod tests {
                     music: false,
                     fragment: false,
                     logprob: None,
-                    second_pass: None,
+                    second_pass: SecondPass::default(),
                 },
                 WALL,
             )
@@ -707,7 +700,7 @@ mod tests {
                     music: false,
                     fragment: true,
                     logprob: None,
-                    second_pass: None,
+                    second_pass: SecondPass::default(),
                 },
                 WALL,
             )

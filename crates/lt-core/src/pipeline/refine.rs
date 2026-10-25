@@ -10,7 +10,7 @@ use crate::{
     events::DropReason,
     lyrics::LyricDetector,
     recognizer::AsrMessage,
-    refine::{cut_at_next_clause, only_pronoun_differs, trim},
+    refine::{cut_at_next_clause, trim},
     text::{chinese_chars, classify, clean, drop_reason},
     types::{SecondPass, SecondPassOutcome, StreamTime, TextClass, Transcript, UtteranceId},
 };
@@ -69,7 +69,7 @@ pub(super) enum RefineInput {
 }
 
 pub(super) fn refine_loop(
-    mut engine: Option<Box<dyn OfflineAsr>>,
+    mut engine: Box<dyn OfflineAsr>,
     config: &Config,
     inputs: Receiver<RefineInput>,
     output: Sender<AsrMessage>,
@@ -91,17 +91,14 @@ pub(super) fn refine_loop(
                 open,
             } => {
                 let live = transcript.text.clone();
-                if let Some(engine) = engine.as_deref_mut() {
-                    second_pass(
-                        engine,
-                        &mut transcript,
-                        &window,
-                        &open,
-                        closed,
-                        max_wait,
-                        config.asr.second_pass_min_logprob,
-                    );
-                }
+                second_pass(
+                    engine.as_mut(),
+                    &mut transcript,
+                    &window,
+                    &open,
+                    closed,
+                    max_wait,
+                );
                 let next_head = open.after(transcript.id);
                 finalize(transcript, &live, config, &mut lyrics, next_head.as_deref())
             }
@@ -116,11 +113,6 @@ pub(super) fn refine_loop(
 /// how it went. A clause that waited past `max_wait` keeps the live text without a decode, so
 /// the queue catches up when the engine is slow. A decode that started in time is used even if
 /// it ends later: the wait is spent by then.
-///
-/// A clause whose live text the streaming recognizer was at least as sure of as `min_logprob`
-/// keeps its text without a decode. The second pass earns its keep on lines the live model was
-/// unsure of; on confident lines it mostly rewrites words that were already right, and its
-/// decode is the longest stage after the close.
 fn second_pass(
     engine: &mut dyn OfflineAsr,
     transcript: &mut Transcript,
@@ -128,7 +120,6 @@ fn second_pass(
     open: &OpenClause,
     closed: Instant,
     max_wait: Duration,
-    min_logprob: f32,
 ) {
     let window_end = StreamTime(window.start.0 + window.samples.len() as u64);
     let mut record = SecondPass {
@@ -141,20 +132,6 @@ fn second_pass(
         decode_ms: None,
         refine_ms: 0,
     };
-    // `0` turns the gate off: a mean log-probability is at most 0, so a threshold of 0 would
-    // otherwise skip a line the engine was perfectly certain of.
-    let confident = min_logprob < 0.0
-        && transcript
-            .logprob
-            .is_some_and(|logprob| logprob >= min_logprob);
-    if confident {
-        record.outcome = SecondPassOutcome::Confident;
-        // The wait this line was spared is what the stage cost it, and a consumer comparing
-        // outcomes would otherwise read a zero as "the second pass finished instantly".
-        record.refine_ms = elapsed_ms(closed);
-        transcript.second_pass = Some(record);
-        return;
-    }
     if closed.elapsed() <= max_wait {
         let started = Instant::now();
         let heard = engine.decode(&window.samples);
@@ -176,11 +153,6 @@ fn second_pass(
                     );
                 }
                 match trim(&transcript.text, text) {
-                    Some(trimmed) if only_pronoun_differs(&transcript.text, &trimmed.text) => {
-                        // The live model heard the audio; the window heard a few seconds of it.
-                        // A pronoun is the one thing it gets wrong more often than the live pass.
-                        record.outcome = SecondPassOutcome::Mismatch;
-                    }
                     Some(trimmed) => {
                         record.outcome = SecondPassOutcome::Used;
                         record.distance = Some(trimmed.distance.min(u32::MAX as usize) as u32);
@@ -197,7 +169,7 @@ fn second_pass(
         }
     }
     record.refine_ms = elapsed_ms(closed);
-    transcript.second_pass = Some(record);
+    transcript.second_pass = record;
 }
 
 fn elapsed_ms(since: Instant) -> u32 {
@@ -214,10 +186,8 @@ fn finalize(
     next_head: Option<&str>,
 ) -> AsrMessage {
     transcript.text = clean(&transcript.text, &config.filter.fillers);
-    if let Some(record) = transcript.second_pass.as_mut() {
-        let live = clean(live, &config.filter.fillers);
-        record.live_text = (live != transcript.text).then_some(live);
-    }
+    let live = clean(live, &config.filter.fillers);
+    transcript.second_pass.live_text = (live != transcript.text).then_some(live);
     // Confidence is read on the clause as the engine heard it, before any correction.
     transcript.music = lyrics.observe(transcript.logprob);
     // A pause cut that stopped mid-thought gets an ellipsis instead of an invented ending. A

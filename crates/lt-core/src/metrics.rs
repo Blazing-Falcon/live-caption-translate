@@ -296,7 +296,7 @@ mod tests {
             logprob: None,
             music: false,
             fragment: false,
-            second_pass: None,
+            second_pass: crate::types::SecondPass::default(),
         }
     }
     fn final_event(id: u64, done: u64, first: Option<u64>) -> PipelineEvent {

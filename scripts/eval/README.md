@@ -34,9 +34,9 @@ From the transcript alone, so a run can be rescored without the audio:
   translate, queued);
 - prompt-cache misses: requests that reused no more than the frozen instruction;
 - second-pass outcomes, and how many edits were identical, punctuation-only or character edits.
-  `second_pass_p50` is only meaningful with the outcomes beside it: a line the confidence gate
-  skipped reports a near-zero stage time, so a run with many `confident` lines shows a low p50
-  because it did less work, not because the decode got faster;
+  `second_pass_p50` is only meaningful with the outcomes beside it: a `late` line reports a
+  near-zero stage time, so a run with many of them shows a low p50 because it did less work, not
+  because the decode got faster;
 - shape: duration, Han characters, inter-line gaps, share of gaps at or above `asr.pause_s`;
 - lyric lines that were translated anyway;
 - fragments: lines the pipeline flagged as stopping mid-thought and still translated. The flag is

@@ -4,15 +4,12 @@
   import { useSession } from "../../lib/context";
   import { reconcileChecked } from "../../lib/reconcile";
   import {
-    formatBytes,
     formatMemory,
     formatSeconds,
-    modelsPercent,
     totalCpu,
     totalMemoryMb,
   } from "../../lib/format";
   import {
-    SECOND_PASSES,
     asrPatch,
     WINDOW_LIMITS,
     performancePatch,
@@ -20,15 +17,12 @@
     transcriptPatch,
     windowCharsPatch,
     type Config,
-    type ConfigPatch,
-    type SpeechChoice,
   } from "../../lib/settings";
-  import type { ModelStatus } from "../../lib/types";
 
   let { config }: { config: Config } = $props();
 
   const session = useSession();
-  const { stats, busy, appState, models, config: liveConfig } = session;
+  const { stats, busy, appState, config: liveConfig } = session;
 
   // Up to the PC's logical CPUs; a larger saved value stays selectable.
   const threadOptions = (current: number): number[] =>
@@ -72,130 +66,17 @@
     reconcileChecked(input, get(liveConfig)?.transcript.enabled ?? config.transcript.enabled);
   }
 
-  interface SpeechRow {
-    key: "asr.second_pass";
-    label: string;
-    value: string;
-    choices: readonly SpeechChoice<string>[];
-    patch: (value: string) => ConfigPatch;
-  }
-
-  const speechRows = $derived<SpeechRow[]>([
-    {
-      key: "asr.second_pass",
-      label: "Correct lines after they end",
-      value: config.asr.second_pass,
-      choices: SECOND_PASSES,
-      patch: (value) => asrPatch({ second_pass: value as Config["asr"]["second_pass"] }),
-    },
-  ]);
-
-  /** A choice whose model is downloading; it is saved when the model is ready. */
-  let waiting = $state<{ key: SpeechRow["key"]; value: string; model: string; patch: ConfigPatch } | null>(null);
-
-  const modelOf = (id: string | null): ModelStatus | undefined =>
-    id === null ? undefined : $models?.find((model) => model.id === id);
-  const ready = (choice: SpeechChoice<string>): boolean => choice.model === null || modelOf(choice.model)?.state === "ready";
-  const optionLabel = (choice: SpeechChoice<string>): string => {
-    const model = modelOf(choice.model);
-    return ready(choice) || model === undefined ? choice.label : `${choice.label} (download ${formatBytes(model.bytes_total)})`;
-  };
-
-  $effect(() => {
-    const pending = waiting;
-    if (pending === null || modelOf(pending.model)?.state !== "ready") return;
-    waiting = null;
-    void session.save(pending.key, pending.patch);
-  });
-
-  async function downloadModel(model: string): Promise<void> {
-    if (get(busy).has("models.download")) return;
-    await session.act("models.download", () => api.modelsDownload(config.models.source, [model]));
-  }
-
-  async function chooseSpeech(row: SpeechRow, event: Event): Promise<void> {
-    const select = event.currentTarget as HTMLSelectElement;
-    const chosen = row.choices.find((choice) => choice.value === select.value);
-    if (!chosen) {
-      select.value = row.value;
-      return;
-    }
-    if (chosen.model !== null && !ready(chosen)) {
-      // Listening keeps the current model until the new one is on disk.
-      select.value = row.value;
-      waiting = { key: row.key, value: chosen.value, model: chosen.model, patch: row.patch(chosen.value) };
-      await downloadModel(chosen.model);
-      return;
-    }
-    if (waiting?.key === row.key) waiting = null;
-    const saved = await session.save(row.key, row.patch(chosen.value));
-    if (!saved) select.value = row.value;
-  }
-
-  function speechStatus(row: SpeechRow): { text: string; download: string | null } {
-    if (waiting?.key === row.key) {
-      const choice = row.choices.find((item) => item.value === waiting?.value);
-      const model = modelOf(waiting.model);
-      const name = choice?.label ?? waiting.value;
-      if (model?.state === "downloading" || model?.state === "verifying") {
-        return { text: `Downloading ${name}: ${modelsPercent(model)}%. It is used when the download is done.`, download: null };
-      }
-      return { text: `${name} is not downloaded.`, download: waiting.model };
-    }
-    const current = row.choices.find((choice) => choice.value === row.value);
-    if (current && !ready(current) && current.model !== null) {
-      return { text: `${current.label} is not downloaded. Listening cannot start without it.`, download: current.model };
-    }
-    return { text: current?.help ?? "", download: null };
-  }
-
   const openTranscripts = async (): Promise<void> => {
     if (get(busy).has("open.transcripts")) return;
     await session.act("open.transcripts", () => api.openFolder("transcripts"));
   };
 </script>
 
-{#snippet modelRow(row: SpeechRow)}
-  {@const status = speechStatus(row)}
-  <div class="option">
-    <label class="field">
-      <span>{row.label}</span>
-      <select
-        class="select"
-        value={row.value}
-        aria-describedby={`help-${row.key}`}
-        data-testid={`speech-${row.key}`}
-        onchange={(event) => chooseSpeech(row, event)}
-      >
-        {#each row.choices as choice (choice.value)}
-          <option value={choice.value}>{optionLabel(choice)}</option>
-        {/each}
-      </select>
-    </label>
-    <div class="status-row">
-      <p id={`help-${row.key}`} class="help small" aria-live="polite">{status.text}</p>
-      {#if status.download}
-        <button
-          type="button"
-          class="btn"
-          aria-disabled={$busy.has("models.download")}
-          onclick={() => status.download && downloadModel(status.download)}
-        >
-          Download
-        </button>
-      {/if}
-    </div>
-  </div>
-{/snippet}
-
 <section class="page" aria-labelledby="performance-title">
   <h2 id="performance-title" class="section-title">Performance</h2>
 
   <div class="stack">
     <h3 class="section-title">Speech recognition</h3>
-    {#each speechRows as row (row.key)}
-      {@render modelRow(row)}
-    {/each}
     <label class="field">
       <span>Recognizer threads</span>
       <select
@@ -209,21 +90,22 @@
         {/each}
       </select>
     </label>
-    {#if config.asr.second_pass !== "off"}
-      <label class="field">
-        <span>Correction threads</span>
-        <select
-          class="select"
-          value={String(config.asr.second_pass_threads)}
-          data-testid="asr-second-pass-threads"
-          onchange={chooseSecondPassThreads}
-        >
-          {#each threadOptions(config.asr.second_pass_threads) as count (count)}
-            <option value={String(count)}>{count}</option>
-          {/each}
-        </select>
-      </label>
-    {/if}
+    <label class="field">
+      <span>Correction threads</span>
+      <select
+        class="select"
+        value={String(config.asr.second_pass_threads)}
+        data-testid="asr-second-pass-threads"
+        onchange={chooseSecondPassThreads}
+      >
+        {#each threadOptions(config.asr.second_pass_threads) as count (count)}
+          <option value={String(count)}>{count}</option>
+        {/each}
+      </select>
+    </label>
+    <p class="help small">
+      Each finished line is read again by X-ASR offline with the speech before it, and the corrected Chinese replaces the live text before translation.
+    </p>
   </div>
 
   <div class="stack">
@@ -318,13 +200,6 @@
 </section>
 
 <style>
-  .status-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    min-height: var(--control-h);
-  }
-
   .option {
     display: flex;
     flex-direction: column;

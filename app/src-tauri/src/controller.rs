@@ -130,7 +130,7 @@ impl Controller {
         if !crate::models::all_ready(&models) {
             return Err("Models are not downloaded yet. Open settings to download them.".into());
         }
-        let missing = crate::models::missing_for(&models, &config);
+        let missing = crate::models::missing_for(&models);
         if !missing.is_empty() {
             return Err(format!(
                 "Download {} on the Performance page, or choose another model.",
@@ -237,7 +237,7 @@ impl Controller {
                 label: label.into(),
             },
             asr: lt_core::transcript::recognizer_name(),
-            asr_second: lt_core::transcript::second_pass_name(config),
+            asr_second: lt_core::transcript::SECOND_PASS_NAME.into(),
             translator: lt_core::transcript::translator_name(),
             config: SessionConfig::from(config),
         };

@@ -116,7 +116,7 @@ fn run_session(
                 label: label.into(),
             },
             asr: recognizer_name(),
-            asr_second: lt_core::transcript::second_pass_name(&config),
+            asr_second: lt_core::transcript::SECOND_PASS_NAME.into(),
             translator: lt_core::transcript::translator_name(),
             config: SessionConfig::from(&config),
         };

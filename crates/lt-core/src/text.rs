@@ -395,7 +395,7 @@ mod tests {
             logprob: None,
             music: false,
             fragment: false,
-            second_pass: None,
+            second_pass: crate::types::SecondPass::default(),
         }
     }
 }

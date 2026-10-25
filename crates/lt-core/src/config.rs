@@ -66,12 +66,8 @@ config_table!(AudioConfig {
 config_table!(AsrConfig {
     threads: u32 = 1,
     pause_s: f32 = 0.8,
-    second_pass: String = "xasr".into(),
     second_pass_threads: u32 = 2,
     second_pass_max_wait_s: f32 = 1.5,
-    /// Run the second pass only on a clause whose live text the streaming recognizer was less
-    /// sure of than this (mean token log-probability). `0` decodes every clause.
-    second_pass_min_logprob: f32 = 0.0,
 });
 config_table!(FilterConfig {
     /// Do not translate a line that looks like song lyrics. Marking such a line is separate and
@@ -258,11 +254,11 @@ fn retire_v2(value: &mut toml::Value) {
     let Some(root) = value.as_table_mut() else {
         return;
     };
-    if let Some(asr) = root.get_mut("asr").and_then(toml::Value::as_table_mut) {
-        if asr.get("second_pass").and_then(toml::Value::as_str) == Some("sensevoice") {
-            asr.remove("second_pass");
-            tracing::info!("asr.second_pass: SenseVoice was removed; using the default");
-        }
+    if take(root, "asr.second_pass").is_some() {
+        tracing::info!("asr.second_pass was removed");
+    }
+    if take(root, "asr.second_pass_min_logprob").is_some() {
+        tracing::info!("asr.second_pass_min_logprob was removed");
     }
     // One translation model is left, so its key is gone.
     if take(root, "translate.model").is_some() {
@@ -434,10 +430,8 @@ impl Config {
         number!(audio, norm_gate_dbfs, -90.0, -30.0);
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
-        choice!(asr, second_pass, &["off", "xasr"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
-        number!(asr, second_pass_min_logprob, -5.0, 0.0);
         // No maximum is specified for this duration; it must remain finite.
         number!(filter, single_char_max_s, 0.0, f32::MAX);
         number!(translate, threads, 1, MAX_THREADS);
@@ -711,7 +705,6 @@ fn normalize_float(
         "translate.timeout_s" => (2.0, 60.0),
         "translate.skip_lag_s" => (2.0, 30.0),
         "asr.second_pass_max_wait_s" => (0.5, 5.0),
-        "asr.second_pass_min_logprob" => (-5.0, 0.0),
         "overlay.expire_s" => (3.0, 60.0),
         "filter.single_char_max_s" => (0.0, f64::from(f32::MAX)),
         _ => (f64::MIN, f64::MAX),

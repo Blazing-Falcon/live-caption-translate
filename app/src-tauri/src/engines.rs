@@ -15,7 +15,7 @@ use std::{
     time::Duration,
 };
 
-type Recognizers = (Box<dyn StreamingAsr>, Option<Box<dyn OfflineAsr>>);
+type Recognizers = (Box<dyn StreamingAsr>, Box<dyn OfflineAsr>);
 
 pub fn recognizers(config: &Config, models: &Path) -> Result<Recognizers, String> {
     let mut registry = EngineRegistry::default();
@@ -25,12 +25,9 @@ pub fn recognizers(config: &Config, models: &Path) -> Result<Recognizers, String
     let asr = registry
         .build_asr(&engine_config)
         .map_err(|e| e.to_string())?;
-    if config.asr.second_pass != "xasr" {
-        return Ok((asr, None));
-    }
     let second_pass =
         lt_sherpa::xasr_offline(models, config).map_err(|e| format!("Second pass: {e}"))?;
-    Ok((asr, Some(Box::new(second_pass))))
+    Ok((asr, Box::new(second_pass)))
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {

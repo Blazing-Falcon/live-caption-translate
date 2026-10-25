@@ -72,7 +72,18 @@ export function asrFinal(
   lang: string | null = "zh",
   cut: CutReason = "pause",
 ): PipelineEvent {
-  return { type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300, cut };
+  return {
+    type: "asr_final",
+    id,
+    text,
+    class: cls,
+    lang,
+    start_ms: 0,
+    end_ms: 1000,
+    asr_ms: 300,
+    cut,
+    second_pass: { outcome: "mismatch", window_start_ms: 0, window_end_ms: 1000, refine_ms: 1 },
+  };
 }
 
 export const partial = (id: number, text: string, cls: TextClass = "chinese", end_ms = 1000): PipelineEvent => ({

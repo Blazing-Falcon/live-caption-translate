@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition | archive, 4 files | 133,895,136 | in the manifest |
 | `hy-mt2-1.8b-ternary-tq2_0` | Translation | download `Hy-MT2-1.8B-1.25Bit.gguf`, kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` | 461,860,800 (606,564,288 kept) | in the manifest |
-| `xasr-offline-int8-2026-06-03` | Second pass (`asr.second_pass = "xasr"`, default) | archive, 4 files | 136,396,739 | in the manifest |
+| `xasr-offline-int8-2026-06-03` | Second pass (always on) | archive, 4 files | 136,396,739 | in the manifest |
 
 Sources (Hugging Face):
 
@@ -58,7 +58,7 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 **X-ASR streaming:** sherpa-onnx online recognizer, zipformer transducer, greedy search, `asr.threads` (1). It hears all audio while listening, also silence. The result JSON gives token times and token log-probabilities, but no language tag: the share of Latin letters and Chinese characters sets the language. Pause rules: 2.4 s of silence with no words, `asr.pause_s` (0.8 s) after words, and 60 s at most. At a break the app adds silence (two 480 ms chunks plus 0.5 s) before the end of input, so the encoder decodes the last words. The model reports a word after it starts: the first word after silence comes 0.34 s after the speech onset that Silero VAD v5 finds (median of the 20 ASCEND clips). The app subtracts this delay from the token times.
 
-**X-ASR offline (second pass, default):** sherpa-onnx offline recognizer in the app, the same zipformer transducer decoded over the whole window, greedy search, `asr.second_pass_threads` (2). The window gets 5 s of earlier speech as context; `trim` keeps the part that belongs to the clause. Its result JSON has no token times or log-probabilities; the app uses only the text. It shares the ONNX Runtime with the streaming model.
+**X-ASR offline (second pass):** sherpa-onnx offline recognizer in the app, the same zipformer transducer decoded over the whole window, greedy search, `asr.second_pass_threads` (2). The window gets 5 s of earlier speech as context; `trim` keeps the part that belongs to the clause. Its result JSON has no token times or log-probabilities; the app uses only the text. It shares the ONNX Runtime with the streaming model.
 
 ASCEND clips (20), whole clips, 2026-10-25, `cargo test -p lt-sherpa --release --test offline`: character error rate 0.091, against 0.102 for the streaming model (`--test stream`). Clause windows of the v0.7.0 review runs, Python replay with the app's trim rules, Ryzen 7 5700X, 2026-10-25: character errors over drama, 5 min of conversation and FLEURS (3,262 characters) 238 with the offline pass on every line and 5 s of context, against 263 for the live text; context 0 s: 259, 2 s: 246, 10 s: 239, 20 s: 240 on the same lines.
 

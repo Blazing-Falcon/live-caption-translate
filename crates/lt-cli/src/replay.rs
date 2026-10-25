@@ -88,9 +88,9 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
             recognizer_name()
         },
         asr_second: if args.fake {
-            None
+            "fake".into()
         } else {
-            lt_core::transcript::second_pass_name(&config)
+            lt_core::transcript::SECOND_PASS_NAME.into()
         },
         translator: if args.fake {
             "fake".into()
@@ -203,10 +203,7 @@ pub(crate) fn observe(report: &mut ReplayReport, event: &PipelineEvent) {
             text,
             second_pass,
             ..
-        } => match second_pass
-            .as_ref()
-            .and_then(|pass| pass.live_text.as_ref())
-        {
+        } => match second_pass.live_text.as_ref() {
             Some(live) => eprintln!("{} source: {text} (live: {live})", id.0),
             None => eprintln!("{} source: {text}", id.0),
         },

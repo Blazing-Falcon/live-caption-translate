@@ -164,7 +164,7 @@ mod tests {
             logprob: None,
             music: false,
             fragment: false,
-            second_pass: None,
+            second_pass: lt_core::types::SecondPass::default(),
         }
     }
 

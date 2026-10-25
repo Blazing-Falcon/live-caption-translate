@@ -1,6 +1,5 @@
 //! Model status, downloads and imports for the first-run screen.
 use crate::app::{lock, Shared};
-use lt_core::config::Config;
 use lt_llm::models::{ModelManager, ModelSource, ModelState, ModelStatus};
 use std::{
     path::Path,
@@ -24,14 +23,13 @@ pub fn all_ready(dir: &Path) -> bool {
         .unwrap_or(false)
 }
 
-/// Names of the models that the chosen speech and translation settings need
-/// and that are not ready on disk.
-pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
-    let mut wanted = vec![lt_sherpa::XASR_STREAM_MODEL];
-    if config.asr.second_pass == "xasr" {
-        wanted.push(lt_sherpa::XASR_OFFLINE_MODEL);
-    }
-    wanted.push(lt_core::config::TranslateConfig::MODEL.0);
+/// Names of the models that listening needs and that are not ready on disk.
+pub fn missing_for(dir: &Path) -> Vec<String> {
+    let wanted = vec![
+        lt_sherpa::XASR_STREAM_MODEL,
+        lt_sherpa::XASR_OFFLINE_MODEL,
+        lt_core::config::TranslateConfig::MODEL.0,
+    ];
     match lt_llm::models::status(dir) {
         Ok(models) => models
             .into_iter()

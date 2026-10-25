@@ -5,7 +5,7 @@ use lt_core::{
     bus::EventBus,
     config::Config,
     engines::{OfflineAsr, StreamingAsr, Translator},
-    fakes::{FakeStream, FakeTranslator},
+    fakes::{FakeOffline, FakeStream, FakeTranslator},
 };
 use std::path::PathBuf;
 use std::{
@@ -18,7 +18,7 @@ use std::{
 
 pub struct Engines {
     pub asr: Box<dyn StreamingAsr>,
-    pub second_pass: Option<Box<dyn OfflineAsr>>,
+    pub second_pass: Box<dyn OfflineAsr>,
     pub translator: Box<dyn Translator>,
     pub pid: Arc<AtomicU32>,
     // These guards outlive the pipeline and kill the children on every exit path.
@@ -73,7 +73,7 @@ pub fn build(
                 vec!["你好，这是测试语音。".into(); 4096],
                 f64::from(config.asr.pause_s),
             )),
-            second_pass: None,
+            second_pass: Box::<FakeOffline>::default(),
             translator: Box::<FakeTranslator>::default(),
             pid: Arc::new(AtomicU32::new(0)),
             #[cfg(feature = "llm")]
@@ -87,13 +87,8 @@ pub fn build(
         let mut engine_config = config.clone();
         engine_config.models.dir = models.to_string_lossy().into_owned();
         let asr = registry.build_asr(&engine_config)?;
-        let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass == "xasr" {
-            Some(Box::new(
-                lt_sherpa::xasr_offline(models, config).context("Starting the second pass")?,
-            ))
-        } else {
-            None
-        };
+        let second_pass: Box<dyn OfflineAsr> =
+            Box::new(lt_sherpa::xasr_offline(models, config).context("Starting the second pass")?);
         let (translator, supervisor, pid) = translator(config, models, binary, bus, cancelled)?;
         Ok(Engines {
             asr,

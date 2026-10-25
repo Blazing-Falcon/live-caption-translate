@@ -1,8 +1,8 @@
 //! Deterministic engines for headless replay and integration tests.
 use crate::{
     engines::{
-        StreamResult, StreamingAsr, TokenTranscript, TranslateRequest, TranslationControl,
-        TranslationOut, Translator, TranslatorCaps,
+        OfflineAsr, OfflineText, StreamResult, StreamingAsr, TokenTranscript, TranslateRequest,
+        TranslationControl, TranslationOut, Translator, TranslatorCaps,
     },
     error::Result,
 };
@@ -107,6 +107,17 @@ impl StreamingAsr for FakeStream {
         self.tokens.clear();
         self.quiet = 0;
         result
+    }
+}
+
+/// An offline recognizer that hears nothing: no part of its text matches a live line, so every
+/// line keeps its live text.
+#[derive(Default)]
+pub struct FakeOffline;
+
+impl OfflineAsr for FakeOffline {
+    fn decode(&mut self, _: &[f32]) -> Result<OfflineText> {
+        Ok(OfflineText::default())
     }
 }
 

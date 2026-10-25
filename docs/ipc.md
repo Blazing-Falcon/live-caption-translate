@@ -16,7 +16,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 |---|---|---|
 | `speech_started` | `id`, `at_ms` | A clause opens at its first word |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | The open clause's text grew |
-| `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`?, `music`, `fragment`, `second_pass`? | A clause is complete. `text` is the final text, after the second pass. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). `music` is true when the recognizer was much less sure of this line than of the session's speech, which is what singing sounds like to it; the line is still translated unless `filter.skip_music` is on. `fragment` is true when the clause stopped mid-thought, so the translator gets an ellipsis rather than an invented ending (`translate.fragment_ellipsis`). `second_pass` is present when the second pass is on (see below). |
+| `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`?, `music`, `fragment`, `second_pass` | A clause is complete. `text` is the final text, after the second pass. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). `music` is true when the recognizer was much less sure of this line than of the session's speech, which is what singing sounds like to it; the line is still translated unless `filter.skip_music` is on. `fragment` is true when the clause stopped mid-thought, so the translator gets an ellipsis rather than an invented ending (`translate.fragment_ellipsis`). `second_pass` is always present (see below). |
 | `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
@@ -51,7 +51,7 @@ Enum values:
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
 | `DropReason` | `empty`, `single_char` |
-| `SecondPassOutcome` | `used` (the final text comes from the second pass), `mismatch` (no part of its text matched the live text closely enough), `late` (the line waited longer than `asr.second_pass_max_wait_s`), `confident` (the live text was sure enough that the line was not decoded again), `failed` |
+| `SecondPassOutcome` | `used` (the final text comes from the second pass), `mismatch` (no part of its text matched the live text closely enough), `late` (the line waited longer than `asr.second_pass_max_wait_s`), `failed` |
 | `EngineKind` | `asr`, `translator` |
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |
@@ -176,7 +176,7 @@ Other rules:
 
 The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.jsonl`. `lt-cli replay` writes the same format.
 
-- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `translator` and `config` (`skip_lag_s`).
+- Line 1 is the session header: `type: "session"`, `app_version`, `started_at`, `source`, `asr`, `asr_second`, `translator` and `config` (`skip_lag_s`).
 - Each other line is one `utterance` record. The writer writes it when the line becomes terminal.
 - The writer does not write dropped lines or partials.
 

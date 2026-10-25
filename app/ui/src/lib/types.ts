@@ -57,7 +57,7 @@ export interface PipelineStats {
 
 export type CutReason = "pause" | "discontinuity" | "end" | "commit";
 
-export type SecondPassOutcome = "used" | "mismatch" | "late" | "confident" | "failed";
+export type SecondPassOutcome = "used" | "mismatch" | "late" | "failed";
 
 export interface SecondPass {
   outcome: SecondPassOutcome;
@@ -90,8 +90,8 @@ export type PipelineEvent =
       music?: boolean;
       /** The clause stopped mid-thought: its words say the speaker was still going. */
       fragment?: boolean;
-      /** Absent when the second pass is off. `text` is already the final text. */
-      second_pass?: SecondPass;
+      /** `text` is already the final text. */
+      second_pass: SecondPass;
     }
   | { type: "joined"; id: UtteranceId; absorbed: UtteranceId[]; text: string }
   | { type: "translation_delta"; id: UtteranceId; text_so_far: string }

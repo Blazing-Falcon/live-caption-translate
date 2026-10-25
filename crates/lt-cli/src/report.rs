@@ -76,12 +76,8 @@ impl ReplayReport {
         count
     }
     pub fn on_event(&mut self, event: &PipelineEvent) {
-        if let PipelineEvent::AsrFinal {
-            second_pass: Some(pass),
-            ..
-        } = event
-        {
-            self.second_pass.push(pass.clone());
+        if let PipelineEvent::AsrFinal { second_pass, .. } = event {
+            self.second_pass.push(second_pass.clone());
         }
         match event {
             PipelineEvent::Joined { id, absorbed, .. } => {
@@ -191,7 +187,6 @@ fn second_pass_summary(passes: &[SecondPass]) -> Option<SecondPassSummary> {
             SecondPassOutcome::Used => "used",
             SecondPassOutcome::Mismatch => "mismatch",
             SecondPassOutcome::Late => "late",
-            SecondPassOutcome::Confident => "confident",
             SecondPassOutcome::Failed => "failed",
         };
         *outcomes.entry(key).or_default() += 1;

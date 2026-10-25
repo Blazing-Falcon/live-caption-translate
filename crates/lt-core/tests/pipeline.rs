@@ -12,7 +12,7 @@ use lt_core::{
     },
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
-    fakes::{FakeStream, FakeTranslator},
+    fakes::{FakeOffline, FakeStream, FakeTranslator},
     pipeline::{Pipeline, PipelineHandle},
     queue::TranslationQueue,
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
@@ -364,14 +364,20 @@ fn start(
     asr: impl StreamingAsr + 'static,
     translator: impl Translator + 'static,
 ) -> (PipelineHandle, EventReceiver) {
-    start_with(line_by_line(), source, asr, None, translator)
+    start_with(
+        line_by_line(),
+        source,
+        asr,
+        Box::new(FakeOffline),
+        translator,
+    )
 }
 
 fn start_with(
     config: Config,
     source: VecSource,
     asr: impl StreamingAsr + 'static,
-    second_pass: Option<Box<dyn OfflineAsr>>,
+    second_pass: Box<dyn OfflineAsr>,
     translator: impl Translator + 'static,
 ) -> (PipelineHandle, EventReceiver) {
     let bus = EventBus::default();
@@ -419,13 +425,13 @@ impl OfflineAsr for ScriptedSecondPass {
     }
 }
 
-fn second_pass_outcomes(events: &[PipelineEvent]) -> Vec<(String, Option<SecondPassOutcome>)> {
+fn second_pass_outcomes(events: &[PipelineEvent]) -> Vec<(String, SecondPassOutcome)> {
     events
         .iter()
         .filter_map(|event| match event {
             PipelineEvent::AsrFinal {
                 text, second_pass, ..
-            } => Some((text.clone(), second_pass.as_ref().map(|pass| pass.outcome))),
+            } => Some((text.clone(), second_pass.outcome)),
             _ => None,
         })
         .collect()
@@ -616,7 +622,7 @@ fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken()
         config,
         VecSource::new(speech(chars.len(), 1.0)),
         AmplitudeStream::default(),
-        None,
+        Box::new(FakeOffline),
         translator,
     );
     finish(&mut handle);
@@ -828,14 +834,11 @@ fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_
     };
     let mut config = line_by_line();
     config.asr.second_pass_max_wait_s = 0.5;
-    // This test is about what happens to a line the second pass does decode, so the confidence
-    // gate is off: 0 decodes every line whatever the stream reports.
-    config.asr.second_pass_min_logprob = 0.0;
     let (mut handle, events) = start_with(
         config,
         VecSource::new(tones(live.len())),
         fake_stream(&live),
-        Some(Box::new(second_pass)),
+        Box::new(second_pass),
         FakeTranslator::default(),
     );
     finish(&mut handle);
@@ -858,21 +861,18 @@ fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_
             .enumerate()
     {
         // A slow test machine can make an early line late too; it then keeps the live text.
-        if outcome == Some(SecondPassOutcome::Late) {
+        if outcome == SecondPassOutcome::Late {
             assert_eq!(text, live[index]);
         } else {
-            assert_eq!(
-                (text.as_str(), outcome),
-                (expected_text, Some(expected_outcome))
-            );
+            assert_eq!((text.as_str(), outcome), (expected_text, expected_outcome));
         }
     }
     let live_text = events.iter().find_map(|event| match event {
         PipelineEvent::AsrFinal {
             id: UtteranceId(2),
-            second_pass: Some(pass),
+            second_pass,
             ..
-        } => Some(pass.live_text.clone()),
+        } => Some(second_pass.live_text.clone()),
         _ => None,
     });
     assert_eq!(live_text, Some(Some("他们来了。".into())));
@@ -888,14 +888,11 @@ fn stop_joins_every_thread_while_the_second_pass_decodes() {
             .collect(),
         started,
     };
-    // The confidence gate is off: this test needs lines to reach the decoder.
-    let mut config = line_by_line();
-    config.asr.second_pass_min_logprob = 0.0;
     let (mut handle, events) = start_with(
-        config,
+        line_by_line(),
         VecSource::new(tones(40)),
         FakeStream::new(vec!["你好。".into(); 40], PAUSE_S),
-        Some(Box::new(second_pass)),
+        Box::new(second_pass),
         FakeTranslator::default(),
     );
     decoding.recv_timeout(WATCHDOG).unwrap();
@@ -909,54 +906,6 @@ fn stop_joins_every_thread_while_the_second_pass_decodes() {
     assert!(finished);
     let recorded: Vec<_> = events.try_iter().collect();
     assert_order(&recorded);
-}
-
-/// A line the streaming recognizer was sure of keeps its text without a decode; a line it was
-/// unsure of is decoded and takes the second pass's text.
-#[test]
-fn the_second_pass_runs_only_on_lines_the_live_recognizer_was_unsure_of() {
-    let cases = [
-        (-0.1_f32, SecondPassOutcome::Confident),
-        (-1.2, SecondPassOutcome::Used),
-    ];
-    for (logprob, expected) in cases {
-        let (started, decoding) = bounded(16);
-        let second_pass = ScriptedSecondPass {
-            replies: VecDeque::from([Reply::Text("他们来啦。")]),
-            started,
-        };
-        let mut stream = FakeStream::new(vec!["他们来了。".into()], PAUSE_S);
-        stream.logprob = logprob;
-        let mut config = line_by_line();
-        config.asr.second_pass_min_logprob = -0.5;
-        let (mut handle, events) = start_with(
-            config,
-            VecSource::new(tones(1)),
-            stream,
-            Some(Box::new(second_pass)),
-            FakeTranslator::default(),
-        );
-        finish(&mut handle);
-        let events: Vec<_> = events.try_iter().collect();
-        assert_order(&events);
-        assert_eq!(
-            second_pass_outcomes(&events),
-            [(
-                if expected == SecondPassOutcome::Used {
-                    "他们来啦。".to_owned()
-                } else {
-                    "他们来了。".to_owned()
-                },
-                Some(expected)
-            )],
-            "logprob {logprob}"
-        );
-        assert_eq!(
-            decoding.try_recv().is_ok(),
-            expected == SecondPassOutcome::Used,
-            "whether the decoder ran, logprob {logprob}"
-        );
-    }
 }
 
 /// A blocked translator stops the recognizer once the queue is full, instead of letting finals
@@ -1053,7 +1002,7 @@ fn random_translation_timing_and_failures_keep_every_ordering_rule() {
             config,
             VecSource::new(samples),
             AmplitudeStream::default(),
-            None,
+            Box::new(FakeOffline),
             SeededTranslator::new(seed, 30),
         );
         finish(&mut handle);

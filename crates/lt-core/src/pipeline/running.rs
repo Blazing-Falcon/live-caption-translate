@@ -128,7 +128,7 @@ impl RunningText {
             cut: CutReason::Commit,
             logprob: None,
             music: false,
-            second_pass: None,
+            second_pass: crate::types::SecondPass::default(),
         };
         Some((transcript, ids))
     }

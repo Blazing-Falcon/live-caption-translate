@@ -321,7 +321,8 @@ impl Recognizer {
             absorbed: Vec::new(),
             cut,
             logprob: mean_log_prob(log_probs),
-            second_pass: None,
+            // Replaced by the refine thread's record before the line is published.
+            second_pass: crate::types::SecondPass::default(),
         };
         out.push(RecognizerOutput::Closed(clause.id, end, cut));
         out.push(RecognizerOutput::Message(AsrMessage::Transcript(

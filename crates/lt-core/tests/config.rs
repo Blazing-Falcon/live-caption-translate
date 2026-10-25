@@ -281,7 +281,8 @@ config_version = 2
 [asr]
 chunk_ms = 960
 decoding = "beam"
-second_pass = "sensevoice"
+second_pass = "off"
+second_pass_min_logprob = -0.5
 second_pass_threads = 3
 [translate]
 model = "q4_0"
@@ -290,7 +291,6 @@ glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], co
 "#,
     )
     .unwrap();
-    assert_eq!(config.asr.second_pass, Config::default().asr.second_pass);
     assert_eq!(config.asr.second_pass_threads, 3);
     assert_eq!(config.translate.threads, 3);
     assert!(config.asr.extra.is_empty());
@@ -299,6 +299,8 @@ glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], co
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
     assert!(saved["asr"].get("chunk_ms").is_none());
     assert!(saved["asr"].get("decoding").is_none());
+    assert!(saved["asr"].get("second_pass").is_none());
+    assert!(saved["asr"].get("second_pass_min_logprob").is_none());
     assert!(saved["translate"].get("model").is_none());
     assert!(saved["translate"].get("glossary").is_none());
 }
@@ -311,8 +313,6 @@ config_version = 2
 [capture]
 mode = "apps"
 apps = [{exe = "chrome.exe", name = "Chrome"}]
-[asr]
-second_pass = "off"
 [translate]
 threads = 2
 [overlay]
@@ -327,7 +327,6 @@ dir = "D:/models"
     let reset = config.reset();
     let defaults = Config::default();
     assert_eq!(reset.capture.mode, defaults.capture.mode);
-    assert_eq!(reset.asr.second_pass, defaults.asr.second_pass);
     assert_eq!(reset.translate.threads, defaults.translate.threads);
     assert_eq!(reset.overlay.style, defaults.overlay.style);
     assert_eq!(reset.overlay.font_px, defaults.overlay.font_px);

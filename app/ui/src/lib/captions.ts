@@ -203,9 +203,9 @@ const READING_CPS = 15;
 
 /** Whether the second pass changed the live text by at most one character. Its distance counts
  * letters and digits only, so a punctuation-only correction counts as none. */
-function isTrivialSwap(secondPass: SecondPass | undefined): boolean {
-  const distance = secondPass?.distance;
-  return secondPass?.live_text !== undefined && distance !== undefined && distance <= 1;
+function isTrivialSwap(secondPass: SecondPass): boolean {
+  const distance = secondPass.distance;
+  return secondPass.live_text !== undefined && distance !== undefined && distance <= 1;
 }
 
 /** How long the display takes to fade one Chinese row out and the corrected one in. */

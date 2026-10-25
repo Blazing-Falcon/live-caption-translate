@@ -43,6 +43,7 @@ export function calls(page: Page, cmd?: string): Promise<Call[]> {
 export const NOW = {
   asr: (id: number, text: string, cls: "chinese" | "mixed" | "english" | "other" = "chinese", lang: string | null = "zh", cut: CutReason = "pause"): PipelineEvent => ({
     type: "asr_final", id, text, class: cls, lang, start_ms: 0, end_ms: 1000, asr_ms: 300, cut,
+    second_pass: { outcome: "mismatch", window_start_ms: 0, window_end_ms: 1000, refine_ms: 1 },
   }),
   partial: (id: number, text: string, cls: "chinese" | "mixed" | "english" | "other" = "chinese"): PipelineEvent => ({
     type: "asr_partial", id, text, class: cls, end_ms: 1000,

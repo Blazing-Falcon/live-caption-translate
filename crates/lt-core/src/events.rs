@@ -98,9 +98,7 @@ pub enum PipelineEvent {
         /// The clause stopped mid-thought: its words say the speaker was still going.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         fragment: bool,
-        /// Absent when the second pass is off.
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        second_pass: Option<SecondPass>,
+        second_pass: SecondPass,
     },
     Joined {
         id: UtteranceId,
@@ -184,7 +182,7 @@ mod tests {
                 logprob: None,
                 music: false,
                 fragment: false,
-                second_pass: Some(SecondPass {
+                second_pass: SecondPass {
                     outcome: SecondPassOutcome::Used,
                     live_text: Some("我也想半一个".into()),
                     window_text: Some("对。我也想办一个。伟大".into()),
@@ -193,7 +191,7 @@ mod tests {
                     distance: Some(1),
                     decode_ms: Some(92),
                     refine_ms: 104,
-                }),
+                },
             },
             PipelineEvent::Joined {
                 id: UtteranceId(12),

@@ -378,7 +378,7 @@ mod tests {
     use lt_core::{
         bus::EventBus,
         config::Config,
-        fakes::{FakeStream, FakeTranslator},
+        fakes::{FakeOffline, FakeStream, FakeTranslator},
         pipeline::Pipeline,
     };
     use std::{fs, sync::atomic::AtomicUsize};
@@ -458,7 +458,7 @@ mod tests {
                 vec!["我们今天一起谈论这个问题。".into()],
                 0.8,
             )),
-            None,
+            Box::<FakeOffline>::default(),
             Box::new(FakeTranslator::default()),
             bus,
             None,

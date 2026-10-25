@@ -90,21 +90,6 @@ pub fn cut_at_next_clause<'a>(window: &'a str, next: &str) -> Option<&'a str> {
     boundary.then(|| &window[..start])
 }
 
-/// True when `chosen` differs from `live` only in which third-person pronoun it uses.
-///
-/// The offline pass mishears 他/她 more often than the live one, because the live model has the
-/// audio's whole context and the offline window has a few seconds of it. On a conversation
-/// sample, every pronoun change the second pass made was wrong (81 她 in the reference against
-/// 1 after the pass), so a correction that only moves a pronoun is refused.
-pub fn only_pronoun_differs(live: &str, chosen: &str) -> bool {
-    fn strip(text: &str) -> String {
-        text.chars()
-            .filter(|character| !matches!(character, '他' | '她' | '它'))
-            .collect()
-    }
-    live != chosen && strip(live) == strip(chosen)
-}
-
 /// The part of `offline` that best matches `live`, or `None` when no part is close enough.
 ///
 /// The match ignores punctuation and case and may skip offline characters at both ends. Of
@@ -177,25 +162,4 @@ pub fn trim(live: &str, offline: &str) -> Option<Trimmed> {
         text.push_str(&live_tail[live_tail.len() - marks..]);
     }
     Some(Trimmed { text, distance })
-}
-
-#[cfg(test)]
-mod pronoun_tests {
-    use super::only_pronoun_differs;
-
-    #[test]
-    fn a_pronoun_only_change_is_refused() {
-        assert!(only_pronoun_differs(
-            "我也不知道她在里面叫啥，",
-            "我也不知道他在里面叫啥，"
-        ));
-        assert!(only_pronoun_differs(
-            "然后她的弟弟特别喜欢音乐",
-            "然后他的弟弟特别喜欢音乐"
-        ));
-        // A change that also fixes a word is a real correction and is kept.
-        assert!(!only_pronoun_differs("她来了", "他来了吧"));
-        assert!(!only_pronoun_differs("她来了", "她来了"));
-        assert!(!only_pronoun_differs("她来了", "她走了"));
-    }
 }

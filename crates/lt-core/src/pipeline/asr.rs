@@ -42,8 +42,6 @@ pub(super) struct AsrNotices {
 pub(super) struct AsrOutputs {
     pub(super) partials: Sender<AsrMessage>,
     pub(super) clauses: Sender<RefineInput>,
-    /// Keep audio for the second pass.
-    pub(super) keep_audio: bool,
     /// Audio before the window that the second pass reads as context (`OfflineAsr::context_s`).
     pub(super) context_s: f64,
 }
@@ -124,9 +122,7 @@ pub(super) fn asr_loop(
         };
         let break_at = match &input {
             RecognizerInput::Audio { at, samples } => {
-                if outputs.keep_audio {
-                    ring.push(*at, samples);
-                }
+                ring.push(*at, samples);
                 None
             }
             RecognizerInput::Break { at, .. } => Some(*at),

@@ -34,10 +34,8 @@ export interface Config extends ExtraFields {
   asr: ExtraFields & {
     threads: number;
     pause_s: number;
-    second_pass: "off" | "xasr";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
-    second_pass_min_logprob: number;
   };
   filter: ExtraFields & {
     skip_music: boolean;
@@ -254,19 +252,6 @@ export function asrPatch(values: DeepPartial<Config["asr"]>): ConfigPatch {
   return { asr: values };
 }
 
-/** A speech model choice; `model` is its manifest id, `null` when nothing is downloaded. */
-export interface SpeechChoice<T extends string> {
-  value: T;
-  label: string;
-  model: string | null;
-  help: string;
-}
-
-export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
-  { value: "off", label: "Off", model: null, help: "The live Chinese is final. The English appears soonest." },
-  { value: "xasr", label: "X-ASR offline", model: "xasr-offline-int8-2026-06-03", help: "The default. The same recognizer reads each finished line again with the speech before it and fixes misheard words. About 0.2 s per line." },
-];
-
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
   return { models: { source } };
 }
@@ -295,10 +280,8 @@ export const DEFAULT_CONFIG: Config = {
   "asr": {
     "threads": 1,
     "pause_s": 0.8,
-    "second_pass": "xasr",
     "second_pass_threads": 2,
-    "second_pass_max_wait_s": 1.5,
-    "second_pass_min_logprob": 0.0
+    "second_pass_max_wait_s": 1.5
   },
   "filter": {
     "skip_music": false,

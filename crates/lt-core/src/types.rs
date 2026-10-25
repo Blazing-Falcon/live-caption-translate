@@ -128,7 +128,7 @@ pub struct StageTiming {
     pub asr_ms: u32,
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SecondPassOutcome {
     /// The final text comes from the second pass.
@@ -136,16 +136,15 @@ pub enum SecondPassOutcome {
     /// No part of the second pass's text matched the live text closely enough.
     Mismatch,
     /// The line waited too long for the second pass.
+    #[default]
     Late,
-    /// The live recognizer was sure of this line, so it was not decoded again.
-    Confident,
     /// The second pass failed.
     Failed,
 }
 
 /// How the second pass read a closed clause. The line keeps the live text unless `outcome` is
 /// `used`.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct SecondPass {
     pub outcome: SecondPassOutcome,
     /// The live text, when the final text differs from it.
@@ -189,9 +188,7 @@ pub struct Transcript {
     /// opens with a connective. The translator is told, so it does not invent an ending.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub fragment: bool,
-    /// Absent when the second pass is off.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub second_pass: Option<SecondPass>,
+    pub second_pass: SecondPass,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]

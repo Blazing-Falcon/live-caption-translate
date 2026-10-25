@@ -9,7 +9,7 @@ pub use runtime::{default_runtime_path, initialize_shared_runtime, onnxruntime_v
 pub use xasr_offline::XAsrOffline;
 pub use xasr_stream::XAsrStream;
 
-/// The manifest model of `asr.second_pass = "xasr"`.
+/// The manifest model of the offline second pass.
 pub const XASR_OFFLINE_MODEL: &str = "xasr-offline-int8-2026-06-03";
 
 /// The streaming X-ASR model.
