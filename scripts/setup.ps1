@@ -75,7 +75,7 @@ try {
     if ($Models) {
         Write-Host '== Models' -ForegroundColor Cyan
         . "$PSScriptRoot/env.ps1"
-        cargo run -p lt-cli -- models fetch --dir models
+        cargo run -p lt-cli --features llm -- models fetch --dir models
         if ($LASTEXITCODE -ne 0) { throw 'Model download failed' }
     }
     if ($TestAudio) {

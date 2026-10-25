@@ -142,7 +142,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `list_audio_devices` | | `{ id, name, is_default }[]` | Output devices |
 | `list_audio_apps` | | `{ supported, reason, apps[] }` | Apps with audio, and recent selections |
 | `models_status` | | `ModelStatus[]` | State of each model |
-| `models_download` | `ids?` | | Download. Without `ids`: missing required models and recommended optional models. |
+| `models_download` | `ids?` | | Download. Without `ids`: every missing required model. |
 | `models_pause` | | | Pause downloads. Partial files stay. |
 | `models_use_existing` | `folder` | `ModelStatus[]` | Find, verify and copy model files from a folder |
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
@@ -152,7 +152,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 
 `AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible` and `logical_cpus` (the most threads a setting can use).
 
-`ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`), `optional` and `recommended`.
+`ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`) and `optional`.
 
 ## Caption lines
 

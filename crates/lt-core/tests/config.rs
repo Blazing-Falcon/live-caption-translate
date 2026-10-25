@@ -79,6 +79,9 @@ apps = [{exe="chrome.exe",name="Chrome",future_app={revision=7}}]
 future_audio = 2026-10-07T12:30:00Z
 [translate]
 future_translate = {deep={value=42}}
+[models]
+source = "modelscope"
+dir = "D:/models"
 [overlay.panel_rect]
 monitor="display"
 x=-123.25
@@ -102,15 +105,18 @@ future_rect={version=4}
         "capture.apps[0].future_app",
         "audio.future_audio",
         "translate.future_translate",
+        "models.source",
         "overlay.panel_rect.future_rect",
     ] {
         assert!(info[0].contains(path), "{path} missing from {:?}", info[0]);
     }
     assert_eq!(config.overlay.panel_rect.as_ref().unwrap().x, -123.25);
     assert_eq!(config.capture.apps[0].name, "Chrome");
+    assert_eq!(config.models.dir, "D:/models");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
     assert!(saved.get("future").is_none());
     assert!(saved["audio"].get("future_audio").is_none());
+    assert!(saved["models"].get("source").is_none());
     assert!(saved["overlay"]["panel_rect"].get("future_rect").is_none());
 }
 

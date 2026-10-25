@@ -77,7 +77,7 @@ export const listAudioApps = (): Promise<AudioAppList> => call<AudioAppList>(COM
 export const modelsStatus = (): Promise<ModelStatus[]> => call<ModelStatus[]>(COMMANDS.modelsStatus);
 /**
  * Without `ids`: every missing required model (first run).
- * With `ids`: exactly those models (the Performance page's speech model choices).
+ * With `ids`: exactly those models.
  */
 export const modelsDownload = (ids?: readonly string[]): Promise<void> =>
   call<void>(COMMANDS.modelsDownload, ids === undefined ? {} : { ids: [...ids] });
