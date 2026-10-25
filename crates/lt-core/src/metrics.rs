@@ -288,7 +288,6 @@ mod tests {
             id: UtteranceId(id),
             text: "我们。".into(),
             class,
-            lang: Some("zh".into()),
             start_ms: end.saturating_sub(500),
             end_ms: end,
             asr_ms: 100,

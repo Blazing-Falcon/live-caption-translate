@@ -25,7 +25,7 @@ describe("wire fixture", () => {
 });
 
 describe("lawful full-stream fixtures", () => {
-  it("handles a conversation with a join, skip, failure, English and Other lines", () => {
+  it("handles a conversation with a join, skip, failure and English lines", () => {
     const clock = new FakeClock();
     const controller = createCaptionController({ clock, reducedMotion: () => false });
     controller.setConfig(testConfig());
@@ -41,12 +41,11 @@ describe("lawful full-stream fixtures", () => {
       { type: "skipped", id: 14, reason: "catch_up" },
       asrFinal(15, "这件事说来话长。"),
       { type: "translation_failed", id: 15, reason: "timeout", message: "Translation took too long" },
-      asrFinal(16, "OK, can you hear me?", "english", "en"),
-      asrFinal(17, "みんな、ありがとう！", "other", "ja"),
+      asrFinal(16, "OK, can you hear me?", "english"),
       { type: "dropped", id: 18, reason: "empty" },
     );
     expect(get(controller).lines.map((line) => `${line.id}:${line.state}`)).toEqual([
-      "12:final", "14:skipped", "15:failed", "16:english", "17:other",
+      "12:final", "14:skipped", "15:failed", "16:english",
     ]);
     controller.dispose();
   });

@@ -56,7 +56,6 @@ impl ReplayReport {
                 "joined",
                 "skipped",
                 "passthrough",
-                "untranslated",
                 "dropped",
                 "failed",
             ]
@@ -131,13 +130,6 @@ impl ReplayReport {
                 ..
             } => {
                 self.terminal(*id, "passthrough");
-            }
-            PipelineEvent::AsrFinal {
-                id,
-                class: TextClass::Other,
-                ..
-            } => {
-                self.terminal(*id, "untranslated");
             }
             PipelineEvent::AsrFinal { id, end_ms, .. } => {
                 self.ends.insert(*id, vec![*end_ms]);

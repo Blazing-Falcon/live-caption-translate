@@ -16,7 +16,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 |---|---|---|
 | `speech_started` | `id`, `at_ms` | A clause opens at its first word |
 | `asr_partial` | `id`, `text`, `class`, `end_ms` | The open clause's text grew |
-| `asr_final` | `id`, `text`, `class`, `lang`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`?, `second_pass` | A clause is complete. `text` is the final text, after the second pass. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). `second_pass` is always present (see below). |
+| `asr_final` | `id`, `text`, `class`, `start_ms`, `end_ms`, `asr_ms`, `cut`, `logprob`?, `second_pass` | A clause is complete. `text` is the final text, after the second pass. `logprob` (mean token log-probability) is present only when the live engine gives one (X-ASR). `second_pass` is always present (see below). |
 | `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
@@ -46,7 +46,7 @@ Enum values:
 
 | Enum | Values |
 |---|---|
-| `TextClass` | `chinese`, `mixed`, `english`, `other` |
+| `TextClass` | `chinese`, `mixed`, `english` |
 | `CutReason` | `pause`, `discontinuity`, `end`, `commit` |
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
@@ -61,7 +61,7 @@ Enum values:
 
 Notes:
 
-- The core translates only `chinese` and `mixed` text. `english` and `other` lines show as heard.
+- The core translates only `chinese` and `mixed` text. `english` lines show as heard.
 - `dropped` can come for an id that already has a live line.
 - If an ASR decode fails, the core sends `engine_status` (`asr`, `failed`) and then `dropped` (`empty`).
 - When listening stops, each open id gets a terminal event: `translation_failed` (`error`) if a translation is in progress, otherwise `dropped` (`empty`).
@@ -89,7 +89,7 @@ These rules apply to each id. `crates/lt-core/tests/pipeline.rs` checks them wit
 ```
 speech_started? -> asr_partial* -> dropped                                           (end)
 speech_started? -> asr_partial* -> asr_final -> ...
-asr_final (english, or other not translated)                                         (end)
+asr_final (english)                                                                  (end)
 asr_final -> joined (as absorbed)                                                    (end)
 asr_final -> joined (as leader)*
           -> translation_delta* -> translation_final | translation_failed | skipped   (end)
@@ -152,12 +152,12 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 
 ## Caption lines
 
-`app/ui/src/lib/captions.ts` is the only code that changes caption lines. A line has one of these states: `live`, `pending`, `streaming`, `final`, `english`, `other`, `skipped`, `failed`. The last five are terminal.
+`app/ui/src/lib/captions.ts` is the only code that changes caption lines. A line has one of these states: `live`, `pending`, `streaming`, `final`, `english`, `skipped`, `failed`. The last four are terminal.
 
 | Event | Effect on the line |
 |---|---|
 | `asr_partial` | New id: add a `live` line. `live` line: update the Chinese. |
-| `asr_final` | `english` or `other` (terminal), else `pending` |
+| `asr_final` | `english` (terminal), else `pending` |
 | `joined` | Remove the absorbed lines. The leader gets the joined text. |
 | `translation_delta` | `streaming` |
 | `translation_final` | `final` |
@@ -181,12 +181,12 @@ The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.j
 - The writer does not write dropped lines or partials.
 
 ```json
-{"type":"utterance","id":12,"joined":[13],"start_ms":45210,"end_ms":47980,"cut":"commit","wall":"2026-10-07T21:14:51+08:00","class":"chinese","lang":"zh","source":"我也想办一个，伟大的公司。","english":"I also want to run a great company.","status":"final","timing":{...},"asr_live":{"engine":"xasr_stream","text":"我也想办一个。伟大的公司。","logprob":-0.12}}
+{"type":"utterance","id":12,"joined":[13],"start_ms":45210,"end_ms":47980,"cut":"commit","wall":"2026-10-07T21:14:51+08:00","class":"chinese","source":"我也想办一个，伟大的公司。","english":"I also want to run a great company.","status":"final","timing":{...},"asr_live":{"engine":"xasr_stream","text":"我也想办一个。伟大的公司。","logprob":-0.12}}
 ```
 
 | Field | Meaning |
 |---|---|
-| `status` | `final`, `english`, `other`, `skipped` or `failed` |
+| `status` | `final`, `english`, `skipped` or `failed` |
 | `english` | The translation. `null` if the status is not `final`. |
 | `joined` | Absorbed ids |
 | `timing` | Only for `final` |

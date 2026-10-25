@@ -28,7 +28,6 @@ fn transcript(id: u64, text: &str, end: f64) -> Transcript {
     Transcript {
         id: UtteranceId(id),
         text: text.into(),
-        lang_tag: Some("zh".into()),
         class: TextClass::Chinese,
         timing: StageTiming {
             start: StreamTime::from_seconds(end - 1.0),

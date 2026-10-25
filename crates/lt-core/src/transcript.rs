@@ -71,7 +71,6 @@ struct Pending {
     start_ms: u64,
     end_ms: u64,
     class: TextClass,
-    lang: Option<String>,
     source: String,
     cut: CutReason,
     live: LiveRecord,
@@ -120,7 +119,6 @@ struct UtteranceRecord<'a> {
     cut: CutReason,
     wall: &'a str,
     class: TextClass,
-    lang: Option<&'a str>,
     source: &'a str,
     english: Option<&'a str>,
     status: &'static str,
@@ -146,7 +144,6 @@ impl Pending {
             cut: self.cut,
             wall,
             class: self.class,
-            lang: self.lang.as_deref(),
             source: &self.source,
             english: None,
             status,
@@ -193,7 +190,6 @@ impl<W: Write> TranscriptWriter<W> {
                 id,
                 text,
                 class,
-                lang,
                 start_ms,
                 end_ms,
                 cut,
@@ -214,7 +210,6 @@ impl<W: Write> TranscriptWriter<W> {
                     start_ms: *start_ms,
                     end_ms: *end_ms,
                     class: *class,
-                    lang: lang.clone(),
                     source: text.clone(),
                     cut: *cut,
                     live: LiveRecord {
@@ -237,9 +232,6 @@ impl<W: Write> TranscriptWriter<W> {
                     }
                     TextClass::English => {
                         write_line(&mut self.writer, &pending.record(wall, "english"))?
-                    }
-                    TextClass::Other => {
-                        write_line(&mut self.writer, &pending.record(wall, "other"))?
                     }
                 }
             }
@@ -507,10 +499,9 @@ mod tests {
     const WALL: &str = "2026-10-07T21:14:51+07:00";
     const GOLDEN: &str = concat!(
         "{\"type\":\"session\",\"app_version\":\"0.1.0\",\"started_at\":\"2026-10-07T21:14:03+07:00\",\"source\":{\"mode\":\"apps\",\"label\":\"Chrome\"},\"asr\":\"sensevoice-2024-07-17-int8\",\"asr_second\":\"xasr_offline\",\"translator\":\"hy-mt2-1.8b-q4_0\",\"config\":{\"skip_lag_s\":6.0}}\n",
-        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"lang\":\"en\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null},\"asr_second\":[{\"text\":\"Hello world.\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
-        "{\"type\":\"utterance\",\"id\":21,\"joined\":[],\"start_ms\":54000,\"end_ms\":55000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"other\",\"lang\":\"ja\",\"source\":\"こんにちは。\",\"english\":null,\"status\":\"other\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"こんにちは。\",\"logprob\":null},\"asr_second\":[{\"text\":\"こんにちは。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
-        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null},\"asr_second\":[{\"text\":\"来不及。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
-        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"lang\":\"zh\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9},\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"我也想办一个。伟大的公司。\",\"logprob\":null},\"asr_second\":[{\"text\":\"我也想办一个。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0},{\"text\":\"伟大的公司。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
+        "{\"type\":\"utterance\",\"id\":20,\"joined\":[],\"start_ms\":52000,\"end_ms\":53000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"english\",\"source\":\"Hello world.\",\"english\":null,\"status\":\"english\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"Hello world.\",\"logprob\":null},\"asr_second\":[{\"text\":\"Hello world.\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
+        "{\"type\":\"utterance\",\"id\":14,\"joined\":[],\"start_ms\":50000,\"end_ms\":51000,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"source\":\"来不及。\",\"english\":null,\"status\":\"skipped\",\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"来不及。\",\"logprob\":null},\"asr_second\":[{\"text\":\"来不及。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
+        "{\"type\":\"utterance\",\"id\":12,\"joined\":[13],\"start_ms\":45210,\"end_ms\":47980,\"cut\":\"pause\",\"wall\":\"2026-10-07T21:14:51+07:00\",\"class\":\"chinese\",\"source\":\"我也想办一个，伟大的公司。\",\"english\":\"I also want to run a great company.\",\"status\":\"final\",\"timing\":{\"speech_end_ms\":47980,\"asr_done_ms\":48310,\"queued_ms\":48320,\"sent_ms\":48320,\"first_token_ms\":48790,\"done_ms\":49210,\"prompt_tokens\":17,\"cached_tokens\":31,\"generated_tokens\":9},\"asr_live\":{\"engine\":\"sensevoice-2024-07-17-int8\",\"text\":\"我也想办一个。伟大的公司。\",\"logprob\":null},\"asr_second\":[{\"text\":\"我也想办一个。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0},{\"text\":\"伟大的公司。\",\"outcome\":\"late\",\"window_start_ms\":0,\"window_end_ms\":0,\"refine_ms\":0}]}\n",
     );
 
     fn header() -> SessionHeader {
@@ -528,19 +519,11 @@ mod tests {
         }
     }
 
-    fn asr(
-        id: u64,
-        text: &str,
-        class: TextClass,
-        lang: &str,
-        start_ms: u64,
-        end_ms: u64,
-    ) -> PipelineEvent {
+    fn asr(id: u64, text: &str, class: TextClass, start_ms: u64, end_ms: u64) -> PipelineEvent {
         PipelineEvent::AsrFinal {
             id: UtteranceId(id),
             text: text.into(),
             class,
-            lang: Some(lang.into()),
             start_ms,
             end_ms,
             asr_ms: 100,
@@ -560,20 +543,12 @@ mod tests {
 
     fn golden_events() -> Vec<PipelineEvent> {
         vec![
-            asr(
-                12,
-                "我也想办一个。",
-                TextClass::Chinese,
-                "zh",
-                45_210,
-                46_300,
-            ),
-            asr(13, "伟大的公司。", TextClass::Chinese, "zh", 46_900, 47_980),
+            asr(12, "我也想办一个。", TextClass::Chinese, 45_210, 46_300),
+            asr(13, "伟大的公司。", TextClass::Chinese, 46_900, 47_980),
             joined(12, &[13], "我也想办一个，伟大的公司。"),
-            asr(14, "来不及。", TextClass::Chinese, "zh", 50_000, 51_000),
-            asr(20, "Hello world.", TextClass::English, "en", 52_000, 53_000),
-            asr(21, "こんにちは。", TextClass::Other, "ja", 54_000, 55_000),
-            asr(22, "呃。", TextClass::Chinese, "zh", 56_000, 57_000),
+            asr(14, "来不及。", TextClass::Chinese, 50_000, 51_000),
+            asr(20, "Hello world.", TextClass::English, 52_000, 53_000),
+            asr(22, "呃。", TextClass::Chinese, 56_000, 57_000),
             PipelineEvent::Dropped {
                 id: UtteranceId(22),
                 reason: DropReason::Empty,
@@ -621,7 +596,6 @@ mod tests {
                     id,
                     text: "这次华为发布。".into(),
                     class: TextClass::Chinese,
-                    lang: Some("zh".into()),
                     start_ms: 0,
                     end_ms: 1_500,
                     asr_ms: 100,
@@ -661,7 +635,7 @@ mod tests {
         let output = String::from_utf8(writer.finish().unwrap()).unwrap();
         assert_eq!(output, GOLDEN);
         assert!(!output.contains("\\u6211"));
-        assert_eq!(output.lines().count(), 5);
+        assert_eq!(output.lines().count(), 4);
     }
 
     #[test]

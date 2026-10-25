@@ -69,7 +69,6 @@ export function asrFinal(
   id: number,
   text: string,
   cls: TextClass = "chinese",
-  lang: string | null = "zh",
   cut: CutReason = "pause",
 ): PipelineEvent {
   return {
@@ -77,7 +76,6 @@ export function asrFinal(
     id,
     text,
     class: cls,
-    lang,
     start_ms: 0,
     end_ms: 1000,
     asr_ms: 300,

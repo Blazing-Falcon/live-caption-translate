@@ -125,10 +125,6 @@
     text-shadow: var(--ov-halo);
   }
 
-  .dim {
-    color: var(--ov-dim);
-  }
-
   .pending {
     color: var(--ov-pending);
   }

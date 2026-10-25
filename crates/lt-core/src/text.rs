@@ -50,31 +50,13 @@ pub fn clean(text: &str) -> String {
 /// Classify script evidence; punctuation, digits and isolated Latin letters
 /// do not establish a class by themselves.
 pub fn classify(text: &str) -> Option<TextClass> {
-    classify_with_lang(text, None)
-}
-
-/// Use a language tag only to resolve otherwise inconclusive text evidence.
-/// A single Latin letter may be English, but a tag cannot override Chinese,
-/// mixed text, or dominant kana/Hangul.
-pub fn classify_with_lang(text: &str, lang_tag: Option<&str>) -> Option<TextClass> {
     let chinese = chinese_chars(text);
     let latin = latin_words(text);
-    let other = text
-        .chars()
-        .filter(|character| is_kana_or_hangul(*character) && !is_punctuation(*character))
-        .count();
-    if other > chinese {
-        Some(TextClass::Other)
-    } else if chinese > 0 && latin > 0 {
+    if chinese > 0 && latin > 0 {
         Some(TextClass::Mixed)
     } else if chinese > 0 {
         Some(TextClass::Chinese)
-    } else if latin > 0
-        || (lang_tag.is_some_and(|tag| normalized_tag(tag).eq_ignore_ascii_case("en"))
-            && text
-                .chars()
-                .any(|character| character.is_ascii_alphabetic()))
-    {
+    } else if latin > 0 {
         Some(TextClass::English)
     } else {
         None
@@ -110,7 +92,7 @@ pub fn latin_words(text: &str) -> usize {
 /// may still contain markup or fillers; decisions always use its cleaned text.
 pub fn drop_reason(transcript: &Transcript, duration_s: f64) -> Option<DropReason> {
     let text = clean(&transcript.text);
-    if classify_with_lang(&text, transcript.lang_tag.as_deref()).is_none() {
+    if classify(&text).is_none() {
         return Some(DropReason::Empty);
     }
 
@@ -132,17 +114,6 @@ pub fn drop_reason(transcript: &Transcript, duration_s: f64) -> Option<DropReaso
 
 fn is_chinese(character: char) -> bool {
     matches!(character, '\u{3400}'..='\u{4dbf}' | '\u{4e00}'..='\u{9fff}')
-}
-
-fn is_kana_or_hangul(character: char) -> bool {
-    matches!(character, '\u{3040}'..='\u{30ff}' | '\u{ac00}'..='\u{d7af}')
-}
-
-fn normalized_tag(tag: &str) -> &str {
-    let tag = tag.trim();
-    tag.strip_prefix("<|")
-        .and_then(|tag| tag.strip_suffix("|>"))
-        .unwrap_or(tag)
 }
 
 fn strip_engine_tokens(text: &str) -> String {
@@ -258,16 +229,6 @@ mod tests {
                 "Okay I see, that makes sense.",
                 Some(TextClass::English),
             ),
-            (
-                "그it card 어oc 가 쓸정 없이.",
-                "그it card 어oc 가 쓸정 없이.",
-                Some(TextClass::Other),
-            ),
-            (
-                "こんにちは、元気ですか。",
-                "こんにちは、元気ですか。",
-                Some(TextClass::Other),
-            ),
             ("嗯。", "", None),
             (
                 "<|zh|><|NEUTRAL|><|Speech|>好的。",
@@ -323,7 +284,6 @@ mod tests {
             ("哦，我我在UG的时候念的是electric engineering。", "哦，我我在UG的时候念的是electric engineering。", TextClass::Mixed),
             ("对，因为就是很经常。就是我们早上上午有一个lectture刚上完，然后中午去听一个让 talk。", "对，因为就是很经常。就是我们早上上午有一个lectture刚上完，然后中午去听一个让 talk。", TextClass::Mixed),
             ("没有吗？那可能business school有的吧，就会让我们穿。", "没有吗？那可能business school有的吧，就会让我们穿。", TextClass::Mixed),
-            ("그it card 어oc 가 쓸정 없이.", "그it card 어oc 가 쓸정 없이.", TextClass::Other),
             ("比较容易学的是swim。", "比较容易学的是swim。", TextClass::Mixed),
             ("啊，你是说你有一些就你最喜欢的sport是什么？", "啊，你是说你有一些就你最喜欢的sport是什么？", TextClass::Mixed),
             ("那图像识别其实上学上个ma我们。", "那图像识别其实上学上个ma我们。", TextClass::Mixed),
@@ -348,43 +308,35 @@ mod tests {
     #[test]
     fn drop_precedence_and_duration_table() {
         let cases = [
-            ("", None, 1.0, Some(DropReason::Empty)),
-            ("123。", Some("en"), 1.0, Some(DropReason::Empty)),
-            ("呃，嗯。", None, 0.4, Some(DropReason::Empty)),
-            (
-                "<|zh|><|Speech|>[UNK]嗯。",
-                None,
-                0.4,
-                Some(DropReason::Empty),
-            ),
-            ("对。", None, 0.4, None),
-            ("好。", None, 0.4, None),
-            ("是。", None, 0.4, None),
-            ("行。", None, 0.4, None),
-            ("不。", None, 0.4, None),
-            ("哦。", None, 0.4, None),
-            ("那。", None, 0.4, Some(DropReason::SingleChar)),
-            ("那。", None, 0.6, None),
-            ("那。", None, 0.8, None),
-            ("那2。", None, 0.4, None),
-            ("I", Some("en"), 0.4, Some(DropReason::SingleChar)),
-            ("I", Some("en"), 1.0, None),
-            ("I", None, 1.0, Some(DropReason::Empty)),
+            ("", 1.0, Some(DropReason::Empty)),
+            ("123。", 1.0, Some(DropReason::Empty)),
+            ("呃，嗯。", 0.4, Some(DropReason::Empty)),
+            ("<|zh|><|Speech|>[UNK]嗯。", 0.4, Some(DropReason::Empty)),
+            ("对。", 0.4, None),
+            ("好。", 0.4, None),
+            ("是。", 0.4, None),
+            ("行。", 0.4, None),
+            ("不。", 0.4, None),
+            ("哦。", 0.4, None),
+            ("那。", 0.4, Some(DropReason::SingleChar)),
+            ("那。", 0.6, None),
+            ("那。", 0.8, None),
+            ("那2。", 0.4, None),
+            ("I", 1.0, Some(DropReason::Empty)),
         ];
-        for (text, lang, duration, expected) in cases {
+        for (text, duration, expected) in cases {
             assert_eq!(
-                drop_reason(&transcript(text, lang), duration),
+                drop_reason(&transcript(text), duration),
                 expected,
                 "{text:?}, {duration}"
             );
         }
     }
 
-    fn transcript(text: &str, lang: Option<&str>) -> Transcript {
+    fn transcript(text: &str) -> Transcript {
         Transcript {
             id: UtteranceId(1),
             text: text.into(),
-            lang_tag: lang.map(String::from),
             class: TextClass::Chinese,
             timing: StageTiming::default(),
             absorbed: Vec::new(),

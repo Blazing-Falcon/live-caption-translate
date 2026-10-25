@@ -164,7 +164,6 @@ mod tests {
             id: UtteranceId(id),
             text: "你好".into(),
             class: lt_core::types::TextClass::Chinese,
-            lang: None,
             start_ms: 0,
             end_ms: 1,
             asr_ms: 1,

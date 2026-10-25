@@ -9,8 +9,8 @@ use crate::{
     events::DropReason,
     recognizer::AsrMessage,
     refine::{cut_at_next_clause, trim},
-    text::{chinese_chars, classify, clean, drop_reason},
-    types::{SecondPass, SecondPassOutcome, StreamTime, TextClass, Transcript, UtteranceId},
+    text::{classify, clean, drop_reason},
+    types::{SecondPass, SecondPassOutcome, StreamTime, Transcript, UtteranceId},
 };
 use crossbeam_channel::{Receiver, Sender};
 use std::{
@@ -184,11 +184,6 @@ fn finalize(mut transcript: Transcript, live: &str) -> AsrMessage {
         return AsrMessage::Dropped(transcript.id, DropReason::Empty);
     };
     transcript.class = class;
-    transcript.lang_tag = if class == TextClass::Other {
-        other_language(&transcript.text)
-    } else {
-        text_language(&transcript.text)
-    };
     let duration = transcript
         .timing
         .end
@@ -196,36 +191,6 @@ fn finalize(mut transcript: Transcript, live: &str) -> AsrMessage {
     match drop_reason(&transcript, duration.seconds()) {
         Some(reason) => AsrMessage::Dropped(transcript.id, reason),
         None => AsrMessage::Transcript(transcript),
-    }
-}
-
-/// Japanese or Korean, from the kana and Hangul in the text.
-fn other_language(text: &str) -> Option<String> {
-    let kana = text
-        .chars()
-        .filter(|character| matches!(character, '\u{3040}'..='\u{30ff}'))
-        .count();
-    let hangul = text
-        .chars()
-        .filter(|character| matches!(character, '\u{ac00}'..='\u{d7af}'))
-        .count();
-    if hangul > kana {
-        Some("ko".into())
-    } else if kana > 0 {
-        Some("ja".into())
-    } else {
-        None
-    }
-}
-
-/// Language from the share of Latin letters and CJK characters; the live engine gives no tag.
-fn text_language(text: &str) -> Option<String> {
-    let latin = text.chars().filter(char::is_ascii_alphabetic).count();
-    let cjk = chinese_chars(text);
-    match (latin, cjk) {
-        (0, 0) => None,
-        _ if latin > cjk => Some("en".into()),
-        _ => Some("zh".into()),
     }
 }
 

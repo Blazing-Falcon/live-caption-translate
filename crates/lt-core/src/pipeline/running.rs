@@ -114,7 +114,6 @@ impl RunningText {
         let transcript = Transcript {
             id: ids[0],
             text,
-            lang_tag: None,
             class,
             timing: StageTiming {
                 start: first.map_or_else(Default::default, |line| line.timing.start),

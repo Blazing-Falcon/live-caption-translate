@@ -1,7 +1,7 @@
 // Keep this contract aligned with lt-core.
 // Utterance ids are JavaScript safe integers (0 through 2^53 - 1).
 export type UtteranceId = number;
-export type TextClass = "chinese" | "mixed" | "english" | "other";
+export type TextClass = "chinese" | "mixed" | "english";
 export type CaptureMode = "system" | "apps";
 export type SkipReason = "catch_up";
 export type FailReason = "timeout" | "server_unavailable" | "echo" | "runaway" | "error";
@@ -78,7 +78,6 @@ export type PipelineEvent =
       id: UtteranceId;
       text: string;
       class: TextClass;
-      lang: string | null;
       start_ms: number;
       end_ms: number;
       asr_ms: number;
@@ -165,7 +164,7 @@ export interface OverlayVisiblePayload {
   visible: boolean;
 }
 
-export type LineState = "live" | "pending" | "streaming" | "final" | "english" | "other" | "skipped" | "failed";
+export type LineState = "live" | "pending" | "streaming" | "final" | "english" | "skipped" | "failed";
 
 export interface CaptionLine {
   id: UtteranceId;
@@ -174,7 +173,6 @@ export interface CaptionLine {
   source: string;
   /** Streamed translation so far, then the final translation. */
   english: string;
-  lang: string | null;
   reason: string | null;
   updatedAt: number;
 }

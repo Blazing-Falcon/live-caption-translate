@@ -73,7 +73,6 @@ impl Scheduler {
             id: transcript.id,
             text: transcript.text.clone(),
             class: transcript.class,
-            lang: transcript.lang_tag.clone(),
             start_ms: transcript.timing.start.millis(),
             end_ms: transcript.timing.end.millis(),
             asr_ms: transcript.timing.asr_ms,

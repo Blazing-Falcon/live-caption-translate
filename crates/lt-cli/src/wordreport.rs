@@ -156,7 +156,6 @@ mod tests {
             id: UtteranceId(n),
             text: "你好".into(),
             class: TextClass::Chinese,
-            lang: Some("zh".into()),
             start_ms,
             end_ms,
             asr_ms: 100,

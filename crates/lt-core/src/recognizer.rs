@@ -307,7 +307,6 @@ impl Recognizer {
         let transcript = Transcript {
             id: clause.id,
             text: join_tokens(&tokens.tokens[range]),
-            lang_tag: None,
             class: TextClass::Chinese,
             timing: StageTiming {
                 start: clause.start,

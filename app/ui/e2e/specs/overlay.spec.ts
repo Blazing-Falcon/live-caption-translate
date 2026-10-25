@@ -15,7 +15,7 @@ test.describe("overlay (browser simulation with mocked transport)", () => {
       (el as HTMLElement & { __tag?: string }).__tag = "article";
     });
 
-    await emitEvent(page, NOW.asr(1, "这次华为发布的呢是整个mate90家族啊，", "chinese", "zh", "commit"));
+    await emitEvent(page, NOW.asr(1, "这次华为发布的呢是整个mate90家族啊，", "chinese", "commit"));
     await expect(page.locator('article[data-state="pending"] .dots')).toHaveCount(1);
 
     await emitEvent(page, NOW.delta(1, "This time, Huawei released the whole"));

@@ -470,7 +470,7 @@ fn finals(events: &[PipelineEvent]) -> Vec<(UtteranceId, String, CutReason)> {
 
 /// The per-id order of docs/ipc.md: one start; live text only before the final; one final;
 /// previews only of started lines that have no terminal yet;
-/// English and other-language finals, drops, skips, joins and translation results are terminal;
+/// English finals, drops, skips, joins and translation results are terminal;
 /// nothing follows a terminal event; and every line ends with one.
 fn assert_order(events: &[PipelineEvent]) {
     #[derive(Default)]

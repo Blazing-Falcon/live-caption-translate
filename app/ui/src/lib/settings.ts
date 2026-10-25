@@ -140,31 +140,6 @@ export function applyPatch<T extends object>(base: T, patch: DeepPartial<T>): T 
   return out as T;
 }
 
-export function normalizeLang(code: string | null | undefined): string | null {
-  if (!code) return null;
-  const cleaned = code.replace(/<\||\|>/g, "").trim().toLowerCase().replace(/_/g, "-");
-  const primary = cleaned.split("-")[0] ?? "";
-  if (primary === "jpn") return "ja";
-  if (primary === "kor") return "ko";
-  if (primary === "zho" || primary === "chi" || primary === "cmn") return "zh";
-  if (primary === "eng") return "en";
-  return primary === "" ? null : primary;
-}
-
-const LANGUAGE_NAMES: Readonly<Record<string, string>> = {
-  ja: "JAPANESE",
-  ko: "KOREAN",
-  zh: "CHINESE",
-  yue: "CANTONESE",
-  en: "ENGLISH",
-};
-
-export function languageLabel(code: string | null | undefined): string {
-  const lang = normalizeLang(code);
-  if (lang === null) return "OTHER LANGUAGE";
-  return LANGUAGE_NAMES[lang] ?? lang.toUpperCase();
-}
-
 export function sameExe(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }

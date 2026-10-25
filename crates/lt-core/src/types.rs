@@ -110,11 +110,10 @@ pub enum TextClass {
     Chinese,
     Mixed,
     English,
-    Other,
 }
 
 impl TextClass {
-    /// Chinese and mixed lines go to the translator; the others show as heard.
+    /// Chinese and mixed lines go to the translator; English shows as heard.
     pub fn is_translated(self) -> bool {
         matches!(self, Self::Chinese | Self::Mixed)
     }
@@ -169,7 +168,6 @@ pub struct SecondPass {
 pub struct Transcript {
     pub id: UtteranceId,
     pub text: String,
-    pub lang_tag: Option<String>,
     pub class: TextClass,
     pub timing: StageTiming,
     #[serde(default)]

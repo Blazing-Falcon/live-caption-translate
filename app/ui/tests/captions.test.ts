@@ -32,7 +32,7 @@ describe("caption reducer", () => {
   it("walks pending -> streaming -> final and keeps the source", () => {
     const { lines, run, clock } = setup();
     run(asrFinal(1, "你好。"));
-    expect(lines()).toMatchObject([{ id: 1, state: "pending", source: "你好。", english: "", lang: "zh", reason: null }]);
+    expect(lines()).toMatchObject([{ id: 1, state: "pending", source: "你好。", english: "", reason: null }]);
     clock.advance(500);
     run(delta(1, "Hel"));
     expect(lines()).toMatchObject([{ state: "streaming", english: "Hel", source: "你好。", updatedAt: 500 }]);
@@ -110,7 +110,7 @@ describe("running text", () => {
   it("keeps each line in order, with live Chinese and pending English at the end", () => {
     const { lines, run } = setup();
     run(asrFinal(1, "你好。"), final(1, "Hello."));
-    run(asrFinal(2, "Okay.", "english", "en"));
+    run(asrFinal(2, "Okay.", "english"));
     run(asrFinal(3, "然后吃饭。"), delta(3, "Then"));
     run(asrFinal(4, "好的。"));
     run(partial(5, "我们"));
@@ -250,10 +250,9 @@ describe("long synthetic event log", () => {
         } else if (action < 0.9) {
           open.delete(id);
           const kind = random();
-          if (kind < 0.1) emit(asrFinal(id, "OK, hello", "english", "en"));
-          else if (kind < 0.2) emit(asrFinal(id, "みんな", "other", "ja"));
+          if (kind < 0.1) emit(asrFinal(id, "OK, hello", "english"));
           else {
-            emit(asrFinal(id, `句子${id}。`, "chinese", "zh", random() < 0.5 ? "commit" : "pause"));
+            emit(asrFinal(id, `句子${id}。`, "chinese", random() < 0.5 ? "commit" : "pause"));
             awaiting.add(id);
           }
         } else {

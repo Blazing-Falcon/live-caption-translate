@@ -1,6 +1,5 @@
 <script lang="ts">
   import { ageOpacity, isHiddenLive, type CaptionLineView, type StatusLine } from "../lib/captions";
-  import { languageLabel } from "../lib/settings";
   import type { CaptionLine } from "../lib/types";
 
   interface Props {
@@ -19,11 +18,6 @@
     liveSource = true,
   }: Props = $props();
 
-  // Labels are uppercased by CSS; the DOM keeps sentence case so screen readers do not spell them out.
-  const sentenceCase = (value: string): string => value.charAt(0) + value.slice(1).toLowerCase();
-
-  const langName = $derived(sentenceCase(languageLabel(line?.lang)));
-  const otherLabel = $derived(`${langName} · Not translated`);
   // A live line with nothing to show yet is not rendered at all, so it reserves no space.
   const hidden = $derived(line !== null && isHiddenLive(line, liveSource));
   const sourceVisible = $derived(
@@ -54,9 +48,6 @@
     {#if line.state === "english"}
       <p class="english main">{line.source}</p>
       <p class="label">English · Not translated</p>
-    {:else if line.state === "other"}
-      <p class="other main" lang={line.lang ?? undefined}>{line.source}</p>
-      <p class="label">{otherLabel}</p>
     {:else}
       {#if sourceVisible}
         {#if line.swap}
@@ -112,13 +103,6 @@
     font-weight: 500;
     line-height: 1.3;
     color: var(--ov-text);
-    text-shadow: var(--ov-halo);
-  }
-
-  .other {
-    font-size: calc(var(--font-px, 26) * 1px);
-    line-height: 1.35;
-    color: var(--ov-text-secondary);
     text-shadow: var(--ov-halo);
   }
 

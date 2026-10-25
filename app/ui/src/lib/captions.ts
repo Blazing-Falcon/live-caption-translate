@@ -1,5 +1,5 @@
 import { writable, type Readable } from "svelte/store";
-import { OVERLAY_LIMITS, formatAccelerator, normalizeLang, type Config } from "./settings";
+import { OVERLAY_LIMITS, formatAccelerator, type Config } from "./settings";
 import type {
   AppState,
   CaptionLine,
@@ -255,9 +255,9 @@ export function visibleLines<T extends CaptionLine>(
 export interface FlowPiece {
   id: UtteranceId;
   text: string;
-  /** "dim" is text that will not be translated; "live" is Chinese still being spoken;
-   * "preview" is English that the next translation replaces. */
-  kind: "final" | "streaming" | "dim" | "live" | "pending" | "preview";
+  /** "live" is Chinese still being spoken; "preview" is English that the next translation
+   * replaces. */
+  kind: "final" | "streaming" | "live" | "pending" | "preview";
 }
 
 export interface FlowText {
@@ -282,10 +282,6 @@ export function flowText(
     const { id } = line;
     if (line.state === "english") {
       english.push({ id, text: line.source, kind: "final" });
-      continue;
-    }
-    if (line.state === "other") {
-      english.push({ id, text: line.source, kind: "dim" });
       continue;
     }
     if (line.state === "live") {
@@ -466,13 +462,12 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     lines.set(line.id, { ...line, updatedAt: clock.now() });
   }
 
-  function newLine(id: number, source: string, state: CaptionLine["state"], lang: string | null): Omit<CaptionLineView, "updatedAt"> {
+  function newLine(id: number, source: string, state: CaptionLine["state"]): Omit<CaptionLineView, "updatedAt"> {
     return {
       id,
       state,
       source,
       english: "",
-      lang,
       reason: null,
     };
   }
@@ -496,7 +491,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       case "asr_partial": {
         const line = lines.get(event.id);
         if (line === undefined) {
-          addLine(newLine(event.id, event.text, "live", null));
+          addLine(newLine(event.id, event.text, "live"));
           return true;
         }
         if (line.state !== "live") return false;
@@ -506,14 +501,10 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       case "asr_final": {
         const existing = lines.get(event.id);
         if (existing !== undefined && existing.state !== "live") return false;
-        const lang = normalizeLang(event.lang);
-        const base = existing ?? newLine(event.id, event.text, "pending", lang);
+        const base = existing ?? newLine(event.id, event.text, "pending");
         let state: CaptionLine["state"] = "pending";
         if (event.class === "english") {
           state = "english";
-          announcement = event.text;
-        } else if (event.class === "other") {
-          state = "other";
           announcement = event.text;
         }
         // The English is translated from this text, so the Chinese shown is always this text too,
@@ -522,7 +513,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           ...base,
           state,
           source: event.text,
-          lang,
           updatedAt: clock.now(),
         });
         // A larger correction changes what the viewer is reading, so the old Chinese fades out
