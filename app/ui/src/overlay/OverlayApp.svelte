@@ -31,21 +31,17 @@
     {/if}
     {#if $config.overlay.style === "panel"}
       <CaptionPanel
-        lines={$captions.lines}
-        preview={$captions.preview}
+        blocks={$captions.blocks}
         status={$captions.status}
         showSource={$config.overlay.show_source}
-        liveSource={$config.overlay.live_source}
         panelLines={$config.overlay.panel_lines}
       />
     {:else}
       <div class="flow-slot">
         <FlowText
-          lines={$captions.lines}
-          preview={$captions.preview}
+          blocks={$captions.blocks}
           status={$captions.status}
           showSource={$config.overlay.show_source}
-          liveSource={$config.overlay.live_source}
           flowLines={$config.overlay.flow_lines}
         />
       </div>

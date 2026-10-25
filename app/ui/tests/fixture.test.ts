@@ -44,7 +44,7 @@ describe("lawful full-stream fixtures", () => {
       asrFinal(16, "OK, can you hear me?", "english"),
       { type: "dropped", id: 18, reason: "empty" },
     );
-    expect(get(controller).lines.map((line) => `${line.id}:${line.state}`)).toEqual([
+    expect(get(controller).blocks.map((block) => `${block.key}:${block.state}`)).toEqual([
       "12:final", "14:skipped", "15:failed", "16:english",
     ]);
     controller.dispose();

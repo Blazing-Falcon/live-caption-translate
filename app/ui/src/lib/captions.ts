@@ -59,9 +59,33 @@ export interface Preview {
   text: string;
 }
 
+/** A unit the core sent for final translation: its first line, then every line it covers. */
+export interface Seal {
+  id: UtteranceId;
+  ids: readonly UtteranceId[];
+}
+
+export type CaptionState = "open" | "pending" | "streaming" | "final" | "failed" | "skipped" | "english";
+
+/** One row group of the overlay. A sealed unit keeps its key when the core seals it again with
+ * more lines, so the row the reader is watching stays the same element. */
+export interface CaptionBlock {
+  key: UtteranceId;
+  ids: readonly UtteranceId[];
+  /** A unit the core sent for final translation; otherwise the open run of lines after it. */
+  sealed: boolean;
+  source: string;
+  /** Chinese of the open block's lines still being heard. */
+  live: string;
+  english: string;
+  state: CaptionState;
+  reason: string | null;
+  /** English that the next translation replaces. */
+  preview: string | null;
+}
+
 export interface CaptionView {
-  lines: readonly CaptionLineView[];
-  preview: Preview | null;
+  blocks: readonly CaptionBlock[];
   status: StatusLine | null;
   chip: ChipMessage | null;
   announcement: string;
@@ -181,95 +205,133 @@ export function ageOpacity(age: number): number {
   return AGE_OPACITY[Math.min(Math.max(age, 0), AGE_OPACITY.length - 1)] ?? 1;
 }
 
-/** A caption line with what the display needs beyond the text itself. */
-export interface CaptionLineView extends CaptionLine {
-  /** English that the next translation replaces: the preview of the lines this row stands for. */
-  preview?: string;
+/** A sealed line waits for its translation, so its block is pending even if it was still live. */
+function blockState(state: CaptionLine["state"]): CaptionState {
+  return state === "live" ? "pending" : state;
 }
 
-/** The panel's rows with the lines a preview covers shown as one row, in the place of the first:
- * its Chinese is theirs joined and its English is the preview, as the row will look once they are
- * translated together. Lines already translated for good keep their own rows. */
-export function withPreview(
-  lines: readonly CaptionLineView[],
+/** The blocks the overlay shows, oldest first: one for each sealed unit and one open block for
+ * the lines the core has not sealed yet. Grouping is by seal, so a row never splits or merges
+ * when a preview arrives or a unit is sealed. */
+export function captionBlocks(
+  lines: readonly CaptionLine[],
+  seals: ReadonlyMap<UtteranceId, Seal>,
   preview: Preview | null,
   liveSource: boolean,
-): CaptionLineView[] {
-  if (preview === null) return [...lines];
-  const covered = (line: CaptionLineView): boolean =>
-    preview.ids.includes(line.id) && (line.state === "live" || line.state === "pending" || line.state === "streaming");
-  const parts = lines.filter(covered);
-  const first = parts[0];
-  if (first === undefined) return [...lines];
-  const source = parts
-    .filter((line) => line.state !== "live" || liveSource)
-    .map((line) => line.source)
-    .join("");
-  const row: CaptionLineView = { ...first, state: "pending", source, english: "", preview: preview.text };
-  return lines.filter((line) => line === first || !covered(line)).map((line) => (line === first ? row : line));
+): CaptionBlock[] {
+  const byId = new Map(lines.map((line) => [line.id, line]));
+  const sealOf = new Map<UtteranceId, Seal>();
+  for (const seal of seals.values()) {
+    for (const id of seal.ids) sealOf.set(id, seal);
+  }
+
+  const blocks: CaptionBlock[] = [];
+  const done = new Set<UtteranceId>();
+  let open: CaptionLine[] = [];
+  let previewShown = false;
+
+  const previewFor = (ids: readonly UtteranceId[]): string | null => {
+    if (previewShown || preview === null || !ids.some((id) => preview.ids.includes(id))) return null;
+    previewShown = true;
+    return preview.text;
+  };
+
+  const emit = (key: UtteranceId, ids: readonly UtteranceId[], leader: CaptionLine): void => {
+    const english = leader.state === "english";
+    blocks.push({
+      key,
+      ids,
+      sealed: true,
+      source: leader.source,
+      live: "",
+      english: english ? "" : leader.english,
+      state: blockState(leader.state),
+      reason: leader.reason,
+      preview: english ? null : previewFor(ids),
+    });
+  };
+
+  const flushOpen = (): void => {
+    const first = open[0];
+    const run = open;
+    open = [];
+    if (first === undefined) return;
+    const ids = run.map((line) => line.id);
+    const live = run.filter((line) => line.state === "live");
+    blocks.push({
+      key: first.id,
+      ids,
+      sealed: false,
+      source: run
+        .filter((line) => line.state !== "live")
+        .map((line) => line.source)
+        .join(""),
+      live: liveSource ? live.map((line) => line.source).join("") : "",
+      english: live.length === run.length ? "" : first.english,
+      state: live.length === run.length ? "open" : blockState(first.state),
+      reason: first.reason,
+      preview: previewFor(ids),
+    });
+  };
+
+  for (const line of lines) {
+    const seal = sealOf.get(line.id);
+    if (seal !== undefined) {
+      flushOpen();
+      if (done.has(seal.id)) continue;
+      done.add(seal.id);
+      const leader = byId.get(seal.id);
+      if (leader !== undefined) emit(seal.id, seal.ids, leader);
+    } else if (isTerminal(line.state)) {
+      flushOpen();
+      emit(line.id, [line.id], line);
+    } else {
+      open.push(line);
+    }
+  }
+  flushOpen();
+  return blocks;
 }
 
-/** A live line with its Chinese hidden has nothing to show, so it takes no place and no space. */
-export function isHiddenLive(line: CaptionLine, liveSource: boolean): boolean {
-  return line.state === "live" && !liveSource;
-}
-
-export function visibleLines<T extends CaptionLine>(
-  lines: readonly T[],
-  wanted: number,
-  liveSource = true,
-): T[] {
+export function visibleBlocks(blocks: readonly CaptionBlock[], wanted: number): CaptionBlock[] {
   const count = Math.min(OVERLAY_LIMITS.panel_lines.max, Math.max(OVERLAY_LIMITS.panel_lines.min, Math.round(wanted)));
-  return lines.filter((line) => !isHiddenLive(line, liveSource)).slice(-count);
+  return blocks.slice(-count);
 }
 
 export interface FlowPiece {
-  id: UtteranceId;
+  key: UtteranceId;
   text: string;
   /** "live" is Chinese still being spoken; "preview" is English that the next translation
    * replaces. */
-  kind: "final" | "streaming" | "live" | "pending" | "preview";
+  kind: "final" | "streaming" | "live" | "pending" | "preview" | "english";
 }
 
-export interface FlowText {
+export interface FlowPieces {
   source: FlowPiece[];
   english: FlowPiece[];
 }
 
-/** The lines as two running paragraphs, oldest first. Every line keeps its place, so a
- * line's English appears where its Chinese was and replaces its pending dots in place. The
- * preview stands for the English of every line it covers until their final translation, so
- * the text does not jump back to dots or restart while the final streams. */
-export function flowText(
-  lines: readonly CaptionLine[],
-  showSource: boolean,
-  liveSource: boolean,
-  preview: Preview | null = null,
-): FlowText {
+/** Running text as two paragraphs of the same blocks, so a block's Chinese and English always
+ * cover the same words. */
+export function flowPieces(blocks: readonly CaptionBlock[], showSource: boolean): FlowPieces {
   const source: FlowPiece[] = [];
   const english: FlowPiece[] = [];
-  let previewShown = false;
-  for (const line of lines) {
-    const { id } = line;
-    if (line.state === "english") {
-      english.push({ id, text: line.source, kind: "final" });
+  for (const block of blocks) {
+    if (block.state === "english") {
+      english.push({ key: block.key, text: block.source, kind: "english" });
       continue;
     }
-    if (line.state === "live") {
-      if (liveSource && line.source !== "") source.push({ id, text: line.source, kind: "live" });
-    } else if (showSource && line.source !== "") {
-      source.push({ id, text: line.source, kind: "final" });
+    if (block.source !== "" && (showSource || !block.sealed)) {
+      source.push({ key: block.key, text: block.source, kind: "final" });
     }
-    const covered = preview !== null && preview.ids.includes(id);
-    if (covered && (line.state === "live" || line.state === "pending" || line.state === "streaming")) {
-      if (!previewShown) english.push({ id: preview.id, text: preview.text, kind: "preview" });
-      previewShown = true;
-      continue;
-    }
-    if (line.state === "final" || line.state === "streaming") {
-      if (line.english !== "" || line.state === "streaming") english.push({ id, text: line.english, kind: line.state });
-    } else if (line.state === "pending") {
-      english.push({ id, text: "···", kind: "pending" });
+    if (block.live !== "") source.push({ key: block.key, text: block.live, kind: "live" });
+    if (block.preview !== null) english.push({ key: block.key, text: block.preview, kind: "preview" });
+    else if (block.state === "final" || block.state === "streaming") {
+      if (block.english !== "" || block.state === "streaming") {
+        english.push({ key: block.key, text: block.english, kind: block.state });
+      }
+    } else if (block.state === "pending") {
+      english.push({ key: block.key, text: "···", kind: "pending" });
     }
   }
   return { source, english };
@@ -288,6 +350,7 @@ interface SettingsSlice {
   pauseHotkey: string;
   settingsHotkey: string;
   appNames: string[];
+  liveSource: boolean;
 }
 
 export interface CaptionControllerOptions {
@@ -308,7 +371,8 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   const clock = options.clock ?? systemClock;
   const warn = options.onWarn ?? (() => undefined);
 
-  const lines = new Map<number, CaptionLineView>();
+  const lines = new Map<number, CaptionLine>();
+  const seals = new Map<number, Seal>();
   let chipTimer: unknown = null;
   let chip: ChipMessage | null = null;
   let chipSeq = 0;
@@ -316,6 +380,12 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   let lastStatusText: string | null = null;
   let disposed = false;
   let preview: Preview | null = null;
+  let settings: SettingsSlice = {
+    pauseHotkey: "",
+    settingsHotkey: "",
+    appNames: [],
+    liveSource: true,
+  };
 
   let app: AppSlice = {
     modelsReady: true,
@@ -325,15 +395,9 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
     sourceDetail: null,
     engines: {},
   };
-  let settings: SettingsSlice = {
-    pauseHotkey: "",
-    settingsHotkey: "",
-    appNames: [],
-  };
 
   const store = writable<CaptionView>({
-    lines: [],
-    preview: null,
+    blocks: [],
     status: null,
     chip: null,
     announcement: "",
@@ -361,8 +425,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       if (text !== null) announcement = text;
     }
     store.set({
-      lines: [...lines.values()],
-      preview,
+      blocks: captionBlocks([...lines.values()], seals, preview, settings.liveSource),
       status: current,
       chip: current === null ? chip : null,
       announcement,
@@ -387,25 +450,25 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
 
   function prune(): void {
     const terminal = [...lines.values()].filter((line) => isTerminal(line.state));
-    for (const line of terminal.slice(0, Math.max(0, terminal.length - MAX_HISTORY_LINES))) {
-      lines.delete(line.id);
-    }
+    const dropped = new Set(terminal.slice(0, Math.max(0, terminal.length - MAX_HISTORY_LINES)).map((line) => line.id));
     const active = [...lines.values()].filter((line) => !isTerminal(line.state));
-    for (const line of active.slice(0, Math.max(0, active.length - MAX_OUTSTANDING_LINES))) {
-      lines.delete(line.id);
+    for (const line of active.slice(0, Math.max(0, active.length - MAX_OUTSTANDING_LINES))) dropped.add(line.id);
+    for (const id of dropped) lines.delete(id);
+    for (const [id, seal] of seals) {
+      if (seal.ids.every((covered) => dropped.has(covered))) seals.delete(id);
     }
   }
 
-  function update(id: number, patch: Partial<CaptionLineView>): void {
+  function update(id: number, patch: Partial<CaptionLine>): void {
     const line = lines.get(id);
     if (line) lines.set(id, { ...line, ...patch, updatedAt: clock.now() });
   }
 
-  function addLine(line: Omit<CaptionLineView, "updatedAt">): void {
+  function addLine(line: Omit<CaptionLine, "updatedAt">): void {
     lines.set(line.id, { ...line, updatedAt: clock.now() });
   }
 
-  function newLine(id: number, source: string, state: CaptionLine["state"]): Omit<CaptionLineView, "updatedAt"> {
+  function newLine(id: number, source: string, state: CaptionLine["state"]): Omit<CaptionLine, "updatedAt"> {
     return {
       id,
       state,
@@ -472,7 +535,10 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           }
         }
         const leader = lines.get(event.id);
-        if (!leader || isTerminal(leader.state)) return changed;
+        if (!leader) return changed;
+        // A second seal of the same unit adds ids and keeps the first line as the key.
+        seals.set(event.id, { id: event.id, ids: [...event.ids] });
+        if (isTerminal(leader.state)) return true;
         update(event.id, { source: event.text });
         return true;
       }
@@ -580,6 +646,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       pauseHotkey: config.hotkeys.pause,
       settingsHotkey: config.hotkeys.settings,
       appNames: config.capture.apps.map((entry) => entry.name),
+      liveSource: config.overlay.live_source,
     };
     emit();
   }
@@ -587,6 +654,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
   function dispose(): void {
     if (disposed) return;
     lines.clear();
+    seals.clear();
     preview = null;
     chip = null;
     emit();

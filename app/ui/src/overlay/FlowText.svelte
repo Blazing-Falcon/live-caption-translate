@@ -1,27 +1,22 @@
 <script lang="ts">
-  import { flowText, type Preview, type StatusLine } from "../lib/captions";
-  import type { CaptionLine as Line } from "../lib/types";
+  import { flowPieces, type CaptionBlock, type StatusLine } from "../lib/captions";
   import CaptionLine from "./CaptionLine.svelte";
 
   interface Props {
-    lines: readonly Line[];
-    preview?: Preview | null;
+    blocks: readonly CaptionBlock[];
     status?: StatusLine | null;
     showSource?: boolean;
-    liveSource?: boolean;
     flowLines?: number;
   }
 
   let {
-    lines,
-    preview = null,
+    blocks,
     status = null,
     showSource = true,
-    liveSource = true,
     flowLines = 3,
   }: Props = $props();
 
-  const flow = $derived(flowText(lines, showSource, liveSource, preview));
+  const flow = $derived(flowPieces(blocks, showSource));
   const streaming = $derived(flow.english.at(-1)?.kind === "streaming");
 
   let section: HTMLElement | undefined = $state();
@@ -64,17 +59,17 @@
   {#if status}
     <CaptionLine {status} />
   {/if}
-  {#if showSource || liveSource}
+  {#if showSource || blocks.some((block) => block.live !== "")}
     <div class="para source">
       <p>
-        {#each flow.source as piece (piece.id)}<span class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
+        {#each flow.source as piece (piece.key)}<span class:live={piece.kind === "live"} lang={piece.kind === "live" ? undefined : "zh"}>{piece.text}</span>{/each}
       </p>
     </div>
   {/if}
   <div class="para english">
     <p>
       {#if flow.english.length > 0}
-        {#each flow.english as piece, index (`${piece.kind}-${piece.id}`)}{index > 0 ? " " : ""}<span class={piece.kind}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
+        {#each flow.english as piece, index (`${piece.kind}-${piece.key}`)}{index > 0 ? " " : ""}<span class={piece.kind}>{piece.text}</span>{/each}{#if streaming}<span class="caret" aria-hidden="true"></span>{/if}
       {:else if !status && flow.source.length === 0}
         <span class="waiting">Waiting for speech</span>
       {/if}

@@ -1,28 +1,22 @@
 <script lang="ts">
-  import { visibleLines, withPreview, type CaptionLineView, type Preview, type StatusLine } from "../lib/captions";
+  import { visibleBlocks, type CaptionBlock, type StatusLine } from "../lib/captions";
   import CaptionLine from "./CaptionLine.svelte";
 
   interface Props {
-    lines: readonly CaptionLineView[];
-    preview?: Preview | null;
+    blocks: readonly CaptionBlock[];
     status?: StatusLine | null;
     showSource?: boolean;
-    liveSource?: boolean;
     panelLines?: number;
   }
 
   let {
-    lines,
-    preview = null,
+    blocks,
     status = null,
     showSource = true,
-    liveSource = true,
     panelLines = 5,
   }: Props = $props();
 
-  // The status is a separate flex item above the history, so the history gives up its oldest
-  // line rather than the status; the count is the user's own setting either way.
-  const shown = $derived(visibleLines(withPreview(lines, preview, liveSource), panelLines, liveSource));
+  const shown = $derived(visibleBlocks(blocks, panelLines));
 </script>
 
 <section class="panel" aria-label="Live captions" data-testid="caption-panel">
@@ -33,11 +27,10 @@
     {#if shown.length === 0 && !status}
       <p class="waiting">Waiting for speech</p>
     {/if}
-    {#each shown as line, index (line.id)}
+    {#each shown as block, index (block.key)}
       <CaptionLine
-        {line}
+        {block}
         {showSource}
-        {liveSource}
         age={shown.length - 1 - index}
       />
     {/each}

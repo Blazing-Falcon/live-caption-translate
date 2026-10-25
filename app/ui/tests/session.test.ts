@@ -79,10 +79,10 @@ describe("session loading", () => {
     const { session } = open("overlay");
     await flush();
     await emit(EVENTS.pipeline, asrFinal(1, "你好"));
-    expect(get(session.captions).lines).toHaveLength(0);
+    expect(get(session.captions).blocks).toHaveLength(0);
     release();
     await session.ready;
-    expect(get(session.captions).lines).toMatchObject([{ id: 1, state: "pending" }]);
+    expect(get(session.captions).blocks).toMatchObject([{ key: 1, state: "pending" }]);
   });
 });
 

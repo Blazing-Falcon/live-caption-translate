@@ -1,35 +1,28 @@
 <script lang="ts">
-  import { ageOpacity, isHiddenLive, type CaptionLineView, type StatusLine } from "../lib/captions";
-  import type { CaptionLine } from "../lib/types";
+  import { ageOpacity, type CaptionBlock, type StatusLine } from "../lib/captions";
 
   interface Props {
-    line?: CaptionLineView | null;
+    block?: CaptionBlock | null;
     status?: StatusLine | null;
     age?: number;
     showSource?: boolean;
-    liveSource?: boolean;
   }
 
   let {
-    line = null,
+    block = null,
     status = null,
     age = 0,
     showSource = true,
-    liveSource = true,
   }: Props = $props();
 
   // A live line with nothing to show yet is not rendered at all, so it reserves no space.
-  const hidden = $derived(line !== null && isHiddenLive(line, liveSource));
   const sourceVisible = $derived(
-    line !== null &&
-      (line.state === "live"
-        ? liveSource && line.source !== ""
-        : line.state === "pending" || line.state === "skipped" || line.state === "failed" || showSource),
+    block !== null && block.source !== "" && (block.sealed || block.state !== "open" || showSource),
   );
   const englishText = $derived(
-    line !== null && (line.state === "final" || line.state === "streaming") ? line.english : "",
+    block !== null && (block.state === "final" || block.state === "streaming") ? block.english : "",
   );
-  const showEnglish = $derived(line !== null && (englishText !== "" || line.state === "streaming"));
+  const showEnglish = $derived(block !== null && (englishText !== "" || block.state === "streaming"));
 </script>
 
 {#if status}
@@ -37,33 +30,36 @@
     <span class="hollow" aria-hidden="true"></span>
     <span>{status.text}</span>
   </p>
-{:else if line && !hidden}
+{:else if block}
   <article
     class="line"
-    class:skipped={line.state === "skipped"}
-    data-id={line.id}
-    data-state={line.state}
+    class:skipped={block.state === "skipped"}
+    data-id={block.key}
+    data-state={block.state}
     style:--age-opacity={ageOpacity(age)}
   >
-    {#if line.state === "english"}
-      <p class="english main">{line.source}</p>
+    {#if block.state === "english"}
+      <p class="english main">{block.source}</p>
       <p class="label">English · Not translated</p>
     {:else}
       {#if sourceVisible}
-        <p class="source" class:heard={line.state === "live"} lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
+        <p class="source" lang="zh">{block.source}</p>
       {/if}
-      {#if line.preview}
-        <p class="english preview">{line.preview}</p>
+      {#if block.live !== ""}
+        <p class="source heard">{block.live}</p>
+      {/if}
+      {#if block.preview}
+        <p class="english preview">{block.preview}</p>
       {:else if showEnglish}
-        <p class="english">{englishText}{#if line.state === "streaming"}<span class="caret" aria-hidden="true"></span>{/if}</p>
-      {:else if line.state === "pending"}
+        <p class="english">{englishText}{#if block.state === "streaming"}<span class="caret" aria-hidden="true"></span>{/if}</p>
+      {:else if block.state === "pending"}
         <p class="english dots" aria-hidden="true">···</p>
         <span class="sr-only">Translating</span>
       {/if}
-      {#if line.state === "skipped"}
+      {#if block.state === "skipped"}
         <p class="label">Skipped to catch up</p>
-      {:else if line.state === "failed"}
-        <p class="label warning">Translation failed · {line.reason ?? "Could not translate this line"}</p>
+      {:else if block.state === "failed"}
+        <p class="label warning">Translation failed · {block.reason ?? "Could not translate this line"}</p>
       {/if}
     {/if}
   </article>

@@ -154,7 +154,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 
 `ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`) and `optional`.
 
-## Caption lines
+## Caption blocks
 
 `app/ui/src/lib/captions.ts` is the only code that changes caption lines. A line has one of these states: `live`, `pending`, `streaming`, `final`, `english`, `skipped`, `failed`. The last four are terminal.
 
@@ -168,13 +168,15 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `translation_failed` | `failed`, with a short reason text |
 | `skipped` | `skipped` |
 | `dropped` | Remove the line if it is `live` |
-| `translation_preview` | No state change. The store keeps the newest preview; running text shows it once, in place of the English, dots or streaming text of every line it covers, and the panel shows the covered lines as one row with their Chinese joined and the preview as its English. `translation_final`, `translation_failed`, `skipped` or `dropped` of a covered line clears it. |
+| `translation_preview` | No state change. The store keeps the newest preview; the block it covers shows it in place of its English, dots or streaming text. `translation_final`, `translation_failed`, `skipped` or `dropped` of a covered line clears it. |
+
+The store emits **blocks** (`CaptionBlock`), not lines. A block is one sealed unit (`key` is its leader, `ids` every line it covers, `sealed` true), the run of lines after the last seal (`sealed` false, `state` `open` while they are still live), or one heard English line. The store keeps the seals, so a second `unit_sealed` for the same leader adds ids and keeps the key. A block's `state` is `open`, `pending`, `streaming`, `final`, `failed`, `skipped` or `english`, and it carries `source` (Chinese), `live` (Chinese still being heard), `english`, `reason` and `preview`.
 
 Other rules:
 
-- Terminal lines stay until newer text needs their room; unfinished lines never leave on their own.
+- Terminal blocks stay until newer text needs their room; unfinished blocks never leave on their own.
 - The store keeps a maximum of 30 terminal lines and 32 unfinished lines.
-- The panel shows `panel_lines` lines (1–10); running text keeps `flow_lines` wrapped lines of each paragraph.
+- The panel shows `panel_lines` blocks (1–10); running text keeps `flow_lines` wrapped lines of each paragraph.
 
 ## Transcript records
 
