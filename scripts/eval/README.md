@@ -46,7 +46,7 @@ That is coarse: the reference and the replay do not cut the same clauses.
 
 | Domain | Audio | Reference |
 |---|---|---|
-| drama | `.agent/cn-translate-investigation/translate.wav` (130.8 s) | 26 Chinese sentences, hand-checked English, labels |
+| drama | `.agent/cn-translate-investigation/translate.wav` (130.8 s) | 26 Chinese sentences, hand-checked English |
 | ramc | `testdata/fetched/ramc/CTS-CN-F2F-2019-11-15-1449.wav` (33 min) | human transcript with speaker labels, no English |
 | leijun | `testdata/fetched/leijun/lei-jun.wav` (4.5 min) | `lei-jun.srt`, 70 cues |
 | ascend | `testdata/fetched/ascend/clip_*.wav` (20 clips) | `clips.json` |
