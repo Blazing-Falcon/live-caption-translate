@@ -87,7 +87,7 @@
   </div>
 {:else if $config}
   {#if firstRun}
-    <FirstRun config={$config} onready={finishFirstRun} />
+    <FirstRun onready={finishFirstRun} />
   {:else}
     <div class="shell">
       <nav class="nav" aria-label="Settings pages">

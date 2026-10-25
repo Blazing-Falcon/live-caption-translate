@@ -61,16 +61,9 @@ pub enum PaceArg {
 #[derive(Subcommand)]
 pub enum ModelCommands {
     Fetch {
-        #[arg(long, value_enum, default_value = "hf")]
-        source: DownloadSource,
         #[arg(long, env = "LT_MODELS_DIR")]
         dir: Option<PathBuf>,
     },
-}
-#[derive(Clone, Copy, ValueEnum)]
-pub enum DownloadSource {
-    Hf,
-    Modelscope,
 }
 
 #[derive(Args)]

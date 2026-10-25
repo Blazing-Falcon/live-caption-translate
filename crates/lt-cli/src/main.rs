@@ -69,13 +69,9 @@ fn main() -> Result<()> {
 #[cfg(feature = "llm")]
 fn models(command: ModelCommands, config: Config, cancelled: Arc<AtomicBool>) -> Result<()> {
     match command {
-        ModelCommands::Fetch { source, dir } => {
+        ModelCommands::Fetch { dir } => {
             let dir = engines::models_dir(dir.as_deref(), &config);
-            let source = match source {
-                args::DownloadSource::Hf => lt_llm::models::ModelSource::Huggingface,
-                args::DownloadSource::Modelscope => lt_llm::models::ModelSource::Modelscope,
-            };
-            let statuses = lt_llm::models::fetch(source, dir, &cancelled, &mut |status| {
+            let statuses = lt_llm::models::fetch(dir, &cancelled, &mut |status| {
                 eprintln!(
                     "{} {:?}: {}/{} bytes",
                     status.id, status.state, status.bytes_done, status.bytes_total

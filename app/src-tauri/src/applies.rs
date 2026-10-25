@@ -89,10 +89,6 @@ mod tests {
         assert_eq!(changed(|c| c.hotkeys.pause = "".into()), Applies::Live);
         assert_eq!(changed(|c| c.transcript.enabled = false), Applies::Live);
         assert_eq!(
-            changed(|c| c.models.source = "modelscope".into()),
-            Applies::Live
-        );
-        assert_eq!(
             changed(|c| c.capture.mode = CaptureMode::Apps),
             Applies::Capture
         );

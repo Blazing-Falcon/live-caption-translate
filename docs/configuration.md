@@ -77,7 +77,6 @@ level = "info"                  # "error" | "warn" | "info" | "debug" | "trace"
 keep_files = 5
 
 [models]
-source = "huggingface"          # "huggingface" | "modelscope"
 dir = ""                        # "" = <local data>/models
 ```
 
@@ -170,7 +169,6 @@ Values use the Tauri global-shortcut format, for example `Ctrl+Shift+L`. An empt
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `source` | `huggingface`, `modelscope` | live | Download source |
 | `dir` | folder | restart | Model folder. Empty: `models` in the local data folder. |
 
 ## Environment variables

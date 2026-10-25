@@ -45,8 +45,6 @@ pub struct FileEntry {
     pub size: u64,
     pub sha256: String,
     pub url: String,
-    #[serde(default)]
-    pub mirror: String,
     /// Non-empty: the download is a `.tar.bz2` archive. These files are taken from it by file
     /// name, checked, and kept; the archive itself is deleted.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -78,7 +76,6 @@ impl FileEntry {
                 size: member.size,
                 sha256: member.sha256.clone(),
                 url: String::new(),
-                mirror: String::new(),
                 extract: Vec::new(),
                 convert: None,
             })
@@ -89,13 +86,6 @@ impl FileEntry {
     fn is_source(&self) -> bool {
         !self.extract.is_empty() || self.convert.is_some()
     }
-}
-
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum ModelSource {
-    Huggingface,
-    Modelscope,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -163,16 +153,6 @@ impl ModelManager {
         &self.manifest
     }
 
-    pub fn source_supported(&self, source: ModelSource) -> bool {
-        source == ModelSource::Huggingface
-            || self
-                .manifest
-                .models
-                .iter()
-                .flat_map(|model| &model.files)
-                .all(|file| !file.mirror.is_empty())
-    }
-
     /// Every model, required first.
     pub fn status(&self, dir: impl AsRef<Path>) -> Result<Vec<ModelStatus>> {
         self.manifest
@@ -195,46 +175,31 @@ impl ModelManager {
     /// Download the required models only.
     pub fn fetch(
         &self,
-        source: ModelSource,
         dir: impl AsRef<Path>,
         cancelled: &AtomicBool,
         on_progress: &mut dyn FnMut(ModelStatus),
     ) -> Result<Vec<ModelStatus>> {
-        self.fetch_where(source, dir, |model| !model.optional, cancelled, on_progress)
+        self.fetch_where(dir, |model| !model.optional, cancelled, on_progress)
     }
 
     /// Download exactly the named models.
     pub fn fetch_ids(
         &self,
-        source: ModelSource,
         dir: impl AsRef<Path>,
         ids: &[String],
         cancelled: &AtomicBool,
         on_progress: &mut dyn FnMut(ModelStatus),
     ) -> Result<Vec<ModelStatus>> {
-        self.fetch_where(
-            source,
-            dir,
-            |model| ids.contains(&model.id),
-            cancelled,
-            on_progress,
-        )
+        self.fetch_where(dir, |model| ids.contains(&model.id), cancelled, on_progress)
     }
 
     fn fetch_where(
         &self,
-        source: ModelSource,
         dir: impl AsRef<Path>,
         wanted: impl Fn(&ModelEntry) -> bool,
         cancelled: &AtomicBool,
         on_progress: &mut dyn FnMut(ModelStatus),
     ) -> Result<Vec<ModelStatus>> {
-        if !self.source_supported(source) {
-            return Err(Error::Engine(
-                "These exact model files have no verified ModelScope mirror. Try Hugging Face."
-                    .into(),
-            ));
-        }
         let dir = dir.as_ref();
         fs::create_dir_all(dir)?;
         let mut progress = Progress::new(on_progress);
@@ -279,10 +244,7 @@ impl ModelManager {
                 progress.emit(dir, model, ModelState::Corrupt, true)?;
                 remove_regular(&paths.final_file)?;
             }
-            let url = match source {
-                ModelSource::Huggingface => &file.url,
-                ModelSource::Modelscope => &file.mirror,
-            };
+            let url = &file.url;
             let mut matched = false;
             for attempt in 0..2 {
                 self.download(
@@ -308,12 +270,10 @@ impl ModelManager {
                 }
             }
             if !matched {
-                let message = if source == ModelSource::Modelscope {
-                    "Mirror copy does not match. Try Hugging Face.".into()
-                } else {
-                    format!("Downloaded model failed its SHA-256 check: {}", file.name)
-                };
-                return Err(Error::Engine(message));
+                return Err(Error::Engine(format!(
+                    "Downloaded model failed its SHA-256 check: {}",
+                    file.name
+                )));
             }
             check_cancel(cancelled, &mut progress, dir, model)?;
             if !file.extract.is_empty() {
@@ -594,12 +554,11 @@ pub fn status(dir: impl AsRef<Path>) -> Result<Vec<ModelStatus>> {
     ModelManager::new()?.status(dir)
 }
 pub fn fetch(
-    source: ModelSource,
     dir: impl AsRef<Path>,
     cancelled: &AtomicBool,
     on_progress: &mut dyn FnMut(ModelStatus),
 ) -> Result<Vec<ModelStatus>> {
-    ModelManager::new()?.fetch(source, dir, cancelled, on_progress)
+    ModelManager::new()?.fetch(dir, cancelled, on_progress)
 }
 pub fn use_existing(
     from: impl AsRef<Path>,
@@ -1022,22 +981,18 @@ fn validate_manifest(manifest: &Manifest) -> Result<()> {
                     ));
                 }
             }
-            for (index, url) in [&file.url, &file.mirror].into_iter().enumerate() {
-                if url.is_empty() && index == 1 {
-                    continue;
-                }
-                let uri: ureq::http::Uri = url
-                    .parse()
-                    .map_err(|_| Error::Engine("Model manifest has an invalid URL".into()))?;
-                if !matches!(uri.scheme_str(), Some("http" | "https"))
-                    || uri
-                        .authority()
-                        .is_none_or(|authority| authority.as_str().contains('@'))
-                {
-                    return Err(Error::Engine(
-                        "Model URL must be HTTP(S) without embedded credentials".into(),
-                    ));
-                }
+            let uri: ureq::http::Uri = file
+                .url
+                .parse()
+                .map_err(|_| Error::Engine("Model manifest has an invalid URL".into()))?;
+            if !matches!(uri.scheme_str(), Some("http" | "https"))
+                || uri
+                    .authority()
+                    .is_none_or(|authority| authority.as_str().contains('@'))
+            {
+                return Err(Error::Engine(
+                    "Model URL must be HTTP(S) without embedded credentials".into(),
+                ));
             }
         }
     }
@@ -1082,8 +1037,5 @@ mod tests {
         let statuses = manager.status(&missing).unwrap();
         assert_eq!(statuses.len(), 3);
         assert_eq!(manager.default_ids().len(), 3);
-        assert!(!ModelManager::new()
-            .unwrap()
-            .source_supported(ModelSource::Modelscope));
     }
 }

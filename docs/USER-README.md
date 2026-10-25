@@ -18,7 +18,6 @@ All processing is on your computer. After the first download, the app does not u
 
 1. Unzip the folder to a location where you can write. Start `live-translation.exe`. The app has no code signature, so Windows SmartScreen can ask you to confirm.
 2. The first-run screen shows the models and downloads them one time.
-   - Select Hugging Face or ModelScope as the source.
    - You can pause and resume the download.
    - "Use files I already have" uses model files that are on your PC.
    - The app checks each file with a SHA-256 hash before it uses it.

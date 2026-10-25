@@ -134,8 +134,6 @@ panel_edge = "top"
 panel_rect = false
 [logging]
 level = "verbose"
-[models]
-source = "elsewhere"
 "#,
     )
     .unwrap();
@@ -151,7 +149,6 @@ source = "elsewhere"
     assert_eq!(config.overlay.panel_edge, PanelEdge::Right);
     assert!(config.overlay.panel_rect.is_none());
     assert_eq!(config.logging.level, LogLevel::Info);
-    assert_eq!(config.models.source, "huggingface");
     let warnings = warnings(&messages);
     for key in [
         "config_version",
@@ -164,7 +161,6 @@ source = "elsewhere"
         "overlay.panel_edge",
         "overlay.panel_rect",
         "logging.level",
-        "models.source",
     ] {
         assert!(
             warnings.iter().any(|message| message.starts_with(key)),

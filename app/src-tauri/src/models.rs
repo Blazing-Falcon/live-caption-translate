@@ -1,6 +1,6 @@
 //! Model status, downloads and imports for the first-run screen.
 use crate::app::{lock, Shared};
-use lt_llm::models::{ModelManager, ModelSource, ModelState, ModelStatus};
+use lt_llm::models::{ModelManager, ModelState, ModelStatus};
 use std::{
     path::Path,
     sync::{
@@ -113,17 +113,7 @@ impl Models {
 
     /// Starts or resumes missing models on a worker thread. Without `ids` that is every required
     /// model (first run); with `ids`, exactly those (a choice the user made).
-    pub fn download(
-        &self,
-        shared: &Arc<Shared>,
-        source: &str,
-        ids: Option<Vec<String>>,
-    ) -> Result<(), String> {
-        let source = match source {
-            "huggingface" => ModelSource::Huggingface,
-            "modelscope" => ModelSource::Modelscope,
-            other => return Err(format!("Unknown download source: {other}")),
-        };
+    pub fn download(&self, shared: &Arc<Shared>, ids: Option<Vec<String>>) -> Result<(), String> {
         if self.busy.swap(true, Ordering::AcqRel) {
             return Ok(());
         }
@@ -139,7 +129,7 @@ impl Models {
                         let dir = shared.paths.models(&shared.config());
                         let ids = ids.unwrap_or_else(|| manager.default_ids());
                         manager
-                            .fetch_ids(source, dir, &ids, &models.cancel, &mut |status| {
+                            .fetch_ids(dir, &ids, &models.cancel, &mut |status| {
                                 models.record(&shared, status);
                             })
                             .map_err(|e| e.to_string())

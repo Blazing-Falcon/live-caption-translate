@@ -136,7 +136,6 @@ export interface AudioAppList {
 }
 
 export type ModelState = "missing" | "downloading" | "paused" | "verifying" | "ready" | "corrupt";
-export type ModelSource = "huggingface" | "modelscope";
 export type FolderKind = "transcripts" | "logs" | "models";
 
 export interface ModelStatus {

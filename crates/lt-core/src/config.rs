@@ -329,20 +329,10 @@ impl Default for LoggingConfig {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ModelsConfig {
-    pub source: String,
     pub dir: String,
-}
-
-impl Default for ModelsConfig {
-    fn default() -> Self {
-        Self {
-            source: "huggingface".into(),
-            dir: String::new(),
-        }
-    }
 }
 
 /// The logical CPUs of this PC: the most threads an engine gets.
@@ -415,15 +405,12 @@ limits! {
 /// A saved choice that the app now spells differently.
 const VALUE_MIGRATIONS: &[(&str, &str, &str)] = &[("overlay.style", "bar", "panel")];
 
-const MODEL_SOURCES: &[&str] = &["huggingface", "modelscope"];
-
 fn choices(path: &str) -> Option<&'static [&'static str]> {
     Some(match path {
         "capture.mode" => CaptureMode::NAMES,
         "overlay.style" => OverlayStyle::NAMES,
         "overlay.panel_edge" => PanelEdge::NAMES,
         "logging.level" => LogLevel::NAMES,
-        "models.source" => MODEL_SOURCES,
         _ => return None,
     })
 }

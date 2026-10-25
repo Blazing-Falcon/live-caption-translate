@@ -14,7 +14,6 @@
           "size": 133895136,
           "sha256": "fa5f63d618e5a01526e275a358bb7772e403f84808a4769fba52cffd8160bf74",
           "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-x-asr-480ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2",
-          "mirror": "",
           "extract": [
             {
               "name": "encoder.int8.onnx",
@@ -53,7 +52,6 @@
           "size": 136396739,
           "sha256": "5d02c36d7b44e886b7c8f0d8e051f8713acab96c264bb6ef9e718be39a6a2224",
           "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03.tar.bz2",
-          "mirror": "",
           "extract": [
             {
               "name": "encoder-epoch-99-avg-1.int8.onnx",
@@ -109,7 +107,6 @@
           "size": 461860800,
           "sha256": "cc497fe8f033b52b3b8b00a7669e9661435432f9d4cd43f7ed24400c01507a93",
           "url": "https://huggingface.co/tencent/Hy-MT2-1.8B-1.25Bit-GGUF/resolve/9df5c824a00a744fb0512a29c640466f4d97dfb0/Hy-MT2-1.8B-1.25Bit.gguf",
-          "mirror": "",
           "convert": {
             "name": "Hy-MT2-1.8B-ternary-TQ2_0.gguf",
             "size": 606564288,

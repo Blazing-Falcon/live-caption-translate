@@ -62,7 +62,6 @@ export interface Config {
     keep_files: number;
   };
   models: {
-    source: "huggingface" | "modelscope";
     dir: string;
   };
 }
@@ -216,10 +215,6 @@ export function asrPatch(values: DeepPartial<Config["asr"]>): ConfigPatch {
   return { asr: values };
 }
 
-export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {
-  return { models: { source } };
-}
-
 /** "Ctrl+Shift+P" -> "Ctrl Shift P" as the spec prints bindings. */
 export function formatAccelerator(accelerator: string): string {
   return accelerator.split("+").map((part) => part.trim()).filter(Boolean).join(" ");
@@ -274,7 +269,6 @@ export const DEFAULT_CONFIG: Config = {
     "keep_files": 5
   },
   "models": {
-    "source": "huggingface",
     "dir": ""
   }
 };

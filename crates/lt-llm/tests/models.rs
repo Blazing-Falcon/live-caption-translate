@@ -13,7 +13,7 @@ use std::{
     time::Duration,
 };
 
-use lt_llm::models::{FileEntry, Manifest, ModelEntry, ModelManager, ModelSource, ModelState};
+use lt_llm::models::{FileEntry, Manifest, ModelEntry, ModelManager, ModelState};
 use sha2::{Digest, Sha256};
 
 static NEXT_TEMP: AtomicUsize = AtomicUsize::new(0);
@@ -169,7 +169,6 @@ fn file(name: &str, url: String, data: &[u8]) -> FileEntry {
         size: data.len() as u64,
         sha256: format!("{:x}", Sha256::digest(data)),
         url,
-        mirror: String::new(),
         extract: Vec::new(),
         convert: None,
     }
@@ -214,12 +213,9 @@ fn interrupted_http_body_resumes_from_exact_saved_offset_and_verifies_before_ren
     let manager = manager(manifest(format!("{}/model", server.url), &data));
     let mut states = Vec::new();
     let statuses = manager
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |status| states.push(status.state),
-        )
+        .fetch(&temp.path, &AtomicBool::new(false), &mut |status| {
+            states.push(status.state)
+        })
         .unwrap();
     assert_eq!(statuses[0].state, ModelState::Ready);
     assert_eq!(fs::read(temp.final_path()).unwrap(), data);
@@ -255,12 +251,9 @@ fn corrupt_final_and_corrupt_response_are_redownloaded_with_sha256_checks() {
     );
     let mut states = Vec::new();
     manager
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |status| states.push(status.state),
-        )
+        .fetch(&temp.path, &AtomicBool::new(false), &mut |status| {
+            states.push(status.state)
+        })
         .unwrap();
     assert!(states.contains(&ModelState::Corrupt));
     assert_eq!(server.requests.lock().unwrap().len(), 2);
@@ -335,12 +328,7 @@ fn a_model_directory_link_cannot_escape_the_selected_directory() {
     let manager = manager(manifest("http://127.0.0.1/model".into(), &[1; 10]));
     assert!(manager.status(&selected.path).is_err());
     assert!(manager
-        .fetch(
-            ModelSource::Huggingface,
-            &selected.path,
-            &AtomicBool::new(false),
-            &mut |_| {}
-        )
+        .fetch(&selected.path, &AtomicBool::new(false), &mut |_| {})
         .is_err());
     assert!(fs::read_dir(&outside.path).unwrap().next().is_none());
 }
@@ -386,12 +374,7 @@ fn an_archive_is_extracted_file_by_file_with_hash_checks_and_then_deleted() {
         member("tokens.txt", &tokens),
     ];
     let statuses = manager(manifest.clone())
-        .fetch(
-            ModelSource::Huggingface,
-            &temp.path,
-            &AtomicBool::new(false),
-            &mut |_| {},
-        )
+        .fetch(&temp.path, &AtomicBool::new(false), &mut |_| {})
         .unwrap();
     let folder = temp.path.join("test-model");
     assert_eq!(statuses[0].state, ModelState::Ready);
@@ -408,12 +391,7 @@ fn an_archive_is_extracted_file_by_file_with_hash_checks_and_then_deleted() {
     let other = TempDir::new();
     manifest.models[0].files[0].extract[1].sha256 = format!("{:x}", Sha256::digest(b"other"));
     let error = manager(manifest)
-        .fetch(
-            ModelSource::Huggingface,
-            &other.path,
-            &AtomicBool::new(false),
-            &mut |_| {},
-        )
+        .fetch(&other.path, &AtomicBool::new(false), &mut |_| {})
         .unwrap_err();
     assert!(error.to_string().contains("tokens.txt"), "{error}");
     assert!(!other.path.join("test-model/tokens.txt").exists());

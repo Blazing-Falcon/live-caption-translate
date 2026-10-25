@@ -25,7 +25,6 @@ Rules:
 - A file with an `extract` list is a `.tar.bz2` archive. After its SHA-256 check, the app takes the listed files from it by file name, checks each file's size and SHA-256, and deletes the archive.
 - The app uses the system proxy.
 - At startup the app checks file sizes. It checks hashes after a download and for "Use files I already have".
-- The `mirror` field holds a ModelScope URL. An empty field disables ModelScope for that file.
 
 ## Licenses
 

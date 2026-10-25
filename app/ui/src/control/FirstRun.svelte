@@ -3,16 +3,14 @@
   import * as api from "../lib/api";
   import { useSession } from "../lib/context";
   import { formatBytes, modelsAllReady, modelsPercent } from "../lib/format";
-  import { modelSourcePatch, type Config } from "../lib/settings";
-  import type { ModelSource, ModelStatus } from "../lib/types";
+  import type { ModelStatus } from "../lib/types";
   import Notices from "./Notices.svelte";
 
   interface Props {
-    config: Config;
     onready: () => void;
   }
 
-  let { config, onready }: Props = $props();
+  let { onready }: Props = $props();
 
   const session = useSession();
   const { models, busy } = session;
@@ -24,7 +22,6 @@
   const downloading = $derived(rows.some((row) => row.state === "downloading"));
   const paused = $derived(rows.some((row) => row.state === "paused"));
   const needsDownload = $derived(rows.some((row) => row.state === "missing" || row.state === "corrupt"));
-  const source = $derived<ModelSource>(config.models.source);
 
   const action = $derived(
     downloading ? "pause" : paused ? "resume" : needsDownload ? "download" : null,
@@ -63,7 +60,7 @@
 
   async function start(): Promise<void> {
     if (get(busy).has("models.download")) return;
-    await session.act("models.download", () => api.modelsDownload(source));
+    await session.act("models.download", () => api.modelsDownload());
   }
 
   async function pause(): Promise<void> {
@@ -74,13 +71,6 @@
   async function primary(): Promise<void> {
     if (action === "pause") await pause();
     else await start();
-  }
-
-  async function chooseSource(event: Event): Promise<void> {
-    const select = event.currentTarget as HTMLSelectElement;
-    const next: ModelSource = select.value === "modelscope" ? "modelscope" : "huggingface";
-    const saved = await session.save("models.source", modelSourcePatch(next));
-    if (!saved) select.value = config.models.source;
   }
 
   async function useExisting(): Promise<void> {
@@ -133,13 +123,6 @@
   </ul>
 
   <div class="controls">
-    <label class="source">
-      <span>Download from</span>
-      <select class="select" value={source} disabled={downloading} onchange={chooseSource}>
-        <option value="huggingface">Hugging Face</option>
-        <option value="modelscope">ModelScope (mainland China)</option>
-      </select>
-    </label>
     <button type="button" class="link" disabled={downloading} onclick={useExisting}>Use files I already have</button>
     <span class="spacer"></span>
     {#if action}
@@ -240,14 +223,6 @@
     align-items: center;
     gap: var(--space-3) 20px;
     max-width: 640px;
-  }
-
-  .source {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-label);
-    color: var(--c-text-label);
   }
 
   .spacer {

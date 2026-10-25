@@ -45,7 +45,7 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await open(page, "control", { models: [...MISSING], state: { models_ready: false, listening: "paused" } });
     await expect(page.getByRole("heading", { name: "Download the speech and translation models" })).toBeVisible();
     await page.getByRole("button", { name: "Download" }).click();
-    await expect.poll(async () => (await calls(page, "models_download")).at(-1)?.args).toEqual({ source: "huggingface" });
+    await expect.poll(async () => (await calls(page, "models_download")).at(-1)?.args).toEqual({});
     const progress = (state: string, done: number) => [
       MISSING[0],
       { ...MISSING[1], bytes_done: done, state },
