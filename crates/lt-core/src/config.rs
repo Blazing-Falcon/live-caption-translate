@@ -272,6 +272,9 @@ fn retire_v2(value: &mut toml::Value) {
     if take(root, "translate.model").is_some() {
         tracing::info!("translate.model was removed");
     }
+    if take(root, "translate.glossary").is_some() {
+        tracing::info!("translate.glossary was removed");
+    }
 }
 
 /// Remove `table.key` (or a whole top-level table) and return its value.

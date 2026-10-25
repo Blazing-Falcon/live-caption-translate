@@ -12,7 +12,7 @@ Rules:
 - A file that does not load (not valid TOML, not UTF-8, or not readable) is renamed to `config.toml.bad-<seconds>`, and the app starts with the defaults. A notice gives the new name.
 - The app writes `config.toml.tmp` and renames it, so a save is atomic.
 - A file with `config_version = 1` is migrated when it loads. Renamed keys keep their values (`asr.stream_chunk_ms` becomes `asr.chunk_ms`, `asr.stream_pause_s` becomes `asr.pause_s`, `latency.low_priority` becomes `performance.low_priority`). `translate.threads = 0` becomes `2`. Keys that version 2 does not have are removed, and the app logs one info line with their names. The next save writes version 2.
-- Choices that the app removed load without a warning: `translate.model` is dropped (one translation model is left), and `asr.second_pass = "sensevoice"` becomes the default. The app logs one info line.
+- Choices that the app removed load without a warning: `translate.model` and `translate.glossary` are dropped, and `asr.second_pass = "sensevoice"` becomes the default. The app logs one info line.
 
 **Applies** tells when a change has an effect:
 

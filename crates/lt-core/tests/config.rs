@@ -285,6 +285,7 @@ second_pass_threads = 3
 [translate]
 model = "q4_0"
 threads = 3
+glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], confirmed = true }]
 "#,
     )
     .unwrap();
@@ -295,6 +296,7 @@ threads = 3
     assert!(messages.is_empty(), "{messages:?}");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
     assert!(saved["translate"].get("model").is_none());
+    assert!(saved["translate"].get("glossary").is_none());
 }
 
 #[test]
