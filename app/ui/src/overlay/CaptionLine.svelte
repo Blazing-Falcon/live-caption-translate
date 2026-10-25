@@ -64,9 +64,6 @@
       <p class="label">{otherLabel}</p>
     {:else}
       {#if sourceVisible}
-        {#if line.music}
-          <span class="music" role="img" aria-label="Song lyrics">♪</span>
-        {/if}
         {#if line.swap}
           <p class="source swapping" lang="zh">
             <span class="swap-out" aria-hidden="true">{line.swap.from}</span>
@@ -184,14 +181,6 @@
     .swap-in {
       animation: none;
     }
-  }
-
-  /* A line the recognizer was much less sure of: the words are probably sung, so the English may
-   * be a guess. The mark says so without removing anything. */
-  .music {
-    align-self: flex-start;
-    font-size: var(--text-meta);
-    color: var(--ov-meta);
   }
 
   .dots {

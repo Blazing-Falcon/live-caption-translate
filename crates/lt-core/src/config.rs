@@ -70,9 +70,6 @@ config_table!(AsrConfig {
     second_pass_max_wait_s: f32 = 1.5,
 });
 config_table!(FilterConfig {
-    /// Do not translate a line that looks like song lyrics. Marking such a line is separate and
-    /// always on; this decides whether it is translated anyway.
-    skip_music: bool = false,
     single_char_max_s: f32 = 0.6,
     single_char_allow: Vec<String> = ["对", "好", "是", "行", "不", "哦"].map(String::from).to_vec(),
     fillers: Vec<String> = ["呃", "嗯", "额", "uh", "um"].map(String::from).to_vec(),
@@ -272,6 +269,9 @@ fn retire_v2(value: &mut toml::Value) {
     }
     if take(root, "asr.decoding").is_some() {
         tracing::info!("asr.decoding was removed");
+    }
+    if take(root, "filter.skip_music").is_some() {
+        tracing::info!("filter.skip_music was removed");
     }
 }
 

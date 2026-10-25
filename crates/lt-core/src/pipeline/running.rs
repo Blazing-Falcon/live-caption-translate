@@ -127,7 +127,6 @@ impl RunningText {
             absorbed: Vec::new(),
             cut: CutReason::Commit,
             logprob: None,
-            music: false,
             second_pass: crate::types::SecondPass::default(),
         };
         Some((transcript, ids))

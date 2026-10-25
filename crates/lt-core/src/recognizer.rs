@@ -309,8 +309,6 @@ impl Recognizer {
             text: join_tokens(&tokens.tokens[range]),
             lang_tag: None,
             class: TextClass::Chinese,
-            // Set by the refine thread, which sees the whole session.
-            music: false,
             fragment: false,
             timing: StageTiming {
                 start: clause.start,

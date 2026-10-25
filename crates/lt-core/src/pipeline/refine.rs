@@ -8,7 +8,6 @@ use crate::{
     engines::OfflineAsr,
     error::Result,
     events::DropReason,
-    lyrics::LyricDetector,
     recognizer::AsrMessage,
     refine::{cut_at_next_clause, trim},
     text::{chinese_chars, classify, clean, drop_reason},
@@ -76,7 +75,6 @@ pub(super) fn refine_loop(
     cancelled: &AtomicBool,
 ) -> Result<()> {
     let max_wait = Duration::from_secs_f32(config.asr.second_pass_max_wait_s);
-    let mut lyrics = LyricDetector::default();
     while !cancelled.load(Ordering::Acquire) {
         let input = match inputs.recv_timeout(POLL) {
             Ok(input) => input,
@@ -100,7 +98,7 @@ pub(super) fn refine_loop(
                     max_wait,
                 );
                 let next_head = open.after(transcript.id);
-                finalize(transcript, &live, config, &mut lyrics, next_head.as_deref())
+                finalize(transcript, &live, config, next_head.as_deref())
             }
             RefineInput::Message(message) => message,
         };
@@ -182,14 +180,11 @@ fn finalize(
     mut transcript: Transcript,
     live: &str,
     config: &Config,
-    lyrics: &mut LyricDetector,
     next_head: Option<&str>,
 ) -> AsrMessage {
     transcript.text = clean(&transcript.text, &config.filter.fillers);
     let live = clean(live, &config.filter.fillers);
     transcript.second_pass.live_text = (live != transcript.text).then_some(live);
-    // Confidence is read on the clause as the engine heard it, before any correction.
-    transcript.music = lyrics.observe(transcript.logprob);
     // A pause cut that stopped mid-thought gets an ellipsis instead of an invented ending. A
     // commit cut ends at a mark or a comma by definition, so it is not a fragment.
     transcript.fragment = transcript.cut == crate::types::CutReason::Pause

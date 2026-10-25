@@ -63,7 +63,6 @@ def main():
     parser.add_argument("jsonl", help="out.jsonl from lt-cli replay")
     parser.add_argument("--zh", help="reference Chinese, one line per sentence")
     parser.add_argument("--en", help="reference English, one line per sentence")
-    parser.add_argument("--lyric-ids", help="utterance ids labelled as song lyrics")
     parser.add_argument("--label", default="")
     args = parser.parse_args()
 
@@ -145,13 +144,6 @@ def main():
         if SENTENCE_MARK.search(((r.get("asr_live") or {}).get("text") or ""))
     )
 
-    lyric_ids = set()
-    if args.lyric_ids:
-        lyric_ids = {int(v) for v in args.lyric_ids.split(",") if v.strip()}
-    lyric_translated = sum(
-        1 for r in finals if r.get("id") in lyric_ids and (r.get("english") or "").strip()
-    )
-
     # A fragment: the pipeline decided the clause stopped mid-thought, and the English was
     # published anyway.
     #
@@ -208,7 +200,6 @@ def main():
                 round(sum(1 for g in gaps if g >= 0.8) / len(gaps), 3) if gaps else None
             ),
         },
-        "lyrics": {"labelled": len(lyric_ids), "translated": lyric_translated},
         "fragments": {"count": len(fragments), "ids": fragments},
     }
 

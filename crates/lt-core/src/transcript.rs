@@ -84,8 +84,6 @@ struct Pending {
     lang: Option<String>,
     source: String,
     cut: CutReason,
-    /// The recognizer was much less sure of this line than of the session's speech.
-    music: bool,
     /// The clause stopped mid-thought.
     fragment: bool,
     live: LiveRecord,
@@ -145,8 +143,6 @@ struct UtteranceRecord<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     message: Option<&'a str>,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    music: bool,
-    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     fragment: bool,
     asr_live: &'a LiveRecord,
     #[serde(skip_serializing_if = "<[SecondRecord]>::is_empty")]
@@ -171,7 +167,6 @@ impl Pending {
             timing: None,
             reason: None,
             message: None,
-            music: self.music,
             fragment: self.fragment,
             asr_live: &self.live,
             asr_second: &self.second,
@@ -218,7 +213,6 @@ impl<W: Write> TranscriptWriter<W> {
                 end_ms,
                 cut,
                 logprob,
-                music,
                 fragment,
                 second_pass,
                 ..
@@ -239,7 +233,6 @@ impl<W: Write> TranscriptWriter<W> {
                     lang: lang.clone(),
                     source: text.clone(),
                     cut: *cut,
-                    music: *music,
                     fragment: *fragment,
                     live: LiveRecord {
                         engine: self.live_engine.clone(),
@@ -570,7 +563,6 @@ mod tests {
             asr_ms: 100,
             cut: crate::types::CutReason::Pause,
             logprob: None,
-            music: false,
             fragment: false,
             second_pass: SecondPass::default(),
         }
@@ -652,7 +644,6 @@ mod tests {
                     end_ms: 1_500,
                     asr_ms: 100,
                     cut: CutReason::Commit,
-                    music: false,
                     fragment: false,
                     logprob: None,
                     second_pass: SecondPass::default(),
@@ -697,7 +688,6 @@ mod tests {
                     end_ms: 1_200,
                     asr_ms: 100,
                     cut: CutReason::Pause,
-                    music: false,
                     fragment: true,
                     logprob: None,
                     second_pass: SecondPass::default(),
@@ -729,11 +719,6 @@ mod tests {
         let record: serde_json::Value =
             serde_json::from_str(output.lines().last().unwrap()).unwrap();
         assert_eq!(record["fragment"], true, "{output}");
-        assert_eq!(
-            record["music"],
-            serde_json::Value::Null,
-            "absent when false: {output}"
-        );
     }
 
     #[test]

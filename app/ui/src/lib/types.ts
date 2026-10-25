@@ -85,9 +85,6 @@ export type PipelineEvent =
       cut: CutReason;
       /** Mean token log-probability; only engines that give one send it. */
       logprob?: number;
-      /** The recognizer was much less sure of this line than of the session's speech, which is
-       * what singing sounds like to it. */
-      music?: boolean;
       /** The clause stopped mid-thought: its words say the speaker was still going. */
       fragment?: boolean;
       /** `text` is already the final text. */
@@ -182,7 +179,5 @@ export interface CaptionLine {
   english: string;
   lang: string | null;
   reason: string | null;
-  /** The recognizer was much less sure of this line than of the session's speech. */
-  music: boolean;
   updatedAt: number;
 }

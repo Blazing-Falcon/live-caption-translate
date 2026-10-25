@@ -38,7 +38,6 @@ export interface Config extends ExtraFields {
     second_pass_max_wait_s: number;
   };
   filter: ExtraFields & {
-    skip_music: boolean;
     single_char_max_s: number;
     single_char_allow: string[];
     fillers: string[];
@@ -284,7 +283,6 @@ export const DEFAULT_CONFIG: Config = {
     "second_pass_max_wait_s": 1.5
   },
   "filter": {
-    "skip_music": false,
     "single_char_max_s": 0.6,
     "single_char_allow": ["对", "好", "是", "行", "不", "哦"],
     "fillers": ["呃", "嗯", "额", "uh", "um"]

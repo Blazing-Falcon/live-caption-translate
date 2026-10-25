@@ -38,7 +38,6 @@ From the transcript alone, so a run can be rescored without the audio:
   near-zero stage time, so a run with many of them shows a low p50 because it did less work, not
   because the decode got faster;
 - shape: duration, Han characters, inter-line gaps, share of gaps at or above `asr.pause_s`;
-- lyric lines that were translated anyway;
 - fragments: lines the pipeline flagged as stopping mid-thought and still translated. The flag is
   new: a transcript recorded before it has no field, so those runs report zero rather than a guess.
 

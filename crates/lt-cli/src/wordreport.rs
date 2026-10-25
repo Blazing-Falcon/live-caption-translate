@@ -162,7 +162,6 @@ mod tests {
             asr_ms: 100,
             cut,
             logprob: None,
-            music: false,
             fragment: false,
             second_pass: lt_core::types::SecondPass::default(),
         }

@@ -170,7 +170,6 @@ mod tests {
             asr_ms: 1,
             cut: lt_core::types::CutReason::Pause,
             logprob: None,
-            music: false,
             fragment: false,
             second_pass: lt_core::types::SecondPass::default(),
         }

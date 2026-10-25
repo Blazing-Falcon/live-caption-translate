@@ -553,7 +553,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       english: "",
       lang,
       reason: null,
-      music: false,
     };
   }
 
@@ -614,7 +613,6 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           state,
           source: event.text,
           lang,
-          music: event.music === true,
           updatedAt: clock.now(),
         });
         // A larger correction changes what the viewer is reading, so the old Chinese fades out

@@ -284,6 +284,8 @@ decoding = "beam"
 second_pass = "off"
 second_pass_min_logprob = -0.5
 second_pass_threads = 3
+[filter]
+skip_music = true
 [translate]
 model = "q4_0"
 threads = 3
@@ -294,6 +296,7 @@ glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], co
     assert_eq!(config.asr.second_pass_threads, 3);
     assert_eq!(config.translate.threads, 3);
     assert!(config.asr.extra.is_empty());
+    assert!(config.filter.extra.is_empty());
     assert!(config.translate.extra.is_empty());
     assert!(messages.is_empty(), "{messages:?}");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
@@ -301,6 +304,7 @@ glossary = [{ zh = "卓总", en = "President Zhuo", note = "", variants = [], co
     assert!(saved["asr"].get("decoding").is_none());
     assert!(saved["asr"].get("second_pass").is_none());
     assert!(saved["asr"].get("second_pass_min_logprob").is_none());
+    assert!(saved["filter"].get("skip_music").is_none());
     assert!(saved["translate"].get("model").is_none());
     assert!(saved["translate"].get("glossary").is_none());
 }
