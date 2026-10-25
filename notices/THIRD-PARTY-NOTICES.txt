@@ -29,17 +29,6 @@ upstream card https://huggingface.co/GilgameshWind/X-ASR-zh-en declares apache-2
 The conversion states no license of its own. The Apache License 2.0
 text reproduced below for Hy-MT2 applies.
 
-Qwen3-ASR 0.6B — Qwen team, Alibaba Cloud (second-pass speech recognition)
-Upstream: https://huggingface.co/Qwen/Qwen3-ASR-0.6B (model card declares apache-2.0)
-and https://github.com/QwenLM/Qwen3-ASR (Apache-2.0 LICENSE, revision
-7c6daf77a2421100f5fb066495372c00129d39ff).
-Used model: GGUF conversions. Language model Qwen3-ASR-0.6B.Q4_K_M.gguf from
-https://huggingface.co/mradermacher/Qwen3-ASR-0.6B-GGUF (revision
-6cf166e9f1c5bd2521108e3410ee5358de5eabab, declares apache-2.0); audio encoder
-mmproj-Qwen3-ASR-0.6B-Q8_0.gguf from https://huggingface.co/ggml-org/Qwen3-ASR-0.6B-GGUF
-(revision 928ab958557df9aa2ef1c93e0e83c7ad0933fae2, states no license of its own).
-The Apache License 2.0 text reproduced below for Hy-MT2 applies.
-
 NATIVE RUNTIMES
 
 sherpa-onnx 1.13.8 — k2-fsa contributors

@@ -80,7 +80,7 @@ struct OfflineResult {
 }
 
 impl OfflineAsr for XAsrOffline {
-    fn decode(&mut self, samples: &[f32], _language: Option<&str>) -> Result<OfflineText> {
+    fn decode(&mut self, samples: &[f32]) -> Result<OfflineText> {
         if samples.len() > i32::MAX as usize {
             return Err(Error::Engine(format!("{NAME} audio window is too long")));
         }
@@ -123,7 +123,7 @@ impl OfflineAsr for XAsrOffline {
             sys::SherpaOnnxDestroyOfflineStream(stream.as_ptr());
             text
         }?;
-        Ok(OfflineText { text, lang: None })
+        Ok(OfflineText { text })
     }
 
     fn context_s(&self) -> f64 {

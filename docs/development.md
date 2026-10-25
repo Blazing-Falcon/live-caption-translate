@@ -78,7 +78,6 @@ These tests skip if their variables are not set. `check.ps1` shows the skipped t
 |---|---|---|
 | `lt-sherpa` `stream` | `LT_MODELS_DIR` with the 480 ms streaming model, test audio | Streaming X-ASR with greedy search: emitted tokens never change, accuracy |
 | `lt-sherpa` `offline` | `LT_MODELS_DIR` with the offline X-ASR model, test audio | Offline X-ASR on whole clips: accuracy, spaces only next to English words |
-| `lt-llm` `real_speech` | `LT_LLAMA_SERVER`, `LT_MODELS_DIR` with Qwen3-ASR, test audio | Qwen3-ASR in llama-server on whole clips, detected and forced language: accuracy |
 | `lt-llm` `real_server` | `LT_LLAMA_SERVER`, Hy-MT2 (`LT_MT_MODEL` or `LT_MODELS_DIR`) | 37 sentences against the fixture |
 
 `LT_REFERENCE_AUDIO` sets the test audio folder (default `testdata/fetched`).

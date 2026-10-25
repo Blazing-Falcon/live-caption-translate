@@ -1,5 +1,5 @@
 //! X-ASR speech recognition on sherpa-onnx's shared ONNX Runtime: the streaming recognizer and
-//! its offline second pass. The optional Qwen3-ASR second pass runs in llama-server (`lt-llm`).
+//! its offline second pass.
 
 mod runtime;
 mod xasr_offline;

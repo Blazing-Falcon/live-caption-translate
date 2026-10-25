@@ -120,30 +120,6 @@
       "optional": false
     },
     {
-      "id": "qwen3-asr-0.6b-q4_k_m",
-      "name": "Second-pass speech recognition (Qwen3-ASR 0.6B, Q4_K_M)",
-      "role": "asr",
-      "license": "Apache-2.0 (model card of Qwen/Qwen3-ASR-0.6B and LICENSE of QwenLM/Qwen3-ASR, checked 2026-10-15; the mradermacher conversion declares apache-2.0, the ggml-org audio encoder conversion states no license of its own)",
-      "page": "https://huggingface.co/mradermacher/Qwen3-ASR-0.6B-GGUF",
-      "files": [
-        {
-          "name": "Qwen3-ASR-0.6B.Q4_K_M.gguf",
-          "size": 484216288,
-          "sha256": "40d27969c614b4492f330baa41fcc8d00e25264aebbe3f16eaf5e4bd5af35cd5",
-          "url": "https://huggingface.co/mradermacher/Qwen3-ASR-0.6B-GGUF/resolve/6cf166e9f1c5bd2521108e3410ee5358de5eabab/Qwen3-ASR-0.6B.Q4_K_M.gguf",
-          "mirror": ""
-        },
-        {
-          "name": "mmproj-Qwen3-ASR-0.6B-Q8_0.gguf",
-          "size": 214392480,
-          "sha256": "41a342b5e4c514e968cb756de6cd1b7be39eff43c44c57a2ef5fc6522e36603d",
-          "url": "https://huggingface.co/ggml-org/Qwen3-ASR-0.6B-GGUF/resolve/928ab958557df9aa2ef1c93e0e83c7ad0933fae2/mmproj-Qwen3-ASR-0.6B-Q8_0.gguf",
-          "mirror": ""
-        }
-      ],
-      "optional": true
-    },
-    {
       "id": "xasr-stream-960ms-int8-2026-06-05",
       "name": "Speech recognition (X-ASR streaming zh-en, 960 ms, int8)",
       "role": "asr",

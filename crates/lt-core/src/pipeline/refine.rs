@@ -157,11 +157,7 @@ fn second_pass(
     }
     if closed.elapsed() <= max_wait {
         let started = Instant::now();
-        // The live text already says the clause is Chinese. Without this the model tags
-        // Mandarin as Japanese, Korean or Cantonese on lines it heard correctly, and the only
-        // cure was a second decode of the same window.
-        let language = (chinese_chars(&transcript.text) > 0).then_some("zh");
-        let heard = engine.decode(&window.samples, language);
+        let heard = engine.decode(&window.samples);
         record.decode_ms = Some(elapsed_ms(started));
         match heard {
             Ok(heard) => {

@@ -67,14 +67,11 @@ pub trait StreamingAsr: Send {
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct OfflineText {
     pub text: String,
-    /// The language the engine detected, such as "zh" or "ja".
-    pub lang: Option<String>,
 }
 
 /// A recognizer that decodes one whole window of audio (16 kHz mono) at a time.
 pub trait OfflineAsr: Send {
-    /// `language`: decode as this language (such as "zh") instead of detecting it.
-    fn decode(&mut self, samples: &[f32], language: Option<&str>) -> Result<OfflineText>;
+    fn decode(&mut self, samples: &[f32]) -> Result<OfflineText>;
 
     /// Seconds of audio before a clause's window that the engine also reads. Earlier speech gives
     /// a short clause the context its words depend on; `trim` leaves out the text it adds.

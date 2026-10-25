@@ -1,5 +1,5 @@
 {
-  "about": "Live clause texts (streaming X-ASR, 480 ms) and SenseVoice texts of a window around them, decoded from the same recordings (SenseVoice or Qwen3-ASR). expected is the part of the window that belongs to the clause, or null when the live text stays.",
+  "about": "Live clause texts (streaming X-ASR, 480 ms) and SenseVoice texts of a window around them, decoded from the same recordings (SenseVoice or a second pass in llama-server). expected is the part of the window that belongs to the clause, or null when the live text stays.",
   "cases": [
     {
       "live": "游戏对方还是我们正在争取的合作伙伴",

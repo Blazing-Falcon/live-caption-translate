@@ -36,7 +36,7 @@ export interface Config extends ExtraFields {
     threads: number;
     pause_s: number;
     decoding: "greedy" | "beam";
-    second_pass: "off" | "xasr" | "qwen3";
+    second_pass: "off" | "xasr";
     second_pass_threads: number;
     second_pass_max_wait_s: number;
     second_pass_min_logprob: number;
@@ -273,7 +273,6 @@ export const STREAM_CHUNKS: readonly SpeechChoice<"160" | "480" | "960">[] = [
 export const SECOND_PASSES: readonly SpeechChoice<Config["asr"]["second_pass"]>[] = [
   { value: "off", label: "Off", model: null, help: "The live Chinese is final. The English appears soonest." },
   { value: "xasr", label: "X-ASR offline", model: "xasr-offline-int8-2026-06-03", help: "The default. The same recognizer reads each finished line again with the speech before it and fixes misheard words. About 0.2 s per line." },
-  { value: "qwen3", label: "Qwen3-ASR 0.6B", model: "qwen3-asr-0.6b-q4_k_m", help: "A larger model in its own server. About 1.2 GB more memory and about 1 s per line." },
 ];
 
 export function modelSourcePatch(source: Config["models"]["source"]): ConfigPatch {

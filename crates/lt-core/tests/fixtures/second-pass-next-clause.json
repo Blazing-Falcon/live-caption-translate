@@ -1,5 +1,5 @@
 {
-  "about": "Every second-pass window of the 2026-10-15 session (Qwen3-ASR, app 0.5.0), as recorded in its transcript. live is asr_live.text, window is the second pass text of the whole window, next is the live text of the clause that follows, outcome is the recorded second-pass outcome, and expected is the final text the session kept (null when it kept the live text). The test cuts the window at the next clause opening and trims.",
+  "about": "Every second-pass window of the 2026-10-15 session (second pass in llama-server, app 0.5.0), as recorded in its transcript. live is asr_live.text, window is the second pass text of the whole window, next is the live text of the clause that follows, outcome is the recorded second-pass outcome, and expected is the final text the session kept (null when it kept the live text). The test cuts the window at the next clause opening and trims.",
   "cases": [
     {
       "id": 0,

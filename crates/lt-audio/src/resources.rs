@@ -159,13 +159,12 @@ pub struct ProcessSampler {
     backend: platform::Backend,
     app_cpu: CpuHistory,
     translator: Child,
-    speech: Child,
     system_cpu: SystemCpu,
 }
 
 impl ProcessSampler {
-    /// `translator` and `speech` are the pids of the translation and second-pass servers.
-    pub fn new(translator: Arc<AtomicU32>, speech: Arc<AtomicU32>) -> Result<Self> {
+    /// `translator` is the pid of the translation server.
+    pub fn new(translator: Arc<AtomicU32>) -> Result<Self> {
         let backend = platform::Backend::new()?;
         let app_pid = std::process::id();
         if backend.read(app_pid).is_none() {
@@ -178,7 +177,6 @@ impl ProcessSampler {
             backend,
             app_cpu: CpuHistory::default(),
             translator: Child::new(translator),
-            speech: Child::new(speech),
             system_cpu: SystemCpu::default(),
         })
     }
@@ -192,18 +190,14 @@ impl ResourceSampler for ProcessSampler {
         let translator = self
             .translator
             .observe(&self.backend, self.app_pid, app, now);
-        let speech = self.speech.observe(&self.backend, self.app_pid, app, now);
         let cpu_system_pct = self.system_cpu.observe(self.backend.system_times());
         ResourceSample {
             cpu_app_pct: app_usage.cpu_pct,
             cpu_translator_pct: translator.cpu_pct,
-            cpu_speech_pct: speech.cpu_pct,
             rss_app_mb: app_usage.rss_mb,
             rss_translator_mb: translator.rss_mb,
-            rss_speech_mb: speech.rss_mb,
             private_app_mb: app_usage.private_mb,
             private_translator_mb: translator.private_mb,
-            private_speech_mb: speech.private_mb,
             cpu_system_pct,
         }
     }
@@ -456,7 +450,7 @@ mod tests {
     #[test]
     fn the_current_process_reports_private_bytes_and_no_servers() {
         let no_server = Arc::new(AtomicU32::new(0));
-        let mut sampler = ProcessSampler::new(no_server.clone(), no_server).unwrap();
+        let mut sampler = ProcessSampler::new(no_server.clone()).unwrap();
         let sample = sampler.sample();
         assert!(sample.private_app_mb > 0, "the app has committed memory");
         assert!(sample.rss_app_mb > 0, "the app has a working set");
@@ -467,10 +461,7 @@ mod tests {
             sample.private_app_mb, sample.rss_app_mb,
             "private bytes and working set are separate counters"
         );
-        // With no server running, their readings are zero rather than the app's.
-        assert_eq!(
-            (sample.private_translator_mb, sample.private_speech_mb),
-            (0, 0)
-        );
+        // With no server running, its reading is zero rather than the app's.
+        assert_eq!(sample.private_translator_mb, 0);
     }
 }

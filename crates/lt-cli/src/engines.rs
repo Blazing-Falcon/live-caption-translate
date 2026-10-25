@@ -21,8 +21,6 @@ pub struct Engines {
     pub second_pass: Option<Box<dyn OfflineAsr>>,
     pub translator: Box<dyn Translator>,
     pub pid: Arc<AtomicU32>,
-    /// The second-pass server's pid, zero when it is off.
-    pub speech_pid: Arc<AtomicU32>,
     // These guards outlive the pipeline and kill the children on every exit path.
     #[cfg(feature = "llm")]
     pub supervisor: Option<lt_llm::supervisor::Supervisor>,
@@ -78,7 +76,6 @@ pub fn build(
             second_pass: None,
             translator: Box::<FakeTranslator>::default(),
             pid: Arc::new(AtomicU32::new(0)),
-            speech_pid: Arc::new(AtomicU32::new(0)),
             #[cfg(feature = "llm")]
             supervisor: None,
         });
@@ -90,23 +87,10 @@ pub fn build(
         let mut engine_config = config.clone();
         engine_config.models.dir = models.to_string_lossy().into_owned();
         let asr = registry.build_asr(&engine_config)?;
-        let mut speech_pid = Arc::new(AtomicU32::new(0));
         let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass == "xasr" {
             Some(Box::new(
                 lt_sherpa::xasr_offline(models, config).context("Starting the second pass")?,
             ))
-        } else if config.asr.second_pass == "qwen3" {
-            let server = binary.map(Path::to_path_buf).unwrap_or_else(default_binary);
-            let server = lt_llm::speech::Qwen3Server::start(
-                &server,
-                &models.join(lt_llm::speech::QWEN3_MODEL),
-                &config.asr,
-                config.performance.low_priority,
-                cancelled,
-            )
-            .context("Starting the second-pass recognizer")?;
-            speech_pid = server.child_pid();
-            Some(Box::new(server))
         } else {
             None
         };
@@ -117,7 +101,6 @@ pub fn build(
             translator,
             supervisor,
             pid,
-            speech_pid,
         })
     }
     #[cfg(not(all(feature = "sherpa", feature = "llm")))]

@@ -9,20 +9,18 @@
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition (default) | archive, 4 files | 133,895,136 | in the manifest |
 | `hy-mt2-1.8b-ternary-tq2_0` | Translation | download `Hy-MT2-1.8B-1.25Bit.gguf`, kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` | 461,860,800 (606,564,288 kept) | in the manifest |
 | `xasr-offline-int8-2026-06-03` | Second pass (`asr.second_pass = "xasr"`, default) | archive, 4 files | 136,396,739 | in the manifest |
-| `qwen3-asr-0.6b-q4_k_m` | Second pass (`asr.second_pass = "qwen3"`, optional) | `Qwen3-ASR-0.6B.Q4_K_M.gguf`, `mmproj-Qwen3-ASR-0.6B-Q8_0.gguf` | 698,608,768 | in the manifest |
 | `xasr-stream-960ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,895,831 | in the manifest |
 | `xasr-stream-160ms-int8-2026-06-05` | Live speech recognition (optional) | archive, 4 files | 133,898,007 | in the manifest |
 
 Sources (Hugging Face):
 
 - Hy-MT2 1.25-bit: `tencent/Hy-MT2-1.8B-1.25Bit-GGUF`, revision `9df5c824a00a744fb0512a29c640466f4d97dfb0` (AngelSlim 1.25-bit quantization)
-- Qwen3-ASR: `mradermacher/Qwen3-ASR-0.6B-GGUF` revision `6cf166e9f1c5bd2521108e3410ee5358de5eabab` (the language model, Q4_K_M) and `ggml-org/Qwen3-ASR-0.6B-GGUF` revision `928ab958557df9aa2ef1c93e0e83c7ad0933fae2` (the audio encoder, Q8_0), conversions of `Qwen/Qwen3-ASR-0.6B`
 - X-ASR streaming: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub (`sherpa-onnx-x-asr-160ms-…`, `-480ms-…` and `-960ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2`). The int8 files exist only in these archives.
 - X-ASR offline: the same release, `sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03.tar.bz2`.
 
 Rules:
 
-- The first-run download takes the required models: the 480 ms streaming model, the offline X-ASR model and the translator. The optional models (the other chunk sizes and Qwen3-ASR) download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
+- The first-run download takes the required models: the 480 ms streaming model, the offline X-ASR model and the translator. The other chunk sizes are optional and download only when the user selects them on the Performance page. Listening does not start while a selected model is missing.
 - Files go to `<models dir>/<id>/<file>`.
 - Downloads continue from `<file>.part` with HTTP range requests. The app checks the SHA-256 and then renames the file.
 - A file with `convert` is a GGUF whose weights are STQ1_0, a ternary type that only an unmerged ARM branch of llama.cpp reads. After its SHA-256 check, the app rewrites those weights as TQ2_0 (the same blocks of 256 weights of -1, 0 or +1 times one fp16 scale, which llama.cpp runs on x86), checks the result's size and SHA-256, keeps it under the `convert` name and deletes the download. Every weight keeps its value; the rest of the file is copied unchanged.
@@ -36,7 +34,6 @@ Rules:
 | Component | License |
 |---|---|
 | X-ASR | Apache-2.0 (upstream `Gilgamesh-J/X-ASR`) |
-| Qwen3-ASR 0.6B | Apache-2.0 (`Qwen/Qwen3-ASR-0.6B` model card, `QwenLM/Qwen3-ASR` LICENSE; the mradermacher conversion declares apache-2.0) |
 | Hy-MT2 1.8B | Apache-2.0 (recorded; confirm on the `tencent/Hy-MT2-1.8B` model card) |
 | Hy-MT2 1.8B 1.25-bit | Apache-2.0 (`tencent/Hy-MT2-1.8B-1.25Bit-GGUF` LICENSE.txt and model card) |
 | sherpa-onnx 1.13.8 | Apache-2.0 |
@@ -67,14 +64,6 @@ The full texts are in `notices/`. The package contains `notices/THIRD-PARTY-NOTI
 
 ASCEND clips (20), whole clips, 2026-10-25, `cargo test -p lt-sherpa --release --test offline`: character error rate 0.091, against 0.102 for the streaming model (`--test stream`). Clause windows of the v0.7.0 review runs, Python replay with the app's trim rules, Ryzen 7 5700X, 2026-10-25: character errors over drama, 5 min of conversation and FLEURS (3,262 characters) 238 with the offline pass on every line and 5 s of context, against 263 for the live text; context 0 s: 259, 2 s: 246, 10 s: 239, 20 s: 240 on the same lines.
 
-**Qwen3-ASR (second pass, optional):** a second llama-server with the audio encoder (`--mmproj`), `asr.second_pass_threads` (4 by default), context 768, `--load-mode none --cache-ram 0`, no warm-up. The context must hold the longest window: a clause is cut at the 30 s wait cap and its end time adds 0.6 s for the last word, and the window adds 0.3 s before and 0.8 s after it, so it holds at most 31.7 s of audio. That is 32 chunks of 13 audio tokens (416); the chat template and the 256-token answer cap add about 280. The total, about 700, is under 768 and over 512 (arithmetic, not measured). The engine starts it with the pipeline and stops it with the pipeline. It sends no warm-up request of its own; llama.cpp's own warm-up (`--warmup`, on by default) still runs and reserves the audio-encoder buffers for a 30 s dummy. Each window goes as 16-bit WAV to `/v1/chat/completions`; the answer is `language <Name><asr_text><text>`. A forced language is the start of the answer (`language Chinese<asr_text>`). Its failures show as `failed` second-pass lines, not as an engine state, because the live recognizer keeps working.
-
-Against the same model in ONNX Runtime (sherpa-onnx int8), on the drama clip, real time, 2 threads, 2026-10-15, Ryzen 7 5700X: memory 275 MB for the app plus 1165 MB for the server (with the server's context then at 1024), against 1760 MB in the app, which grew by about 33 MB for each second of the longest window read (2143 MB after a 31 s window); decode 845 ms against 916 ms (median); character error rate 6.2% against 7.0%.
-
-ASCEND clips (20, Chinese and English mixed), whole clips, 2026-10-15, `cargo test -p lt-llm --release --test real_speech`: character error rate of Qwen3-ASR 0.131 with the detected language and with `zh` forced. The streaming X-ASR on the same clips: 0.102.
-
-SenseVoice Small (sherpa-onnx int8) was the earlier second pass. On the drama clip it lowered the character error rate from 9.9% (live text) to 9.5% and changed some correct lines; Qwen3-ASR lowered it to 6.2% (real time, 2026-10-13..15, same PC). On the ASCEND clips its error rate was 0.184 (0.159 with `zh` forced).
-
 **Translation model:** Hy-MT2 1.8B in Tencent's 1.25-bit quantization (AngelSlim), as TQ2_0. The app used the 4-bit Q4_0 file (mradermacher, imatrix) before:
 
 | | 1.25-bit (used) | Q4_0 (removed) |
@@ -104,15 +93,15 @@ llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c 
 ```
 
 - `--override-kv` corrects the GGUF's end token (the correct id is 120020). Only the translator gets it.
-- `<ctx>` is `translate.ctx` (1024 by default) for the translator and 768 for Qwen3-ASR.
+- `<ctx>` is `translate.ctx` (1024 by default).
 - `-ub 128 -b 512` lower the prefill activation buffers, which grow with the micro-batch, from llama.cpp's 512 (`-ub`) and 2048 (`-b`). This is commit charge, not working set: the weights are most of the working set and these flags do not touch them. Prefill may split into more batches.
 - `<threads>` is `translate.threads` (4 by default), at most the PC's logical CPUs.
 - Do not add `--no-repack`. llama.cpp repacks some weight types for x86; for the Q4_0 file the app used before, that made Hy-MT2 much faster.
 - `--load-mode none` reads the model into memory instead of mapping the file. The repacked copy is the only copy then. With a mapped file, the original pages also stay in memory: for the Q4_0 file, 2074 MB working set against 1271 MB, with the same translations (26 lines, 2026-10-15, Ryzen 7 5700X).
-- `--cache-ram 0` turns off the host prompt cache. By default llama-server keeps the state of each earlier prompt in memory, up to 8 GiB, so the servers grew for the whole session. The one slot still reuses the prefix it shares with the last request. Measured 2026-10-15, Ryzen 7 5700X: Qwen3-ASR after 60 windows 1466 MB with the cache, 996 MB without (flat after the first 10); the translator after the 150 lines of a drama session 1240 MB with the cache, 710 MB without, 463 and 466 ms per line, the same translations.
+- `--cache-ram 0` turns off the host prompt cache. By default llama-server keeps the state of each earlier prompt in memory, up to 8 GiB, so the server grew for the whole session. The one slot still reuses the prefix it shares with the last request. Measured 2026-10-15, Ryzen 7 5700X: the translator after the 150 lines of a drama session 1240 MB with the cache, 710 MB without, 463 and 466 ms per line, the same translations.
 - With `performance.low_priority`, the server runs at below-normal priority.
 
-The memory figures on this page are working set (`WorkingSetSize`), which counts pages shared with other processes and drops when Windows trims it. The app samples private bytes (`PROCESS_MEMORY_COUNTERS_EX.PrivateUsage`, commit charge) for itself and both servers alongside it. Compare a number only with a number of the same counter.
+The memory figures on this page are working set (`WorkingSetSize`), which counts pages shared with other processes and drops when Windows trims it. The app samples private bytes (`PROCESS_MEMORY_COUNTERS_EX.PrivateUsage`, commit charge) for itself and the translator alongside it. Compare a number only with a number of the same counter.
 
 **Requests:**
 

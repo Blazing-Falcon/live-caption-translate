@@ -234,15 +234,11 @@ pub struct PipelineStats {
     /// Percent of one CPU core used by the app over the last second.
     pub cpu_app_pct: f32,
     pub cpu_translator_pct: f32,
-    /// The second-pass server (Qwen3-ASR); zero when it is off.
-    pub cpu_speech_pct: f32,
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
-    pub rss_speech_mb: u32,
-    /// Private bytes (commit charge) of the same three processes.
+    /// Private bytes (commit charge) of the same two processes.
     pub private_app_mb: u32,
     pub private_translator_mb: u32,
-    pub private_speech_mb: u32,
     /// Whole-PC CPU busy percent over the last second.
     pub cpu_system_pct: f32,
     /// Median delay from a spoken word to the English that covers it, last minute.

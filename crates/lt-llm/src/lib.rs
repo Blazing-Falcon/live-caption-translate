@@ -3,7 +3,6 @@
 pub mod client;
 pub mod models;
 pub mod prompts;
-pub mod speech;
 pub mod supervisor;
 mod ternary;
 

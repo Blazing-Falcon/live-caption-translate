@@ -20,10 +20,7 @@ fn offline_text_is_accurate_and_spaced_like_the_live_text() {
     .unwrap();
     let (mut wrong, mut total) = (0, 0);
     for clip in &clips {
-        let text = engine
-            .decode(&wav(&audio.join(&clip.file)), None)
-            .unwrap()
-            .text;
+        let text = engine.decode(&wav(&audio.join(&clip.file))).unwrap().text;
         let chars: Vec<char> = text.chars().collect();
         for (index, pair) in chars.windows(3).enumerate() {
             if pair[1] == ' ' {
@@ -43,6 +40,6 @@ fn offline_text_is_accurate_and_spaced_like_the_live_text() {
     assert!(cer <= 0.10, "character error rate {cer:.3}");
     // A window cut short by a break must not reach the encoder's exception, which aborts.
     for samples in [0, 800] {
-        assert!(engine.decode(&vec![0.0; samples], None).is_ok());
+        assert!(engine.decode(&vec![0.0; samples]).is_ok());
     }
 }

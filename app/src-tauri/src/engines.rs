@@ -15,22 +15,9 @@ use std::{
     time::Duration,
 };
 
-/// The live recognizer, the second-pass recognizer unless it is off, and the pid of the
-/// second-pass server (zero unless Qwen3-ASR runs in one).
-pub type Speech = (
-    Box<dyn StreamingAsr>,
-    Option<Box<dyn OfflineAsr>>,
-    Arc<AtomicU32>,
-);
+type Recognizers = (Box<dyn StreamingAsr>, Option<Box<dyn OfflineAsr>>);
 
-/// Offline X-ASR runs in the app; Qwen3-ASR runs in its own llama-server (`binary`), and quitting
-/// (`cancelled`) stops its start.
-pub fn speech(
-    config: &Config,
-    models: &Path,
-    binary: &Path,
-    cancelled: &AtomicBool,
-) -> Result<Speech, String> {
+pub fn recognizers(config: &Config, models: &Path) -> Result<Recognizers, String> {
     let mut registry = EngineRegistry::default();
     lt_sherpa::register_engines(&mut registry);
     let mut engine_config = config.clone();
@@ -38,25 +25,12 @@ pub fn speech(
     let asr = registry
         .build_asr(&engine_config)
         .map_err(|e| e.to_string())?;
-    match config.asr.second_pass.as_str() {
-        "xasr" => {
-            let engine =
-                lt_sherpa::xasr_offline(models, config).map_err(|e| format!("Second pass: {e}"))?;
-            return Ok((asr, Some(Box::new(engine)), Arc::default()));
-        }
-        "qwen3" => {}
-        _ => return Ok((asr, None, Arc::default())),
+    if config.asr.second_pass != "xasr" {
+        return Ok((asr, None));
     }
-    let server = lt_llm::speech::Qwen3Server::start(
-        binary,
-        &models.join(lt_llm::speech::QWEN3_MODEL),
-        &config.asr,
-        config.performance.low_priority,
-        cancelled,
-    )
-    .map_err(|e| format!("Second pass: {e}"))?;
-    let pid = server.child_pid();
-    Ok((asr, Some(Box::new(server)), pid))
+    let second_pass =
+        lt_sherpa::xasr_offline(models, config).map_err(|e| format!("Second pass: {e}"))?;
+    Ok((asr, Some(Box::new(second_pass))))
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {

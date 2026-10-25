@@ -403,7 +403,7 @@ struct ScriptedSecondPass {
 }
 
 impl OfflineAsr for ScriptedSecondPass {
-    fn decode(&mut self, samples: &[f32], _language: Option<&str>) -> Result<OfflineText> {
+    fn decode(&mut self, samples: &[f32]) -> Result<OfflineText> {
         assert!(!samples.is_empty(), "a window without audio");
         let _ = self.started.try_send(());
         let text = match self.replies.pop_front() {
@@ -415,10 +415,7 @@ impl OfflineAsr for ScriptedSecondPass {
             }
             None => "",
         };
-        Ok(OfflineText {
-            text: text.into(),
-            lang: Some("zh".into()),
-        })
+        Ok(OfflineText { text: text.into() })
     }
 }
 

@@ -437,7 +437,7 @@ impl Config {
         number!(asr, threads, 1, MAX_THREADS);
         number!(asr, pause_s, 0.3, 3.0);
         choice!(asr, decoding, &["greedy", "beam"]);
-        choice!(asr, second_pass, &["off", "xasr", "qwen3"]);
+        choice!(asr, second_pass, &["off", "xasr"]);
         number!(asr, second_pass_threads, 1, MAX_THREADS);
         number!(asr, second_pass_max_wait_s, 0.5, 5.0);
         number!(asr, second_pass_min_logprob, -5.0, 0.0);
