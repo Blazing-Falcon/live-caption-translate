@@ -50,6 +50,8 @@ export const NOW = {
   }),
   skipped: (id: number): PipelineEvent => ({ type: "skipped", id, reason: "catch_up" }),
   delta: (id: number, text_so_far: string): PipelineEvent => ({ type: "translation_delta", id, text_so_far }),
+  preview: (id: number, ids: number[], text: string): PipelineEvent => ({ type: "translation_preview", id, ids, text }),
+  sealed: (id: number, ids: number[], text: string): PipelineEvent => ({ type: "unit_sealed", id, ids, text }),
   final: (id: number, text: string): PipelineEvent => ({
     type: "translation_final", id, text,
     timing: { speech_end_ms: 1, asr_done_ms: 2, queued_ms: 3, sent_ms: 4, first_token_ms: 5, done_ms: 6, prompt_tokens: 1, cached_tokens: 0, generated_tokens: 1 },

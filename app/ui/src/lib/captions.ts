@@ -1,5 +1,5 @@
 import { writable, type Readable } from "svelte/store";
-import { OVERLAY_LIMITS, formatAccelerator, type Config } from "./settings";
+import { formatAccelerator, type Config } from "./settings";
 import type {
   AppState,
   CaptionLine,
@@ -293,11 +293,6 @@ export function captionBlocks(
   return blocks;
 }
 
-export function visibleBlocks(blocks: readonly CaptionBlock[], wanted: number): CaptionBlock[] {
-  const count = Math.min(OVERLAY_LIMITS.panel_lines.max, Math.max(OVERLAY_LIMITS.panel_lines.min, Math.round(wanted)));
-  return blocks.slice(-count);
-}
-
 export interface FlowPiece {
   key: UtteranceId;
   text: string;
@@ -321,7 +316,7 @@ export function flowPieces(blocks: readonly CaptionBlock[], showSource: boolean)
       english.push({ key: block.key, text: block.source, kind: "english" });
       continue;
     }
-    if (block.source !== "" && (showSource || !block.sealed)) {
+    if (block.source !== "" && showSource) {
       source.push({ key: block.key, text: block.source, kind: "final" });
     }
     if (block.live !== "") source.push({ key: block.key, text: block.live, kind: "live" });

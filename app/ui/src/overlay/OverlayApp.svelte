@@ -15,6 +15,16 @@
 
   const moving = $derived($appState?.overlay_moving ?? false);
   const lock = (): Promise<unknown> => session.act("lock", () => api.setOverlayMoving(false));
+
+  const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let reducedMotion = $state(motion.matches);
+  $effect(() => {
+    const update = (): void => {
+      reducedMotion = motion.matches;
+    };
+    motion.addEventListener("change", update);
+    return () => motion.removeEventListener("change", update);
+  });
 </script>
 
 {#if $config}
@@ -35,6 +45,7 @@
         status={$captions.status}
         showSource={$config.overlay.show_source}
         panelLines={$config.overlay.panel_lines}
+        {reducedMotion}
       />
     {:else}
       <div class="flow-slot">
@@ -43,6 +54,7 @@
           status={$captions.status}
           showSource={$config.overlay.show_source}
           flowLines={$config.overlay.flow_lines}
+          {reducedMotion}
         />
       </div>
     {/if}

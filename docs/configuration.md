@@ -127,8 +127,8 @@ The app always starts and supervises the bundled llama-server.
 | `background` | 0–1 | live | Background opacity. The control window warns below 0.5. |
 | `show_source` | bool | live | Show the Chinese line above the English line |
 | `panel_edge` | `left`, `right` | live | Default edge for the panel |
-| `panel_lines` | 1–10 | live | Lines in the panel |
-| `flow_lines` | 1–10 | live | Wrapped lines kept of each running-text paragraph. Older text scrolls out at the top. |
+| `panel_lines` | 1–10 | live | Blocks kept in the panel. The panel fills from the top and rolls up. |
+| `flow_lines` | 1–10 | live | Wrapped lines kept of each running-text paragraph. Both paragraphs fill from the top and roll up. |
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
 | `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
 

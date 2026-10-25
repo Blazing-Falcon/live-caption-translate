@@ -1,12 +1,16 @@
 <script lang="ts">
-  import { visibleBlocks, type CaptionBlock, type StatusLine } from "../lib/captions";
-  import CaptionLine from "./CaptionLine.svelte";
+  import type { CaptionBlock, StatusLine } from "../lib/captions";
+  import { OVERLAY_LIMITS } from "../lib/settings";
+  import CaptionBlockView from "./CaptionBlock.svelte";
+  import CaptionViewport from "./CaptionViewport.svelte";
+  import StatusPill from "./StatusPill.svelte";
 
   interface Props {
     blocks: readonly CaptionBlock[];
     status?: StatusLine | null;
     showSource?: boolean;
     panelLines?: number;
+    reducedMotion?: boolean;
   }
 
   let {
@@ -14,27 +18,50 @@
     status = null,
     showSource = true,
     panelLines = 5,
+    reducedMotion = false,
   }: Props = $props();
 
-  const shown = $derived(visibleBlocks(blocks, panelLines));
+  const keep = $derived(
+    Math.min(OVERLAY_LIMITS.panel_lines.max, Math.max(OVERLAY_LIMITS.panel_lines.min, Math.round(panelLines))),
+  );
+  let pruned = $state<ReadonlySet<number>>(new Set());
+  const shown = $derived(blocks.filter((block) => !pruned.has(block.key)).slice(-keep));
+  const keys = $derived(shown.map((block) => block.key));
+
+  function prune(gone: number[]): void {
+    pruned = new Set([...pruned, ...gone]);
+  }
+
+  $effect(() => {
+    const live = new Set(blocks.map((block) => block.key));
+    if ([...pruned].some((key) => !live.has(key))) {
+      pruned = new Set([...pruned].filter((key) => live.has(key)));
+    }
+  });
 </script>
 
 <section class="panel" aria-label="Live captions" data-testid="caption-panel">
-  {#if status}
-    <div class="status-row"><CaptionLine {status} /></div>
+  <StatusPill {status} />
+  {#if shown.length === 0 && !status}
+    <p class="waiting">Waiting for speech</p>
   {/if}
-  <div class="history">
-    {#if shown.length === 0 && !status}
-      <p class="waiting">Waiting for speech</p>
-    {/if}
+  <CaptionViewport
+    snap="block"
+    {keys}
+    keep={keep}
+    {reducedMotion}
+    onprune={prune}
+    gap="var(--panel-gap)"
+    padding="var(--space-4) 18px var(--space-5)"
+  >
     {#each shown as block, index (block.key)}
-      <CaptionLine
+      <CaptionBlockView
         {block}
         {showSource}
         age={shown.length - 1 - index}
       />
     {/each}
-  </div>
+  </CaptionViewport>
 </section>
 
 <style>
@@ -49,30 +76,14 @@
     border-radius: var(--radius-overlay);
   }
 
-  /* The status is its own flex item, so a full history shrinks the captions instead of pushing
-   * the status off the top: the history is bottom-anchored and clips its oldest line, while the
-   * status keeps its height. */
-  .status-row {
-    flex: none;
-    padding: var(--space-4) 18px 0;
-  }
-
   .waiting {
+    position: absolute;
+    left: 18px;
+    bottom: var(--space-5);
     margin: 0;
     font-size: calc(var(--font-px, 26) * 1px);
     font-weight: 500;
     color: var(--ov-pending);
     text-shadow: var(--ov-halo);
-  }
-
-  .history {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: var(--panel-gap);
-    padding: var(--space-4) 18px var(--space-5);
-    overflow: hidden;
   }
 </style>
