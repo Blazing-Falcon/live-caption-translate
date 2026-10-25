@@ -20,10 +20,6 @@ pub enum Commands {
         #[command(subcommand)]
         command: ModelCommands,
     },
-    /// Measure a real engine on local WAV clips or translation fixtures.
-    Bench(BenchArgs),
-    /// Capture Windows playback without opening a window.
-    Live(LiveArgs),
 }
 
 #[derive(Args)]
@@ -64,52 +60,6 @@ pub enum ModelCommands {
         #[arg(long, env = "LT_MODELS_DIR")]
         dir: Option<PathBuf>,
     },
-}
-
-#[derive(Args)]
-pub struct BenchArgs {
-    #[arg(value_enum)]
-    pub engine: BenchEngine,
-    /// WAV file/folder for ASR, or sentence JSON for MT.
-    #[arg(default_value = "testdata/fetched/ascend")]
-    pub input: PathBuf,
-    #[arg(long, env = "LT_MODELS_DIR")]
-    pub models: Option<PathBuf>,
-    #[arg(long, env = "LT_CONFIG")]
-    pub config: Option<PathBuf>,
-    #[arg(long, env = "LT_LLAMA_SERVER")]
-    pub server: Option<PathBuf>,
-}
-#[derive(Clone, Copy, ValueEnum)]
-pub enum BenchEngine {
-    /// The streaming recognizer.
-    Asr,
-    Mt,
-}
-
-#[derive(Args)]
-pub struct LiveArgs {
-    #[arg(long, value_enum, default_value = "system")]
-    pub mode: CaptureModeArg,
-    #[arg(long, action = clap::ArgAction::Append)]
-    pub app: Vec<String>,
-    #[arg(long, env = "LT_CONFIG")]
-    pub config: Option<PathBuf>,
-    #[arg(long, env = "LT_MODELS_DIR")]
-    pub models: Option<PathBuf>,
-    #[arg(long, env = "LT_LLAMA_SERVER")]
-    pub server: Option<PathBuf>,
-    /// Stop and flush after this many seconds (omit to listen until Ctrl+C).
-    #[arg(long, value_parser = positive)]
-    pub dur: Option<f64>,
-    /// Write terminal JSONL records and the session latency summary here.
-    #[arg(long)]
-    pub out: Option<PathBuf>,
-}
-#[derive(Clone, Copy, ValueEnum)]
-pub enum CaptureModeArg {
-    System,
-    Apps,
 }
 
 fn nonnegative(value: &str) -> Result<f64, String> {

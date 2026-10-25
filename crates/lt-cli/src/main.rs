@@ -1,7 +1,5 @@
 mod args;
-mod bench;
 mod engines;
-mod live;
 mod replay;
 mod report;
 mod wordreport;
@@ -21,8 +19,6 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     let config_path = match &cli.command {
         Commands::Replay(args) => args.config.as_deref(),
-        Commands::Bench(args) => args.config.as_deref(),
-        Commands::Live(args) => args.config.as_deref(),
         Commands::Models { .. } => None,
     };
     let (config, messages) = engines::config(config_path)?;
@@ -48,9 +44,7 @@ fn main() -> Result<()> {
         .context("Installing graceful shutdown signal handler")?;
     let result = match cli.command {
         Commands::Replay(args) => replay::replay(args, config, cancelled.clone()),
-        Commands::Bench(args) => bench::bench(args, config, cancelled.clone()),
         Commands::Models { command } => models(command, config, cancelled.clone()),
-        Commands::Live(args) => live::live(args, config, cancelled.clone()),
     };
     match result {
         Err(error)

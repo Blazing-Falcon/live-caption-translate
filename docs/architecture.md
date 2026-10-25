@@ -10,7 +10,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 | `crates/lt-audio` | WASAPI capture (system mix or selected apps), WAV replay, resampling, normalization |
 | `crates/lt-sherpa` | X-ASR speech recognition: the streaming recognizer and its offline second pass |
 | `crates/lt-llm` | llama-server clients, the server supervisor, model downloads |
-| `crates/lt-cli` | Headless runner: `replay`, `live`, `bench`, `models fetch` |
+| `crates/lt-cli` | Headless runner: `replay`, `models fetch` |
 | `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge |
 | `app/ui` | Svelte UI: `overlay` and `control` |
 | `models/manifest.json` | Model files, URLs and hashes |

@@ -204,30 +204,6 @@ impl Drop for WavSource {
     }
 }
 
-/// Decode a finite benchmark/ASR clip with the same downmix/resampler path as
-/// replay. Returns exact 16 kHz samples, without normalization or frame padding.
-pub fn read_wav_mono16(path: impl AsRef<Path>) -> Result<Vec<f32>> {
-    let source = WavSource::new(path.as_ref(), Pace::AsFastAsPossible)?;
-    let mut reader = WavReader::open(path).map_err(wav_error)?;
-    let mut remaining = u64::from(source.file_frames);
-    let channels = usize::from(source.spec.channels);
-    let packet_frames = (4_096 / channels).max(1);
-    let mut interleaved = Vec::with_capacity(packet_frames * channels);
-    let mut mono = Vec::with_capacity(packet_frames);
-    let mut output = Vec::new();
-    let mut resampler = MonoResampler::new(source.spec.sample_rate)?;
-    while remaining != 0 {
-        let count = (remaining as usize).min(packet_frames);
-        read_packet(&mut reader, source.spec, count, &mut interleaved)?;
-        mono.clear();
-        downmix_interleaved(&interleaved, source.spec.channels, &mut mono)?;
-        resampler.push(&mono, &mut output)?;
-        remaining -= count as u64;
-    }
-    resampler.finish(&mut output)?;
-    Ok(output)
-}
-
 fn wav_error(error: hound::Error) -> Error {
     match error {
         hound::Error::IoError(error) => Error::Io(error),

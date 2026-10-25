@@ -1,6 +1,8 @@
-#[cfg(any(feature = "llm", feature = "sherpa"))]
+#[cfg(not(all(feature = "sherpa", feature = "llm")))]
+use anyhow::bail;
+#[cfg(feature = "llm")]
 use anyhow::Context;
-use anyhow::{bail, Result};
+use anyhow::Result;
 use lt_core::{
     bus::EventBus,
     config::{Config, Message},
@@ -147,26 +149,4 @@ fn default_binary() -> PathBuf {
         .ok()
         .and_then(|path| path.parent().map(|parent| parent.join(name)))
         .unwrap_or_else(|| name.into())
-}
-
-#[cfg(feature = "sherpa")]
-pub fn wav_files(input: &Path) -> Result<Vec<PathBuf>> {
-    if input.is_file() {
-        return Ok(vec![input.to_path_buf()]);
-    }
-    let mut files: Vec<_> = std::fs::read_dir(input)
-        .with_context(|| format!("Reading {}", input.display()))?
-        .filter_map(|entry| entry.ok().map(|entry| entry.path()))
-        .filter(|path| {
-            path.is_file()
-                && path
-                    .extension()
-                    .is_some_and(|ext| ext.eq_ignore_ascii_case("wav"))
-        })
-        .collect();
-    files.sort();
-    if files.is_empty() {
-        bail!("No WAV files in {}", input.display());
-    }
-    Ok(files)
 }
