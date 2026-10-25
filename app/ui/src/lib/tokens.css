@@ -32,7 +32,6 @@
 
   --slide-ms: 120ms;
   --fade-ms: 400ms;
-  --swap-ms: 150ms;
   --caret-ms: 1000ms;
 
   /* Overlay: always dark, independent of the Windows theme. */

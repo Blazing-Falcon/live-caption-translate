@@ -50,14 +50,7 @@
       <p class="label">English · Not translated</p>
     {:else}
       {#if sourceVisible}
-        {#if line.swap}
-          <p class="source swapping" lang="zh">
-            <span class="swap-out" aria-hidden="true">{line.swap.from}</span>
-            <span class="swap-in">{line.source}</span>
-          </p>
-        {:else}
-          <p class="source" class:heard={line.state === "live"} lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
-        {/if}
+        <p class="source" class:heard={line.state === "live"} lang={line.state === "live" ? undefined : "zh"}>{line.source}</p>
       {/if}
       {#if line.preview}
         <p class="english preview">{line.preview}</p>
@@ -119,43 +112,6 @@
    * clause, so the reader can tell what the recognizer may still change. */
   .source.heard {
     color: var(--ov-dim);
-  }
-
-  /* The corrected Chinese fades in over the text the viewer was reading, so a larger correction
-   * reads as a change rather than as a flicker. */
-  .swapping {
-    display: grid;
-  }
-
-  .swapping > span {
-    grid-area: 1 / 1;
-  }
-
-  .swap-out {
-    animation: swap-out var(--swap-ms) ease-in forwards;
-  }
-
-  .swap-in {
-    animation: swap-in var(--swap-ms) ease-out;
-  }
-
-  @keyframes swap-out {
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes swap-in {
-    from {
-      opacity: 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .swap-out,
-    .swap-in {
-      animation: none;
-    }
   }
 
   .dots {

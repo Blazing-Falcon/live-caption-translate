@@ -8,7 +8,6 @@ import type {
   FailReason,
   ListeningStateKind,
   PipelineEvent,
-  SecondPass,
   SourceInfo,
   SourceStateKind,
   UtteranceId,
@@ -32,14 +31,6 @@ export const systemClock: Clock = {
   setTimer: (fn, ms) => setTimeout(fn, ms),
   clearTimer: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
 };
-
-export function prefersReducedMotion(): boolean {
-  try {
-    return typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch {
-    return false;
-  }
-}
 
 export type StatusKind =
   | "models_missing"
@@ -190,27 +181,8 @@ export function ageOpacity(age: number): number {
   return AGE_OPACITY[Math.min(Math.max(age, 0), AGE_OPACITY.length - 1)] ?? 1;
 }
 
-/** Whether the second pass changed the live text by at most one character. Its distance counts
- * letters and digits only, so a punctuation-only correction counts as none. */
-function isTrivialSwap(secondPass: SecondPass): boolean {
-  const distance = secondPass.distance;
-  return secondPass.live_text !== undefined && distance !== undefined && distance <= 1;
-}
-
-/** How long the display takes to fade one Chinese row out and the corrected one in. */
-export const SWAP_MS = 150;
-
-/** The Chinese a line showed before the second pass replaced it. The display fades it out
- * under the corrected text, so a reader can see that the line changed under them. */
-export interface CaptionSwap {
-  from: string;
-  /** Counts replacements, so a row that re-enters the view does not replay the crossfade. */
-  seq: number;
-}
-
 /** A caption line with what the display needs beyond the text itself. */
 export interface CaptionLineView extends CaptionLine {
-  swap?: CaptionSwap;
   /** English that the next translation replaces: the preview of the lines this row stands for. */
   preview?: string;
 }
@@ -234,7 +206,6 @@ export function withPreview(
     .map((line) => line.source)
     .join("");
   const row: CaptionLineView = { ...first, state: "pending", source, english: "", preview: preview.text };
-  delete row.swap;
   return lines.filter((line) => line === first || !covered(line)).map((line) => (line === first ? row : line));
 }
 
@@ -321,7 +292,6 @@ interface SettingsSlice {
 
 export interface CaptionControllerOptions {
   clock?: Clock;
-  reducedMotion?: () => boolean;
   onWarn?: (message: string) => void;
 }
 
@@ -336,14 +306,9 @@ export interface CaptionController extends Readable<CaptionView> {
 
 export function createCaptionController(options: CaptionControllerOptions = {}): CaptionController {
   const clock = options.clock ?? systemClock;
-  const reducedMotion = options.reducedMotion ?? prefersReducedMotion;
   const warn = options.onWarn ?? (() => undefined);
 
   const lines = new Map<number, CaptionLineView>();
-  /** The text a line shows while its replacement fades in; empty again after `SWAP_MS`. */
-  const swaps = new Map<number, CaptionSwap>();
-  const swapTimers = new Map<number, unknown>();
-  let swapSeq = 0;
   let chipTimer: unknown = null;
   let chip: ChipMessage | null = null;
   let chipSeq = 0;
@@ -396,34 +361,12 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
       if (text !== null) announcement = text;
     }
     store.set({
-      lines: [...lines.values()].map((line) => {
-        const swap = swaps.get(line.id);
-        return swap === undefined ? line : { ...line, swap };
-      }),
+      lines: [...lines.values()],
       preview,
       status: current,
       chip: current === null ? chip : null,
       announcement,
     });
-  }
-
-  /** Marks a line as swapping, so the display can fade the old Chinese out under the new one.
-   * A second swap before the first ends replaces it; the view drops the old text when the
-   * timer fires. */
-  function startSwap(id: number, from: string): void {
-    if (reducedMotion()) return;
-    swapSeq += 1;
-    swaps.set(id, { from, seq: swapSeq });
-    const running = swapTimers.get(id);
-    if (running !== undefined) clock.clearTimer(running);
-    swapTimers.set(
-      id,
-      clock.setTimer(() => {
-        swapTimers.delete(id);
-        swaps.delete(id);
-        emit();
-      }, SWAP_MS),
-    );
   }
 
   function clearTimer(handle: unknown): null {
@@ -507,21 +450,13 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
           state = "english";
           announcement = event.text;
         }
-        // The English is translated from this text, so the Chinese shown is always this text too,
-        // even when the correction is one character: that is the usual size of a misheard word.
+        // The English is translated from this text, so the Chinese shown is always this text too.
         lines.set(event.id, {
           ...base,
           state,
           source: event.text,
           updatedAt: clock.now(),
         });
-        // A larger correction changes what the viewer is reading, so the old Chinese fades out
-        // under the new one. A one-character or punctuation fix is replaced in place: a crossfade
-        // of the whole row would draw more attention than the change itself.
-        const small = isTrivialSwap(event.second_pass);
-        if (!small && existing !== undefined && existing.source !== "" && existing.source !== event.text) {
-          startSwap(event.id, existing.source);
-        }
         return true;
       }
       case "joined": {

@@ -15,10 +15,10 @@ import {
   testConfig,
 } from "./helpers";
 
-function setup(options: { reducedMotion?: boolean; configure?: Parameters<typeof testConfig>[0] } = {}) {
+function setup(options: { configure?: Parameters<typeof testConfig>[0] } = {}) {
   const clock = new FakeClock();
   const warn = vi.fn();
-  const controller = createCaptionController({ clock, reducedMotion: () => options.reducedMotion ?? false, onWarn: warn });
+  const controller = createCaptionController({ clock, onWarn: warn });
   controller.setConfig(testConfig(options.configure));
   const view = () => get(controller);
   const lines = () => view().lines;
@@ -70,6 +70,7 @@ describe("caption reducer", () => {
       },
     } as PipelineEvent);
     expect(lines()).toMatchObject([{ id: 40, state: "pending", source: "我也想办一个" }]);
+    expect(lines()).toHaveLength(1);
   });
 
   it("ignores duplicate asr_final and anything after a terminal event", () => {

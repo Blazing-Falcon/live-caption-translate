@@ -78,7 +78,6 @@ export type WindowKind = "overlay" | "control";
 export interface SessionOptions {
   kind: WindowKind;
   clock?: Clock;
-  reducedMotion?: () => boolean;
 }
 
 export interface Session {
@@ -121,7 +120,7 @@ export function appliedNotice(applied: SetConfigResult["applied"]): string | nul
 
 export function createSession(options: SessionOptions): Session {
   const clock = options.clock ?? systemClock;
-  const captions = createCaptionController({ clock, reducedMotion: options.reducedMotion });
+  const captions = createCaptionController({ clock });
   const appState = writable<AppState | null>(null);
   const config = writable<Config | null>(null);
   const stats = writable<PipelineStats | null>(null);

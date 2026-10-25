@@ -61,7 +61,7 @@ const flush = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 
 const sessions: Session[] = [];
 
 function open(kind: "overlay" | "control", clock = new FakeClock()) {
-  const session = createSession({ kind, clock, reducedMotion: () => false });
+  const session = createSession({ kind, clock });
   sessions.push(session);
   return { session, clock };
 }
