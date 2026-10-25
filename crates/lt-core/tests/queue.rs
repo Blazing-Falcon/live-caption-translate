@@ -235,6 +235,7 @@ fn wrappers_runaway_echo_and_leaked_chinese_are_checked() {
         transcript: transcript(1, "你好。", 1.0),
         queued_ms: 1500,
         window: Vec::new(),
+        preview: None,
     };
     let mut fake = FakeTranslator::default();
     for (response, expected) in [
@@ -334,6 +335,7 @@ fn worker_pairs_window_lines_with_their_own_english_and_stops_at_a_line_without_
                     .into_iter()
                     .map(|(id, line)| (UtteranceId(id), line.to_owned()))
                     .collect(),
+                preview: None,
             })
             .unwrap();
         worker.completed.recv_timeout(WATCHDOG).unwrap();
@@ -377,10 +379,11 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
             transcript: transcript(1, "超时。", 1.0),
             queued_ms: 1000,
             window: Vec::new(),
+            preview: None,
         })
         .unwrap();
     assert!(matches!(
-        worker.completed.recv_timeout(WATCHDOG).unwrap(),
+        worker.completed.recv_timeout(WATCHDOG).unwrap().unwrap(),
         PipelineEvent::TranslationFailed {
             reason: FailReason::Timeout,
             ..
@@ -392,10 +395,11 @@ fn worker_warms_up_then_serializes_requests_and_recovers_from_timeout() {
             transcript: transcript(2, "你好。", 2.0),
             queued_ms: 2000,
             window: Vec::new(),
+            preview: None,
         })
         .unwrap();
     assert!(matches!(
-        worker.completed.recv_timeout(WATCHDOG).unwrap(),
+        worker.completed.recv_timeout(WATCHDOG).unwrap().unwrap(),
         PipelineEvent::TranslationFinal { .. }
     ));
     assert_eq!(metrics.warmups.load(Ordering::SeqCst), 1);
@@ -509,6 +513,7 @@ fn runaway_aborts_the_request_early_and_retains_its_prefix_without_stopping_the_
         transcript: transcript(1, "你好。", 1.0),
         queued_ms: 1200,
         window: Vec::new(),
+        preview: None,
     };
     let bus = EventBus::default();
     let deltas = bus.subscribe(8);

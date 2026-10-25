@@ -116,6 +116,14 @@ pub enum PipelineEvent {
         text: String,
         timing: Timing,
     },
+    /// Running text only: the English of the lines not yet translated for good, oldest first,
+    /// `id` being the first of `ids`. The last of them may have no final text yet. A newer preview
+    /// replaces it, and so does the final translation of any of these lines.
+    TranslationPreview {
+        id: UtteranceId,
+        ids: Vec<UtteranceId>,
+        text: String,
+    },
     Skipped {
         id: UtteranceId,
         reason: SkipReason,

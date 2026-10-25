@@ -63,12 +63,19 @@ pub struct PipelineHandle {
     pub(super) latest_stats: Arc<Mutex<PipelineStats>>,
     pub(super) clause_counts: Arc<ClauseCounters>,
     pub(super) glossary: SharedGlossary,
+    pub(super) running: Arc<AtomicBool>,
 }
 
 impl PipelineHandle {
     /// Use a new glossary from the next clause on, without restarting the session.
     pub fn set_glossary(&self, entries: &[GlossaryEntry]) {
         self.glossary.replace(entries);
+    }
+
+    /// Translate as running text (the overlay's `flow` style) or line by line, from the next
+    /// line on.
+    pub fn set_running_text(&self, running: bool) {
+        self.running.store(running, Ordering::Relaxed);
     }
 
     pub fn subscribe(&self, capacity: usize) -> EventReceiver {

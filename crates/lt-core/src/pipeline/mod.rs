@@ -12,6 +12,7 @@ mod asr;
 mod frontend;
 mod handle;
 mod refine;
+mod running;
 mod scheduler;
 
 pub use handle::{ClauseCounts, PipelineHandle};
@@ -78,6 +79,7 @@ impl Pipeline {
             tracing::warn!(message, "Pipeline config adjusted");
         }
         let glossary = SharedGlossary::new(&config.translate.glossary);
+        let running = Arc::new(AtomicBool::new(config.overlay.style == "flow"));
         let cancelled = Arc::new(AtomicBool::new(false));
         let finished = Arc::new(AtomicBool::new(false));
         let clock = Arc::new(SessionClock::default());
@@ -99,6 +101,7 @@ impl Pipeline {
             latest_stats: latest_stats.clone(),
             clause_counts: clause_counts.clone(),
             glossary: glossary.clone(),
+            running: running.clone(),
         };
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
@@ -174,6 +177,7 @@ impl Pipeline {
                         scheduler_latest,
                         sampler,
                         glossary,
+                        running,
                     )
                 })?;
         handle.threads.push(scheduler_thread);

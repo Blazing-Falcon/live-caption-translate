@@ -38,6 +38,9 @@ pub struct QueuedTranscript {
     /// Earlier lines (id, source) to translate with this one, oldest first.
     /// The translator thread adds the English it gave them.
     pub window: Vec<(UtteranceId, String)>,
+    /// Running text: the lines this preview covers. A preview streams no deltas, never becomes
+    /// context, and ends in `TranslationPreview` or nothing.
+    pub preview: Option<Vec<UtteranceId>>,
 }
 
 #[derive(Default)]
@@ -81,6 +84,7 @@ impl TranslationQueue {
                 transcript,
                 queued_ms,
                 window,
+                preview: None,
             },
             new_context,
         ));
@@ -146,6 +150,23 @@ impl TranslationQueue {
         ));
         window
     }
+    /// The window for a preview of `chars` characters: the lines the next final would get,
+    /// without adding the preview to them.
+    pub fn preview_window(&self, chars: usize) -> Vec<(UtteranceId, String)> {
+        let used: usize = self
+            .earlier
+            .iter()
+            .map(|(_, _, line)| line.chars().count())
+            .sum();
+        if used.saturating_add(chars) > self.config.window_chars as usize {
+            return Vec::new();
+        }
+        self.earlier
+            .iter()
+            .map(|(_, id, line)| (*id, line.clone()))
+            .collect()
+    }
+
     pub fn len(&self) -> usize {
         self.waiting.len()
     }
@@ -393,7 +414,7 @@ pub fn translate_one(
             control.abort.store(true, Ordering::Relaxed);
         }
         let visible = stopped_at.as_ref().unwrap_or(&cleaned);
-        if !visible.is_empty() {
+        if !visible.is_empty() && item.preview.is_none() {
             first_token_ms.get_or_insert_with(|| clock.now().millis());
             bus.publish(PipelineEvent::TranslationDelta {
                 id: source.id,
@@ -495,11 +516,23 @@ pub fn translate_one(
     }
 }
 
+/// The event a finished preview publishes, if any: an answer with Chinese in it explains the
+/// text instead of translating it, which a preview of a few characters makes the model do.
+fn preview_event(event: PipelineEvent, ids: Vec<UtteranceId>) -> Option<PipelineEvent> {
+    match event {
+        PipelineEvent::TranslationFinal { id, text, .. } if chinese_chars(&text) == 0 => {
+            Some(PipelineEvent::TranslationPreview { id, ids, text })
+        }
+        _ => None,
+    }
+}
+
 /// Completion notifications carry the terminal event; the scheduler publishes
 /// them before submitting another item so line terminals cannot be reordered.
+/// A preview completes with its event, or with `None` when it has nothing to show.
 pub struct TranslatorWorker {
     pub input: Sender<QueuedTranscript>,
-    pub completed: Receiver<PipelineEvent>,
+    pub completed: Receiver<Option<PipelineEvent>>,
     join: Option<JoinHandle<()>>,
     cancelled: Arc<AtomicBool>,
 }
@@ -561,12 +594,18 @@ impl TranslatorWorker {
                         &bus,
                         worker_cancelled.clone(),
                     );
-                    if let PipelineEvent::TranslationFinal { id, text, .. } = &event {
-                        if shown.len() == SHOWN_CAPACITY {
-                            shown.pop_front();
+                    let event = match item.preview {
+                        Some(ids) => preview_event(event, ids),
+                        None => {
+                            if let PipelineEvent::TranslationFinal { id, text, .. } = &event {
+                                if shown.len() == SHOWN_CAPACITY {
+                                    shown.pop_front();
+                                }
+                                shown.push_back((*id, text.clone()));
+                            }
+                            Some(event)
                         }
-                        shown.push_back((*id, text.clone()));
-                    }
+                    };
                     // Cooperative channel send: shutdown must not wait for scheduler.
                     let mut pending = event;
                     loop {

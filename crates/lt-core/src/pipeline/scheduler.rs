@@ -1,4 +1,4 @@
-use super::{send_cooperative, FrontendNotice, CONTROL_CAPACITY, POLL};
+use super::{running::RunningText, send_cooperative, FrontendNotice, CONTROL_CAPACITY, POLL};
 use crate::{
     bus::EventBus,
     clock::Clock,
@@ -8,7 +8,7 @@ use crate::{
     events::{DropReason, EngineKind, EngineState, FailReason, PipelineEvent},
     glossary::SharedGlossary,
     metrics::{Metrics, ResourceSample, ResourceSampler},
-    queue::{TranslationQueue, TranslatorWorker},
+    queue::{QueuedTranscript, TranslationQueue, TranslatorWorker},
     recognizer::AsrMessage,
     source::SessionClock,
     types::{PipelineStats, StreamTime, TextClass, Transcript, UtteranceId},
@@ -44,9 +44,40 @@ struct Scheduler {
     metrics: Metrics,
     latest_stats: Arc<Mutex<PipelineStats>>,
     asr_failed: bool,
+    /// Set while the overlay shows running text.
+    running: Arc<AtomicBool>,
+    running_text: RunningText,
+    /// The lines the preview in flight covers.
+    previewing: Option<Vec<UtteranceId>>,
 }
 
 impl Scheduler {
+    fn is_running(&self) -> bool {
+        self.running.load(Ordering::Relaxed)
+    }
+
+    /// Lines that wait for a unit are translated as one line: the leader takes the text and
+    /// the others leave the display, as in a queue join.
+    fn translate_unit(&mut self, unit: Transcript) {
+        if !unit.absorbed.is_empty() {
+            for id in &unit.absorbed {
+                self.observed.remove(id);
+                self.translating.remove(id);
+            }
+            self.publish(PipelineEvent::Joined {
+                id: unit.id,
+                absorbed: unit.absorbed.clone(),
+                text: unit.text.clone(),
+            });
+        }
+        self.ready.push_back(unit);
+    }
+
+    fn freeze_running(&mut self) {
+        if let Some(unit) = self.running_text.freeze() {
+            self.translate_unit(unit);
+        }
+    }
     fn publish(&mut self, event: PipelineEvent) {
         self.metrics.record(&event);
         self.bus.publish(event);
@@ -102,6 +133,9 @@ impl Scheduler {
         {
             // No partial after the id's AsrFinal or Dropped.
             if self.handled_through.is_none_or(|handled| id > handled) {
+                if self.is_running() {
+                    self.running_text.partial(id, text.clone());
+                }
                 self.partial(id, text, class, end);
             }
             return;
@@ -118,6 +152,7 @@ impl Scheduler {
         }
         match message {
             AsrMessage::Transcript(transcript) => {
+                self.running_text.closed(transcript.id);
                 self.observed.insert(transcript.id);
                 self.publish(PipelineEvent::AsrFinal {
                     id: transcript.id,
@@ -135,12 +170,21 @@ impl Scheduler {
                 });
                 if translates(&transcript, self.config.filter.skip_music) {
                     self.translating.insert(transcript.id);
-                    self.ready.push_back(transcript);
+                    if self.is_running() {
+                        for unit in self.running_text.push(transcript) {
+                            self.translate_unit(unit);
+                        }
+                    } else {
+                        self.ready.push_back(transcript);
+                    }
                 } else {
+                    // A line shown as heard ends the running unit before it.
+                    self.freeze_running();
                     self.observed.remove(&transcript.id);
                 }
             }
             AsrMessage::Dropped(id, reason) => {
+                self.running_text.closed(id);
                 self.observed.remove(&id);
                 self.publish(PipelineEvent::Dropped { id, reason });
             }
@@ -163,7 +207,18 @@ impl Scheduler {
         }
     }
 
-    fn completed(&mut self, event: PipelineEvent) {
+    fn completed(&mut self, event: Option<PipelineEvent>) {
+        self.in_flight = false;
+        if let Some(ids) = self.previewing.take() {
+            self.running_text.preview_done(Instant::now());
+            if let Some(event) = event.filter(|_| self.running_text.current(&ids)) {
+                self.publish(event);
+            }
+            return;
+        }
+        let Some(event) = event else {
+            return;
+        };
         if let PipelineEvent::TranslationFinal { id, .. }
         | PipelineEvent::TranslationFailed { id, .. } = &event
         {
@@ -171,7 +226,22 @@ impl Scheduler {
             self.translating.remove(id);
         }
         self.publish(event);
-        self.in_flight = false;
+    }
+
+    /// Running text: translate the lines not yet translated for good again, when the
+    /// translator has nothing else to do.
+    fn next_preview(&mut self, queued_ms: u64) -> Option<QueuedTranscript> {
+        if !self.is_running() || !self.ready.is_empty() || !self.queue.is_empty() {
+            return None;
+        }
+        let (transcript, ids) = self.running_text.preview(Instant::now())?;
+        self.previewing = Some(ids.clone());
+        Some(QueuedTranscript {
+            window: self.queue.preview_window(transcript.text.chars().count()),
+            transcript,
+            queued_ms,
+            preview: Some(ids),
+        })
     }
 }
 
@@ -207,6 +277,7 @@ pub(super) fn scheduler_loop(
     latest_stats: Arc<Mutex<PipelineStats>>,
     sampler: Option<Box<dyn ResourceSampler>>,
     glossary: SharedGlossary,
+    running: Arc<AtomicBool>,
 ) -> Result<()> {
     let mut metrics = Metrics::new();
     metrics.set_sampler(sampler.map(|inner| {
@@ -230,6 +301,9 @@ pub(super) fn scheduler_loop(
         metrics,
         latest_stats,
         asr_failed: false,
+        running,
+        running_text: RunningText::default(),
+        previewing: None,
     };
     let mut worker = TranslatorWorker::start(
         translator,
@@ -277,6 +351,9 @@ pub(super) fn scheduler_loop(
         if worker_lost {
             translator_lost(&scheduler, &cancelled);
             break;
+        }
+        if !scheduler.is_running() || (asr_done && front_done) {
+            scheduler.freeze_running();
         }
         while scheduler.queue.len() < TranslationQueue::CAPACITY {
             let Some(transcript) = scheduler.ready.pop_front() else {
@@ -342,6 +419,18 @@ pub(super) fn scheduler_loop(
             }
             if let Some(item) = batch.item {
                 // Its id stays observed, so the shutdown below settles it either way.
+                if send_cooperative(&worker.input, item, &cancelled).is_err() {
+                    if !cancelled.load(Ordering::Acquire) {
+                        translator_lost(&scheduler, &cancelled);
+                    }
+                    break;
+                }
+                scheduler.in_flight = true;
+                progressed = true;
+            }
+        }
+        if !scheduler.in_flight {
+            if let Some(item) = scheduler.next_preview(clock.now().millis()) {
                 if send_cooperative(&worker.input, item, &cancelled).is_err() {
                     if !cancelled.load(Ordering::Acquire) {
                         translator_lost(&scheduler, &cancelled);

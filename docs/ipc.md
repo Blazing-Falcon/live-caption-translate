@@ -20,6 +20,7 @@ This file gives the data that goes between `lt-core`, the Tauri shell (`app/src-
 | `joined` | `id`, `absorbed[]`, `text` | The translation queue joins waiting lines into the leader `id` |
 | `translation_delta` | `id`, `text_so_far` | The final translation streams |
 | `translation_final` | `id`, `text`, `timing` | The final translation is complete |
+| `translation_preview` | `id`, `ids[]`, `text` | Running text only (`overlay.style = "flow"`): the English of the lines not yet translated for good, `id` being the first of `ids`; the last of them may have no final text yet. A newer preview replaces it; so does the final translation of any of its lines. |
 | `translation_failed` | `id`, `reason`, `message` | The final translation failed |
 | `skipped` | `id`, `reason` | The translator skipped the line to catch up |
 | `dropped` | `id`, `reason` | The clause has no usable text, or listening stopped |
@@ -97,6 +98,8 @@ asr_final -> joined (as leader)*
 - No event follows a terminal event.
 - `joined` comes after the `asr_final` of each id that it names. A leader can get more than one `joined`.
 - Absorbed ids get no translation events.
+- `translation_preview` names only ids that have started and have no terminal event. It can come before an id's `asr_final`.
+- In running text, the scheduler joins closed lines into one translation up to a sentence end (。？！), a pause or break cut, a line shown as heard, 10 s of silence, or 40 characters, and sends `joined` when it does. While no line waits for translation, it translates the lines not yet joined plus the live text of the lines without a final again (at least 4 letters; after the last preview ended it waits as long as that preview took, at least 300 ms). A preview answer with Chinese in it is not sent.
 
 ## Tauri events
 

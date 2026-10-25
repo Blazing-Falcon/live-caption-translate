@@ -471,6 +471,7 @@ fn finals(events: &[PipelineEvent]) -> Vec<(UtteranceId, String, CutReason)> {
 }
 
 /// The per-id order of docs/ipc.md: one start; live text only before the final; one final;
+/// previews only of started lines that have no terminal yet;
 /// English and other-language finals, drops, skips, joins and translation results are terminal;
 /// nothing follows a terminal event; and every line ends with one.
 fn assert_order(events: &[PipelineEvent]) {
@@ -527,6 +528,16 @@ fn assert_order(events: &[PipelineEvent]) {
                     line.asr_final && !line.terminal,
                     "delta after a terminal: {id:?}"
                 );
+            }
+            PipelineEvent::TranslationPreview { id, ids, .. } => {
+                assert_eq!(ids.first(), Some(id), "preview not led by its first line");
+                for id in ids {
+                    let line = lines.get(id).expect("preview of an unknown id");
+                    assert!(
+                        line.started && !line.terminal,
+                        "preview of a settled line: {id:?}"
+                    );
+                }
             }
             PipelineEvent::TranslationFinal { id, .. }
             | PipelineEvent::TranslationFailed { id, .. }
@@ -586,6 +597,52 @@ fn clauses_end_at_commas_sentence_ends_and_pauses_and_show_live_text() {
             "no live text for {id:?}"
         );
     }
+}
+
+/// Running text translates the sentence's comma clause together with the clause that ends it,
+/// and translates the words again while they are spoken.
+#[test]
+fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken() {
+    let chars = sentence_chars();
+    let mut config = Config::default();
+    config.overlay.style = "flow".into();
+    let (translator, requests) = RecordingTranslator::new();
+    let (mut handle, events) = start_with(
+        config,
+        VecSource::new(speech(chars.len(), 1.0)),
+        AmplitudeStream::default(),
+        None,
+        translator,
+    );
+    finish(&mut handle);
+    let events: Vec<_> = events.try_iter().collect();
+    assert_order(&events);
+    let requests: Vec<String> = requests
+        .lock()
+        .unwrap()
+        .iter()
+        .map(|(text, _)| text.clone())
+        .collect();
+    let sentence = "今天天气很好我们一起去公园玩，然后回家吃饭再看电影。";
+    assert!(requests.iter().any(|text| text == sentence), "{requests:?}");
+    assert!(
+        !requests
+            .iter()
+            .any(|text| text == "今天天气很好我们一起去公园玩，"),
+        "the comma clause went alone: {requests:?}"
+    );
+    let first = finals(&events)[0].0;
+    assert!(events.iter().any(|event| matches!(
+        event,
+        PipelineEvent::Joined { id, absorbed, text } if *id == first && absorbed.len() == 1 && text == sentence
+    )));
+    // A preview is a request for text that is still growing, so its clause has no final yet.
+    assert!(
+        requests
+            .iter()
+            .any(|text| text.ends_with('…') && sentence.starts_with(text.trim_end_matches('…'))),
+        "no preview while the sentence was spoken: {requests:?}"
+    );
 }
 
 #[test]
@@ -981,9 +1038,16 @@ fn random_translation_timing_and_failures_keep_every_ordering_rule() {
                 0.5 + 0.1 * round as f32,
             ));
         }
-        let (mut handle, events) = start(
+        // Even seeds show running text, which adds joins and previews.
+        let mut config = Config::default();
+        if seed % 2 == 0 {
+            config.overlay.style = "flow".into();
+        }
+        let (mut handle, events) = start_with(
+            config,
             VecSource::new(samples),
             AmplitudeStream::default(),
+            None,
             SeededTranslator::new(seed, 30),
         );
         finish(&mut handle);
