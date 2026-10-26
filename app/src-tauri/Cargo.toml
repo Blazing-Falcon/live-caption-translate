@@ -6,6 +6,9 @@ license.workspace = true
 description = "Offline live captions with English translation"
 default-run = "live-translation"
 
+[lints]
+workspace = true
+
 [lib]
 name = "live_translation_lib"
 path = "src/lib.rs"

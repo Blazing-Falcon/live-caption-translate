@@ -292,6 +292,7 @@ enum PacketReadError {
 }
 
 /// One buffer as `IAudioCaptureClient::GetBuffer` reports it, released after `append`.
+#[derive(Clone, Copy)]
 struct NativePacket {
     data: *const u8,
     frames: u32,
@@ -903,8 +904,9 @@ impl PacketClock {
         } else {
             let mapped = epoch.raw_at(packet.qpc_100ns, rate);
             // QPC's 100 ns grid can floor an exact 512-frame 48 kHz chunk to 511 samples; one
-            // sample of slack absorbs that and the initial grid phase. Device-frame advances
-            // themselves are exact, so larger differences are real timestamp holes.
+            // sample of slack absorbs that and the initial grid phase, at every supported rate up
+            // to 384 kHz (0.0384 samples). Device-frame advances themselves are exact, so larger
+            // differences are real timestamp holes.
             let raw = match predicted {
                 Some(predicted) if predicted.abs_diff(mapped) <= 1 => predicted,
                 _ => mapped,

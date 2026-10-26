@@ -249,7 +249,8 @@ impl Drop for XAsrStream {
 }
 
 /// sherpa prefixes a space to every word start, Chinese characters and marks included. Keep it
-/// only where the text has one, so tokens concatenate and a mark is a one-character token.
+/// only where the text has one, so tokens concatenate and the commit rule sees a mark as a
+/// one-character token.
 pub(crate) fn normalize_tokens(tokens: &mut [String]) {
     let mut previous_ascii_word = false;
     for token in tokens.iter_mut() {
