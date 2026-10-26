@@ -144,7 +144,7 @@ export interface ModelStatus {
   bytes_total: number;
   bytes_done: number;
   state: ModelState;
-  /** Not needed to listen: a speech model that downloads only when picked on the Performance page. */
+  /** Not needed to listen. Every model in the manifest is required today. */
   optional: boolean;
 }
 

@@ -187,7 +187,7 @@ The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.j
 - The writer does not write dropped lines or partials.
 
 ```json
-{"type":"utterance","id":12,"joined":[13],"start_ms":45210,"end_ms":47980,"cut":"commit","wall":"2026-10-07T21:14:51+08:00","class":"chinese","source":"我也想办一个，伟大的公司。","english":"I also want to run a great company.","status":"final","timing":{...},"asr_live":{"engine":"xasr_stream","text":"我也想办一个。伟大的公司。","logprob":-0.12}}
+{"type":"utterance","id":12,"joined":[13],"start_ms":45210,"end_ms":47980,"cut":"commit","wall":"2026-10-07T21:14:51+08:00","class":"chinese","source":"我也想办一个，伟大的公司。","english":"I also want to run a great company.","status":"final","timing":{...},"asr_live":{"engine":"xasr_stream","text":"我也想办一个。伟大的公司。","logprob":-0.12},"asr_second":[{"text":"我也想办一个。","outcome":"used","window_start_ms":44910,"window_end_ms":48700,"refine_ms":104}]}
 ```
 
 | Field | Meaning |
@@ -198,5 +198,6 @@ The app writes one JSONL file for each session: `transcripts/YYYY-MM-DD_HHMMSS.j
 | `timing` | Only for `final` |
 | `reason`, `message` | Only for `failed` |
 | `asr_live` | The live recognizer's `engine`, `text` and mean token `logprob` (null when the engine gives none) |
+| `asr_second` | One record for each line of the unit: the text the second pass chose, its `outcome`, the decoded window and `refine_ms` |
 
-A line with `joined` ids concatenates the texts of its parts. Its `logprob` is the mean of the parts, its `fallback` is the first one among the parts, `start_ms` is the earliest and `done_ms` the latest.
+A line with `joined` ids concatenates the texts of its parts. Its `logprob` is the mean of the parts, `start_ms` is the earliest and `done_ms` the latest.
