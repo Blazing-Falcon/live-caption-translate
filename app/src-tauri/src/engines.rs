@@ -2,7 +2,7 @@
 use lt_core::{
     bus::EventBus,
     config::Config,
-    engines::{EngineRegistry, OfflineAsr, StreamingAsr, Translator},
+    engines::{OfflineAsr, StreamingAsr, Translator},
     events::{EngineKind, EngineState, PipelineEvent},
 };
 use lt_llm::supervisor::{ServerOptions, Supervisor};
@@ -18,16 +18,11 @@ use std::{
 type Recognizers = (Box<dyn StreamingAsr>, Box<dyn OfflineAsr>);
 
 pub fn recognizers(config: &Config, models: &Path) -> Result<Recognizers, String> {
-    let mut registry = EngineRegistry::default();
-    lt_sherpa::register_engines(&mut registry);
-    let mut engine_config = config.clone();
-    engine_config.models.dir = models.to_string_lossy().into_owned();
-    let asr = registry
-        .build_asr(&engine_config)
+    let asr = lt_sherpa::XAsrStream::new(models.join(lt_sherpa::XASR_STREAM_MODEL), &config.asr)
         .map_err(|e| e.to_string())?;
     let second_pass =
         lt_sherpa::xasr_offline(models, config).map_err(|e| format!("Second pass: {e}"))?;
-    Ok((asr, Box::new(second_pass)))
+    Ok((Box::new(asr), Box::new(second_pass)))
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {

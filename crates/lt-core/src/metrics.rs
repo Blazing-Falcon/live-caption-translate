@@ -1,6 +1,5 @@
 //! Event-derived metrics and injected process resource sampling.
 use crate::events::PipelineEvent;
-use crate::text::chinese_chars;
 use crate::types::{PipelineStats, StreamTime, UtteranceId};
 use std::collections::{BTreeMap, VecDeque};
 
@@ -16,16 +15,15 @@ pub struct ResourceSample {
     pub cpu_translator_pct: f32,
     pub rss_app_mb: u32,
     pub rss_translator_mb: u32,
-    /// Private bytes (commit charge) of the same two processes. Working set counts pages
-    /// shared with other processes and shrinks when Windows trims it, so it does not answer
-    /// what a process costs; this does.
+    /// Private bytes (commit charge) of the same two processes. Working set counts shared pages
+    /// and shrinks when Windows trims it, so it does not answer what a process costs.
     pub private_app_mb: u32,
     pub private_translator_mb: u32,
     /// Whole-PC CPU busy percent over the last second.
     pub cpu_system_pct: f32,
 }
 
-/// The shell/CLI supplies OS-specific process counters; core stays portable.
+/// The app and CLI supply OS-specific process counters; core stays portable.
 pub trait ResourceSampler: Send {
     fn sample(&mut self) -> ResourceSample;
 }
@@ -54,7 +52,6 @@ pub struct Metrics {
     unfinished: BTreeMap<UtteranceId, u64>,
     skipped_total: u32,
     failed_total: u32,
-    leaked_cjk_total: u64,
     sampler: Option<Box<dyn ResourceSampler>>,
     tracks: BTreeMap<UtteranceId, ClauseTrack>,
     words: VecDeque<WordClause>,
@@ -66,25 +63,13 @@ impl Metrics {
         Self::default()
     }
 
-    /// Internal ASR seam; the wire events do not expose clause closure.
+    /// Clause closure is internal: no wire event carries it.
     pub fn clause_closed(&mut self, id: UtteranceId, end: StreamTime) {
         self.unfinished.insert(id, end.millis());
     }
 
     pub fn set_sampler(&mut self, sampler: Option<Box<dyn ResourceSampler>>) {
         self.sampler = sampler;
-    }
-
-    pub fn leaked_cjk_total(&self) -> u64 {
-        self.leaked_cjk_total
-    }
-
-    /// How far the oldest unfinished clause trails the stream, in milliseconds.
-    pub fn lag_ms(&self, live: StreamTime) -> u64 {
-        self.unfinished
-            .values()
-            .min()
-            .map_or(0, |end| live.millis().saturating_sub(*end))
     }
 
     fn forget_clause(&mut self, id: &UtteranceId) {
@@ -178,7 +163,7 @@ impl Metrics {
                     self.unfinished.insert(*id, end);
                 }
             }
-            PipelineEvent::TranslationFinal { id, text, timing } => {
+            PipelineEvent::TranslationFinal { id, timing, .. } => {
                 self.unfinished.remove(id);
                 if self.finals.len() == WINDOW_SIZE {
                     self.finals.pop_front();
@@ -189,9 +174,6 @@ impl Metrics {
                         .first_token_ms
                         .map(|first| milliseconds_u32(first.saturating_sub(timing.speech_end_ms))),
                 });
-                self.leaked_cjk_total = self
-                    .leaked_cjk_total
-                    .saturating_add(chinese_chars(text) as u64);
             }
             PipelineEvent::Skipped { id, .. } => {
                 self.unfinished.remove(id);
@@ -312,12 +294,11 @@ mod tests {
     #[test]
     fn per_word_delays_run_from_each_instant_to_the_final() {
         let mut metrics = Metrics::new();
-        // Clause 1 spans 1000..1500 ms; instants at 1000, 1100, 1200, 1300, 1400.
+        // Clause 1 spans 1000..1500 ms, so its instants are 1000, 1100, 1200, 1300 and 1400;
+        // the final finishes at 3000, giving delays 2000, 1900, 1800, 1700 and 1600.
         metrics.record(&asr(1, 1_500, TextClass::Chinese));
-        // The final finishes at 3000.
         metrics.record(&final_event_at(1, 3_000));
         let stats = metrics.snapshot(StreamTime::from_millis(3_000), 0);
-        // final English per instant: 2000 1900 1800 1700 1600 -> median 1800
         assert_eq!(stats.word_final_p50_ms, Some(1_800));
     }
 

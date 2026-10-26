@@ -15,28 +15,10 @@ pub const XASR_OFFLINE_MODEL: &str = "xasr-offline-int8-2026-06-03";
 /// The streaming X-ASR model.
 pub const XASR_STREAM_MODEL: &str = "xasr-stream-480ms-int8-2026-06-05";
 
-/// Native constructors remain selected by the platform-free core registry.
-pub fn register_engines(registry: &mut lt_core::engines::EngineRegistry) {
-    registry.register_asr(|config| {
-        Ok(Box::new(XAsrStream::new(
-            models_dir(config).join(XASR_STREAM_MODEL),
-            &config.asr,
-        )?))
-    });
-}
-
 /// The offline X-ASR second pass, from `models` (the folder that holds every model).
 pub fn xasr_offline(
     models: &std::path::Path,
     config: &lt_core::config::Config,
 ) -> lt_core::error::Result<XAsrOffline> {
     XAsrOffline::new(models.join(XASR_OFFLINE_MODEL), &config.asr)
-}
-
-fn models_dir(config: &lt_core::config::Config) -> std::path::PathBuf {
-    if config.models.dir.is_empty() {
-        "models".into()
-    } else {
-        config.models.dir.clone().into()
-    }
 }

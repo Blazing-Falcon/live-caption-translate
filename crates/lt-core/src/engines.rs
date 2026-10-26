@@ -1,5 +1,4 @@
 use crate::{
-    config::Config,
     error::{Error, Result},
     types::UtteranceId,
 };
@@ -24,13 +23,7 @@ pub struct TokenTranscript {
     pub log_probs: Vec<f32>,
 }
 
-impl TokenTranscript {
-    pub fn mean_log_prob(&self) -> Option<f32> {
-        mean_log_prob(&self.log_probs)
-    }
-}
-
-pub fn mean_log_prob(log_probs: &[f32]) -> Option<f32> {
+pub(crate) fn mean_log_prob(log_probs: &[f32]) -> Option<f32> {
     let finite: Vec<f32> = log_probs
         .iter()
         .copied()
@@ -85,8 +78,8 @@ pub struct TranslatorCaps {
     pub max_input_chars: usize,
 }
 
-/// Built-in translators must check this on each blocking/streaming step.
-/// Cooperative cancellation makes shutdown safe without abandoning worker threads.
+/// Built-in translators must check this on each blocking or streaming step, so shutdown never
+/// has to abandon a worker thread.
 #[derive(Clone, Debug)]
 pub struct TranslationControl {
     pub deadline: Instant,
@@ -144,35 +137,16 @@ pub trait Translator: Send {
     ) -> Result<TranslationOut>;
 }
 
-type AsrFactory = fn(&Config) -> Result<Box<dyn StreamingAsr>>;
-
-#[derive(Default)]
-pub struct EngineRegistry {
-    asr: Option<AsrFactory>,
-}
-
-impl EngineRegistry {
-    pub fn register_asr(&mut self, factory: AsrFactory) {
-        self.asr = Some(factory);
-    }
-    pub fn build_asr(&self, config: &Config) -> Result<Box<dyn StreamingAsr>> {
-        self.asr.ok_or_else(|| Error::UnknownEngine {
-            kind: "ASR",
-            name: "xasr_stream".into(),
-        })?(config)
-    }
-}
-
 /// One request's time limit, including the stream.
 pub const REQUEST_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(10);
 /// Above `2 * 120 + 8`, the budget of the longest line the queue joins, so only a runaway
 /// answer reaches it.
 const MAX_TOKENS_CAP: u32 = 256;
 
-/// An output budget from the source length. English takes about 1.5 tokens per source
-/// character (p99 3.0 on our session), so `2 * chars + 8` bounds a runaway without cutting a
-/// real answer.
+/// An output budget from the source length: about two tokens per source character.
 pub fn max_tokens(text: &str) -> u32 {
     let wanted = text.chars().count().saturating_mul(2).saturating_add(8);
-    wanted.max(24).min(MAX_TOKENS_CAP as usize) as u32
+    u32::try_from(wanted)
+        .unwrap_or(u32::MAX)
+        .clamp(24, MAX_TOKENS_CAP)
 }

@@ -1,12 +1,11 @@
-//! The second pass's text for a closed clause.
+//! Choosing the clause's part of the second pass's text.
 //!
-//! The offline recognizer reads a window with a margin on both sides of the clause, so its
-//! text can start with the end of the clause before and end with the start of the next one.
-//! The live text decides which part belongs to the clause: token times would not, because a
-//! streaming model reports each word late and its cuts land late.
+//! The offline recognizer reads a window that runs past both ends of the clause. The live text
+//! decides which part belongs to it; token times would not, because the streaming model reports
+//! each word late.
 
-/// A chosen text that keeps fewer of the live characters, or that differs from the live text in
-/// more of them, is more likely a misaligned window than a correction.
+/// A part that keeps fewer of the live characters, or differs in more of them, is more likely a
+/// misaligned window than a correction.
 const MIN_KEPT: f64 = 0.6;
 const MAX_DISTANCE: f64 = 0.6;
 /// The shortest opening of the next clause that is evidence of where this clause ends.
@@ -53,18 +52,12 @@ fn is_opening(character: char) -> bool {
     )
 }
 
-/// The part of a window's offline text that belongs to the clause, without the start of the
-/// next clause, or `None` when the window does not show that start.
+/// The window's text without the start of the next clause, or `None` when the window does not
+/// show that start.
 ///
-/// The window runs past the clause, so the offline recognizer hears the beginning of the next
-/// clause as well and can turn it into a word of this one. When the next clause's live text is
-/// known and the window ends with its opening, that opening and everything after it are the
-/// next clause, and `trim` must not choose them.
-///
-/// The opening is two or more letters or digits. It must also follow a mark, the offline
-/// text's own clause boundary: a match inside the clause's words is a coincidence. A
-/// connective that also occurs inside a clause does not show where the next clause begins, so
-/// it alone does not cut.
+/// The opening must be two or more letters or digits after a mark, the offline text's own clause
+/// boundary; a match inside the clause's words is a coincidence. A connective that also occurs
+/// inside a clause says nothing about where the next one begins, so it alone does not cut.
 pub fn cut_at_next_clause<'a>(window: &'a str, next: &str) -> Option<&'a str> {
     let next_units: Vec<char> = units(next).iter().map(|unit| unit.character).collect();
     let window_units = units(window);
@@ -92,10 +85,9 @@ pub fn cut_at_next_clause<'a>(window: &'a str, next: &str) -> Option<&'a str> {
 
 /// The part of `offline` that best matches `live`, or `None` when no part is close enough.
 ///
-/// The match ignores punctuation and case and may skip offline characters at both ends. Of
-/// equally close parts, the one that starts and ends at punctuation wins, then the one closest
-/// to the live length: a wrong first or last live character would otherwise tie with a part
-/// that leaves out the corrected character.
+/// The match ignores punctuation and case and may skip characters at both ends. Of equally close
+/// parts, one that starts and ends at punctuation wins, then the one closest to the live length;
+/// otherwise a corrected first or last character would tie with a part that leaves it out.
 pub fn trim(live: &str, offline: &str) -> Option<Trimmed> {
     let live_units: Vec<char> = units(live).iter().map(|unit| unit.character).collect();
     let offline_units = units(offline);

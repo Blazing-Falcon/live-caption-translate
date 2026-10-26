@@ -21,7 +21,7 @@ pub const TRANSLATION_QUEUE_CAPACITY: usize = 256;
 pub(super) struct QueuedTranscript {
     pub(super) transcript: Transcript,
     pub(super) queued_ms: u64,
-    /// Running text: the lines this preview covers. A preview streams no deltas and ends in
+    /// The lines this preview covers. A preview streams no deltas and ends in
     /// `TranslationPreview` or nothing.
     pub(super) preview: Option<Vec<UtteranceId>>,
 }

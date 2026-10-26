@@ -14,7 +14,7 @@ use std::{
     thread::JoinHandle,
 };
 
-/// Aggregate frontend diagnostics for replay reports; this does not change IPC.
+/// Frontend clause counts for replay reports; not part of the wire contract.
 #[derive(Clone, Copy, Debug, Default)]
 pub struct ClauseCounts {
     pub pause: u64,
@@ -103,9 +103,9 @@ impl PipelineHandle {
         self.join_threads()
     }
 
-    /// Built-in sources/translators cooperate within their polling intervals.
-    /// A native ASR call must return before its worker can join; it has no force
-    /// cancellation API and the pipeline never abandons that thread.
+    /// Built-in sources and translators cooperate within their polling intervals. A native ASR
+    /// call must return before its worker can join: it has no force cancellation, and the
+    /// pipeline never abandons that thread.
     pub fn stop(&mut self) -> Result<()> {
         self.shared.cancelled.set();
         self.join_threads()

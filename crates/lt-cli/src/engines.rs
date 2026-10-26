@@ -82,11 +82,10 @@ pub fn build(
     }
     #[cfg(all(feature = "sherpa", feature = "llm"))]
     {
-        let mut registry = lt_core::engines::EngineRegistry::default();
-        lt_sherpa::register_engines(&mut registry);
-        let mut engine_config = config.clone();
-        engine_config.models.dir = models.to_string_lossy().into_owned();
-        let asr = registry.build_asr(&engine_config)?;
+        let asr: Box<dyn StreamingAsr> = Box::new(lt_sherpa::XAsrStream::new(
+            models.join(lt_sherpa::XASR_STREAM_MODEL),
+            &config.asr,
+        )?);
         let second_pass: Box<dyn OfflineAsr> =
             Box::new(lt_sherpa::xasr_offline(models, config).context("Starting the second pass")?);
         let (translator, supervisor, pid) = translator(config, models, binary, bus, cancelled)?;

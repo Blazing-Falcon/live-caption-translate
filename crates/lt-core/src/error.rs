@@ -6,8 +6,6 @@ pub enum Error {
     Config(String),
     #[error("{0}")]
     Engine(String),
-    #[error("Unknown {kind} engine: {name}")]
-    UnknownEngine { kind: &'static str, name: String },
     #[error("{message}")]
     Translation { reason: FailReason, message: String },
     #[error("{0}")]

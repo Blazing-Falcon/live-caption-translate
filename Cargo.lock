@@ -2482,6 +2482,7 @@ name = "lt-core"
 version = "0.7.0"
 dependencies = [
  "crossbeam-channel",
+ "lt-core",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

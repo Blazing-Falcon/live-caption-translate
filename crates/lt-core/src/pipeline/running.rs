@@ -1,6 +1,6 @@
-//! Running text, also used by the caption panel: closed lines are translated together up to a
-//! sentence end, and the part not yet translated for good is translated again whenever the
-//! translator is free, so English follows the speech instead of waiting for each line to close.
+//! Running text: closed lines are translated together up to a sentence end, and the part not yet
+//! translated for good is translated again whenever the translator is free, so English follows
+//! the speech.
 
 use crate::{
     text::classify,
@@ -12,16 +12,15 @@ use std::{
 };
 
 /// Closed lines translated as one unit, at most. A whole sentence translates better than its
-/// comma clauses; a longer unit keeps speech without sentence ends untranslated for good for
-/// many seconds and makes every preview slower.
+/// comma clauses, but a longer unit leaves speech without sentence ends waiting for seconds and
+/// slows every preview.
 const UNIT_CHARS: usize = 40;
 /// After a silence this long the next line starts a new unit, as it starts a new window.
 const UNIT_GAP_S: f64 = 10.0;
 const SENTENCE_ENDS: &[char] = &['。', '？', '！', '?', '!'];
 /// Least time between the end of one preview and the start of the next, so a preview does not
-/// run for every new word. The wait is at least as long as the last preview took, so previews
-/// use at most about half of the translator: fast speech without sentence ends otherwise kept it
-/// busy most of the time.
+/// run for every new word. The wait is at least as long as the last preview took, which keeps
+/// previews to about half of the translator.
 const PREVIEW_GAP: Duration = Duration::from_millis(300);
 /// With fewer letters the model explains the word instead of translating it.
 const PREVIEW_MIN_CHARS: usize = 4;

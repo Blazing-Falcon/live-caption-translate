@@ -197,7 +197,8 @@ impl Translator for FakeTranslator {
             text,
             prompt_tokens: 17,
             cached_tokens: 31,
-            generated_tokens: accumulated.split_whitespace().count() as u32,
+            generated_tokens: u32::try_from(accumulated.split_whitespace().count())
+                .unwrap_or(u32::MAX),
             truncated: false,
         })
     }

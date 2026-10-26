@@ -1,20 +1,19 @@
-//! Cleanup, script routing and conservative false-trigger filtering.
+//! Text cleanup, script classification and the drop rule for short noise.
 
 use crate::events::DropReason;
 use crate::types::{TextClass, Transcript};
 
 /// Words removed when they stand alone.
-pub const FILLERS: &[&str] = &["呃", "嗯", "额", "uh", "um"];
+const FILLERS: &[&str] = &["呃", "嗯", "额", "uh", "um"];
 /// A one-character result from a clause shorter than this is noise, unless it is allowed.
 const SINGLE_CHAR_MAX_S: f32 = 0.6;
 const SINGLE_CHAR_ALLOW: &[&str] = &["对", "好", "是", "行", "不", "哦"];
 
-/// Remove engine markup and standalone fillers while preserving spoken words.
+/// Remove engine markup and standalone fillers, keeping the words around them.
 ///
-/// A Chinese filler is standalone only when neither neighbor is a Chinese
-/// character. English fillers use word boundaries and ignore ASCII case.
-/// Repeated characters within speech remain untouched.
-pub fn clean(text: &str) -> String {
+/// A Chinese filler is standalone only when neither neighbor is Chinese; English ones use word
+/// boundaries and ignore ASCII case.
+pub(crate) fn clean(text: &str) -> String {
     let stripped = strip_engine_tokens(text);
     let characters: Vec<char> = stripped.chars().collect();
     let mut fillers: Vec<Vec<char>> = FILLERS
@@ -47,9 +46,8 @@ pub fn clean(text: &str) -> String {
     normalize_punctuation(&without_fillers)
 }
 
-/// Classify script evidence; punctuation, digits and isolated Latin letters
-/// do not establish a class by themselves.
-pub fn classify(text: &str) -> Option<TextClass> {
+/// Punctuation, digits and single Latin letters do not establish a class on their own.
+pub(crate) fn classify(text: &str) -> Option<TextClass> {
     let chinese = chinese_chars(text);
     let latin = latin_words(text);
     if chinese > 0 && latin > 0 {
@@ -63,16 +61,15 @@ pub fn classify(text: &str) -> Option<TextClass> {
     }
 }
 
-/// Count the two ideograph ranges specified for Chinese routing and joining.
-pub fn chinese_chars(text: &str) -> usize {
+/// Count characters in the two Chinese ideograph ranges.
+pub(crate) fn chinese_chars(text: &str) -> usize {
     text.chars()
         .filter(|character| is_chinese(*character))
         .count()
 }
 
-/// Count contiguous ASCII letter runs of at least two letters, including
-/// Latin words attached directly to Chinese text.
-pub fn latin_words(text: &str) -> usize {
+/// Count ASCII letter runs of two or more letters, including ones attached to Chinese text.
+pub(crate) fn latin_words(text: &str) -> usize {
     let mut words = 0;
     let mut length = 0;
     for character in text.chars().chain(std::iter::once(' ')) {
@@ -88,9 +85,9 @@ pub fn latin_words(text: &str) -> usize {
     words
 }
 
-/// Apply the rules in order: empty text, then brief single-character false triggers. The input
-/// may still contain markup or fillers; decisions always use its cleaned text.
-pub fn drop_reason(transcript: &Transcript, duration_s: f64) -> Option<DropReason> {
+/// Empty text first, then a brief single-character result. The decision always uses the cleaned
+/// text, even when the input still holds markup or fillers.
+pub(crate) fn drop_reason(transcript: &Transcript, duration_s: f64) -> Option<DropReason> {
     let text = clean(&transcript.text);
     if classify(&text).is_none() {
         return Some(DropReason::Empty);
@@ -100,8 +97,7 @@ pub fn drop_reason(transcript: &Transcript, duration_s: f64) -> Option<DropReaso
         .chars()
         .filter(|character| !character.is_whitespace() && !is_punctuation(*character));
     if let Some(character) = spoken_characters.next() {
-        // Compare at the constant's f32 precision so its 0.6 s boundary
-        // is not treated as shorter because f32(0.6) rounds upward.
+        // Compared at f32 precision so the constant's boundary does not round upward.
         if spoken_characters.next().is_none()
             && (duration_s as f32) < SINGLE_CHAR_MAX_S
             && !SINGLE_CHAR_ALLOW.contains(&character.to_string().as_str())
@@ -173,8 +169,7 @@ fn normalize_punctuation(text: &str) -> String {
         } else if result.is_empty() && is_punctuation(character) {
             // Punctuation left after a leading filler carries no words.
         } else if is_sentence_punctuation(character) {
-            // Keep the final mark of a run: a removed filler in "，嗯。"
-            // leaves a full stop rather than an orphaned comma/full stop pair.
+            // Keep only the last mark of a run, so "，嗯。" ends in a full stop.
             punctuation = Some(character);
             space = false;
         } else {
@@ -270,8 +265,6 @@ mod tests {
 
     #[test]
     fn all_recorded_asr_fixture_outputs() {
-        // Frozen sv2024_auto outputs from asr-expected.json, embedded here so
-        // tests never depend on files outside the repository.
         let cases = [
             ("也不是也不完全是AI。", "也不是也不完全是AI。", TextClass::Mixed),
             ("veification code输进去之后就可以。", "veification code输进去之后就可以。", TextClass::Mixed),

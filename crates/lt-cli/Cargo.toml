@@ -10,7 +10,8 @@ sherpa = ["dep:lt-sherpa"]
 llm = ["dep:lt-llm"]
 
 [dependencies]
-lt-core.workspace = true
+# `--fake` replay runs the deterministic engines, so this is not test-only.
+lt-core = { workspace = true, features = ["fakes"] }
 lt-audio.workspace = true
 lt-sherpa = { workspace = true, optional = true }
 lt-llm = { workspace = true, optional = true }

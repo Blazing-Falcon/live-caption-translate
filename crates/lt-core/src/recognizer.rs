@@ -1,11 +1,7 @@
 //! Clauses from a streaming recognizer that hears all audio continuously.
 //!
-//! The engine's text only grows. A clause opens at its first word and ends at a commit
-//! (punctuation or the wait cap), at the engine's pause rule, or at a break in the audio. Each
-//! clause gets an id and start and close notices for the scheduler.
-//!
-//! `Recognizer` is a plain state machine; the `lt-asr` thread only moves its inputs and
-//! outputs.
+//! A clause opens at its first word and ends at a commit (punctuation or the wait cap), at the
+//! engine's pause rule, or at a break. The `lt-asr` thread only moves its inputs and outputs.
 
 use crate::{
     commit::{cut_at, decide, is_word_token, join_tokens, CommitSettings, Decision, MIN_CLAUSE_S},
@@ -16,21 +12,19 @@ use crate::{
 };
 use std::time::Instant;
 
-/// A clause starts this long before its first token: the token time is where the word was
-/// recognized, and speech onset comes a little before it.
+/// A clause starts this long before its first token, where the word was recognized.
 const PRE_ROLL_S: f64 = 0.3;
-/// A clause that ends at a pause or break ends this long after its last token start, so its
-/// end time covers the last word.
+/// A clause that ends at a pause or break ends this long after its last token start, so its end
+/// covers the last word.
 const LAST_WORD_S: f64 = 0.6;
-/// A clause this old may also end at a comma. Casual speech often runs on with commas for half a
-/// minute without a sentence end; before this age a comma usually splits a short phrase.
+/// Before this age a comma usually splits a short phrase rather than ending a run-on clause.
 const COMMA_AFTER_S: f64 = 2.0;
-/// A clause this old without punctuation is cut at the widest gap between words, so translation
-/// input stays bounded.
+/// A clause this old without punctuation is cut at its widest word gap, to bound translation
+/// input.
 const CAP_AFTER_S: f64 = 30.0;
 
-/// The commit rule for a clause whose newest word is `age_s` seconds after its start: sentence
-/// marks always, commas after `COMMA_AFTER_S`, the wait cap after `CAP_AFTER_S`.
+/// Sentence marks always; commas once the clause is `COMMA_AFTER_S` old, the wait cap after
+/// `CAP_AFTER_S`.
 fn rules(age_s: f64) -> CommitSettings {
     let rules = CommitSettings::FULL;
     if age_s < COMMA_AFTER_S {
@@ -60,8 +54,7 @@ pub enum RecognizerInput {
 
 #[derive(Debug)]
 pub enum AsrMessage {
-    /// A closed clause. The recognizer gives its raw text; the filter runs after the second
-    /// pass, so a line is kept or dropped on its final text.
+    /// A closed clause with raw text. The filter runs on the final text after the second pass.
     Transcript(Transcript),
     Dropped(UtteranceId, DropReason),
     Failed(UtteranceId, String),
@@ -154,9 +147,8 @@ impl Recognizer {
                         }
                     }
                     Err(error) => {
-                        // Start the engine over like a break: the failed text would otherwise
-                        // come back in a new clause over the same audio, and audio it rejected
-                        // would shift every later token time.
+                        // Start the engine over like a break: its rejected audio would shift
+                        // every later token time, and its text would return in a new clause.
                         self.fail(&error.to_string(), out);
                         let _ = engine.finish();
                         self.origin = None;
@@ -317,7 +309,6 @@ impl Recognizer {
             absorbed: Vec::new(),
             cut,
             logprob: mean_log_prob(log_probs),
-            // Replaced by the refine thread's record before the line is published.
             second_pass: crate::types::SecondPass::default(),
         };
         out.push(RecognizerOutput::Closed(clause.id, end, cut));
@@ -346,7 +337,7 @@ impl Recognizer {
 }
 
 fn elapsed_ms(started: Instant) -> u32 {
-    started.elapsed().as_millis().min(u128::from(u32::MAX)) as u32
+    u32::try_from(started.elapsed().as_millis()).unwrap_or(u32::MAX)
 }
 
 #[cfg(test)]

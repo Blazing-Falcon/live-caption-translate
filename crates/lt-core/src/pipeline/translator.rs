@@ -158,7 +158,7 @@ fn translate_one(
             })
     };
     // A cooperative engine may return as soon as the runaway guard fires.
-    // Retain the measured prefix rather than converting it into a timeout.
+    // Keep the prefix it reached instead of turning the result into a timeout.
     let result = match result {
         Err(Error::Translation {
             reason: FailReason::Runaway,
@@ -248,9 +248,8 @@ fn preview_event(event: PipelineEvent, ids: Vec<UtteranceId>) -> Option<Pipeline
     }
 }
 
-/// Completion notifications carry the terminal event; the scheduler publishes
-/// them before submitting another item so line terminals cannot be reordered.
-/// A preview completes with its event, or with `None` when it has nothing to show.
+/// The scheduler publishes each completion before submitting another item, so line terminals
+/// cannot be reordered. A preview completes with its event, or with `None` when it shows nothing.
 pub(super) struct TranslatorWorker {
     pub(super) input: Sender<QueuedTranscript>,
     pub(super) completed: Receiver<Option<PipelineEvent>>,

@@ -124,11 +124,8 @@ impl Scheduler {
     }
 
     fn refresh_stats(&mut self, live: StreamTime) {
-        let waiting = self
-            .queue
-            .len()
-            .saturating_add(self.ready.len())
-            .min(u32::MAX as usize) as u32;
+        let waiting =
+            u32::try_from(self.queue.len().saturating_add(self.ready.len())).unwrap_or(u32::MAX);
         let snapshot = self.metrics.snapshot(live, waiting);
         if let Ok(mut latest) = self.shared.latest_stats.lock() {
             *latest = snapshot;

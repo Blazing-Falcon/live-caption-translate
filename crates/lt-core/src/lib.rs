@@ -2,17 +2,18 @@
 
 pub mod bus;
 pub mod clock;
-pub mod commit;
+pub(crate) mod commit;
 pub mod config;
 pub mod engines;
 pub mod error;
 pub mod events;
+#[cfg(any(test, feature = "fakes"))]
 pub mod fakes;
 pub mod metrics;
 pub mod pipeline;
-pub mod recognizer;
+pub(crate) mod recognizer;
 pub mod refine;
 pub mod source;
-pub mod text;
+pub(crate) mod text;
 pub mod transcript;
 pub mod types;

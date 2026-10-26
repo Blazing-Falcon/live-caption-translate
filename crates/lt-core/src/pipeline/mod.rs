@@ -1,9 +1,8 @@
 //! Bounded, independently scheduled audio/ASR/translation workers.
 //!
-//! Threads: `lt-frontend` turns capture frames into recognizer input, `lt-asr`
-//! owns the recognizer, `lt-refine` owns the second-pass recognizer and the filter,
-//! and `lt-scheduler` owns the translation queue, the translator worker and the
-//! stats.
+//! `lt-frontend` sends capture frames to the recognizer, `lt-asr` owns the streaming recognizer,
+//! `lt-refine` owns the second pass and the filter, and `lt-scheduler` owns the queue, the
+//! translator worker and the stats.
 
 mod asr;
 mod cancel;

@@ -1,6 +1,5 @@
 //! `lt-refine`: the second pass and the filter for each closed clause, in order. It owns the
-//! offline recognizer. Every closed clause goes through here, so this is the only path to the
-//! translator.
+//! offline recognizer and is the only path to the translator.
 
 use super::{send_cooperative, Shared, POLL};
 use crate::{
@@ -28,11 +27,10 @@ pub(super) struct Window {
     pub(super) samples: Vec<f32>,
 }
 
-/// The live text of the clause that is open right now, shared with the second pass.
+/// The live text of the clause open right now, shared with the second pass.
 ///
-/// A window runs past its clause, so its offline text can end with the start of the next
-/// clause. That text is only known once the next clause has started, which is after this one
-/// closed; the asr thread writes it here and the second pass reads it after its decode.
+/// A window runs past its clause, so its offline text can end with the start of the next clause.
+/// Only the asr thread knows that text, and only after this clause closed.
 #[derive(Default)]
 pub(super) struct OpenClause(Mutex<Option<(UtteranceId, String)>>);
 
@@ -105,10 +103,9 @@ pub(super) fn refine_loop(
     Ok(())
 }
 
-/// Replace the clause's text with the matching part of the window's offline text, and record
-/// how it went. A clause that waited past `max_wait` keeps the live text without a decode, so
-/// the queue catches up when the engine is slow. A decode that started in time is used even if
-/// it ends later: the wait is spent by then.
+/// Replace the clause's text with the matching part of the window's offline text and record how
+/// it went. A clause that waited past `max_wait` keeps the live text without a decode; a decode
+/// that started in time is used even when it ends later.
 fn second_pass(
     engine: &mut dyn OfflineAsr,
     transcript: &mut Transcript,
@@ -151,7 +148,7 @@ fn second_pass(
                 match trim(&transcript.text, text) {
                     Some(trimmed) => {
                         record.outcome = SecondPassOutcome::Used;
-                        record.distance = Some(trimmed.distance.min(u32::MAX as usize) as u32);
+                        record.distance = Some(u32::try_from(trimmed.distance).unwrap_or(u32::MAX));
                         transcript.text = trimmed.text;
                     }
                     None => record.outcome = SecondPassOutcome::Mismatch,
@@ -169,7 +166,7 @@ fn second_pass(
 }
 
 fn elapsed_ms(since: Instant) -> u32 {
-    since.elapsed().as_millis().min(u128::from(u32::MAX)) as u32
+    u32::try_from(since.elapsed().as_millis()).unwrap_or(u32::MAX)
 }
 
 /// Clean, classify and filter a closed clause on its final text. `live` is the recognizer's
@@ -196,9 +193,8 @@ fn finalize(mut transcript: Transcript, live: &str) -> AsrMessage {
 mod tests {
     use super::*;
 
-    /// The refine thread reads the cell after clause `id` closed. Only the clause that opened
-    /// after it may cut its window or mark it unfinished; the clause itself, or the one before
-    /// it when this clause produced no partial, must not.
+    /// Only the clause opened after `id` may cut its window: the clause itself, or the one
+    /// before it when this clause produced no partial, must not.
     #[test]
     fn only_the_next_clause_is_read_as_what_follows() {
         let open = OpenClause::default();

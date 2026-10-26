@@ -6,7 +6,7 @@ use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 pub const SAMPLE_RATE: u64 = 16_000;
 pub const FRAME_SAMPLES: usize = 512;
 /// JavaScript numbers represent integers exactly only through this value.
-pub const MAX_UTTERANCE_ID: u64 = (1_u64 << 53) - 1;
+pub(crate) const MAX_UTTERANCE_ID: u64 = (1_u64 << 53) - 1;
 
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct UtteranceId(pub u64);
@@ -50,7 +50,7 @@ pub struct StreamTime(pub u64);
 impl StreamTime {
     pub const ZERO: Self = Self(0);
 
-    pub const fn from_samples(samples: u64) -> Self {
+    pub(crate) const fn from_samples(samples: u64) -> Self {
         Self(samples)
     }
 
@@ -58,30 +58,23 @@ impl StreamTime {
         self.0
     }
 
-    pub const fn from_millis(milliseconds: u64) -> Self {
+    #[cfg(test)]
+    pub(crate) const fn from_millis(milliseconds: u64) -> Self {
         Self(milliseconds.saturating_mul(SAMPLE_RATE / 1_000))
     }
 
-    /// Convert to whole milliseconds without an overflowing multiplication.
-    pub const fn millis(self) -> u64 {
+    /// Whole milliseconds, without an overflowing multiplication.
+    pub(crate) const fn millis(self) -> u64 {
         self.0 / (SAMPLE_RATE / 1_000)
     }
 
-    pub const fn as_millis(self) -> u64 {
-        self.millis()
-    }
-
-    /// Round a nonnegative duration to the nearest sample. Negative/NaN becomes zero.
-    pub fn from_seconds(seconds: f64) -> Self {
+    /// Rounds to the nearest sample; negative and NaN become zero.
+    pub(crate) fn from_seconds(seconds: f64) -> Self {
         Self((seconds * SAMPLE_RATE as f64).round() as u64)
     }
 
-    pub fn seconds(self) -> f64 {
+    pub(crate) fn seconds(self) -> f64 {
         self.0 as f64 / SAMPLE_RATE as f64
-    }
-
-    pub fn as_secs_f64(self) -> f64 {
-        self.seconds()
     }
 
     pub const fn saturating_sub(self, earlier: Self) -> Self {
@@ -120,7 +113,7 @@ impl TextClass {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
-pub struct StageTiming {
+pub(crate) struct StageTiming {
     pub start: StreamTime,
     pub end: StreamTime,
     pub asr_done_ms: u64,
@@ -165,7 +158,7 @@ pub struct SecondPass {
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub struct Transcript {
+pub(crate) struct Transcript {
     pub id: UtteranceId,
     pub text: String,
     pub class: TextClass,
@@ -189,7 +182,7 @@ pub enum CaptureMode {
 }
 
 impl CaptureMode {
-    pub const NAMES: &'static [&'static str] = &["system", "apps"];
+    pub(crate) const NAMES: &'static [&'static str] = &["system", "apps"];
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]

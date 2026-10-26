@@ -4,21 +4,21 @@
 const END_MARKS: &str = "。？！?!";
 /// Clause marks: a clause may end here once enough words precede them.
 const SOFT_MARKS: &str = "，；,;";
-/// Tokens that must follow a mark before it counts (shows the speaker kept going).
+/// Word tokens that must follow a mark before it counts, which shows the speaker kept going.
 const MIN_TOKENS_AFTER: usize = 2;
 /// Word tokens before a sentence-ending mark.
 const MIN_TOKENS_BEFORE_END: usize = 2;
-/// Wait cap: only look for a gap in this window before the last token.
+/// The wait cap looks for a gap only in this window before the last token.
 const CAP_WINDOW_S: f64 = 2.0;
-/// Wait cap: word tokens needed before the cut.
+/// The wait cap needs this many word tokens before its cut.
 const CAP_MIN_TOKENS_BEFORE: usize = 4;
-/// Cut this long before the token that starts the next clause.
-pub const CUT_OFFSET_S: f64 = 0.06;
+/// A cut lands this long before the token that starts the next clause.
+pub(crate) const CUT_OFFSET_S: f64 = 0.06;
 /// A committed clause is at least this long.
-pub const MIN_CLAUSE_S: f64 = 0.1;
+pub(crate) const MIN_CLAUSE_S: f64 = 0.1;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct CommitSettings {
+pub(crate) struct CommitSettings {
     pub comma_min_tokens: usize,
     pub split_long: bool,
     pub cap_tokens: usize,
@@ -26,7 +26,7 @@ pub struct CommitSettings {
 
 impl CommitSettings {
     /// Every rule on: sentence marks, commas after 8 words, the wait cap after 20.
-    pub const FULL: Self = Self {
+    pub(crate) const FULL: Self = Self {
         comma_min_tokens: 8,
         split_long: true,
         cap_tokens: 20,
@@ -34,7 +34,7 @@ impl CommitSettings {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Decision {
+pub(crate) enum Decision {
     None,
     /// Cut after token `k` (punctuation commit).
     Commit {
@@ -47,7 +47,7 @@ pub enum Decision {
 }
 
 /// A recognizer token containing a CJK character, an ASCII letter or a digit.
-pub fn is_word_token(token: &str) -> bool {
+pub(crate) fn is_word_token(token: &str) -> bool {
     token
         .chars()
         .any(|c| ('\u{4e00}'..='\u{9fff}').contains(&c) || c.is_ascii_alphanumeric())
@@ -64,17 +64,15 @@ fn word_count(tokens: &[String]) -> usize {
 }
 
 /// Concatenate tokens the way the recognizer's text is built (English word starts carry a space).
-pub fn join_tokens(tokens: &[String]) -> String {
+pub(crate) fn join_tokens(tokens: &[String]) -> String {
     tokens.concat().trim().to_owned()
 }
 
-/// Decide whether the clause decoded as `tokens` (start times `times`, seconds from the clause
-/// start) should be cut. The streaming recognizer's tokens never change, so a cut needs no
-/// second look.
-pub fn decide(tokens: &[String], times: &[f64], settings: &CommitSettings) -> Decision {
+/// Decide whether to cut the clause decoded as `tokens` (`times` in seconds from its start).
+pub(crate) fn decide(tokens: &[String], times: &[f64], settings: &CommitSettings) -> Decision {
     let n = tokens.len();
     let mut candidate = None;
-    // Suffix counts make the scan linear: words after k, words before k.
+    // Suffix counts keep the scan linear: words after k, words before k.
     let mut after = word_count(tokens);
     let mut before = 0;
     for (k, token) in tokens.iter().enumerate() {
@@ -124,9 +122,9 @@ pub fn decide(tokens: &[String], times: &[f64], settings: &CommitSettings) -> De
     Decision::None
 }
 
-/// Seconds from the stream origin at which to cut: just before token `k + 1` starts, at least
-/// `MIN_CLAUSE_S` into the clause and no later than the decoded audio end.
-pub fn cut_at(clause_start_s: f64, next_token_time_s: f64, audio_end_s: f64) -> f64 {
+/// Seconds from the stream origin to cut at: just before token `k + 1`, at least `MIN_CLAUSE_S`
+/// into the clause, no later than the decoded audio end.
+pub(crate) fn cut_at(clause_start_s: f64, next_token_time_s: f64, audio_end_s: f64) -> f64 {
     (clause_start_s + next_token_time_s - CUT_OFFSET_S)
         .max(clause_start_s + MIN_CLAUSE_S)
         .min(audio_end_s)

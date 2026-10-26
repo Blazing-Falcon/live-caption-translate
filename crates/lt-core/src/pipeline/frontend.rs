@@ -268,7 +268,7 @@ pub(super) fn frontend_loop(context: FrontendContext) -> Result<()> {
                     frontend.push_break(CutReason::End);
                     frontend.ending = true;
                     // The audio ended by itself (end of a file, or a capture that failed for
-                    // good): listening is over, and nothing else would say so.
+                    // good), and nothing else would report that listening is over.
                     frontend.bus.publish(PipelineEvent::ListeningState {
                         state: ListeningStateKind::Paused,
                     });

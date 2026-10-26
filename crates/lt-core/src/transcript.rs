@@ -1,4 +1,4 @@
-//! Shared UTF-8 JSONL session/terminal records for replay and the desktop app.
+//! UTF-8 JSONL session records: one header line, then one line per finished utterance.
 use crate::bus::{EventBus, EventReceiver};
 use crate::error::{Error, Result};
 use crate::events::{FailReason, PipelineEvent};
@@ -78,7 +78,7 @@ struct Pending {
     second: Vec<SecondRecord>,
 }
 
-/// The second pass of one clause. `text` is the clause's final text.
+/// The second pass of one clause; `text` is the clause's final text.
 #[derive(Clone, Serialize)]
 struct SecondRecord {
     text: String,
@@ -163,7 +163,7 @@ pub struct TranscriptWriter<W: Write> {
 }
 
 impl<W: Write> TranscriptWriter<W> {
-    pub const PENDING_CAPACITY: usize = 1024;
+    const PENDING_CAPACITY: usize = 1024;
 
     pub fn new(mut writer: W, header: SessionHeader) -> Result<Self> {
         write_line(
@@ -178,10 +178,6 @@ impl<W: Write> TranscriptWriter<W> {
             pending: BTreeMap::new(),
             live_engine: header.asr.clone(),
         })
-    }
-
-    pub fn pending_count(&self) -> usize {
-        self.pending.len()
     }
 
     pub fn on_event(&mut self, event: &PipelineEvent, wall: &str) -> Result<()> {
@@ -291,7 +287,7 @@ impl<W: Write> TranscriptWriter<W> {
         Ok(())
     }
 
-    pub fn flush(&mut self) -> Result<()> {
+    fn flush(&mut self) -> Result<()> {
         self.writer.flush().map_err(Error::Io)
     }
 
@@ -302,20 +298,18 @@ impl<W: Write> TranscriptWriter<W> {
     }
 }
 
-/// Owns transcript I/O on a bounded event subscriber's separate thread.
+/// Writes transcript records on its own thread.
 ///
-/// Start before the pipeline publishes events. Call `finish` only after
-/// `PipelineHandle::wait`/`stop` has joined every event producer, with the bus
-/// still alive: this is what makes draining all queued terminal events final.
-/// A receiver disconnect is an error because the bus does not distinguish
-/// producer shutdown from overflow; neither is silently accepted as complete.
+/// Start it before the pipeline publishes events, and call `finish` only after `PipelineHandle`
+/// has joined every producer, with the bus still alive. A receiver disconnect is an error: the
+/// bus does not distinguish shutdown from overflow, and neither may look like a complete file.
 pub struct TranscriptSubscriber<W: Write + Send + 'static> {
     stop: Arc<AtomicBool>,
     thread: Option<JoinHandle<Result<W>>>,
 }
 
 impl<W: Write + Send + 'static> TranscriptSubscriber<W> {
-    pub const CAPACITY: usize = 1024;
+    const CAPACITY: usize = 1024;
 
     pub fn start(
         bus: &EventBus,
@@ -406,14 +400,14 @@ fn append_id(joined: &mut Vec<UtteranceId>, leader: UtteranceId, id: UtteranceId
 }
 
 fn write_line<W: Write, T: Serialize>(writer: &mut W, record: &T) -> Result<()> {
-    // Serialize before writing so an invalid wire value cannot leave a partial line.
+    // Serialize first: an invalid wire value must not leave a partial line.
     let mut line = serde_json::to_vec(record)?;
     line.push(b'\n');
     writer.write_all(&line).map_err(Error::Io)
 }
 
-/// Remove only generated transcript filenames older than the retention cutoff.
-/// Modification time is the age marker; filename dates do not determine age.
+/// Remove generated transcript files older than the retention cutoff, by modification time
+/// rather than by the date in the name.
 pub fn cleanup(dir: impl AsRef<Path>, days: u32, now: SystemTime) -> Result<usize> {
     if days == 0 {
         return Ok(0);
@@ -629,7 +623,7 @@ mod tests {
         for event in golden_events() {
             writer.on_event(&event, WALL).unwrap();
         }
-        assert_eq!(writer.pending_count(), 0);
+        assert!(writer.pending.is_empty());
         let output = String::from_utf8(writer.finish().unwrap()).unwrap();
         assert_eq!(output, GOLDEN);
         assert!(!output.contains("\\u6211"));
