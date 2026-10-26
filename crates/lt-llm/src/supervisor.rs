@@ -313,7 +313,7 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
                 owned.last_stderr()
             )));
         }
-        match crate::client::health(
+        match crate::http::health(
             &state.url,
             &control(&state.cancelled, Duration::from_millis(800)),
         ) {
@@ -347,7 +347,7 @@ fn run_child(options: &ServerOptions, port: u16, state: &WorkerState) -> Result<
         }
         // Health probes are small and bounded. Three consecutive failures also
         // recover an unresponsive process which has not exited.
-        match crate::client::health(
+        match crate::http::health(
             &state.url,
             &control(&state.cancelled, Duration::from_millis(800)),
         ) {
@@ -712,7 +712,7 @@ mod tests {
         );
         supervisor.stop().unwrap();
         assert_eq!(supervisor.child_pid().load(Ordering::Acquire), 0);
-        assert!(crate::client::health(
+        assert!(crate::http::health(
             supervisor.url(),
             &control(
                 &Arc::new(AtomicBool::new(false)),
@@ -732,7 +732,7 @@ mod tests {
         let pid = supervisor.child_pid();
         drop(supervisor);
         assert_eq!(pid.load(Ordering::Acquire), 0);
-        assert!(crate::client::health(
+        assert!(crate::http::health(
             &url,
             &control(
                 &Arc::new(AtomicBool::new(false)),
