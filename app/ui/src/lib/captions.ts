@@ -258,19 +258,25 @@ export function captionBlocks(
     if (first === undefined) return;
     const ids = run.map((line) => line.id);
     const live = run.filter((line) => line.state === "live");
+    const source = run
+      .filter((line) => line.state !== "live")
+      .map((line) => line.source)
+      .join("");
+    const liveText = liveSource ? live.map((line) => line.source).join("") : "";
+    const preview = previewFor(ids);
+    const english = live.length === run.length ? "" : first.english;
+    // A live line whose Chinese is hidden has nothing to show, so it takes no block and no space.
+    if (source === "" && liveText === "" && english === "" && preview === null) return;
     blocks.push({
       key: first.id,
       ids,
       sealed: false,
-      source: run
-        .filter((line) => line.state !== "live")
-        .map((line) => line.source)
-        .join(""),
-      live: liveSource ? live.map((line) => line.source).join("") : "",
-      english: live.length === run.length ? "" : first.english,
+      source,
+      live: liveText,
+      english,
       state: live.length === run.length ? "open" : blockState(first.state),
       reason: first.reason,
-      preview: previewFor(ids),
+      preview,
     });
   };
 

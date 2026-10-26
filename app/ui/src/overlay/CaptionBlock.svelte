@@ -56,6 +56,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
+    /* In the box, not between boxes: a pruned block must take its whole stride with it. */
+    padding-bottom: var(--panel-gap);
     opacity: var(--age-opacity, 1);
     transition: opacity var(--fade-ms) linear;
     min-width: 0;
@@ -83,7 +85,7 @@
   /* The first preview must not add a row: the English row keeps its height from the first live
    * word, so the block below does not move when the preview arrives. */
   .english-row {
-    min-height: 1lh;
+    min-height: calc(var(--font-px, 26) * 1.3 * 1px);
   }
 
   .source {

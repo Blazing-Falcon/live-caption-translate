@@ -7,12 +7,12 @@
 {#if status}
   <p class="status" data-kind={status.kind}>
     <span class="hollow" aria-hidden="true"></span>
-    <span>{status.text}</span>
+    <span class="text">{status.text}</span>
   </p>
 {/if}
 
 <style>
-  /* Positioned over the text, so a status never changes the height of the captions below it. */
+  /* In the space the captions leave for it (`--status-h`), so a status never changes their height. */
   .status {
     position: absolute;
     top: var(--space-4);
@@ -22,12 +22,22 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    max-height: var(--status-h);
     margin: 0;
     padding: 4px 8px;
     border-radius: var(--radius-control);
     background: var(--ov-chip-bg);
     font-size: 15px;
+    line-height: 18px;
     color: var(--ov-text-secondary);
+  }
+
+  .text {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .hollow {

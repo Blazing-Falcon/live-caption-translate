@@ -33,6 +33,9 @@
   $effect(() => {
     void flowLines;
     void windowHeight;
+    void flow.source;
+    void flow.english;
+    void showSourceParagraph;
     const root = section?.closest<HTMLElement>(".overlay-root");
     if (!section || !root) return;
     const style = getComputedStyle(section);
@@ -92,7 +95,7 @@
     gap: var(--space-2);
     width: 100%;
     max-width: 960px;
-    padding: var(--space-4) var(--space-6) 18px;
+    padding: calc(var(--space-4) + var(--status-h) + var(--space-2)) var(--space-6) 18px;
     background: var(--ov-bar-bg);
     border-radius: var(--radius-overlay);
   }

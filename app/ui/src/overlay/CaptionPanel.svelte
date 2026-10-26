@@ -25,7 +25,7 @@
     Math.min(OVERLAY_LIMITS.panel_lines.max, Math.max(OVERLAY_LIMITS.panel_lines.min, Math.round(panelLines))),
   );
   let pruned = $state<ReadonlySet<number>>(new Set());
-  const shown = $derived(blocks.filter((block) => !pruned.has(block.key)).slice(-keep));
+  const shown = $derived(blocks.filter((block) => !pruned.has(block.key)));
   const keys = $derived(shown.map((block) => block.key));
 
   function prune(gone: number[]): void {
@@ -51,8 +51,8 @@
     keep={keep}
     {reducedMotion}
     onprune={prune}
-    gap="var(--panel-gap)"
-    padding="var(--space-4) 18px var(--space-5)"
+    gap="0"
+    padding="0 18px calc(var(--space-5) - var(--panel-gap))"
   >
     {#each shown as block, index (block.key)}
       <CaptionBlockView
@@ -71,6 +71,7 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+    padding-top: calc(var(--space-4) + var(--status-h) + var(--space-2));
     overflow: hidden;
     background: var(--ov-bar-bg);
     border-radius: var(--radius-overlay);

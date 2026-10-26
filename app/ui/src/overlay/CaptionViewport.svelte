@@ -63,9 +63,18 @@
     return value;
   }
 
+  function capOffset(): number {
+    if (keep === null) return 0;
+    const elements = blockElements();
+    const extra = elements.length - keep;
+    if (extra <= 0) return 0;
+    return elements.slice(0, extra).reduce((sum, element) => sum + element.offsetHeight, 0);
+  }
+
   function scrollToNeeded(): number {
     if (!viewport || !column) return 0;
-    return snapUp(Math.max(0, column.offsetHeight - viewport.clientHeight));
+    const overflow = Math.max(0, column.offsetHeight - viewport.clientHeight);
+    return Math.max(snapUp(overflow), capOffset());
   }
 
   /** Move to `target`, animated unless `instant` or the reader asked for less motion. */
@@ -111,7 +120,8 @@
       Math.max(0, offset - removed) + Math.max(0, above),
       scrollToNeeded(),
     );
-    const instant = !primed || above > 0.5;
+    // A prune's offset drop is instant: animating it would drag the visible blocks down with it.
+    const instant = !primed || above > 0.5 || removed > 0.5;
     primed = true;
     moveTo(target, instant);
     schedulePrune();
