@@ -96,17 +96,22 @@
       if (next.has(key)) continue;
       if (before.top + before.height <= offset + 0.5) removed += before.height;
     }
-    // A block growing above the visible text pushes the rest down; an instant move keeps it put.
-    let down = 0;
+    // A block above the top edge is clipped, so growing it is invisible, but it shifts every
+    // visible block down by the same amount; raising the offset by that amount keeps them still.
+    let above = 0;
     for (const [key, block] of next) {
       const before = tops.get(key);
-      if (before) down = Math.max(down, block.top - before.top);
+      if (!before || before.top + before.height > offset + 0.5) continue;
+      above = Math.max(above, block.top + block.height - (before.top + before.height));
     }
     tops = next;
 
     // The offset never falls, except by the height of blocks pruned above the top edge.
-    const target = Math.max(Math.max(0, offset - removed), scrollToNeeded());
-    const instant = !primed || down > 0.5;
+    const target = Math.max(
+      Math.max(0, offset - removed) + Math.max(0, above),
+      scrollToNeeded(),
+    );
+    const instant = !primed || above > 0.5;
     primed = true;
     moveTo(target, instant);
     schedulePrune();
