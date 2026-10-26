@@ -1,6 +1,5 @@
 use super::{
-    cancel::Cancel, running::RunningText, send_cooperative, FrontendNotice, Shared,
-    CONTROL_CAPACITY, POLL,
+    running::RunningText, send_cooperative, FrontendNotice, Shared, CONTROL_CAPACITY, POLL,
 };
 use crate::{
     bus::EventBus,
@@ -30,6 +29,20 @@ pub(super) struct SchedulerContext {
     pub(super) sampler: Option<Box<dyn ResourceSampler>>,
 }
 
+/// What one step of the loop did.
+#[derive(Clone, Copy, PartialEq)]
+enum Step {
+    Idle,
+    Progressed,
+    Stop,
+}
+
+impl Step {
+    fn progressed(self) -> bool {
+        self == Self::Progressed
+    }
+}
+
 struct Scheduler {
     queue: TranslationQueue,
     ready: VecDeque<Transcript>,
@@ -46,6 +59,14 @@ struct Scheduler {
     running_text: RunningText,
     /// The lines the preview in flight covers.
     previewing: Option<Vec<UtteranceId>>,
+    front: Receiver<FrontendNotice>,
+    asr: Receiver<AsrMessage>,
+    worker: TranslatorWorker,
+    front_done: bool,
+    asr_done: bool,
+    pending_asr: Option<AsrMessage>,
+    last_stats: Instant,
+    was_listening: bool,
 }
 
 impl Scheduler {
@@ -236,6 +257,239 @@ impl Scheduler {
             preview: Some(ids),
         })
     }
+
+    /// Frontend notices: starts, breaks and clause closes.
+    fn drain_notices(&mut self) -> Step {
+        let mut step = Step::Idle;
+        for _ in 0..CONTROL_CAPACITY * 2 {
+            match self.front.try_recv() {
+                Ok(notice) => {
+                    step = Step::Progressed;
+                    self.notice(notice);
+                }
+                Err(TryRecvError::Empty) => break,
+                Err(TryRecvError::Disconnected) => {
+                    self.front_done = true;
+                    break;
+                }
+            }
+        }
+        step
+    }
+
+    /// Finished translations, in the order the worker sent them.
+    fn drain_completions(&mut self) -> Step {
+        let mut step = Step::Idle;
+        loop {
+            match self.worker.completed.try_recv() {
+                Ok(event) => {
+                    step = Step::Progressed;
+                    self.completed(event);
+                }
+                Err(TryRecvError::Empty) => return step,
+                Err(TryRecvError::Disconnected) => {
+                    self.translator_lost();
+                    return Step::Stop;
+                }
+            }
+        }
+    }
+
+    /// Move sealed units into the translation queue while it has room.
+    fn feed_queue(&mut self, now: StreamTime) -> Result<Step> {
+        let mut step = Step::Idle;
+        while self.queue.len() < TranslationQueue::CAPACITY {
+            let Some(transcript) = self.ready.pop_front() else {
+                break;
+            };
+            self.queue.push(transcript, now.millis())?;
+            step = Step::Progressed;
+        }
+        Ok(step)
+    }
+
+    /// Read ASR while translation has room; a line whose notices have not arrived waits.
+    fn read_asr(&mut self) -> Step {
+        if self.asr_done || !self.ready.is_empty() || self.queue.len() >= TranslationQueue::CAPACITY
+        {
+            return Step::Idle;
+        }
+        let message = if let Some(message) = self.pending_asr.take() {
+            Some(message)
+        } else {
+            match self.asr.try_recv() {
+                Ok(message) => Some(message),
+                Err(TryRecvError::Empty) => None,
+                Err(TryRecvError::Disconnected) => {
+                    self.asr_done = true;
+                    return Step::Progressed;
+                }
+            }
+        };
+        let Some(message) = message else {
+            return Step::Idle;
+        };
+        // The notice and transcript channels have independent senders. A line's start and
+        // close notices come first, so a terminal event at shutdown and the lag stat know the
+        // line. A partial only needs its start notice.
+        let started = self.started_through.is_some_and(|id| id >= message.id());
+        let closed = self.closed_through.is_some_and(|id| id >= message.id());
+        let is_partial = matches!(message, AsrMessage::Partial { .. });
+        if self.front_done || (started && (closed || is_partial)) {
+            self.transcript(message);
+            Step::Progressed
+        } else {
+            self.pending_asr = Some(message);
+            Step::Idle
+        }
+    }
+
+    /// Send the next queued unit, or a running-text preview when nothing is queued.
+    fn dispatch(&mut self, now: StreamTime) -> Result<Step> {
+        let cancelled = self.shared.cancelled.clone();
+        if !self.in_flight && !self.queue.is_empty() {
+            let batch = self.queue.take(now);
+            for event in batch.events {
+                match &event {
+                    PipelineEvent::Skipped { id, .. } => {
+                        self.observed.remove(id);
+                        self.translating.remove(id);
+                    }
+                    PipelineEvent::UnitSealed {
+                        id: leader, ids, ..
+                    } => {
+                        for id in ids.iter().filter(|id| *id != leader) {
+                            self.observed.remove(id);
+                            self.translating.remove(id);
+                        }
+                    }
+                    _ => {}
+                }
+                self.publish(event);
+            }
+            if let Some(item) = batch.item {
+                // Its id stays observed, so the shutdown below settles it either way.
+                if send_cooperative(&self.worker.input, item, &cancelled).is_err() {
+                    if !cancelled.is_set() {
+                        self.translator_lost();
+                    }
+                    return Ok(Step::Stop);
+                }
+                self.in_flight = true;
+                return Ok(Step::Progressed);
+            }
+        }
+        if !self.in_flight {
+            if let Some(item) = self.next_preview(now.millis()) {
+                if send_cooperative(&self.worker.input, item, &cancelled).is_err() {
+                    if !cancelled.is_set() {
+                        self.translator_lost();
+                    }
+                    return Ok(Step::Stop);
+                }
+                self.in_flight = true;
+                return Ok(Step::Progressed);
+            }
+        }
+        Ok(Step::Idle)
+    }
+
+    fn is_drained(&self) -> bool {
+        self.asr_done
+            && self.front_done
+            && self.ready.is_empty()
+            && self.queue.is_empty()
+            && !self.in_flight
+    }
+
+    /// Publish Stats once a second while listening, never across the pause boundary.
+    fn publish_stats(&mut self) {
+        let is_listening = self.shared.listening.load(Ordering::Acquire);
+        if is_listening != self.was_listening {
+            self.was_listening = is_listening;
+            self.last_stats = Instant::now();
+        }
+        if !is_listening || self.last_stats.elapsed() < Duration::from_secs(1) {
+            return;
+        }
+        // Frontend clears listening under this lock before acknowledging pause. A timer
+        // cannot publish a stale Stats after that boundary.
+        if let Ok(latest) = self.shared.latest_stats.lock() {
+            if self.shared.listening.load(Ordering::Acquire) && !self.shared.cancelled.is_set() {
+                self.bus.publish(PipelineEvent::Stats(latest.clone()));
+            }
+        }
+        self.last_stats = Instant::now();
+    }
+
+    /// The translator thread ended by itself, which only a panic does: report it and stop the
+    /// session, whose shutdown settles every line.
+    fn translator_lost(&self) {
+        self.bus.publish(PipelineEvent::EngineStatus {
+            engine: EngineKind::Translator,
+            state: EngineState::Failed,
+            message: Some("The translator stopped unexpectedly".into()),
+        });
+        self.shared.cancelled.set();
+    }
+
+    /// Join the worker, wait for the producers to close, and settle every line.
+    fn shutdown(&mut self, clock: &dyn Clock) -> Result<()> {
+        // A worker that panicked reports it after every line is settled.
+        let stopped = self.worker.stop();
+        // Wait for producers to close before publishing shutdown terminals. This prevents a
+        // racing SpeechStarted or delta from appearing after a terminal.
+        while !self.front_done || !self.asr_done {
+            if !self.front_done {
+                match self.front.recv_timeout(POLL) {
+                    Ok(FrontendNotice::Started(id)) => {
+                        if self.handled_through.is_none_or(|handled| id > handled) {
+                            self.observed.insert(id);
+                        }
+                    }
+                    Ok(FrontendNotice::ClauseClosed(id, end)) => {
+                        self.metrics.clause_closed(id, end);
+                    }
+                    Ok(_) => {}
+                    Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}
+                    Err(crossbeam_channel::RecvTimeoutError::Disconnected) => {
+                        self.front_done = true
+                    }
+                }
+            }
+            if !self.asr_done {
+                match self.asr.recv_timeout(POLL) {
+                    Ok(_) => {}
+                    Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}
+                    Err(crossbeam_channel::RecvTimeoutError::Disconnected) => self.asr_done = true,
+                }
+            }
+        }
+        let finished: Vec<_> = self.worker.completed.try_iter().collect();
+        for event in finished {
+            self.completed(event);
+        }
+        let unfinished: Vec<_> = self.observed.iter().copied().collect();
+        for id in unfinished {
+            self.publish(if self.translating.contains(&id) {
+                PipelineEvent::TranslationFailed {
+                    id,
+                    reason: FailReason::Error,
+                    message: "Listening stopped before this line finished".into(),
+                }
+            } else {
+                PipelineEvent::Dropped {
+                    id,
+                    reason: DropReason::Empty,
+                }
+            });
+        }
+        self.ready.clear();
+        self.queue = TranslationQueue::new();
+        self.in_flight = false;
+        self.refresh_stats(clock.now());
+        stopped
+    }
 }
 
 struct CachedSampler {
@@ -276,10 +530,11 @@ pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
             last: ResourceSample::default(),
         }) as Box<dyn ResourceSampler>
     }));
+    let worker = TranslatorWorker::start(translator, clock.clone(), bus.clone(), cancelled.flag())?;
     let mut scheduler = Scheduler {
         queue: TranslationQueue::new(),
         ready: VecDeque::new(),
-        bus: bus.clone(),
+        bus,
         observed: BTreeSet::new(),
         translating: BTreeSet::new(),
         in_flight: false,
@@ -291,228 +546,41 @@ pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
         asr_failed: false,
         running_text: RunningText::default(),
         previewing: None,
+        front,
+        asr,
+        worker,
+        front_done: false,
+        asr_done: false,
+        pending_asr: None,
+        last_stats: Instant::now(),
+        was_listening: shared.listening.load(Ordering::Acquire),
     };
-    let mut worker = TranslatorWorker::start(translator, clock.clone(), bus, cancelled.flag())?;
-    let mut front_done = false;
-    let mut asr_done = false;
-    let mut pending_asr = None;
-    let mut last_stats = Instant::now();
-    let mut was_listening = shared.listening.load(Ordering::Acquire);
     scheduler.refresh_stats(clock.now());
     while !cancelled.is_set() {
-        let mut progressed = false;
-        for _ in 0..CONTROL_CAPACITY * 2 {
-            match front.try_recv() {
-                Ok(notice) => {
-                    progressed = true;
-                    scheduler.notice(notice);
-                }
-                Err(TryRecvError::Empty) => break,
-                Err(TryRecvError::Disconnected) => {
-                    front_done = true;
-                    break;
-                }
-            }
-        }
-        let mut worker_lost = false;
-        loop {
-            match worker.completed.try_recv() {
-                Ok(event) => {
-                    progressed = true;
-                    scheduler.completed(event);
-                }
-                Err(TryRecvError::Empty) => break,
-                Err(TryRecvError::Disconnected) => {
-                    worker_lost = true;
-                    break;
-                }
-            }
-        }
-        if worker_lost {
-            translator_lost(&scheduler, &cancelled);
+        let mut progressed = scheduler.drain_notices().progressed();
+        if scheduler.drain_completions() == Step::Stop {
             break;
         }
-        if asr_done && front_done {
+        if scheduler.asr_done && scheduler.front_done {
             scheduler.freeze_running();
         }
-        while scheduler.queue.len() < TranslationQueue::CAPACITY {
-            let Some(transcript) = scheduler.ready.pop_front() else {
-                break;
-            };
-            scheduler.queue.push(transcript, clock.now().millis())?;
-            progressed = true;
+        progressed |= scheduler.feed_queue(clock.now())?.progressed();
+        progressed |= scheduler.read_asr().progressed();
+        let step = scheduler.dispatch(clock.now())?;
+        if step == Step::Stop {
+            break;
         }
-        // Stop reading ASR when translation is saturated.
-        if !asr_done
-            && scheduler.ready.is_empty()
-            && scheduler.queue.len() < TranslationQueue::CAPACITY
-        {
-            let message = if let Some(message) = pending_asr.take() {
-                Some(message)
-            } else {
-                match asr.try_recv() {
-                    Ok(message) => Some(message),
-                    Err(TryRecvError::Empty) => None,
-                    Err(TryRecvError::Disconnected) => {
-                        asr_done = true;
-                        progressed = true;
-                        None
-                    }
-                }
-            };
-            if let Some(message) = message {
-                // The notice and transcript channels have independent senders. A line's
-                // start and close notices come first, so a terminal event at shutdown and
-                // the lag stat know the line. A partial only needs its start notice.
-                let started = scheduler
-                    .started_through
-                    .is_some_and(|id| id >= message.id());
-                let closed = scheduler
-                    .closed_through
-                    .is_some_and(|id| id >= message.id());
-                let is_partial = matches!(message, AsrMessage::Partial { .. });
-                if front_done || (started && (closed || is_partial)) {
-                    scheduler.transcript(message);
-                    progressed = true;
-                } else {
-                    pending_asr = Some(message);
-                }
-            }
-        }
-        if !scheduler.in_flight && !scheduler.queue.is_empty() {
-            let batch = scheduler.queue.take(clock.now());
-            for event in batch.events {
-                match &event {
-                    PipelineEvent::Skipped { id, .. } => {
-                        scheduler.observed.remove(id);
-                        scheduler.translating.remove(id);
-                    }
-                    PipelineEvent::UnitSealed {
-                        id: leader, ids, ..
-                    } => {
-                        for id in ids.iter().filter(|id| *id != leader) {
-                            scheduler.observed.remove(id);
-                            scheduler.translating.remove(id);
-                        }
-                    }
-                    _ => {}
-                }
-                scheduler.publish(event);
-            }
-            if let Some(item) = batch.item {
-                // Its id stays observed, so the shutdown below settles it either way.
-                if send_cooperative(&worker.input, item, &cancelled).is_err() {
-                    if !cancelled.is_set() {
-                        translator_lost(&scheduler, &cancelled);
-                    }
-                    break;
-                }
-                scheduler.in_flight = true;
-                progressed = true;
-            }
-        }
-        if !scheduler.in_flight {
-            if let Some(item) = scheduler.next_preview(clock.now().millis()) {
-                if send_cooperative(&worker.input, item, &cancelled).is_err() {
-                    if !cancelled.is_set() {
-                        translator_lost(&scheduler, &cancelled);
-                    }
-                    break;
-                }
-                scheduler.in_flight = true;
-                progressed = true;
-            }
-        }
-        if asr_done
-            && front_done
-            && scheduler.ready.is_empty()
-            && scheduler.queue.is_empty()
-            && !scheduler.in_flight
-        {
+        progressed |= step.progressed();
+        if scheduler.is_drained() {
             break;
         }
         scheduler.refresh_stats(clock.now());
-        let is_listening = shared.listening.load(Ordering::Acquire);
-        if is_listening != was_listening {
-            was_listening = is_listening;
-            last_stats = Instant::now();
-        }
-        if is_listening && last_stats.elapsed() >= Duration::from_secs(1) {
-            // Frontend clears listening under this lock before acknowledging
-            // pause. A timer cannot publish a stale Stats after that boundary.
-            if let Ok(latest) = scheduler.shared.latest_stats.lock() {
-                if shared.listening.load(Ordering::Acquire) && !cancelled.is_set() {
-                    scheduler.bus.publish(PipelineEvent::Stats(latest.clone()));
-                }
-            }
-            last_stats = Instant::now();
-        }
+        scheduler.publish_stats();
         // Available messages wake the stage without an artificial frame/ASR
         // throttle. Idle polling remains bounded and does not spin a CPU core.
         if !progressed {
             thread::sleep(POLL);
         }
     }
-    // A worker that panicked reports it after every line is settled.
-    let stopped = worker.stop();
-    // Wait for producers to close before publishing shutdown terminals. This
-    // prevents a racing SpeechStarted or delta from appearing after a terminal.
-    while !front_done || !asr_done {
-        if !front_done {
-            match front.recv_timeout(POLL) {
-                Ok(FrontendNotice::Started(id)) => {
-                    if scheduler.handled_through.is_none_or(|handled| id > handled) {
-                        scheduler.observed.insert(id);
-                    }
-                }
-                Ok(FrontendNotice::ClauseClosed(id, end)) => {
-                    scheduler.metrics.clause_closed(id, end);
-                }
-                Ok(_) => {}
-                Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}
-                Err(crossbeam_channel::RecvTimeoutError::Disconnected) => front_done = true,
-            }
-        }
-        if !asr_done {
-            match asr.recv_timeout(POLL) {
-                Ok(_) => {}
-                Err(crossbeam_channel::RecvTimeoutError::Timeout) => {}
-                Err(crossbeam_channel::RecvTimeoutError::Disconnected) => asr_done = true,
-            }
-        }
-    }
-    for event in worker.completed.try_iter() {
-        scheduler.completed(event);
-    }
-    let unfinished: Vec<_> = scheduler.observed.iter().copied().collect();
-    for id in unfinished {
-        scheduler.publish(if scheduler.translating.contains(&id) {
-            PipelineEvent::TranslationFailed {
-                id,
-                reason: FailReason::Error,
-                message: "Listening stopped before this line finished".into(),
-            }
-        } else {
-            PipelineEvent::Dropped {
-                id,
-                reason: DropReason::Empty,
-            }
-        });
-    }
-    scheduler.ready.clear();
-    scheduler.queue = TranslationQueue::new();
-    scheduler.in_flight = false;
-    scheduler.refresh_stats(clock.now());
-    stopped
-}
-
-/// The translator thread ended by itself, which only a panic does: report it and stop the
-/// session, whose shutdown settles every line.
-fn translator_lost(scheduler: &Scheduler, cancelled: &Cancel) {
-    scheduler.bus.publish(PipelineEvent::EngineStatus {
-        engine: EngineKind::Translator,
-        state: EngineState::Failed,
-        message: Some("The translator stopped unexpectedly".into()),
-    });
-    cancelled.set();
+    scheduler.shutdown(clock.as_ref())
 }
