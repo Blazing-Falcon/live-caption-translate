@@ -1,4 +1,7 @@
 //! Owns the local llama-server process and its crash-recovery budget.
+mod containment;
+
+use containment::{configure as configure_process, lower_priority, Containment};
 use lt_core::{
     bus::EventBus,
     config::TranslateConfig,
@@ -41,10 +44,9 @@ pub struct ServerOptions {
     pub binary: PathBuf,
     pub model: PathBuf,
     pub threads: u32,
-    pub context: u32,
-    pub load_timeout: Duration,
+    load_timeout: Duration,
     /// Run the child at below-normal priority (`performance.low_priority`).
-    pub below_normal: bool,
+    below_normal: bool,
     #[cfg(test)]
     mock_directory: Option<PathBuf>,
 }
@@ -56,7 +58,6 @@ impl ServerOptions {
             binary,
             model,
             threads: config.server_threads(),
-            context: CONTEXT,
             load_timeout: Duration::from_secs(60),
             below_normal: false,
             #[cfg(test)]
@@ -76,7 +77,7 @@ impl ServerOptions {
         args.extend(["--host", "127.0.0.1", "--port"].map(String::from));
         args.push(port.to_string());
         args.extend(["--jinja", "-np", "1", "-c"].map(String::from));
-        args.push(self.context.to_string());
+        args.push(CONTEXT.to_string());
         args.extend(BATCH_ARGS.map(String::from));
         args.extend(["-t".into(), self.threads.to_string()]);
         args.extend(["-tb".into(), self.threads.to_string()]);
@@ -468,113 +469,6 @@ impl Drop for OwnedChild {
             let _ = reader.join();
         }
     }
-}
-
-#[cfg(windows)]
-fn configure_process(command: &mut Command, below_normal: bool) {
-    use std::os::windows::process::CommandExt;
-    use windows_sys::Win32::System::Threading::{BELOW_NORMAL_PRIORITY_CLASS, CREATE_NO_WINDOW};
-    let mut flags = CREATE_NO_WINDOW;
-    if below_normal {
-        flags |= BELOW_NORMAL_PRIORITY_CLASS;
-    }
-    command.creation_flags(flags);
-}
-
-#[cfg(unix)]
-fn configure_process(command: &mut Command, _below_normal: bool) {
-    use std::os::unix::process::CommandExt;
-    command.process_group(0);
-}
-
-#[cfg(not(any(windows, unix)))]
-fn configure_process(_: &mut Command, _below_normal: bool) {}
-
-/// Linux (development only): best effort, after the child exists.
-#[cfg(unix)]
-fn lower_priority(child: &Child) {
-    // SAFETY: plain syscall on our own child's pid; failure is ignored.
-    unsafe {
-        libc::setpriority(libc::PRIO_PROCESS, child.id(), 10);
-    }
-}
-
-#[cfg(not(unix))]
-fn lower_priority(_: &Child) {}
-
-#[cfg(windows)]
-struct Containment(windows_sys::Win32::Foundation::HANDLE);
-
-#[cfg(windows)]
-impl Containment {
-    fn attach(child: &Child) -> Result<Self> {
-        use std::os::windows::io::AsRawHandle;
-        use windows_sys::Win32::System::JobObjects::*;
-        // SAFETY: owned handle, correctly-sized zero-initialized Win32 struct;
-        // child handle remains alive throughout assignment.
-        unsafe {
-            let handle = CreateJobObjectW(std::ptr::null(), std::ptr::null());
-            if handle.is_null() {
-                return Err(std::io::Error::last_os_error().into());
-            }
-            let job = Self(handle);
-            let mut limits = JOBOBJECT_EXTENDED_LIMIT_INFORMATION::default();
-            limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-            if SetInformationJobObject(
-                handle,
-                JobObjectExtendedLimitInformation,
-                &limits as *const _ as *const _,
-                std::mem::size_of_val(&limits) as u32,
-            ) == 0
-                || AssignProcessToJobObject(handle, child.as_raw_handle()) == 0
-            {
-                return Err(std::io::Error::last_os_error().into());
-            }
-            Ok(job)
-        }
-    }
-    fn terminate(&self) {
-        // SAFETY: handle is owned and valid until Drop.
-        unsafe {
-            windows_sys::Win32::System::JobObjects::TerminateJobObject(self.0, 1);
-        }
-    }
-}
-
-#[cfg(windows)]
-impl Drop for Containment {
-    fn drop(&mut self) {
-        // SAFETY: this is the unique owned job handle.
-        unsafe {
-            windows_sys::Win32::Foundation::CloseHandle(self.0);
-        }
-    }
-}
-
-#[cfg(unix)]
-struct Containment(i32);
-
-#[cfg(unix)]
-impl Containment {
-    fn attach(child: &Child) -> Result<Self> {
-        Ok(Self(child.id() as i32))
-    }
-    fn terminate(&self) {
-        // SAFETY: group was created for our child, negative PID targets only it.
-        unsafe {
-            libc::kill(-self.0, libc::SIGKILL);
-        }
-    }
-}
-
-#[cfg(not(any(windows, unix)))]
-struct Containment;
-#[cfg(not(any(windows, unix)))]
-impl Containment {
-    fn attach(_: &Child) -> Result<Self> {
-        Ok(Self)
-    }
-    fn terminate(&self) {}
 }
 
 #[cfg(test)]
