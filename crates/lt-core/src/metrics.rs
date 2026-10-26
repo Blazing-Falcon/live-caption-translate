@@ -47,7 +47,7 @@ struct WordClause {
 }
 
 #[derive(Default)]
-pub struct Metrics {
+pub(crate) struct Metrics {
     finals: VecDeque<FinalSample>,
     unfinished: BTreeMap<UtteranceId, u64>,
     skipped_total: u32,
