@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from "svelte";
   import type { Snippet } from "svelte";
 
   interface Props {
@@ -35,10 +36,10 @@
   let viewport: HTMLElement | undefined = $state();
   let column: HTMLElement | undefined = $state();
   let offset = $state(0);
-  let jump = $state(true);
-  let tops = new Map<string, number>();
+  let tops = new Map<string, { top: number; height: number }>();
   let primed = false;
   let pruneTimer: ReturnType<typeof setTimeout> | null = null;
+  let resizeFrame = 0;
 
   function blockElements(): HTMLElement[] {
     return column ? [...column.querySelectorAll<HTMLElement>("[data-block]")] : [];
@@ -67,43 +68,47 @@
     return snapUp(Math.max(0, column.offsetHeight - viewport.clientHeight));
   }
 
+  /** Move to `target`, animated unless `instant` or the reader asked for less motion. */
+  function moveTo(target: number, instant: boolean): void {
+    if (!column) return;
+    if (instant || reducedMotion) {
+      column.classList.add("jump");
+      offset = target;
+      return;
+    }
+    if (Math.abs(target - offset) < 0.5) return;
+    column.classList.remove("jump");
+    // Flush the class change so the transition is live when the transform moves.
+    void column.offsetHeight;
+    offset = target;
+  }
+
   function measure(): void {
     if (!viewport || !column) return;
-    const next = new Map<string, number>();
-    for (const element of blockElements()) next.set(element.dataset.block ?? "", element.offsetTop);
+    const next = new Map<string, { top: number; height: number }>();
+    for (const element of blockElements()) {
+      next.set(element.dataset.block ?? "", { top: element.offsetTop, height: element.offsetHeight });
+    }
 
+    // Only a block that left the column above the top edge lowers the offset, by its height.
     let removed = 0;
+    for (const [key, before] of tops) {
+      if (next.has(key)) continue;
+      if (before.top + before.height <= offset + 0.5) removed += before.height;
+    }
+    // A block growing above the visible text pushes the rest down; an instant move keeps it put.
     let down = 0;
-    for (const [key, top] of next) {
+    for (const [key, block] of next) {
       const before = tops.get(key);
-      if (before === undefined) continue;
-      removed = Math.max(removed, before - top);
-      down = Math.max(down, top - before);
+      if (before) down = Math.max(down, block.top - before.top);
     }
     tops = next;
 
-    const base = Math.max(0, offset - removed);
-    // A block that grew pushes the ones below it down; scrolling by the same amount keeps every
-    // block that is already visible where it is, and the offset only ever grows.
-    const target = Math.max(base, snapUp(base + down), scrollToNeeded());
-    if (!primed) {
-      primed = true;
-      jump = true;
-      offset = target;
-      jump = false;
-      return;
-    }
-    if (target > offset + 0.5) {
-      // Content above a visible block grew, so the offset grows by the same amount at once and
-      // the block stays put; a plain roll past the bottom is the one animated step.
-      jump = reducedMotion || down > 0.5;
-      offset = target;
-    } else {
-      // Pruned blocks leave no visible change: their height comes out of the offset in the same
-      // frame, so nothing the reader sees moves.
-      jump = true;
-      offset = target;
-    }
+    // The offset never falls, except by the height of blocks pruned above the top edge.
+    const target = Math.max(Math.max(0, offset - removed), scrollToNeeded());
+    const instant = !primed || down > 0.5;
+    primed = true;
+    moveTo(target, instant);
     schedulePrune();
   }
 
@@ -126,25 +131,34 @@
     if (keys.length > 0) onprune(keys);
   }
 
+  // One observer for the component's life. Measuring inside the callback would re-enter the
+  // observer and raise "ResizeObserver loop completed with undelivered notifications".
   $effect(() => {
-    void keys;
     if (!viewport || !column) return;
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(() => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(measure);
+    });
     observer.observe(viewport);
     observer.observe(column);
-    measure();
     return () => {
       observer.disconnect();
+      cancelAnimationFrame(resizeFrame);
       if (pruneTimer !== null) clearTimeout(pruneTimer);
       pruneTimer = null;
     };
+  });
+
+  // Runs after the DOM for a new key set is in place, so the transition is live for that step.
+  $effect(() => {
+    void keys;
+    untrack(measure);
   });
 </script>
 
 <div class="viewport" bind:this={viewport} style:height>
   <div
-    class="column"
-    class:jump
+    class="column jump"
     bind:this={column}
     style:transform="translateY({-offset}px)"
     style:gap
