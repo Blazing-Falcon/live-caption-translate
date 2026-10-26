@@ -1,4 +1,7 @@
-use super::{running::RunningText, send_cooperative, FrontendNotice, CONTROL_CAPACITY, POLL};
+use super::{
+    cancel::Cancel, running::RunningText, send_cooperative, FrontendNotice, Shared,
+    CONTROL_CAPACITY, POLL,
+};
 use crate::{
     bus::EventBus,
     clock::Clock,
@@ -8,19 +11,24 @@ use crate::{
     metrics::{Metrics, ResourceSample, ResourceSampler},
     queue::{QueuedTranscript, TranslationQueue, TranslatorWorker},
     recognizer::AsrMessage,
-    source::SessionClock,
-    types::{PipelineStats, StreamTime, TextClass, Transcript, UtteranceId},
+    types::{StreamTime, TextClass, Transcript, UtteranceId},
 };
 use crossbeam_channel::{Receiver, TryRecvError};
 use std::{
     collections::{BTreeSet, VecDeque},
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
-    },
+    sync::{atomic::Ordering, Arc},
     thread,
     time::{Duration, Instant},
 };
+
+pub(super) struct SchedulerContext {
+    pub(super) translator: Box<dyn Translator>,
+    pub(super) front: Receiver<FrontendNotice>,
+    pub(super) asr: Receiver<AsrMessage>,
+    pub(super) shared: Arc<Shared>,
+    pub(super) bus: EventBus,
+    pub(super) sampler: Option<Box<dyn ResourceSampler>>,
+}
 
 struct Scheduler {
     queue: TranslationQueue,
@@ -33,7 +41,7 @@ struct Scheduler {
     handled_through: Option<UtteranceId>,
     closed_through: Option<UtteranceId>,
     metrics: Metrics,
-    latest_stats: Arc<Mutex<PipelineStats>>,
+    shared: Arc<Shared>,
     asr_failed: bool,
     running_text: RunningText,
     /// The lines the preview in flight covers.
@@ -98,7 +106,7 @@ impl Scheduler {
             .saturating_add(self.ready.len())
             .min(u32::MAX as usize) as u32;
         let snapshot = self.metrics.snapshot(live, waiting);
-        if let Ok(mut latest) = self.latest_stats.lock() {
+        if let Ok(mut latest) = self.shared.latest_stats.lock() {
             *latest = snapshot;
         }
     }
@@ -249,18 +257,17 @@ impl ResourceSampler for CachedSampler {
     }
 }
 
-#[allow(clippy::too_many_arguments)]
-pub(super) fn scheduler_loop(
-    translator: Box<dyn Translator>,
-    front: Receiver<FrontendNotice>,
-    asr: Receiver<AsrMessage>,
-    clock: Arc<SessionClock>,
-    bus: EventBus,
-    cancelled: Arc<AtomicBool>,
-    listening: Arc<AtomicBool>,
-    latest_stats: Arc<Mutex<PipelineStats>>,
-    sampler: Option<Box<dyn ResourceSampler>>,
-) -> Result<()> {
+pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
+    let SchedulerContext {
+        translator,
+        front,
+        asr,
+        shared,
+        bus,
+        sampler,
+    } = context;
+    let cancelled = shared.cancelled.clone();
+    let clock = shared.clock.clone();
     let mut metrics = Metrics::new();
     metrics.set_sampler(sampler.map(|inner| {
         Box::new(CachedSampler {
@@ -280,19 +287,19 @@ pub(super) fn scheduler_loop(
         handled_through: None,
         closed_through: None,
         metrics,
-        latest_stats,
+        shared: shared.clone(),
         asr_failed: false,
         running_text: RunningText::default(),
         previewing: None,
     };
-    let mut worker = TranslatorWorker::start(translator, clock.clone(), bus, cancelled.clone())?;
+    let mut worker = TranslatorWorker::start(translator, clock.clone(), bus, cancelled.flag())?;
     let mut front_done = false;
     let mut asr_done = false;
     let mut pending_asr = None;
     let mut last_stats = Instant::now();
-    let mut was_listening = listening.load(Ordering::Acquire);
+    let mut was_listening = shared.listening.load(Ordering::Acquire);
     scheduler.refresh_stats(clock.now());
-    while !cancelled.load(Ordering::Acquire) {
+    while !cancelled.is_set() {
         let mut progressed = false;
         for _ in 0..CONTROL_CAPACITY * 2 {
             match front.try_recv() {
@@ -395,7 +402,7 @@ pub(super) fn scheduler_loop(
             if let Some(item) = batch.item {
                 // Its id stays observed, so the shutdown below settles it either way.
                 if send_cooperative(&worker.input, item, &cancelled).is_err() {
-                    if !cancelled.load(Ordering::Acquire) {
+                    if !cancelled.is_set() {
                         translator_lost(&scheduler, &cancelled);
                     }
                     break;
@@ -407,7 +414,7 @@ pub(super) fn scheduler_loop(
         if !scheduler.in_flight {
             if let Some(item) = scheduler.next_preview(clock.now().millis()) {
                 if send_cooperative(&worker.input, item, &cancelled).is_err() {
-                    if !cancelled.load(Ordering::Acquire) {
+                    if !cancelled.is_set() {
                         translator_lost(&scheduler, &cancelled);
                     }
                     break;
@@ -425,7 +432,7 @@ pub(super) fn scheduler_loop(
             break;
         }
         scheduler.refresh_stats(clock.now());
-        let is_listening = listening.load(Ordering::Acquire);
+        let is_listening = shared.listening.load(Ordering::Acquire);
         if is_listening != was_listening {
             was_listening = is_listening;
             last_stats = Instant::now();
@@ -433,8 +440,8 @@ pub(super) fn scheduler_loop(
         if is_listening && last_stats.elapsed() >= Duration::from_secs(1) {
             // Frontend clears listening under this lock before acknowledging
             // pause. A timer cannot publish a stale Stats after that boundary.
-            if let Ok(latest) = scheduler.latest_stats.lock() {
-                if listening.load(Ordering::Acquire) && !cancelled.load(Ordering::Acquire) {
+            if let Ok(latest) = scheduler.shared.latest_stats.lock() {
+                if shared.listening.load(Ordering::Acquire) && !cancelled.is_set() {
                     scheduler.bus.publish(PipelineEvent::Stats(latest.clone()));
                 }
             }
@@ -501,11 +508,11 @@ pub(super) fn scheduler_loop(
 
 /// The translator thread ended by itself, which only a panic does: report it and stop the
 /// session, whose shutdown settles every line.
-fn translator_lost(scheduler: &Scheduler, cancelled: &AtomicBool) {
+fn translator_lost(scheduler: &Scheduler, cancelled: &Cancel) {
     scheduler.bus.publish(PipelineEvent::EngineStatus {
         engine: EngineKind::Translator,
         state: EngineState::Failed,
         message: Some("The translator stopped unexpectedly".into()),
     });
-    cancelled.store(true, Ordering::Release);
+    cancelled.set();
 }

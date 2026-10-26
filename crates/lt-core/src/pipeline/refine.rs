@@ -2,7 +2,7 @@
 //! offline recognizer. Every closed clause goes through here, so this is the only path to the
 //! translator.
 
-use super::{send_cooperative, POLL};
+use super::{send_cooperative, Shared, POLL};
 use crate::{
     engines::OfflineAsr,
     error::Result,
@@ -14,10 +14,7 @@ use crate::{
 };
 use crossbeam_channel::{Receiver, Sender};
 use std::{
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
-    },
+    sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
 
@@ -74,9 +71,10 @@ pub(super) fn refine_loop(
     mut engine: Box<dyn OfflineAsr>,
     inputs: Receiver<RefineInput>,
     output: Sender<AsrMessage>,
-    cancelled: &AtomicBool,
+    shared: Arc<Shared>,
 ) -> Result<()> {
-    while !cancelled.load(Ordering::Acquire) {
+    let cancelled = shared.cancelled.clone();
+    while !cancelled.is_set() {
         let input = match inputs.recv_timeout(POLL) {
             Ok(input) => input,
             Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
@@ -102,7 +100,7 @@ pub(super) fn refine_loop(
             }
             RefineInput::Message(message) => message,
         };
-        send_cooperative(&output, message, cancelled)?;
+        send_cooperative(&output, message, &cancelled)?;
     }
     Ok(())
 }

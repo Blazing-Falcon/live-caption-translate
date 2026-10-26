@@ -1,4 +1,4 @@
-use super::{Command, FrontendNotice, CONTROL_CAPACITY, POLL};
+use super::{cancel::Cancel, Command, FrontendNotice, Shared, CONTROL_CAPACITY, POLL};
 use crate::{
     bus::EventBus,
     clock::Clock,
@@ -6,25 +6,31 @@ use crate::{
     events::{ListeningStateKind, PipelineEvent},
     recognizer::RecognizerInput,
     source::{AudioFrame, AudioProducer, AudioReceiver, AudioSource, SessionClock, SourceEvents},
-    types::{CutReason, PipelineStats, StreamTime},
+    types::{CutReason, StreamTime},
 };
 use crossbeam_channel::{bounded, Receiver, Sender, TrySendError};
 use std::{
     collections::VecDeque,
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
-    },
+    sync::{atomic::Ordering, Arc},
 };
-
 const AUDIO_CAPACITY: usize = 64;
 /// The recognizer gets audio in pieces of this size (100 ms).
 const FORWARD_SAMPLES: usize = 1_600;
 
+pub(super) struct FrontendContext {
+    pub(super) source: Box<dyn AudioSource>,
+    pub(super) commands: Receiver<Command>,
+    pub(super) audio: Sender<RecognizerInput>,
+    pub(super) notices: Sender<FrontendNotice>,
+    pub(super) bus: EventBus,
+    pub(super) shared: Arc<Shared>,
+    pub(super) ready: Sender<Result<()>>,
+}
+
 struct Frontend {
     source: Box<dyn AudioSource>,
     input: Option<AudioReceiver>,
-    source_cancel: Arc<AtomicBool>,
+    source_cancel: Cancel,
     inputs: VecDeque<RecognizerInput>,
     notices: VecDeque<FrontendNotice>,
     clock: Arc<SessionClock>,
@@ -34,8 +40,7 @@ struct Frontend {
     pending: Vec<f32>,
     ending: bool,
     started_once: bool,
-    listening: Arc<AtomicBool>,
-    latest_stats: Arc<Mutex<PipelineStats>>,
+    shared: Arc<Shared>,
 }
 
 impl Frontend {
@@ -82,8 +87,8 @@ impl Frontend {
         };
         self.cut(at);
         let (output, input) = bounded(AUDIO_CAPACITY);
-        self.source_cancel = Arc::new(AtomicBool::new(false));
-        let producer = AudioProducer::new(output, self.source_cancel.clone(), at)
+        self.source_cancel = Cancel::default();
+        let producer = AudioProducer::new(output, self.source_cancel.flag(), at)
             .with_session_clock(&self.clock);
         let info = match self
             .source
@@ -108,15 +113,15 @@ impl Frontend {
 
     fn stop_source(&mut self) {
         self.set_listening(false);
-        self.source_cancel.store(true, Ordering::Release);
+        self.source_cancel.set();
         self.input = None;
         self.source.stop();
     }
 
     fn set_listening(&self, listening: bool) {
         // Serialize the last Stats publication against the pause boundary.
-        let _guard = self.latest_stats.lock().ok();
-        self.listening.store(listening, Ordering::Release);
+        let _guard = self.shared.latest_stats.lock().ok();
+        self.shared.listening.store(listening, Ordering::Release);
     }
 
     fn cut(&mut self, at: StreamTime) {
@@ -168,41 +173,37 @@ impl Drop for Frontend {
     }
 }
 
-#[allow(clippy::too_many_arguments)]
-pub(super) fn frontend_loop(
-    source: Box<dyn AudioSource>,
-    commands: Receiver<Command>,
-    audio: Sender<RecognizerInput>,
-    notices: Sender<FrontendNotice>,
-    clock: Arc<SessionClock>,
-    bus: EventBus,
-    cancelled: Arc<AtomicBool>,
-    ready: Sender<Result<()>>,
-    listening: Arc<AtomicBool>,
-    latest_stats: Arc<Mutex<PipelineStats>>,
-) -> Result<()> {
+pub(super) fn frontend_loop(context: FrontendContext) -> Result<()> {
+    let FrontendContext {
+        source,
+        commands,
+        audio,
+        notices,
+        bus,
+        shared,
+        ready,
+    } = context;
     let mut frontend = Frontend {
         source,
         input: None,
-        source_cancel: Arc::new(AtomicBool::new(false)),
+        source_cancel: Cancel::default(),
         inputs: VecDeque::new(),
         notices: VecDeque::new(),
-        clock,
+        clock: shared.clock.clone(),
         bus,
         next_at: StreamTime::ZERO,
         pending: Vec::new(),
         ending: false,
         started_once: false,
-        listening,
-        latest_stats,
+        shared: shared.clone(),
     };
     if let Err(error) = frontend.start_source() {
         let _ = ready.try_send(Err(Error::Engine(error.to_string())));
-        cancelled.store(true, Ordering::Release);
+        shared.cancelled.set();
         return Err(error);
     }
     let _ = ready.try_send(Ok(()));
-    while !cancelled.load(Ordering::Acquire) {
+    while !shared.cancelled.is_set() {
         // Commands stay responsive even if audio is backpressured by ASR.
         for command in commands.try_iter().take(CONTROL_CAPACITY) {
             frontend.command(command);

@@ -355,7 +355,7 @@ mod tests {
         bus::EventBus,
         config::Config,
         fakes::{FakeOffline, FakeStream, FakeTranslator},
-        pipeline::Pipeline,
+        pipeline::{Engines, Pipeline},
     };
     use std::{fs, sync::atomic::AtomicUsize};
 
@@ -427,12 +427,14 @@ mod tests {
         let mut pipeline = Pipeline::start(
             Config::default(),
             Box::new(source),
-            Box::new(FakeStream::new(
-                vec!["我们今天一起谈论这个问题。".into()],
-                0.8,
-            )),
-            Box::<FakeOffline>::default(),
-            Box::new(FakeTranslator::default()),
+            Engines {
+                asr: Box::new(FakeStream::new(
+                    vec!["我们今天一起谈论这个问题。".into()],
+                    0.8,
+                )),
+                second_pass: Box::<FakeOffline>::default(),
+                translator: Box::new(FakeTranslator::default()),
+            },
             bus,
             None,
         )

@@ -13,7 +13,7 @@ use lt_core::{
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     fakes::{FakeOffline, FakeStream, FakeTranslator},
-    pipeline::{Pipeline, PipelineHandle},
+    pipeline::{Engines, Pipeline, PipelineHandle},
     queue::TranslationQueue,
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
     types::{
@@ -372,9 +372,11 @@ fn start_with(
     let handle = Pipeline::start(
         config,
         Box::new(source),
-        Box::new(asr),
-        second_pass,
-        Box::new(translator),
+        Engines {
+            asr: Box::new(asr),
+            second_pass,
+            translator: Box::new(translator),
+        },
         bus,
         None,
     )

@@ -14,7 +14,7 @@ use lt_audio::{
 use lt_core::{
     config::Config,
     events::{EngineKind, EngineState, ListeningStateKind, PipelineEvent, SourceStateKind},
-    pipeline::{Pipeline, PipelineHandle},
+    pipeline::{Engines, Pipeline, PipelineHandle},
     source::AudioSource,
     transcript::{
         SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber, TranscriptWriter,
@@ -189,9 +189,11 @@ impl Controller {
         let pipeline = Pipeline::start(
             config.clone(),
             source,
-            asr,
-            second_pass,
-            translator,
+            Engines {
+                asr,
+                second_pass,
+                translator,
+            },
             bus.clone(),
             Some(Box::new(sampler)),
         );

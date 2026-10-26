@@ -14,7 +14,7 @@ use lt_core::{
     bus::EventBus,
     config::Config,
     events::PipelineEvent,
-    pipeline::Pipeline,
+    pipeline::{Engines, Pipeline},
     transcript::{
         recognizer_name, SessionConfig, SessionHeader, SessionSource, TranscriptSubscriber,
         TranscriptWriter,
@@ -113,9 +113,11 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
     let mut pipeline = Pipeline::start(
         config.clone(),
         Box::new(source),
-        engines.asr,
-        engines.second_pass,
-        engines.translator,
+        Engines {
+            asr: engines.asr,
+            second_pass: engines.second_pass,
+            translator: engines.translator,
+        },
         bus.clone(),
         Some(Box::new(sampler)),
     )?;

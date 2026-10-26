@@ -1,6 +1,6 @@
 use super::{
     refine::{OpenClause, RefineInput, Window},
-    send_cooperative, ClauseCounters, FrontendNotice, POLL,
+    send_cooperative, FrontendNotice, Shared, POLL,
 };
 use crate::{
     bus::EventBus,
@@ -11,14 +11,7 @@ use crate::{
     types::{StreamTime, SAMPLE_RATE},
 };
 use crossbeam_channel::{Receiver, Sender};
-use std::{
-    collections::VecDeque,
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
-    time::Instant,
-};
+use std::{collections::VecDeque, sync::Arc, time::Instant};
 
 /// The audio the second pass may read. The longest clause is the 30 s wait cap; this also
 /// holds its margins and the engine's context before them.
@@ -33,7 +26,6 @@ const WINDOW_AFTER_S: f64 = 0.8;
 /// What the recognizer needs to report clauses itself.
 pub(super) struct AsrNotices {
     pub(super) notices: Sender<FrontendNotice>,
-    pub(super) clause_counts: Arc<ClauseCounters>,
 }
 
 /// Where the recognizer's messages go: live text straight to the scheduler, closed clauses
@@ -98,7 +90,7 @@ pub(super) fn asr_loop(
     inputs: Receiver<RecognizerInput>,
     outputs: AsrOutputs,
     bus: &EventBus,
-    cancelled: &AtomicBool,
+    shared: Arc<Shared>,
     notices: AsrNotices,
 ) -> Result<()> {
     bus.publish(PipelineEvent::EngineStatus {
@@ -106,13 +98,14 @@ pub(super) fn asr_loop(
         state: EngineState::Ready,
         message: None,
     });
+    let cancelled = shared.cancelled.clone();
     let mut recognizer = Recognizer::new();
     let mut ring = AudioRing::default();
     let mut produced = Vec::new();
     // The clause after the one being refined has usually started by the time the second pass
     // decodes, and its opening is what ends the window's text.
     let open = Arc::new(OpenClause::default());
-    while !cancelled.load(Ordering::Acquire) {
+    while !cancelled.is_set() {
         let input = match inputs.recv_timeout(POLL) {
             Ok(input) => input,
             Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
@@ -129,18 +122,18 @@ pub(super) fn asr_loop(
         for item in produced.drain(..) {
             match item {
                 RecognizerOutput::Started(id, at) => {
-                    send_cooperative(&notices.notices, FrontendNotice::Started(id), cancelled)?;
+                    send_cooperative(&notices.notices, FrontendNotice::Started(id), &cancelled)?;
                     bus.publish(PipelineEvent::SpeechStarted {
                         id,
                         at_ms: at.millis(),
                     });
                 }
                 RecognizerOutput::Closed(id, end, cut) => {
-                    notices.clause_counts.record(cut);
+                    shared.clause_counts.record(cut);
                     send_cooperative(
                         &notices.notices,
                         FrontendNotice::ClauseClosed(id, end),
-                        cancelled,
+                        &cancelled,
                     )?;
                 }
                 RecognizerOutput::Message(AsrMessage::Transcript(transcript)) => {
@@ -159,16 +152,16 @@ pub(super) fn asr_loop(
                         closed: Instant::now(),
                         open: open.clone(),
                     };
-                    send_cooperative(&outputs.clauses, clause, cancelled)?;
+                    send_cooperative(&outputs.clauses, clause, &cancelled)?;
                 }
                 RecognizerOutput::Message(message @ AsrMessage::Partial { .. }) => {
                     if let AsrMessage::Partial { id, text, .. } = &message {
                         open.heard(*id, text);
                     }
-                    send_cooperative(&outputs.partials, message, cancelled)?
+                    send_cooperative(&outputs.partials, message, &cancelled)?
                 }
                 RecognizerOutput::Message(message) => {
-                    send_cooperative(&outputs.clauses, RefineInput::Message(message), cancelled)?
+                    send_cooperative(&outputs.clauses, RefineInput::Message(message), &cancelled)?
                 }
             }
         }

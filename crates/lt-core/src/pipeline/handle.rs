@@ -1,4 +1,4 @@
-use super::{Command, POLL};
+use super::{cancel::Cancel, Command, Shared, POLL};
 use crate::{
     bus::{EventBus, EventReceiver},
     error::{Error, Result},
@@ -8,8 +8,8 @@ use crate::{
 use crossbeam_channel::{bounded, Receiver, Sender};
 use std::{
     sync::{
-        atomic::{AtomicBool, AtomicU64, Ordering},
-        Arc, Mutex,
+        atomic::{AtomicU64, Ordering},
+        Arc,
     },
     thread::JoinHandle,
 };
@@ -30,7 +30,7 @@ impl ClauseCounts {
 }
 
 #[derive(Default)]
-pub(super) struct ClauseCounters([AtomicU64; 4]);
+pub(crate) struct ClauseCounters([AtomicU64; 4]);
 
 impl ClauseCounters {
     pub(super) fn record(&self, reason: CutReason) {
@@ -55,12 +55,10 @@ impl ClauseCounters {
 
 pub struct PipelineHandle {
     pub(super) commands: Sender<Command>,
-    pub(super) cancelled: Arc<AtomicBool>,
-    pub(super) finished: Arc<AtomicBool>,
+    pub(super) shared: Arc<Shared>,
+    pub(super) finished: Cancel,
     pub(super) bus: EventBus,
     pub(super) threads: Vec<JoinHandle<Result<()>>>,
-    pub(super) latest_stats: Arc<Mutex<PipelineStats>>,
-    pub(super) clause_counts: Arc<ClauseCounters>,
 }
 
 impl PipelineHandle {
@@ -69,14 +67,15 @@ impl PipelineHandle {
     }
 
     pub fn get_stats(&self) -> PipelineStats {
-        self.latest_stats
+        self.shared
+            .latest_stats
             .lock()
             .map(|stats| stats.clone())
             .unwrap_or_default()
     }
 
     pub fn clause_counts(&self) -> ClauseCounts {
-        self.clause_counts.snapshot()
+        self.shared.clause_counts.snapshot()
     }
 
     pub fn pause(&self) -> Result<()> {
@@ -96,7 +95,7 @@ impl PipelineHandle {
     }
 
     pub fn is_finished(&self) -> bool {
-        self.finished.load(Ordering::Acquire)
+        self.finished.is_set()
     }
 
     /// Drain a finite replay naturally, including all pending ASR and translation.
@@ -108,13 +107,13 @@ impl PipelineHandle {
     /// A native ASR call must return before its worker can join; it has no force
     /// cancellation API and the pipeline never abandons that thread.
     pub fn stop(&mut self) -> Result<()> {
-        self.cancelled.store(true, Ordering::Release);
+        self.shared.cancelled.set();
         self.join_threads()
     }
 
     fn command(&self, mut command: Command, response: Receiver<Result<()>>) -> Result<()> {
         loop {
-            if self.cancelled.load(Ordering::Acquire) || self.is_finished() {
+            if self.shared.cancelled.is_set() || self.is_finished() {
                 return Err(Error::Stopped);
             }
             match self.commands.send_timeout(command, POLL) {
@@ -129,7 +128,7 @@ impl PipelineHandle {
             match response.recv_timeout(POLL) {
                 Ok(result) => return result,
                 Err(crossbeam_channel::RecvTimeoutError::Timeout) => {
-                    if self.cancelled.load(Ordering::Acquire) || self.is_finished() {
+                    if self.shared.cancelled.is_set() || self.is_finished() {
                         return Err(Error::Stopped);
                     }
                 }
@@ -150,10 +149,10 @@ impl PipelineHandle {
                 if !matches!(error, Error::Stopped) && first_error.is_none() {
                     first_error = Some(error);
                 }
-                self.cancelled.store(true, Ordering::Release);
+                self.shared.cancelled.set();
             }
         }
-        self.finished.store(true, Ordering::Release);
+        self.finished.set();
         match first_error {
             Some(error) => Err(error),
             None => Ok(()),

@@ -1,14 +1,12 @@
 //! Bounded, independently scheduled audio/ASR/translation workers.
 //!
-//! Audio adapters deliver prepared 16 kHz frames. Engines remain owned by one
-//! worker each; source cancellation and whole-pipeline shutdown are separate.
-//!
 //! Threads: `lt-frontend` turns capture frames into recognizer input, `lt-asr`
 //! owns the recognizer, `lt-refine` owns the second-pass recognizer and the filter,
 //! and `lt-scheduler` owns the translation queue, the translator worker and the
 //! stats.
 
 mod asr;
+mod cancel;
 mod frontend;
 mod handle;
 mod refine;
@@ -27,14 +25,12 @@ use crate::{
     source::{AudioSource, SessionClock},
     types::{PipelineStats, StreamTime, UtteranceId},
 };
+use cancel::Cancel;
 use crossbeam_channel::{bounded, Sender};
 use handle::ClauseCounters;
 use std::{
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
-    },
-    thread,
+    sync::{atomic::AtomicBool, Arc, Mutex},
+    thread::{self, JoinHandle},
     time::Duration,
 };
 
@@ -44,6 +40,22 @@ const ASR_CAPACITY: usize = 4;
 /// Closed clauses waiting for the second pass. A clause that waits too long skips its decode,
 /// so a full queue empties quickly and holds the recognizer only briefly.
 const REFINE_CAPACITY: usize = 8;
+
+/// The three engines the pipeline owns, one thread each.
+pub struct Engines {
+    pub asr: Box<dyn StreamingAsr>,
+    pub second_pass: Box<dyn OfflineAsr>,
+    pub translator: Box<dyn Translator>,
+}
+
+/// State the pipeline threads share besides their channels.
+pub(super) struct Shared {
+    pub(super) cancelled: Cancel,
+    pub(super) clock: Arc<SessionClock>,
+    pub(super) listening: AtomicBool,
+    pub(super) latest_stats: Mutex<PipelineStats>,
+    pub(super) clause_counts: ClauseCounters,
+}
 
 enum Command {
     Pause(Sender<Result<()>>),
@@ -62,26 +74,24 @@ pub struct Pipeline;
 
 impl Pipeline {
     /// Subscribe to `bus` before this call: a short replay can finish before it returns.
-    /// `second_pass` reads each closed clause again; `sampler` adds process CPU and memory to the
-    /// stats.
     pub fn start(
         mut config: Config,
         source: Box<dyn AudioSource>,
-        asr: Box<dyn StreamingAsr>,
-        second_pass: Box<dyn OfflineAsr>,
-        translator: Box<dyn Translator>,
+        engines: Engines,
         bus: EventBus,
         sampler: Option<Box<dyn ResourceSampler>>,
     ) -> Result<PipelineHandle> {
         for message in config.validate() {
             tracing::warn!(message, "Pipeline config adjusted");
         }
-        let cancelled = Arc::new(AtomicBool::new(false));
-        let finished = Arc::new(AtomicBool::new(false));
-        let clock = Arc::new(SessionClock::default());
-        let listening = Arc::new(AtomicBool::new(false));
-        let latest_stats = Arc::new(Mutex::new(PipelineStats::default()));
-        let clause_counts = Arc::new(ClauseCounters::default());
+        let shared = Arc::new(Shared {
+            cancelled: Cancel::default(),
+            clock: Arc::new(SessionClock::default()),
+            listening: AtomicBool::new(false),
+            latest_stats: Mutex::new(PipelineStats::default()),
+            clause_counts: ClauseCounters::default(),
+        });
+        let finished = Cancel::default();
         let (command_tx, command_rx) = bounded(CONTROL_CAPACITY);
         let (audio_tx, audio_rx) = bounded(ASR_CAPACITY);
         let (front_tx, front_rx) = bounded(CONTROL_CAPACITY);
@@ -90,91 +100,75 @@ impl Pipeline {
         let (ready_tx, ready_rx) = bounded(1);
         let mut handle = PipelineHandle {
             commands: command_tx,
-            cancelled: cancelled.clone(),
+            shared: shared.clone(),
             finished: finished.clone(),
             bus: bus.clone(),
             threads: Vec::with_capacity(4),
-            latest_stats: latest_stats.clone(),
-            clause_counts: clause_counts.clone(),
         };
         bus.publish(PipelineEvent::ListeningState {
             state: ListeningStateKind::Starting,
         });
 
-        let asr_cancel = cancelled.clone();
+        let Engines {
+            asr,
+            second_pass,
+            translator,
+        } = engines;
+        let asr_shared = shared.clone();
         let asr_bus = bus.clone();
         let asr_notices = asr::AsrNotices {
             notices: front_tx.clone(),
-            clause_counts: clause_counts.clone(),
         };
         let asr_outputs = asr::AsrOutputs {
             partials: asr_tx.clone(),
             clauses: refine_tx,
             context_s: second_pass.context_s(),
         };
-        let asr_thread = thread::Builder::new()
-            .name("lt-asr".into())
-            .spawn(move || {
-                asr::asr_loop(
-                    asr,
-                    audio_rx,
-                    asr_outputs,
-                    &asr_bus,
-                    &asr_cancel,
-                    asr_notices,
-                )
-            })?;
+        let asr_thread = spawn("lt-asr", move || {
+            asr::asr_loop(
+                asr,
+                audio_rx,
+                asr_outputs,
+                &asr_bus,
+                asr_shared,
+                asr_notices,
+            )
+        })?;
         handle.threads.push(asr_thread);
 
-        let refine_cancel = cancelled.clone();
-        let refine_thread = thread::Builder::new()
-            .name("lt-refine".into())
-            .spawn(move || refine::refine_loop(second_pass, refine_rx, asr_tx, &refine_cancel))?;
+        let refine_shared = shared.clone();
+        let refine_thread = spawn("lt-refine", move || {
+            refine::refine_loop(second_pass, refine_rx, asr_tx, refine_shared)
+        })?;
         handle.threads.push(refine_thread);
 
-        let scheduler_cancel = cancelled.clone();
-        let scheduler_clock = clock.clone();
+        let scheduler_shared = shared.clone();
         let scheduler_bus = bus.clone();
-        let scheduler_listening = listening.clone();
-        let scheduler_latest = latest_stats.clone();
-        let scheduler_thread =
-            thread::Builder::new()
-                .name("lt-scheduler".into())
-                .spawn(move || {
-                    let _finished = Finished(finished);
-                    scheduler::scheduler_loop(
-                        translator,
-                        front_rx,
-                        asr_rx,
-                        scheduler_clock,
-                        scheduler_bus,
-                        scheduler_cancel,
-                        scheduler_listening,
-                        scheduler_latest,
-                        sampler,
-                    )
-                })?;
+        let scheduler_thread = spawn("lt-scheduler", move || {
+            let _finished = Finished(finished);
+            scheduler::scheduler_loop(scheduler::SchedulerContext {
+                translator,
+                front: front_rx,
+                asr: asr_rx,
+                shared: scheduler_shared,
+                bus: scheduler_bus,
+                sampler,
+            })
+        })?;
         handle.threads.push(scheduler_thread);
 
-        let front_cancel = cancelled;
-        let front_bus = bus;
-        let frontend_thread =
-            thread::Builder::new()
-                .name("lt-frontend".into())
-                .spawn(move || {
-                    frontend::frontend_loop(
-                        source,
-                        command_rx,
-                        audio_tx,
-                        front_tx,
-                        clock,
-                        front_bus,
-                        front_cancel,
-                        ready_tx,
-                        listening,
-                        latest_stats,
-                    )
-                })?;
+        let front_shared = shared;
+        let frontend_thread = spawn("lt-frontend", move || {
+            frontend::frontend_loop(frontend::FrontendContext {
+                source,
+                commands: command_rx,
+                audio: audio_tx,
+                notices: front_tx,
+                bus: bus.clone(),
+                shared: front_shared,
+                ready: ready_tx,
+            })
+        })?;
         handle.threads.insert(0, frontend_thread);
 
         loop {
@@ -194,16 +188,23 @@ impl Pipeline {
     }
 }
 
-struct Finished(Arc<AtomicBool>);
+fn spawn(
+    name: &str,
+    work: impl FnOnce() -> Result<()> + Send + 'static,
+) -> Result<JoinHandle<Result<()>>> {
+    Ok(thread::Builder::new().name(name.into()).spawn(work)?)
+}
+
+struct Finished(Cancel);
 impl Drop for Finished {
     fn drop(&mut self) {
-        self.0.store(true, Ordering::Release);
+        self.0.set();
     }
 }
 
-fn send_cooperative<T>(sender: &Sender<T>, mut message: T, cancelled: &AtomicBool) -> Result<()> {
+fn send_cooperative<T>(sender: &Sender<T>, mut message: T, cancelled: &Cancel) -> Result<()> {
     loop {
-        if cancelled.load(Ordering::Acquire) {
+        if cancelled.is_set() {
             return Err(Error::Stopped);
         }
         match sender.send_timeout(message, POLL) {
