@@ -1,7 +1,6 @@
 //! Native WASAPI packet reader and its prepared-frame adapter.
 //!
-//! The published wasapi reader copies SILENT pointers and logs in GetBuffer;
-//! this reader uses the same public Windows interfaces, without those operations.
+//! Calls Windows directly: no SILENT-pointer copy or logging inside GetBuffer.
 use super::devices::{create_enumerator, native_error, MtaGuard, NotificationGuard};
 use crate::{normalize::LevelNormalizer, resample::MonoResampler};
 use crossbeam_channel::{Receiver, Sender};
@@ -89,7 +88,6 @@ impl CaptureFormat {
             wBitsPerSample: 32,
             cbSize: 0,
         };
-        // This known valid format needs no native calls or allocated buffers.
         Self::from_wave(wave, None).expect("fixed process format is valid")
     }
     /// Copy the owned native mix format before its CoTaskMem allocation is freed.
@@ -293,6 +291,16 @@ enum PacketReadError {
     LengthOverflow,
 }
 
+/// One buffer as `IAudioCaptureClient::GetBuffer` reports it, released after `append`.
+struct NativePacket {
+    data: *const u8,
+    frames: u32,
+    flags: u32,
+    position: u64,
+    qpc: u64,
+    generation: u64,
+}
+
 #[derive(Default)]
 struct PacketAssembler {
     packet: CapturePacket,
@@ -306,18 +314,20 @@ impl PacketAssembler {
     }
     /// SAFETY: non-SILENT pointer covers frames * native block alignment bytes.
     /// SILENT deliberately accepts null: Windows does not define its contents.
-    #[allow(clippy::too_many_arguments)] // Mirrors the native packet's fixed fields.
     unsafe fn append(
         &mut self,
         format: &CaptureFormat,
-        data: *const u8,
-        frames: u32,
-        flags: u32,
-        position: u64,
-        qpc: u64,
-        generation: u64,
+        native: NativePacket,
         emit: &mut impl FnMut(CapturePacket),
     ) -> std::result::Result<(), PacketReadError> {
+        let NativePacket {
+            data,
+            frames,
+            flags,
+            position,
+            qpc,
+            generation,
+        } = native;
         let silent = flags & AUDCLNT_BUFFERFLAGS_SILENT.0 as u32 != 0;
         let timestamp_error = flags & AUDCLNT_BUFFERFLAGS_TIMESTAMP_ERROR.0 as u32 != 0;
         let discontinuity = flags & AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY.0 as u32 != 0;
@@ -506,12 +516,14 @@ impl ActiveClient {
             let decoded = unsafe {
                 assembler.append(
                     &self.opened.format,
-                    data,
-                    frames,
-                    flags,
-                    position,
-                    qpc,
-                    generation,
+                    NativePacket {
+                        data,
+                        frames,
+                        flags,
+                        position,
+                        qpc,
+                        generation,
+                    },
                     &mut emit,
                 )
             };
@@ -890,11 +902,9 @@ impl PacketClock {
             predicted.unwrap_or_else(|| self.next_raw.max(epoch.raw_at(opened_qpc, rate)))
         } else {
             let mapped = epoch.raw_at(packet.qpc_100ns, rate);
-            // QPC is quantized to100ns. Flooring an exact512-frame48k chunk
-            // through that domain maps it to511, creating false overlap/gaps.
-            // One raw sample covers that quantization (even384k=0.0384 samples)
-            // plus the initial integer-grid phase. Larger differences remain
-            // real timestamp holes; device-frame advances themselves are exact.
+            // QPC's 100 ns grid can floor an exact 512-frame 48 kHz chunk to 511 samples; one
+            // sample of slack absorbs that and the initial grid phase. Device-frame advances
+            // themselves are exact, so larger differences are real timestamp holes.
             let raw = match predicted {
                 Some(predicted) if predicted.abs_diff(mapped) <= 1 => predicted,
                 _ => mapped,
@@ -920,8 +930,7 @@ pub(crate) fn run_adapter(
     run_adapter_at(worker, output, events, audio, epoch)
 }
 
-// Adapter implementation below consumes the portable MonoTimeline seam; native
-// buffers and COM never leave the capture worker. All allocation is permitted here.
+// Adapter side: native buffers and COM stay on the capture worker, and allocation is allowed here.
 pub(crate) fn run_adapter_at(
     mut worker: NativeWorker,
     mut output: AudioProducer,

@@ -103,8 +103,7 @@ pub fn windows_build() -> Result<u32> {
     Ok(version.dwBuildNumber)
 }
 
-/// Runs COM discovery on its own MTA thread and returns the exact picker DTO.
-/// Call only in response to an application/user request; tests use pure inputs.
+/// Runs COM discovery on its own MTA thread; call only for an application or user request.
 pub fn list_audio_apps(recent: &[CaptureApp]) -> Result<AudioAppList> {
     let build = windows_build()?;
     if !process_loopback_supported(build) {
