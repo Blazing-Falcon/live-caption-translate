@@ -1,8 +1,7 @@
 //! Downloads, verification and local model status.
 
 use super::manifest::{
-    embedded_manifest, validate_manifest, FileEntry, Manifest, ModelEntry,
-    ModelState, ModelStatus,
+    embedded_manifest, validate_manifest, FileEntry, Manifest, ModelEntry, ModelState, ModelStatus,
 };
 use lt_core::error::{Error, Result};
 use sha2::{Digest, Sha256};

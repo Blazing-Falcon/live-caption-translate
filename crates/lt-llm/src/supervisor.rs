@@ -25,15 +25,11 @@ use std::{
 
 /// Hy-MT2's GGUF has an incorrect end token; `models/manifest.json` lists the same arguments.
 const MODEL_ARGS: [&str; 2] = ["--override-kv", "tokenizer.ggml.eos_token_id=int:120020"];
-/// Models load into memory instead of being mapped: a mapped file keeps its pages besides the
-/// copies of the weights that llama.cpp repacks for x86. The host prompt cache is off: it keeps
-/// the state of each earlier prompt, up to 8 GiB by default, and one slot reuses its own prefix
-/// without it.
+/// Loading into memory rather than mapping keeps the repacked weights as the only copy. The host
+/// prompt cache is off because one slot reuses its own prefix without it.
 const LOAD_ARGS: [&str; 4] = ["--load-mode", "none", "--cache-ram", "0"];
-/// llama.cpp sizes the prefill activation buffers from `n_ubatch` (512 rows by default) and
-/// every `[n_embd, n_tokens]` and `[ffn, n_tokens]` intermediate grows with them. Every request
-/// here is one short prompt, so 128 rows are enough. This lowers commit charge; the weights are
-/// the working set and it does not touch them. `-b` must not be below `-ub`.
+/// Prefill activation buffers scale with `n_ubatch`; every request here is one short prompt, and
+/// a smaller `-ub` lowers commit charge without touching the weights. `-b` must not be below `-ub`.
 const BATCH_ARGS: [&str; 4] = ["-ub", "128", "-b", "512"];
 /// The prompt context llama-server allocates (`-c`).
 const CONTEXT: u32 = 1024;

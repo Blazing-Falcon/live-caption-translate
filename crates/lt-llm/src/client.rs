@@ -7,17 +7,16 @@ use crate::{
     prompts::HyMt2Prompts,
 };
 use lt_core::{
-    engines::{max_tokens, TranslateRequest, TranslationControl, TranslationOut, Translator, TranslatorCaps},
+    engines::{
+        max_tokens, TranslateRequest, TranslationControl, TranslationOut, Translator,
+        TranslatorCaps,
+    },
     error::{Error, Result},
     events::FailReason,
     types::UtteranceId,
 };
 use serde_json::{json, Value};
-use std::{
-    io::Read,
-    sync::atomic::Ordering,
-    time::Instant,
-};
+use std::{io::Read, sync::atomic::Ordering, time::Instant};
 
 const MAX_OUTPUT_BYTES: usize = 64 * 1024;
 /// An answer this many times longer than its source in characters is not a translation of it.
