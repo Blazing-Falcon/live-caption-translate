@@ -100,7 +100,7 @@ target\release\lt-cli.exe replay testdata\fetched\ramc\CTS-CN-F2F-2019-11-15-144
 python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeats, expected text
 ```
 
-`replay` writes the transcript, `<out>.events.jsonl` and `<out>.words.json`, and prints the per-word delays. The delays need speech instants: `--instants <file>` reads a JSON array of milliseconds from `--start` at which a word is spoken. Without it the delay values are empty. Every closed line goes through the offline X-ASR second pass, so a real replay needs that model as well as the streaming one; `--fake` uses fakes for all three engines. When you report a number, also give the machine, the command and what else was running.
+`replay` writes the transcript, `<out>.events.jsonl` and `<out>.words.json`, and prints the per-word delays. The delays need speech instants: `--instants <file>` reads a JSON array of milliseconds from `--start` at which a word is spoken. Without it the delay values are empty. Every closed line goes through the offline X-ASR second pass, so a real replay needs that model as well as the streaming one; `--fake` uses fakes for all three engines and reports no second-pass summary. When you report a number, also give the machine, the command and what else was running.
 
 ## Package
 
