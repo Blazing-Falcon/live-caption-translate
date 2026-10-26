@@ -42,7 +42,7 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
 |---|---|
 | Config | `crates/lt-core/src/config.rs` |
 | Recognizer, commit rule | `crates/lt-core/src/recognizer.rs`, `commit.rs` |
-| Filter, translation queue | `crates/lt-core/src/text.rs`, `queue.rs` |
+| Filter, translation queue | `crates/lt-core/src/text.rs`, `pipeline/queue.rs` |
 | Second pass (trim, refine thread) | `crates/lt-core/src/refine.rs`, `pipeline/refine.rs` |
 | Pipeline threads and shutdown | `crates/lt-core/src/pipeline/` |
 | X-ASR streaming | `crates/lt-sherpa/src/` |
