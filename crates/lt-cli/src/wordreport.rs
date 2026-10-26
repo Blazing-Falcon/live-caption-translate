@@ -1,8 +1,5 @@
-//! The replay metrics: per-word delay from the moment a word is spoken to the moment the
-//! English covering it is on screen, plus counts.
-//!
-//! Pure functions over a timed event log and a list of speech instants, so the metric code is
-//! tested on hand-made logs.
+//! Per-word delay from the moment a word is spoken to the English covering it, plus counts.
+//! Pure functions over a timed event log and a list of speech instants.
 
 use lt_core::{events::PipelineEvent, types::UtteranceId};
 use serde::Serialize;

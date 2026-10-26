@@ -108,7 +108,6 @@ mod tests {
             Applies::Restart
         );
         assert_eq!(changed(|c| c.models.dir = "x".into()), Applies::Restart);
-        // The most disruptive change wins.
         assert_eq!(
             changed(|c| {
                 c.capture.mode = CaptureMode::Apps;

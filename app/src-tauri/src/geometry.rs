@@ -26,7 +26,6 @@ const MIN_W: f64 = 240.0;
 const MIN_H: f64 = 80.0;
 /// The panel's width in DIPs at the default font size. Its 18 px padding each side leaves 524
 /// for text, which is about 42 characters at 26 px: the width subtitle guidance gives a line.
-/// At 420 the column held 31 characters, so a line of ordinary speech wrapped every time.
 const PANEL_W: f64 = 560.0;
 
 fn dip(value: u32, scale: f64) -> f64 {

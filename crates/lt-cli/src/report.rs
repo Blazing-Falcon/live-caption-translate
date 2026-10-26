@@ -15,6 +15,8 @@ pub struct ReplayReport {
     done: Vec<f64>,
     joins: u64,
     second_pass: Vec<SecondPass>,
+    /// False for a fake replay, whose offline engine decodes nothing.
+    report_second_pass: bool,
 }
 
 /// How the second pass went for the lines that reached a final.
@@ -49,7 +51,9 @@ pub struct Summary<'a> {
 }
 
 impl ReplayReport {
-    pub fn new() -> Self {
+    /// `report_second_pass` is false for a fake replay: its offline engine decodes nothing, and
+    /// the summary would claim the pass ran.
+    pub fn new(report_second_pass: bool) -> Self {
         Self {
             status: [
                 "final",
@@ -67,6 +71,7 @@ impl ReplayReport {
             done: Vec::new(),
             joins: 0,
             second_pass: Vec::new(),
+            report_second_pass,
         }
     }
     fn terminal(&mut self, id: UtteranceId, state: &'static str) -> u64 {
@@ -76,12 +81,13 @@ impl ReplayReport {
     }
     pub fn on_event(&mut self, event: &PipelineEvent) {
         if let PipelineEvent::AsrFinal { second_pass, .. } = event {
-            self.second_pass.push(second_pass.clone());
+            if self.report_second_pass {
+                self.second_pass.push(second_pass.clone());
+            }
         }
         match event {
             PipelineEvent::UnitSealed { id, ids, .. } => {
-                // `ids` is the whole unit, so a re-seal names the earlier lines again; the map
-                // holds what an earlier seal counted.
+                // A re-seal names the whole unit, including lines an earlier seal counted.
                 let mut ends = self.ends.remove(id).unwrap_or_default();
                 let previous = self.absorbed.remove(id).unwrap_or(0);
                 let count = ids.len() as u64 - 1;
@@ -101,7 +107,6 @@ impl ReplayReport {
                     "final"
                 };
                 let constituents = self.terminal(*id, state);
-                // Every line of the unit is measured from its own end, as the Python summary does.
                 let ends = self
                     .ends
                     .remove(id)

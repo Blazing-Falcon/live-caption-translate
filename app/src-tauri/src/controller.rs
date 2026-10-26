@@ -46,16 +46,18 @@ pub enum Cmd {
 
 type Transcript = TranscriptSubscriber<BufWriter<File>>;
 
+/// Everything a listening session owns. The server outlives a pipeline restart, so a settings
+/// change that only affects the pipeline keeps it loaded.
+#[derive(Default)]
 struct Session {
-    pipeline: PipelineHandle,
+    pipeline: Option<PipelineHandle>,
     transcript: Option<Transcript>,
+    supervisor: Option<Supervisor>,
 }
 
 pub struct Controller {
     shared: Arc<Shared>,
-    session: Option<Session>,
-    /// None while no server runs; a running server outlives pipeline restarts.
-    supervisor: Option<Supervisor>,
+    session: Session,
 }
 
 pub fn spawn(shared: Arc<Shared>, commands: Receiver<Cmd>) -> std::io::Result<JoinHandle<()>> {
@@ -64,8 +66,7 @@ pub fn spawn(shared: Arc<Shared>, commands: Receiver<Cmd>) -> std::io::Result<Jo
         .spawn(move || {
             Controller {
                 shared,
-                session: None,
-                supervisor: None,
+                session: Session::default(),
             }
             .run(commands)
         })
@@ -110,28 +111,28 @@ impl Controller {
                     }
                 }
                 Cmd::Shutdown(reply) => {
-                    self.stop_session();
-                    self.stop_supervisor();
+                    self.stop_listening();
+                    self.stop_server();
                     let _ = reply.send(Ok(()));
                     return;
                 }
             }
         }
-        self.stop_session();
-        self.stop_supervisor();
+        self.stop_listening();
+        self.stop_server();
     }
 
     fn start(&mut self) -> Result<(), String> {
-        self.drop_finished_session();
-        if let Some(session) = &self.session {
-            return session.pipeline.resume().map_err(|e| e.to_string());
+        self.drop_finished();
+        if let Some(pipeline) = &self.session.pipeline {
+            return pipeline.resume().map_err(|e| e.to_string());
         }
         let config = self.shared.config();
         let models = self.shared.paths.models(&config);
         let missing = crate::models::missing_for(&models);
         if !missing.is_empty() {
             return Err(format!(
-                "Models are not downloaded: {}. Reopen the app to download them.",
+                "Models are not ready: {}. The control window shows the download.",
                 missing.join(", ")
             ));
         }
@@ -154,14 +155,15 @@ impl Controller {
             message: None,
         });
         if self
+            .session
             .supervisor
             .as_ref()
             .is_some_and(|supervisor| !supervisor.is_running())
         {
             // It gave up after repeated crashes; a new start tries a new server.
-            self.stop_supervisor();
+            self.stop_server();
         }
-        if self.supervisor.is_none() {
+        if self.session.supervisor.is_none() {
             // Quit sets `quitting` before its command waits here, so a slow model load
             // cannot hold up the exit.
             match engines::start_supervisor(
@@ -171,7 +173,7 @@ impl Controller {
                 &bus,
                 &self.shared.quitting,
             ) {
-                Ok(supervisor) => self.supervisor = Some(supervisor),
+                Ok(supervisor) => self.session.supervisor = Some(supervisor),
                 Err(message) => {
                     engines::fail(&bus, EngineKind::Translator, &message);
                     return Err(message);
@@ -179,7 +181,8 @@ impl Controller {
             }
         }
         let (translator, pid) = engines::translator(
-            self.supervisor
+            self.session
+                .supervisor
                 .as_ref()
                 .expect("a start leaves a running supervisor"),
         )?;
@@ -199,10 +202,8 @@ impl Controller {
         );
         match pipeline {
             Ok(pipeline) => {
-                self.session = Some(Session {
-                    pipeline,
-                    transcript,
-                });
+                self.session.pipeline = Some(pipeline);
+                self.session.transcript = transcript;
                 if config.capture.mode == CaptureMode::Apps && !apps_supported() {
                     bus.publish(PipelineEvent::SourceState {
                         state: SourceStateKind::Unsupported,
@@ -257,46 +258,48 @@ impl Controller {
     }
 
     fn pause(&mut self) -> Result<(), String> {
-        self.drop_finished_session();
-        match &self.session {
-            Some(session) => session.pipeline.pause().map_err(|e| e.to_string()),
+        self.drop_finished();
+        match &self.session.pipeline {
+            Some(pipeline) => pipeline.pause().map_err(|e| e.to_string()),
             None => Ok(()),
         }
     }
 
     /// A pipeline ends by itself when its capture fails for good; it cannot resume.
-    fn drop_finished_session(&mut self) {
+    fn drop_finished(&mut self) {
         if self
             .session
+            .pipeline
             .as_ref()
-            .is_some_and(|session| session.pipeline.is_finished())
+            .is_some_and(PipelineHandle::is_finished)
         {
-            self.stop_session();
+            self.stop_listening();
         }
     }
 
     /// Joins the pipeline before the transcript so every terminal event is written.
-    fn stop_session(&mut self) {
-        if let Some(mut session) = self.session.take() {
-            if let Err(error) = session.pipeline.stop() {
-                tracing::warn!(%error, "Pipeline stopped with an error");
-            }
-            if let Some(transcript) = session.transcript.take() {
-                if let Err(error) = transcript.finish().and_then(|mut w| {
-                    use std::io::Write;
-                    w.flush().map_err(Into::into)
-                }) {
-                    tracing::warn!(%error, "Transcript was not completely written");
-                }
-            }
-            self.shared.bus.publish(PipelineEvent::ListeningState {
-                state: ListeningStateKind::Paused,
-            });
+    fn stop_listening(&mut self) {
+        let Some(mut pipeline) = self.session.pipeline.take() else {
+            return;
+        };
+        if let Err(error) = pipeline.stop() {
+            tracing::warn!(%error, "Pipeline stopped with an error");
         }
+        if let Some(transcript) = self.session.transcript.take() {
+            if let Err(error) = transcript.finish().and_then(|mut writer| {
+                use std::io::Write;
+                writer.flush().map_err(Into::into)
+            }) {
+                tracing::warn!(%error, "Transcript was not completely written");
+            }
+        }
+        self.shared.bus.publish(PipelineEvent::ListeningState {
+            state: ListeningStateKind::Paused,
+        });
     }
 
-    fn stop_supervisor(&mut self) {
-        if let Some(mut supervisor) = self.supervisor.take() {
+    fn stop_server(&mut self) {
+        if let Some(mut supervisor) = self.session.supervisor.take() {
             if let Err(error) = supervisor.stop() {
                 tracing::warn!(%error, "Translator did not stop cleanly");
             }
@@ -304,25 +307,22 @@ impl Controller {
     }
 
     fn apply(&mut self, old: &Config, new: &Config) -> Result<(), String> {
-        let Some(session) = &self.session else {
+        let Some(pipeline) = &self.session.pipeline else {
             if applies::server_changed(old, new) {
-                self.stop_supervisor();
+                self.stop_server();
             }
             return Ok(());
         };
         match applies::classify(old, new) {
             Applies::Capture => {
                 let (source, _, _) = make_source(new)?;
-                session
-                    .pipeline
-                    .reopen_source(source)
-                    .map_err(|e| e.to_string())?;
+                pipeline.reopen_source(source).map_err(|e| e.to_string())?;
             }
             Applies::Pipeline => {
                 let was_listening = self.shared.state().listening == ListeningStateKind::Listening;
-                self.stop_session();
+                self.stop_listening();
                 if applies::server_changed(old, new) {
-                    self.stop_supervisor();
+                    self.stop_server();
                 }
                 self.start()?;
                 if !was_listening {

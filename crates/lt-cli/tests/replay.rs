@@ -100,6 +100,8 @@ fn fast_replay_writes_the_shared_utf8_records_and_complete_summary() {
     assert_eq!(records[2]["clauses"], 1);
     assert_eq!(records[2]["cuts"]["pause"], 1);
     assert_eq!(records[2]["status"]["final"], 1);
+    // The fake offline engine decodes nothing, so the summary must not report a second pass.
+    assert!(records[2].get("second_pass").is_none());
     let stdout: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(stdout, records[2]);
 }

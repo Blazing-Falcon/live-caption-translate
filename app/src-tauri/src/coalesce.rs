@@ -1,9 +1,7 @@
-//! Bridge throttle: newest `text_so_far` per id, at most one delta per id every
-//! 33 ms, everything else immediate and in order.
+//! Bridge throttle: newest `text_so_far` per id, at most one delta per id every 33 ms.
 //!
-//! Ordering policy: a pending delta happened before any later event, so every non-delta event
-//! first flushes all older pending deltas (in arrival order) and only then is forwarded. The one
-//! exception is a terminal event for the same id, whose own pending delta is discarded.
+//! Every other event first flushes the pending deltas, in arrival order, so a later event never
+//! overtakes text that was published before it. A terminal event drops its own pending delta.
 use lt_core::events::PipelineEvent;
 use std::{
     collections::HashMap,

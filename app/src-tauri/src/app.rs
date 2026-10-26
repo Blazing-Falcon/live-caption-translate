@@ -25,8 +25,8 @@ pub struct SetConfigResult {
     pub messages: Vec<String>,
 }
 
-/// The saved config with its warnings; an info message names a setting the app dropped, and
-/// only warnings reach the UI.
+/// The saved config's warnings. An info message names a setting the app dropped; only warnings
+/// reach the UI.
 fn warning_texts(messages: Vec<Message>) -> Vec<String> {
     messages
         .into_iter()
@@ -72,8 +72,7 @@ impl Shared {
         lock(&self.state).clone()
     }
 
-    /// Applies a patch, saves atomically, announces it, and tells the controller when
-    /// capture or the pipeline must change. Returns the normalized config.
+    /// Applies a patch, saves it, announces it, and asks the controller to act on it.
     pub fn patch_config(&self, patch: serde_json::Value) -> Result<SetConfigResult, String> {
         self.change_config(|config| {
             config
