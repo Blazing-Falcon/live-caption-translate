@@ -70,8 +70,8 @@ llama-server.exe -m <gguf> --host 127.0.0.1 --port <free port> --jinja -np 1 -c 
 - `-ub 128 -b 512` lower the prefill activation buffers, which lowers commit charge.
 - With `performance.low_priority`, the server runs at below-normal priority.
 
-The measurements behind these choices are in `.agent/docs-measurements.md`. Memory figures there are
-working set; the app also samples private bytes (commit charge) for itself and the server.
+Memory figures for these choices are working set; the app also samples private bytes (commit charge)
+for itself and the server.
 
 **Requests:**
 
