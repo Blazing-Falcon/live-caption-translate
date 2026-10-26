@@ -9,9 +9,11 @@ mod asr;
 mod cancel;
 mod frontend;
 mod handle;
+pub(crate) mod queue;
 mod refine;
 mod running;
 mod scheduler;
+mod translator;
 
 pub use handle::{ClauseCounts, PipelineHandle};
 
@@ -35,6 +37,8 @@ use std::{
 };
 
 const POLL: Duration = Duration::from_millis(5);
+/// Lines waiting for translation before the recognizer is held back.
+pub const QUEUE_CAPACITY: usize = 256;
 const CONTROL_CAPACITY: usize = 16;
 const ASR_CAPACITY: usize = 4;
 /// Closed clauses waiting for the second pass. A clause that waits too long skips its decode,

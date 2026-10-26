@@ -28,7 +28,7 @@ pub struct SessionConfig {
 impl Default for SessionConfig {
     fn default() -> Self {
         Self {
-            skip_lag_s: crate::queue::SKIP_LAG_S,
+            skip_lag_s: crate::pipeline::queue::SKIP_LAG_S,
         }
     }
 }

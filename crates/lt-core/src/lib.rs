@@ -10,7 +10,6 @@ pub mod events;
 pub mod fakes;
 pub mod metrics;
 pub mod pipeline;
-pub mod queue;
 pub mod recognizer;
 pub mod refine;
 pub mod source;

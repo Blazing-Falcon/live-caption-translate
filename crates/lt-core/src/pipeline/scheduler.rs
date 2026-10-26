@@ -1,5 +1,9 @@
 use super::{
-    running::RunningText, send_cooperative, FrontendNotice, Shared, CONTROL_CAPACITY, POLL,
+    queue::{QueuedTranscript, TranslationQueue},
+    running::RunningText,
+    send_cooperative,
+    translator::TranslatorWorker,
+    FrontendNotice, Shared, CONTROL_CAPACITY, POLL, QUEUE_CAPACITY,
 };
 use crate::{
     bus::EventBus,
@@ -8,7 +12,6 @@ use crate::{
     error::Result,
     events::{DropReason, EngineKind, EngineState, FailReason, PipelineEvent},
     metrics::{Metrics, ResourceSample, ResourceSampler},
-    queue::{QueuedTranscript, TranslationQueue, TranslatorWorker},
     recognizer::AsrMessage,
     types::{StreamTime, TextClass, Transcript, UtteranceId},
 };
@@ -298,7 +301,7 @@ impl Scheduler {
     /// Move sealed units into the translation queue while it has room.
     fn feed_queue(&mut self, now: StreamTime) -> Result<Step> {
         let mut step = Step::Idle;
-        while self.queue.len() < TranslationQueue::CAPACITY {
+        while self.queue.len() < QUEUE_CAPACITY {
             let Some(transcript) = self.ready.pop_front() else {
                 break;
             };
@@ -310,8 +313,7 @@ impl Scheduler {
 
     /// Read ASR while translation has room; a line whose notices have not arrived waits.
     fn read_asr(&mut self) -> Step {
-        if self.asr_done || !self.ready.is_empty() || self.queue.len() >= TranslationQueue::CAPACITY
-        {
+        if self.asr_done || !self.ready.is_empty() || self.queue.len() >= QUEUE_CAPACITY {
             return Step::Idle;
         }
         let message = if let Some(message) = self.pending_asr.take() {
@@ -485,7 +487,7 @@ impl Scheduler {
             });
         }
         self.ready.clear();
-        self.queue = TranslationQueue::new();
+        self.queue = TranslationQueue::default();
         self.in_flight = false;
         self.refresh_stats(clock.now());
         stopped
@@ -530,9 +532,10 @@ pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
             last: ResourceSample::default(),
         }) as Box<dyn ResourceSampler>
     }));
-    let worker = TranslatorWorker::start(translator, clock.clone(), bus.clone(), cancelled.flag())?;
+    let worker =
+        TranslatorWorker::start(translator, clock.clone(), bus.clone(), cancelled.clone())?;
     let mut scheduler = Scheduler {
-        queue: TranslationQueue::new(),
+        queue: TranslationQueue::default(),
         ready: VecDeque::new(),
         bus,
         observed: BTreeSet::new(),

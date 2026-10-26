@@ -13,8 +13,7 @@ use lt_core::{
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
     fakes::{FakeOffline, FakeStream, FakeTranslator},
-    pipeline::{Engines, Pipeline, PipelineHandle},
-    queue::TranslationQueue,
+    pipeline::{Engines, Pipeline, PipelineHandle, QUEUE_CAPACITY},
     source::{AudioFrame, AudioProducer, AudioSource, FrameFlags, SourceEvents},
     types::{
         CaptureMode, CutReason, SecondPassOutcome, SourceInfo, StreamTime, TextClass, UtteranceId,
@@ -963,14 +962,14 @@ fn a_blocked_translator_bounds_the_lines_recognized_ahead() {
     waiting.recv_timeout(WATCHDOG).unwrap();
     let mut recorded = Vec::new();
     record_until(&events, &mut recorded, |events| {
-        count(events, is_final) >= TranslationQueue::CAPACITY
+        count(events, is_final) >= QUEUE_CAPACITY
     });
     handle.pause().unwrap();
     handle.stop().unwrap();
     recorded.extend(events.try_iter());
     assert_order(&recorded);
     // One line at the translator, a full queue and one line between the queue and the recognizer.
-    assert!(count(&recorded, is_final) <= TranslationQueue::CAPACITY + 2);
+    assert!(count(&recorded, is_final) <= QUEUE_CAPACITY + 2);
     assert_eq!(requests.lock().unwrap().len(), 1);
 }
 
