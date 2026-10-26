@@ -1,5 +1,5 @@
 use super::{
-    refine::{OpenClause, RefineInput, Window},
+    refine::{RefineInput, Window},
     send_cooperative, FrontendNotice, Shared, POLL,
 };
 use crate::{
@@ -102,9 +102,6 @@ pub(super) fn asr_loop(
     let mut recognizer = Recognizer::new();
     let mut ring = AudioRing::default();
     let mut produced = Vec::new();
-    // The clause after the one being refined has usually started by the time the second pass
-    // decodes, and its opening is what ends the window's text.
-    let open = Arc::new(OpenClause::default());
     while !cancelled.is_set() {
         let input = match inputs.recv_timeout(POLL) {
             Ok(input) => input,
@@ -150,14 +147,10 @@ pub(super) fn asr_loop(
                         transcript,
                         window,
                         closed: Instant::now(),
-                        open: open.clone(),
                     };
                     send_cooperative(&outputs.clauses, clause, &cancelled)?;
                 }
                 RecognizerOutput::Message(message @ AsrMessage::Partial { .. }) => {
-                    if let AsrMessage::Partial { id, text, .. } = &message {
-                        open.heard(*id, text);
-                    }
                     send_cooperative(&outputs.partials, message, &cancelled)?
                 }
                 RecognizerOutput::Message(message) => {

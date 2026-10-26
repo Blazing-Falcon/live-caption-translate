@@ -7,13 +7,13 @@ use crate::{
     error::Result,
     events::DropReason,
     recognizer::AsrMessage,
-    refine::{cut_at_next_clause, trim},
+    refine::trim,
     text::{classify, clean, drop_reason},
-    types::{SecondPass, SecondPassOutcome, StreamTime, Transcript, UtteranceId},
+    types::{SecondPass, SecondPassOutcome, StreamTime, Transcript},
 };
 use crossbeam_channel::{Receiver, Sender};
 use std::{
-    sync::{Arc, Mutex},
+    sync::Arc,
     time::{Duration, Instant},
 };
 
@@ -27,39 +27,11 @@ pub(super) struct Window {
     pub(super) samples: Vec<f32>,
 }
 
-/// The live text of the clause open right now, shared with the second pass.
-///
-/// A window runs past its clause, so its offline text can end with the start of the next clause.
-/// Only the asr thread knows that text, and only after this clause closed.
-#[derive(Default)]
-pub(super) struct OpenClause(Mutex<Option<(UtteranceId, String)>>);
-
-impl OpenClause {
-    /// Record the open clause's newest live text.
-    pub(super) fn heard(&self, id: UtteranceId, text: &str) {
-        if let Ok(mut open) = self.0.lock() {
-            *open = Some((id, text.to_owned()));
-        }
-    }
-
-    /// The live text of the clause right after `id`, when the open clause is that one. Text
-    /// from any other clause must not cut a window: the cell can still hold the clause that
-    /// just closed, or a later one when the second pass has fallen behind.
-    fn after(&self, id: UtteranceId) -> Option<String> {
-        let open = self.0.lock().ok()?;
-        let (open_id, text) = open.as_ref()?;
-        let next = id.0.checked_add(1) == Some(open_id.0);
-        (next && !text.is_empty()).then(|| text.clone())
-    }
-}
-
 pub(super) enum RefineInput {
     Clause {
         transcript: Transcript,
         window: Window,
         closed: Instant,
-        /// The clause that is open while this one is refined.
-        open: Arc<OpenClause>,
     },
     /// A dropped or failed clause, kept in line with the others.
     Message(AsrMessage),
@@ -83,17 +55,9 @@ pub(super) fn refine_loop(
                 mut transcript,
                 window,
                 closed,
-                open,
             } => {
                 let live = transcript.text.clone();
-                second_pass(
-                    engine.as_mut(),
-                    &mut transcript,
-                    &window,
-                    &open,
-                    closed,
-                    MAX_WAIT,
-                );
+                second_pass(engine.as_mut(), &mut transcript, &window, closed, MAX_WAIT);
                 finalize(transcript, &live)
             }
             RefineInput::Message(message) => message,
@@ -110,7 +74,6 @@ fn second_pass(
     engine: &mut dyn OfflineAsr,
     transcript: &mut Transcript,
     window: &Window,
-    open: &OpenClause,
     closed: Instant,
     max_wait: Duration,
 ) {
@@ -131,21 +94,7 @@ fn second_pass(
         record.decode_ms = Some(elapsed_ms(started));
         match heard {
             Ok(heard) => {
-                // The next clause has usually started by now, and the window ends in its first
-                // words. Those words are not this clause's, so `trim` must not choose them.
-                let next = open.after(transcript.id);
-                let text = next
-                    .as_deref()
-                    .and_then(|next| cut_at_next_clause(&heard.text, next))
-                    .unwrap_or(&heard.text);
-                if text.len() != heard.text.len() {
-                    tracing::debug!(
-                        id = transcript.id.0,
-                        dropped = heard.text.len() - text.len(),
-                        "Second-pass window ends in the next clause"
-                    );
-                }
-                match trim(&transcript.text, text) {
+                match trim(&transcript.text, &heard.text) {
                     Some(trimmed) => {
                         record.outcome = SecondPassOutcome::Used;
                         record.distance = Some(u32::try_from(trimmed.distance).unwrap_or(u32::MAX));
@@ -186,26 +135,5 @@ fn finalize(mut transcript: Transcript, live: &str) -> AsrMessage {
     match drop_reason(&transcript, duration.seconds()) {
         Some(reason) => AsrMessage::Dropped(transcript.id, reason),
         None => AsrMessage::Transcript(transcript),
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    /// Only the clause opened after `id` may cut its window: the clause itself, or the one
-    /// before it when this clause produced no partial, must not.
-    #[test]
-    fn only_the_next_clause_is_read_as_what_follows() {
-        let open = OpenClause::default();
-        assert_eq!(open.after(UtteranceId(5)), None);
-        open.heard(UtteranceId(4), "上一句");
-        assert_eq!(open.after(UtteranceId(5)), None);
-        open.heard(UtteranceId(5), "这一句");
-        assert_eq!(open.after(UtteranceId(5)), None);
-        open.heard(UtteranceId(6), "而且我还有事");
-        assert_eq!(open.after(UtteranceId(5)).as_deref(), Some("而且我还有事"));
-        open.heard(UtteranceId(7), "再下一句");
-        assert_eq!(open.after(UtteranceId(5)), None);
     }
 }
