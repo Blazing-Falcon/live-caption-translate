@@ -296,13 +296,13 @@ impl Scheduler {
     }
 
     /// Move sealed units into the translation queue while it has room.
-    fn feed_queue(&mut self, now: StreamTime) -> Result<Step> {
+    fn feed_queue(&mut self, clock: &dyn Clock) -> Result<Step> {
         let mut step = Step::Idle;
         while self.queue.len() < QUEUE_CAPACITY {
             let Some(transcript) = self.ready.pop_front() else {
                 break;
             };
-            self.queue.push(transcript, now.millis())?;
+            self.queue.push(transcript, clock.now().millis())?;
             step = Step::Progressed;
         }
         Ok(step)
@@ -344,10 +344,10 @@ impl Scheduler {
     }
 
     /// Send the next queued unit, or a running-text preview when nothing is queued.
-    fn dispatch(&mut self, now: StreamTime) -> Result<Step> {
+    fn dispatch(&mut self, clock: &dyn Clock) -> Result<Step> {
         let cancelled = self.shared.cancelled.clone();
         if !self.in_flight && !self.queue.is_empty() {
-            let batch = self.queue.take(now);
+            let batch = self.queue.take(clock.now());
             for event in batch.events {
                 match &event {
                     PipelineEvent::Skipped { id, .. } => {
@@ -379,7 +379,7 @@ impl Scheduler {
             }
         }
         if !self.in_flight {
-            if let Some(item) = self.next_preview(now.millis()) {
+            if let Some(item) = self.next_preview(clock.now().millis()) {
                 if send_cooperative(&self.worker.input, item, &cancelled).is_err() {
                     if !cancelled.is_set() {
                         self.translator_lost();
@@ -564,9 +564,9 @@ pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
         if scheduler.asr_done && scheduler.front_done {
             scheduler.freeze_running();
         }
-        progressed |= scheduler.feed_queue(clock.now())?.progressed();
+        progressed |= scheduler.feed_queue(clock.as_ref())?.progressed();
         progressed |= scheduler.read_asr().progressed();
-        let step = scheduler.dispatch(clock.now())?;
+        let step = scheduler.dispatch(clock.as_ref())?;
         if step == Step::Stop {
             break;
         }
