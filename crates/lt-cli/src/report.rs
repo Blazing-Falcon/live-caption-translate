@@ -15,8 +15,9 @@ pub struct ReplayReport {
     done: Vec<f64>,
     joins: u64,
     second_pass: Vec<SecondPass>,
-    /// False for a fake replay, whose offline engine decodes nothing.
-    report_second_pass: bool,
+    /// False for a fake replay: its offline engine decodes nothing, and the summary would
+    /// report a second pass that never ran.
+    second_pass_reported: bool,
 }
 
 /// How the second pass went for the lines that reached a final.
@@ -51,9 +52,9 @@ pub struct Summary<'a> {
 }
 
 impl ReplayReport {
-    /// `report_second_pass` is false for a fake replay: its offline engine decodes nothing, and
-    /// the summary would claim the pass ran.
-    pub fn new(report_second_pass: bool) -> Self {
+    /// `second_pass_reported` is false for a fake replay: its offline engine decodes nothing,
+    /// and the summary would claim the pass ran.
+    pub fn new(second_pass_reported: bool) -> Self {
         Self {
             status: [
                 "final",
@@ -71,7 +72,7 @@ impl ReplayReport {
             done: Vec::new(),
             joins: 0,
             second_pass: Vec::new(),
-            report_second_pass,
+            second_pass_reported,
         }
     }
     fn terminal(&mut self, id: UtteranceId, state: &'static str) -> u64 {
@@ -81,7 +82,7 @@ impl ReplayReport {
     }
     pub fn on_event(&mut self, event: &PipelineEvent) {
         if let PipelineEvent::AsrFinal { second_pass, .. } = event {
-            if self.report_second_pass {
+            if self.second_pass_reported {
                 self.second_pass.push(second_pass.clone());
             }
         }
