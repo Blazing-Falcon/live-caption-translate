@@ -16,13 +16,11 @@ use std::{
 };
 
 const NAME: &str = "X-ASR offline";
-/// Earlier speech read with each window. A clause of a few words alone loses its commas and
-/// guesses words its context decides; much more context makes the decode slower and moves the
-/// best match away from the clause.
+/// Earlier speech read with each window. A short clause alone loses its commas and guesses words
+/// its context decides; much more slows the decode and moves the best match away from the clause.
 const CONTEXT_S: f64 = 5.0;
-/// The encoder's first convolutions reject fewer than about 0.1 s of audio with a C++ exception,
-/// which would abort the process; a shorter window (a clause right after a break) is padded with
-/// silence to this length.
+/// The encoder throws on under about 0.1 s of audio, which aborts the process, so a shorter
+/// window is padded with silence to this length.
 const MIN_SAMPLES: usize = 8_000;
 
 pub struct XAsrOffline {
@@ -137,9 +135,8 @@ fn parse_text(json: &str) -> Result<String> {
     Ok(tidy(&raw.text))
 }
 
-/// sherpa puts a space after every mark and around English words. Keep it where the live text
-/// has one (`normalize_tokens`): before an English word, and between an English word and the
-/// Chinese after it, so the final text is spelled like the live text.
+/// sherpa puts a space after every mark and around English words. Keep it only before an English
+/// word or between one and the Chinese after it, so the result is spelled like the live text.
 fn tidy(text: &str) -> String {
     let words: Vec<&str> = text.split_whitespace().collect();
     let mut out = String::with_capacity(text.len());

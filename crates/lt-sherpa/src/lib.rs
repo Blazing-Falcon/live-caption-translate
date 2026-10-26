@@ -12,7 +12,6 @@ pub use xasr_stream::XAsrStream;
 /// The manifest model of the offline second pass.
 pub const XASR_OFFLINE_MODEL: &str = "xasr-offline-int8-2026-06-03";
 
-/// The streaming X-ASR model.
 pub const XASR_STREAM_MODEL: &str = "xasr-stream-480ms-int8-2026-06-05";
 
 /// The offline X-ASR second pass, from `models` (the folder that holds every model).

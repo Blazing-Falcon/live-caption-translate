@@ -248,10 +248,8 @@ impl Drop for XAsrStream {
     }
 }
 
-/// sherpa marks every BPE piece that starts a word with a space, Chinese characters and
-/// punctuation included. Keep the space only where the text has one (before an English word,
-/// and between English and Chinese), so the tokens concatenate to the result text and a
-/// punctuation mark is a one-character token for the commit rule.
+/// sherpa prefixes a space to every word start, Chinese characters and marks included. Keep it
+/// only where the text has one, so tokens concatenate and a mark is a one-character token.
 pub(crate) fn normalize_tokens(tokens: &mut [String]) {
     let mut previous_ascii_word = false;
     for token in tokens.iter_mut() {
