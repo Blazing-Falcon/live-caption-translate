@@ -40,14 +40,19 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
 
 | Part | Location |
 |---|---|
-| Config | `crates/lt-core/src/config.rs` |
+| Config (version 3, one limits table) | `crates/lt-core/src/config.rs` |
 | Recognizer, commit rule | `crates/lt-core/src/recognizer.rs`, `commit.rs` |
-| Filter, translation queue | `crates/lt-core/src/text.rs`, `pipeline/queue.rs` |
+| Filter | `crates/lt-core/src/text.rs` |
+| Pipeline start, threads, shutdown | `crates/lt-core/src/pipeline/mod.rs`, `handle.rs`, `cancel.rs` |
+| Scheduler steps | `crates/lt-core/src/pipeline/scheduler.rs` |
+| Join, skip and break policy | `crates/lt-core/src/pipeline/queue.rs` |
+| Translator thread | `crates/lt-core/src/pipeline/translator.rs` |
+| Unit seal and previews | `crates/lt-core/src/pipeline/running.rs` |
 | Second pass (trim, refine thread) | `crates/lt-core/src/refine.rs`, `pipeline/refine.rs` |
-| Pipeline threads and shutdown | `crates/lt-core/src/pipeline/` |
-| X-ASR streaming | `crates/lt-sherpa/src/` |
-| llama-server, model downloads | `crates/lt-llm/src/` |
+| X-ASR streaming and offline | `crates/lt-sherpa/src/` |
+| Translator client, loopback HTTP | `crates/lt-llm/src/client.rs`, `http.rs` |
+| llama-server, model downloads | `crates/lt-llm/src/supervisor.rs`, `models/` |
 | Windows capture | `crates/lt-audio/src/windows/` |
-| App commands and bridge | `app/src-tauri/src/` |
-| Caption store, overlay | `app/ui/src/lib/captions.ts`, `app/ui/src/overlay/` |
+| App commands, controller, bridge | `app/src-tauri/src/` |
+| Caption blocks, overlay viewport | `app/ui/src/lib/captions.ts`, `app/ui/src/overlay/` |
 | Control window | `app/ui/src/control/` |
