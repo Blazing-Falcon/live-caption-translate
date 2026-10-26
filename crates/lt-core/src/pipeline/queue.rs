@@ -1,5 +1,6 @@
 //! Queue policy: which waiting lines are skipped, joined or translated on their own.
 
+use super::QUEUE_CAPACITY;
 use crate::{
     error::{Error, Result},
     events::{PipelineEvent, SkipReason},
@@ -14,8 +15,6 @@ const JOIN_GAP_S: f64 = 10.0;
 pub(crate) const SKIP_LAG_S: f64 = 6.0;
 /// The most text one request joins from the waiting lines.
 const JOIN_MAX_CHARS: usize = 120;
-/// Lines the queue holds before the recognizer is held back.
-pub const TRANSLATION_QUEUE_CAPACITY: usize = 256;
 
 #[derive(Clone, Debug)]
 pub(super) struct QueuedTranscript {
@@ -45,7 +44,7 @@ pub(super) struct TranslationQueue {
 
 impl TranslationQueue {
     pub(super) fn push(&mut self, transcript: Transcript, queued_ms: u64) -> Result<()> {
-        if self.waiting.len() == TRANSLATION_QUEUE_CAPACITY {
+        if self.waiting.len() == QUEUE_CAPACITY {
             return Err(Error::Engine("Translation queue is full".into()));
         }
         let new_group = self.new_group(&transcript);
@@ -271,7 +270,7 @@ mod tests {
             let mut queue = TranslationQueue::default();
             queue.push(transcript(1, "你好。", 1.0), 1000).unwrap();
             queue.push(transcript(2, "再见。", 2.0), 2000).unwrap();
-            assert!(queue.take(StreamTime::from_seconds(live)).skipped == 0);
+            assert_eq!(queue.take(StreamTime::from_seconds(live)).skipped, 0);
         }
     }
 }
