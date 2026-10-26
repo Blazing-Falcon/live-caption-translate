@@ -1,4 +1,4 @@
-//! Hy-MT2 over the local server's OpenAI-compatible chat completions.
+//! Hy-MT2 over the local server's chat completions API.
 use crate::{
     http::{
         local_agent, map_http_error, server_unavailable, translation_error, Endpoint, SseDecoder,
