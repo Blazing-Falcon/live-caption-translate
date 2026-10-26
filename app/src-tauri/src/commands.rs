@@ -129,7 +129,7 @@ pub fn open_folder_native(shared: &Shared, which: &str) -> Reply<()> {
         .map_err(|e| format!("Could not open the folder: {e}"))
 }
 
-/// The caption panel's Settings button needs the control window.
+/// Stops listening and the server, then exits.
 #[tauri::command]
 pub fn quit(shared: Shell) {
     crate::quit(shared.inner().clone());
