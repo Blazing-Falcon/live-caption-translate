@@ -111,9 +111,8 @@ impl Models {
         self.publish(shared);
     }
 
-    /// Starts or resumes missing models on a worker thread. Without `ids` that is every required
-    /// model (first run); with `ids`, exactly those (a choice the user made).
-    pub fn download(&self, shared: &Arc<Shared>, ids: Option<Vec<String>>) -> Result<(), String> {
+    /// Starts or resumes the missing models on a worker thread.
+    pub fn download(&self, shared: &Arc<Shared>) -> Result<(), String> {
         if self.busy.swap(true, Ordering::AcqRel) {
             return Ok(());
         }
@@ -127,9 +126,8 @@ impl Models {
                     .map_err(|e| e.to_string())
                     .and_then(|manager| {
                         let dir = shared.paths.models(&shared.config());
-                        let ids = ids.unwrap_or_else(|| manager.default_ids());
                         manager
-                            .fetch_ids(dir, &ids, &models.cancel, &mut |status| {
+                            .fetch(dir, &models.cancel, &mut |status| {
                                 models.record(&shared, status);
                             })
                             .map_err(|e| e.to_string())

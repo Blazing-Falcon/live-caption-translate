@@ -79,8 +79,7 @@ export const modelsStatus = (): Promise<ModelStatus[]> => call<ModelStatus[]>(CO
  * Without `ids`: every missing required model (first run).
  * With `ids`: exactly those models.
  */
-export const modelsDownload = (ids?: readonly string[]): Promise<void> =>
-  call<void>(COMMANDS.modelsDownload, ids === undefined ? {} : { ids: [...ids] });
+export const modelsDownload = (): Promise<void> => call<void>(COMMANDS.modelsDownload);
 export const modelsPause = (): Promise<void> => call<void>(COMMANDS.modelsPause);
 export const modelsUseExisting = (folder: string): Promise<ModelStatus[]> =>
   call<ModelStatus[]>(COMMANDS.modelsUseExisting, { folder });

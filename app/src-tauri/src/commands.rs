@@ -83,8 +83,8 @@ pub fn models_status(shared: Shell) -> Reply<Vec<ModelStatus>> {
 }
 
 #[tauri::command]
-pub fn models_download(shared: Shell, ids: Option<Vec<String>>) -> Reply<()> {
-    shared.models.download(shared.inner(), ids)
+pub fn models_download(shared: Shell) -> Reply<()> {
+    shared.models.download(shared.inner())
 }
 
 #[tauri::command]

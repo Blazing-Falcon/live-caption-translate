@@ -67,41 +67,10 @@ impl ModelManager {
             .collect()
     }
 
-    /// Ids downloaded by default: every required model.
-    pub fn default_ids(&self) -> Vec<String> {
-        self.manifest
-            .models
-            .iter()
-            .filter(|model| !model.optional)
-            .map(|model| model.id.clone())
-            .collect()
-    }
-
-    /// Download the required models only.
+    /// Download every required model.
     pub fn fetch(
         &self,
         dir: impl AsRef<Path>,
-        cancelled: &AtomicBool,
-        on_progress: &mut dyn FnMut(ModelStatus),
-    ) -> Result<Vec<ModelStatus>> {
-        self.fetch_where(dir, |model| !model.optional, cancelled, on_progress)
-    }
-
-    /// Download exactly the named models.
-    pub fn fetch_ids(
-        &self,
-        dir: impl AsRef<Path>,
-        ids: &[String],
-        cancelled: &AtomicBool,
-        on_progress: &mut dyn FnMut(ModelStatus),
-    ) -> Result<Vec<ModelStatus>> {
-        self.fetch_where(dir, |model| ids.contains(&model.id), cancelled, on_progress)
-    }
-
-    fn fetch_where(
-        &self,
-        dir: impl AsRef<Path>,
-        wanted: impl Fn(&ModelEntry) -> bool,
         cancelled: &AtomicBool,
         on_progress: &mut dyn FnMut(ModelStatus),
     ) -> Result<Vec<ModelStatus>> {
@@ -113,7 +82,7 @@ impl ModelManager {
             .models
             .iter()
             .enumerate()
-            .filter(|(_, model)| wanted(model))
+            .filter(|(_, model)| !model.optional)
             .flat_map(|(model_index, model)| {
                 model
                     .files
@@ -858,6 +827,5 @@ mod tests {
         let missing = std::env::temp_dir().join("lt-no-such-models");
         let statuses = manager.status(&missing).unwrap();
         assert_eq!(statuses.len(), 3);
-        assert_eq!(manager.default_ids().len(), 3);
     }
 }
