@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { DEFAULT_CONFIG, applyPatch } from "../src/lib/settings";
+import { OCR_MODEL_ID } from "../src/lib/screen";
+import { DEFAULT_CONFIG, HOTKEY_ACTIONS, applyPatch } from "../src/lib/settings";
 
 function parseDefaultToml(): Record<string, unknown> {
   const doc = readFileSync(new URL("../../../docs/configuration.md", import.meta.url), "utf8");
@@ -41,6 +42,20 @@ describe("DEFAULT_CONFIG", () => {
     expect(source.split("export const DEFAULT_CONFIG").length).toBe(2);
   });
 
+  it("has a shortcut field in the control window for every hotkey", () => {
+    expect([...HOTKEY_ACTIONS].sort()).toEqual(Object.keys(DEFAULT_CONFIG.hotkeys).sort());
+  });
+
+});
+
+
+describe("OCR_MODEL_ID", () => {
+  it("names the optional model in models/manifest.json", () => {
+    const manifest = JSON.parse(readFileSync(new URL("../../../models/manifest.json", import.meta.url), "utf8")) as {
+      models: { id: string; optional?: boolean }[];
+    };
+    expect(manifest.models.find((model) => model.id === OCR_MODEL_ID)?.optional).toBe(true);
+  });
 });
 
 

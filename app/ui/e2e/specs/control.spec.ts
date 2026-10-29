@@ -41,6 +41,35 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await expectPatch(page, { capture: { device: "dev-usb" } });
   });
 
+  test("screen translation: the shortcut field saves and the text recognition model downloads", async ({ page }) => {
+    const READY = MISSING.map((model) => ({ ...model, bytes_done: model.bytes_total, state: "ready" as const }));
+    const OCR = { id: "pp-ocrv6-det-tiny-rec-small", name: "Screen text recognition", bytes_total: 22 * MB, bytes_done: 0, optional: true, state: "missing" } as const;
+    await open(page, "control", { models: [...READY, OCR] });
+
+    await page.getByRole("tab", { name: "Overlay" }).click();
+    const shortcut = page.getByLabel("Translate the screen", { exact: true });
+    await expect(shortcut).toHaveValue("Ctrl+Shift+A");
+    await shortcut.fill("Ctrl+Alt+T");
+    await page.getByRole("button", { name: "Save Translate the screen shortcut" }).click();
+    await expectPatch(page, { hotkeys: { screen_translate: "Ctrl+Alt+T" } });
+    await emitNamed(page, "hotkeys://error", { action: "screen_translate", accelerator: "Ctrl+Alt+T", message: "Another program uses it." });
+    await expect(page.getByRole("alert")).toContainText("Translate the screen: Ctrl+Alt+T could not be used");
+
+    await page.getByRole("tab", { name: "Performance" }).click();
+    const row = page.getByTestId("screen-model");
+    await expect(row).toContainText("22 MB");
+    await expect(row).toContainText("Not downloaded");
+    await row.getByRole("button", { name: "Download" }).click();
+    await expect.poll(async () => (await calls(page, "models_download_optional")).at(-1)?.args).toEqual({ id: OCR.id });
+    await emitNamed(page, "models://progress", [...READY, { ...OCR, state: "downloading", bytes_done: 11 * MB }]);
+    await expect(row).toContainText("Downloading · 50%");
+    await expect(row.getByRole("progressbar")).toHaveAttribute("value", "50");
+    await expect(row.getByRole("button")).toHaveCount(0);
+    await emitNamed(page, "models://progress", [...READY, { ...OCR, state: "ready", bytes_done: OCR.bytes_total }]);
+    await expect(row).toContainText("Ready");
+    await expect(row.getByRole("button")).toHaveCount(0);
+  });
+
   test("first run: download, pause, resume, corruption retry and the single start", async ({ page }) => {
     await open(page, "control", { models: [...MISSING], state: { models_ready: false, listening: "paused" } });
     await expect(page.getByRole("heading", { name: "Download the speech and translation models" })).toBeVisible();

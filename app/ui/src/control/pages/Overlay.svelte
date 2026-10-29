@@ -23,12 +23,21 @@
     show_hide: "Show or hide overlay",
     pause: "Pause listening",
     settings: "Open settings",
+    screen_translate: "Translate the screen",
   };
+
+  const emptyHotkeys = (): Record<HotkeyAction, string> => ({
+    move_lock: "",
+    show_hide: "",
+    pause: "",
+    settings: "",
+    screen_translate: "",
+  });
 
   let fontDraft = $state<number | null>(null);
   let backgroundDraft = $state<number | null>(null);
-  let hotkeyDrafts = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "", settings: "" });
-  let hotkeyBase = $state<Record<HotkeyAction, string>>({ move_lock: "", show_hide: "", pause: "", settings: "" });
+  let hotkeyDrafts = $state<Record<HotkeyAction, string>>(emptyHotkeys());
+  let hotkeyBase = $state<Record<HotkeyAction, string>>(emptyHotkeys());
 
   const overlay = $derived(config.overlay);
   const fontPx = $derived(fontDraft ?? overlay.font_px);

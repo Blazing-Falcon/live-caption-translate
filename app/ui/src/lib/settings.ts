@@ -96,7 +96,7 @@ export const MAX_THREADS = 64;
  * value itself fails the floor, hence "at or below". */
 export const LOW_BACKGROUND_WARNING = 0.5;
 
-export const HOTKEY_ACTIONS = ["move_lock", "show_hide", "pause", "settings"] as const;
+export const HOTKEY_ACTIONS = ["move_lock", "show_hide", "pause", "settings", "screen_translate"] as const;
 export type HotkeyAction = (typeof HOTKEY_ACTIONS)[number];
 
 export function clamp(value: number, min: number, max: number): number {

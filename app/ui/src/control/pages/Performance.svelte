@@ -4,23 +4,45 @@
   import { useSession } from "../../lib/context";
   import { reconcileChecked } from "../../lib/reconcile";
   import {
+    formatBytes,
     formatMemory,
     formatSeconds,
+    modelsPercent,
     totalCpu,
     totalMemoryMb,
   } from "../../lib/format";
+  import { OCR_MODEL_ID, modelBusy } from "../../lib/screen";
   import {
     asrPatch,
+    formatAccelerator,
     performancePatch,
     threadsPatch,
     transcriptPatch,
     type Config,
   } from "../../lib/settings";
+  import type { ModelState } from "../../lib/types";
 
   let { config }: { config: Config } = $props();
 
   const session = useSession();
-  const { stats, busy, appState, config: liveConfig } = session;
+  const { stats, busy, appState, models, config: liveConfig } = session;
+
+  const SCREEN_MODEL_STATE: Record<ModelState, string> = {
+    missing: "Not downloaded",
+    downloading: "Downloading",
+    paused: "Paused",
+    verifying: "Checking file…",
+    ready: "Ready",
+    corrupt: "Damaged",
+  };
+  const SCREEN_MODEL_ACTION: Partial<Record<ModelState, string>> = {
+    missing: "Download",
+    paused: "Resume",
+    corrupt: "Retry",
+  };
+
+  const screenModel = $derived($models?.find((row) => row.id === OCR_MODEL_ID) ?? null);
+  const screenShortcut = $derived(formatAccelerator(config.hotkeys.screen_translate));
 
   // Up to the PC's logical CPUs; a larger saved value stays selectable.
   const threadOptions = (current: number): number[] =>
@@ -48,6 +70,11 @@
     const input = event.currentTarget as HTMLInputElement;
     await session.save("transcript.enabled", transcriptPatch(input.checked));
     reconcileChecked(input, get(liveConfig)?.transcript.enabled ?? config.transcript.enabled);
+  }
+
+  async function downloadScreenModel(): Promise<void> {
+    if (get(busy).has("models.screen")) return;
+    await session.act("models.screen", () => api.modelsDownloadOptional(OCR_MODEL_ID));
   }
 
   const openTranscripts = async (): Promise<void> => {
@@ -127,6 +154,37 @@
     </div>
   </div>
 
+  <div class="stack">
+    <h3 class="section-title">Screen translation</h3>
+    {#if screenModel}
+      <div class="model-row" data-testid="screen-model" data-state={screenModel.state}>
+        <div class="model-main">
+          <span>Text recognition model</span>
+          {#if modelBusy(screenModel) || screenModel.state === "paused"}
+            <progress max="100" value={modelsPercent(screenModel)} aria-label="Text recognition model download"></progress>
+          {/if}
+        </div>
+        <span class="size mono">{formatBytes(screenModel.bytes_total)}</span>
+        <span class="state" class:warning={screenModel.state === "corrupt"}>
+          {SCREEN_MODEL_STATE[screenModel.state]}{screenModel.state === "downloading" || screenModel.state === "paused"
+            ? ` · ${modelsPercent(screenModel)}%`
+            : ""}
+        </span>
+        {#if SCREEN_MODEL_ACTION[screenModel.state]}
+          <button type="button" class="btn" aria-disabled={$busy.has("models.screen")} onclick={downloadScreenModel}>
+            {SCREEN_MODEL_ACTION[screenModel.state]}
+          </button>
+        {/if}
+      </div>
+    {/if}
+    <p class="help small">
+      {screenShortcut
+        ? `Press ${screenShortcut} to freeze the screen, then drag a box over Chinese text to read and translate it.`
+        : "The screen translation shortcut is off. Set one on the Overlay page."}
+      The model downloads once and is only used for this. Listening does not need it.
+    </p>
+  </div>
+
   <dl class="stat-grid">
     <div class="stat">
       <dt>Word to English</dt>
@@ -177,5 +235,41 @@
   .model-name {
     font-size: var(--text-ui);
     color: var(--c-text);
+  }
+
+  .model-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    max-width: 520px;
+    padding: var(--space-3) var(--space-4);
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-card);
+  }
+
+  .model-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .model-main progress {
+    width: 100%;
+    accent-color: var(--c-accent);
+  }
+
+  .size {
+    font-size: var(--text-help);
+    color: var(--c-text-secondary);
+  }
+
+  .state {
+    min-width: 96px;
+    font-size: var(--text-label);
+    color: var(--c-text-label);
+    text-align: right;
   }
 </style>
