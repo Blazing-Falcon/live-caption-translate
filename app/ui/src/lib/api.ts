@@ -8,6 +8,7 @@ import type {
   FolderKind,
   ModelStatus,
   PipelineStats,
+  Rect,
 } from "./types";
 
 export const COMMANDS = {
@@ -23,8 +24,11 @@ export const COMMANDS = {
   listAudioApps: "list_audio_apps",
   modelsStatus: "models_status",
   modelsDownload: "models_download",
+  modelsDownloadOptional: "models_download_optional",
   modelsPause: "models_pause",
   modelsUseExisting: "models_use_existing",
+  screenSelect: "screen_select",
+  screenClose: "screen_close",
   setOverlayMoving: "set_overlay_moving",
   setOverlayVisible: "set_overlay_visible",
   openFolder: "open_folder",
@@ -75,11 +79,14 @@ export const getStats = (): Promise<PipelineStats> => call<PipelineStats>(COMMAN
 export const listAudioDevices = (): Promise<AudioDevice[]> => call<AudioDevice[]>(COMMANDS.listAudioDevices);
 export const listAudioApps = (): Promise<AudioAppList> => call<AudioAppList>(COMMANDS.listAudioApps);
 export const modelsStatus = (): Promise<ModelStatus[]> => call<ModelStatus[]>(COMMANDS.modelsStatus);
-/**
- * Without `ids`: every missing required model (first run).
- * With `ids`: exactly those models.
- */
+/** Every missing required model (first run). */
 export const modelsDownload = (): Promise<void> => call<void>(COMMANDS.modelsDownload);
+/** One model by id, also an optional one such as the screen text recognizer. */
+export const modelsDownloadOptional = (id: string): Promise<void> => call<void>(COMMANDS.modelsDownloadOptional, { id });
+/** Starts a job on `rect` (frame pixels) of frame `frame`; resolves with the job id. */
+export const screenSelect = (frame: number, rect: Rect): Promise<number> =>
+  call<number>(COMMANDS.screenSelect, { frame, rect });
+export const screenClose = (): Promise<void> => call<void>(COMMANDS.screenClose);
 export const modelsPause = (): Promise<void> => call<void>(COMMANDS.modelsPause);
 export const modelsUseExisting = (folder: string): Promise<ModelStatus[]> =>
   call<ModelStatus[]>(COMMANDS.modelsUseExisting, { folder });

@@ -199,7 +199,7 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 | `background`, `foreground` | `[r, g, b]` of the surface behind the text and of text that reads on it |
 | `translate` | `false` when `source` has no Han character; such a block gets no translation events |
 
-`app/ui/src/lib/__fixtures__/screen-events.json` has one example of each event; a Rust test reads it.
+`app/ui/src/lib/__fixtures__/screen-events.json` has one example of each event. A Rust test and `app/ui/tests/screen.test.ts` read it.
 
 ## Caption blocks
 

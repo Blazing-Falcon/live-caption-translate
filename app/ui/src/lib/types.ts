@@ -144,7 +144,7 @@ export interface ModelStatus {
   bytes_total: number;
   bytes_done: number;
   state: ModelState;
-  /** Not needed to listen. Every model in the manifest is required today. */
+  /** Not needed to listen (the screen text recognizer). */
   optional: boolean;
 }
 
@@ -177,3 +177,40 @@ export interface CaptionLine {
   reason: string | null;
   updatedAt: number;
 }
+
+export interface Rect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+export type Rgb = [number, number, number];
+
+/** Payload of `screen://frame`. `width` and `height` are frame pixels; `scale` is the monitor's DPI / 96. */
+export interface ScreenFrame {
+  id: number;
+  width: number;
+  height: number;
+  scale: number;
+}
+
+/** One block of text on the screen. Every rect is in frame pixels. */
+export interface ScreenBlock {
+  id: number;
+  rect: Rect;
+  lines: Rect[];
+  line_height: number;
+  source: string;
+  background: Rgb;
+  foreground: Rgb;
+  translate: boolean;
+}
+
+export type ScreenEvent =
+  | { type: "reading"; job: number }
+  | { type: "blocks"; job: number; blocks: ScreenBlock[]; ocr_ms: number }
+  | { type: "translated"; job: number; id: number; text: string }
+  | { type: "failed"; job: number; id: number; message: string }
+  | { type: "done"; job: number; total_ms: number }
+  | { type: "error"; job: number; message: string };

@@ -57,6 +57,10 @@
   --ov-button-text: #1a1b1d;
   --ov-outline: var(--ov-accent);
 
+  /* Screenshot window: dark chrome over a frozen screen of any color. */
+  --screen-dim: rgb(0 0 0 / 0.4);
+  --screen-bar-bg: rgb(var(--ov-ground-rgb) / 0.94);
+
   /* Control window, light. */
   --c-ground: #f7f7f5;
   --c-surface: #ffffff;
@@ -147,6 +151,13 @@ body {
 
 body.overlay-body {
   background: transparent;
+  color: var(--ov-text);
+  overflow: hidden;
+  user-select: none;
+}
+
+body.screen-body {
+  background: var(--ov-move-bg);
   color: var(--ov-text);
   overflow: hidden;
   user-select: none;

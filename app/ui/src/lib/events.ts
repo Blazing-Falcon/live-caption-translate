@@ -22,6 +22,8 @@ export const EVENTS = {
   configChanged: "config://changed",
   modelsProgress: "models://progress",
   hotkeysError: "hotkeys://error",
+  screenFrame: "screen://frame",
+  screenEvent: "screen://event",
 } as const;
 
 export type Disposer = () => void;

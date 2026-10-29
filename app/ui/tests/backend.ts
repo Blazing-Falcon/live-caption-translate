@@ -42,6 +42,8 @@ export class FakeBackend {
   };
   failures = new Map<string, string>();
   dialogResult: string | null = "D:\\existing-models";
+  /** Id of the last screen job `screen_select` started. */
+  screenJob = 0;
 
   install(): this {
     mockIPC((cmd, args) => this.handle(cmd, (args ?? {}) as Record<string, unknown>), { shouldMockEvents: true });
@@ -81,6 +83,9 @@ export class FakeBackend {
         return this.apps;
       case "list_audio_devices":
         return this.devices;
+      case "screen_select":
+        this.screenJob += 1;
+        return this.screenJob;
       case "plugin:dialog|open":
         return this.dialogResult;
       default:
