@@ -146,7 +146,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `list_audio_devices` | | `{ id, name, is_default }[]` | Output devices |
 | `list_audio_apps` | | `{ supported, reason, apps[] }` | Apps with audio, and recent selections |
 | `models_status` | | `ModelStatus[]` | State of each model |
-| `models_download` | | | Download every model that is missing |
+| `models_download` | | | Download every required model that is missing. Optional models are skipped. |
 | `models_pause` | | | Pause downloads. Partial files stay. |
 | `models_use_existing` | `folder` | `ModelStatus[]` | Find, verify and copy model files from a folder |
 | `models_download_optional` | `id` | | Download one model, also an optional one (the screen text recognizer) |

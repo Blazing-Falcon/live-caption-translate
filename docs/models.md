@@ -1,8 +1,9 @@
 # Models and runtime
 
 `models/manifest.json` is the source of truth. The app embeds it at build time. The repository and
-the package do not contain models. The app downloads them at first run. Developers use
-`scripts/setup.ps1 -Models` or `lt-cli models fetch`.
+the package do not contain models. The app downloads the three required models at first run and the
+optional one when the user first asks for screenshot translation. Developers use
+`scripts/setup.ps1 -Models` or `lt-cli models fetch` for the required models.
 
 ## Models
 
@@ -11,16 +12,30 @@ the package do not contain models. The app downloads them at first run. Develope
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition | `.tar.bz2`, 4 files |
 | `xasr-offline-int8-2026-06-03` | Second pass, always on | `.tar.bz2`, 4 files |
 | `hy-mt2-1.8b-ternary-tq2_0` | Translation | `Hy-MT2-1.8B-1.25Bit.gguf`, rewritten and kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` |
+| `pp-ocrv6-det-tiny-rec-small` | Screenshot text recognition, optional | `det.onnx`, `rec.onnx`, `dict.txt` |
 
-Sizes and SHA-256 hashes are in the manifest.
+Sizes and SHA-256 hashes are in the manifest. The text recognition model is 23 MB.
 
 - Hy-MT2 1.25-bit: `tencent/Hy-MT2-1.8B-1.25Bit-GGUF`, revision `9df5c824a00a744fb0512a29c640466f4d97dfb0`.
 - X-ASR streaming and offline: the `asr-models` release of `k2-fsa/sherpa-onnx` on GitHub. The int8
   files exist only in the archives.
+- PP-OCRv6 detector (`det.onnx`): `PaddlePaddle/PP-OCRv6_tiny_det_onnx` on Hugging Face, revision
+  `2ba1506c0380b8f0b03dd142459aac66d4421f6c`, file `inference.onnx`.
+- PP-OCRv6 recognizer (`rec.onnx`): `PaddlePaddle/PP-OCRv6_small_rec_onnx` on Hugging Face, revision
+  `b8f84f0b80c529de40b4fbb3544b84fa7233a513`, file `inference.onnx`.
+- PP-OCRv6 dictionary (`dict.txt`): `ppocr/utils/dict/ppocrv6_dict.txt` in `PaddlePaddle/PaddleOCR` on
+  GitHub, commit `dab3fe35379033fdcb2d0e9572fac0b36c9a9ebf`. The Hugging Face repositories have no
+  dictionary file.
 
 ## Download rules
 
-- The first-run download takes all three models. Listening does not start while one is missing.
+- The first-run download takes the three required models. Listening does not start while one is
+  missing.
+- The text recognition model is optional (`"optional": true` in the manifest). The first-run
+  download, `models_download` and `lt-cli models fetch` skip it. The app downloads it when the user
+  chooses **Download**: on the Performance page of the control window, or in the screenshot window,
+  which offers it when a screenshot finds the model missing and then reads the same box again. Listening
+  never needs it.
 - Files go to `<models dir>/<id>/<file>`.
 - Downloads continue from `<file>.part` with HTTP range requests. The app checks the SHA-256, then
   renames the file.
@@ -51,6 +66,15 @@ the streaming model.
 
 **Translation model:** Hy-MT2 1.8B, Tencent's 1.25-bit quantization, as TQ2_0. One request per unit,
 one user message with a frozen instruction.
+
+**Screenshot text recognition:** the PaddleOCR PP-OCRv6 tiny detector and small recognizer, run by
+`lt-ocr` through the ONNX Runtime that sherpa-onnx loads. The detector sees the box with an 8 px border
+and no stretching, at most 2048 px on the longest side, and returns a probability map. The app turns
+that into axis-aligned boxes (threshold 0.2, box score at least 0.4, unclip ratio 1.4). The recognizer
+reads each box at a height of 48 px with greedy CTC decoding and drops lines with a score under 0.6.
+There is no angle classifier: it reads horizontal text only, so vertical and rotated text is not
+supported. Threads are half the logical CPUs, from 1 to 4. The `lt-screen` thread loads the model
+when it is first needed and drops it after 5 minutes without a job.
 
 **llama-server:** the supervisor starts it with:
 
@@ -83,6 +107,8 @@ for itself and the server.
 | Timeout | 10 s |
 | Other | temperature 0, repeat penalty 1.05, prompt cache, identical instruction text each time |
 
+Screenshot translation sends the same requests, one for each piece of text of at most 120 characters.
+
 `LT_LLAMA_SERVER` selects a different `llama-server` binary.
 
 ## Licenses
@@ -92,6 +118,7 @@ for itself and the server.
 | X-ASR | Apache-2.0 (upstream `Gilgamesh-J/X-ASR`) |
 | Hy-MT2 1.8B | Apache-2.0 (recorded; confirm on the `tencent/Hy-MT2-1.8B` model card) |
 | Hy-MT2 1.8B 1.25-bit | Apache-2.0 (`tencent/Hy-MT2-1.8B-1.25Bit-GGUF` LICENSE.txt and model card) |
+| PP-OCRv6 tiny detector, small recognizer | Apache-2.0 (the model cards of `PaddlePaddle/PP-OCRv6_tiny_det_onnx` and `PaddlePaddle/PP-OCRv6_small_rec_onnx`, and the `PaddlePaddle/PaddleOCR` LICENSE) |
 | sherpa-onnx 1.13.8 | Apache-2.0 |
 | ONNX Runtime 1.30.0 | MIT |
 | llama.cpp b11429 | MIT (includes LLVM OpenMP) |

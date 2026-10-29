@@ -72,15 +72,21 @@ cargo test --workspace --all-features
 
 ### Real-model tests
 
-These tests skip if their variables are not set. `check.ps1` shows the skipped tests.
+These tests skip if their variables are not set. `check.ps1` shows the skipped tests. A skipped test is not a pass: when you report a result, say which real-model tests ran. If the variable is set but the model files are missing, the test fails.
 
 | Test | Needs | Checks |
 |---|---|---|
 | `lt-sherpa` `stream` | `LT_MODELS_DIR` with the 480 ms streaming model, test audio | Streaming X-ASR with greedy search: emitted tokens never change, accuracy |
 | `lt-sherpa` `offline` | `LT_MODELS_DIR` with the offline X-ASR model, test audio | Offline X-ASR on whole clips: accuracy, spaces only next to English words |
 | `lt-llm` `real_server` | `LT_LLAMA_SERVER`, Hy-MT2 (`LT_MT_MODEL` or `LT_MODELS_DIR`) | 37 sentences against the fixture |
+| `lt-ocr` `screen` | `LT_MODELS_DIR` with the text recognition model | Every block of the 12 rendered screens in `testdata/screen` has a recognized line on it, and the character error rate is at most 2.4% |
+| `lt-cli` `screen` | `LT_MODELS_DIR` with the text recognition and translation models, `LT_LLAMA_SERVER` | `lt-cli screen` on `article@1.png`: two blocks, both translated with no Chinese left, then `done` |
 
 `LT_REFERENCE_AUDIO` sets the test audio folder (default `testdata/fetched`).
+
+Cargo runs each test in its crate's folder, so `LT_MODELS_DIR` must be an absolute path. A relative `models` finds nothing from `crates/lt-ocr`.
+
+The text recognition model is optional, so `setup.ps1 -Models` and `lt-cli models fetch` do not download it. Download it with the app (Performance page, Screen translation, **Download**) and set `LT_MODELS_DIR` to the models folder the app uses, or copy its `pp-ocrv6-det-tiny-rec-small` folder into `models/`.
 
 ```powershell
 . ./scripts/env.ps1
@@ -101,6 +107,31 @@ python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeat
 ```
 
 `replay` writes the transcript, `<out>.events.jsonl` and `<out>.words.json`, and prints the per-word delays. The delays need speech instants: `--instants <file>` reads a JSON array of milliseconds from `--start` at which a word is spoken. Without it the delay values are empty. Every closed line goes through the offline X-ASR second pass, so a real replay needs that model as well as the streaming one; `--fake` uses fakes for all three engines and reports no second-pass summary. When you report a number, also give the machine, the command and what else was running.
+
+## Screenshots
+
+`lt-cli screen` runs the app's screenshot path on a PNG: it reads the text, groups it into blocks and translates each block. It needs the `ocr` feature (which turns on `sherpa` and `llm`) and the text recognition model. Unless you pass `--no-translate`, it also needs the translation model and `llama-server`.
+
+```powershell
+cargo build --release -p lt-cli --features ocr
+./scripts/install-native-runtime.ps1
+target\release\lt-cli.exe screen testdata\screen\article@1.png --server .deps\llama-b11429\llama-server.exe --out out\screen.json
+```
+
+It prints a table of block, Chinese, English and milliseconds. The JSON file has the `lines` the recognizer found, every `ScreenEvent` in `events` with `t_ms` since the job started, `ocr_load_ms` and `server_ms`. `--models` (or `LT_MODELS_DIR`) and `--server` (or `LT_LLAMA_SERVER`) select the model folder and the server. `--no-translate` stops after `blocks`. `--threads` sets the recognizer threads (default: half the logical CPUs, from 1 to 4). `--out` defaults to `out/screen.json`.
+
+### Regenerate the screen fixtures
+
+Do these only when the thing they record changes on purpose, in this order, and say so in the commit body. Then run `cargo test -p lt-core --test screen_group` and `npm --prefix app/ui run e2e -- screen`.
+
+| Fixture | Records | Command |
+|---|---|---|
+| `testdata/screen/<name>@<scale>.png` and `.truth.json` | The pages in `testdata/screen/source/` at scale 1 and 1.5, with the text, rect and lines of each `data-block` element | `node app/ui/scripts/render-screen-fixtures.mjs` |
+| `crates/lt-core/tests/fixtures/screen/<name>@<scale>.lines.json` | The lines `lt-ocr` found in each PNG. The grouping test reads them and needs no model. | `lt-cli screen testdata/screen/<name>@<scale>.png --no-translate --out crates/lt-core/tests/fixtures/screen/<name>@<scale>.lines.json` for each PNG |
+| `app/ui/e2e/fixtures/article@1.5.screen.json` | The events `lt-cli screen` printed for `article@1.5.png`, with the real translations | `lt-cli screen testdata/screen/article@1.5.png --out app/ui/e2e/fixtures/article@1.5.screen.json` |
+| `app/ui/src/lib/__fixtures__/screen-events.json` | One example of each `ScreenEvent`. Edit it by hand when the contract in [ipc.md](ipc.md#screen-jobs) changes. A Rust test and the UI tests read it. | |
+
+The renderer uses the fonts of the PC it runs on, so another PC renders differently. The PNGs are the record. A new render changes the truth files and the recorded lines, so record the lines again after it. The `lt-cli` commands need the release build above and `LT_MODELS_DIR`, plus `LT_LLAMA_SERVER` for the e2e fixture.
 
 ## Package
 

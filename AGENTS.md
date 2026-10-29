@@ -1,6 +1,6 @@
 # Guide for coding agents
 
-Chinese-to-English live captions for Windows. Rust core in `crates/`, Tauri shell in `app/src-tauri`, Svelte UI in `app/ui`. Read [docs/architecture.md](docs/architecture.md) first. [docs/development.md](docs/development.md) has all commands.
+Chinese-to-English live captions and screenshot translation for Windows. Rust core in `crates/`, Tauri shell in `app/src-tauri`, Svelte UI in `app/ui`. Read [docs/architecture.md](docs/architecture.md) first. [docs/development.md](docs/development.md) has all commands.
 
 ## Commands
 
@@ -28,9 +28,10 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
   real-model test is not a pass; say which tests ran.
 - A change to a config key, event or command updates `docs/configuration.md` or `docs/ipc.md` in
   the same commit.
-- OS code lives in `lt-audio` and the app, engine code in `lt-sherpa` and `lt-llm`. `lt-core` has
-  neither.
-- One owner thread per engine. No async runtime in the core. Bounded channels.
+- OS code lives in `lt-audio` and the app, engine code in `lt-sherpa`, `lt-llm` and `lt-ocr`.
+  `lt-core` has neither.
+- One owner thread per in-process engine. llama-server takes requests from the caption translator
+  and the screen thread, one at a time each. No async runtime in the core. Bounded channels.
 - No network use except model downloads and the local llama-server. No telemetry.
 - Never commit models, `testdata/fetched/`, `.deps/` or build output.
 - Write no comment unless the reason is not obvious from the code. One or two lines. No history,
@@ -50,9 +51,13 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
 | Unit seal and previews | `crates/lt-core/src/pipeline/running.rs` |
 | Second pass (trim, refine thread) | `crates/lt-core/src/refine.rs`, `pipeline/refine.rs` |
 | X-ASR streaming and offline | `crates/lt-sherpa/src/` |
+| Screen text recognition (PP-OCRv6 detector and recognizer) | `crates/lt-ocr/src/` |
+| Screen blocks, colors, pieces, job runner, events | `crates/lt-core/src/screen/` |
 | Translator client, loopback HTTP | `crates/lt-llm/src/client.rs`, `http.rs` |
 | llama-server, model downloads | `crates/lt-llm/src/supervisor.rs`, `models/` |
 | Windows capture | `crates/lt-audio/src/windows/` |
+| Screenshot capture, `ltshot` frame, window, `lt-screen` thread | `app/src-tauri/src/screen/` |
 | App commands, controller, bridge | `app/src-tauri/src/` |
 | Caption blocks, overlay viewport | `app/ui/src/lib/captions.ts`, `app/ui/src/overlay/` |
 | Control window | `app/ui/src/control/` |
+| Screenshot window, store, coordinate math | `app/ui/src/screen/`, `app/ui/src/lib/screen.ts` |

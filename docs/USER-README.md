@@ -4,13 +4,15 @@ Live Translation shows English captions for Chinese speech on your PC. It listen
 
 On a PC with 6 or more cores, the English for a sentence appears about two and a half seconds after the speaker stops saying it.
 
-All processing is on your computer. After the first download, the app does not use the network. There are no accounts, no telemetry and no uploads.
+The app can also translate Chinese text that is on your screen (a web page, a game menu, a chat, video subtitles). Press a hotkey, drag a box over the text, and the English appears over it.
+
+All processing is on your computer. After the downloads, the app does not use the network. There are no accounts, no telemetry and no uploads.
 
 ## Requirements
 
 - Windows 10 or Windows 11, 64-bit.
 - A CPU with AVX2, 4 cores or more, and 8 GB of RAM. We recommend 6 cores and 16 GB. On slower PCs the captions come later.
-- Approximately 3 GB of free disk space for the models.
+- Approximately 3 GB of free disk space for the models. Screen translation adds a model of 23 MB.
 - The Microsoft Edge WebView2 Runtime. Windows 11 and most Windows 10 PCs have it. If it is missing, the app starts its setup.
 - "Selected apps" capture needs Windows 10 build 20348 or later (usually Windows 11). Whole-system capture works on all supported versions.
 
@@ -28,8 +30,8 @@ All processing is on your computer. After the first download, the app does not u
 | Page | Settings |
 |---|---|
 | **Capture** | Listen to the **whole system** (you can select an output device), or to **selected apps** such as Chrome and Discord. The app remembers apps by program name. |
-| **Overlay** | Style (caption panel at a screen edge, or running text that joins the lines into one paragraph, with 1 to 10 lines kept. Both translate while someone speaks and may correct the English until the sentence ends, and both keep their text through silence), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking" |
-| **Performance** | Recognizer and correction threads (each finished line is read again by X-ASR offline with the speech before it, which fixes misheard words), translator threads, "Give games priority", word delay ("Word to English", median for the last minute), lines waiting, memory, CPU, transcripts |
+| **Overlay** | Style (caption panel at a screen edge, or running text that joins the lines into one paragraph, with 1 to 10 lines kept. Both translate while someone speaks and may correct the English until the sentence ends, and both keep their text through silence), text size, background opacity, Chinese line above the English, "Show Chinese while someone is speaking", hotkeys |
+| **Performance** | Recognizer and correction threads (each finished line is read again by X-ASR offline with the speech before it, which fixes misheard words), translator threads, "Give games priority", the screen translation model (size, state, **Download**), word delay ("Word to English", median for the last minute), lines waiting, memory, CPU, transcripts |
 
 **Reset settings** (below the pages) sets all settings back to their defaults. The overlay position, the selected apps and the downloaded models stay.
 
@@ -47,8 +49,17 @@ You can change the hotkeys on the Overlay page.
 | Ctrl + Shift + H | Show or hide the overlay |
 | Ctrl + Shift + P | Pause or resume |
 | Ctrl + Shift + S | Open the settings window. The overlay lets clicks through, so this is the way back to it from a game. |
+| Ctrl + Shift + A | Translate text on the screen (see below). Press it again to close the frozen screen. |
 
 If a different program uses a hotkey, the Overlay page tells you. The other hotkeys continue to work.
+
+## Translate text on the screen
+
+1. Press Ctrl + Shift + A. The app freezes the monitor that has the mouse pointer. A video behind the frozen picture keeps playing, but you see the picture from the moment you pressed the key.
+2. Drag a box over the Chinese text. The app reads the text and translates it in blocks, one after the other. Each block of English appears over the Chinese when it is ready, and the Chinese stays until then.
+3. A bar under the box shows the progress. **Copy English** and **Copy Chinese** copy the blocks in reading order. **Show original** hides the English while you hold it (the Space key does the same). **Close**, Esc, a right click or the hotkey again closes the frozen screen. Drag a new box to read another area.
+
+The first time, the app needs the text recognition model (23 MB). The bar shows a **Download** button, and then reads your box again. The Performance page also has this download. The same translation model that makes the captions translates the text, so the first screen translation can take about a second longer while the model loads, if you were not listening. The app does not save the screenshot. It stays in memory until you close the frozen screen.
 
 ## How captions appear
 
@@ -69,6 +80,8 @@ English speech shows as heard. It is not translated.
 - If a sentence is longer than 10 seconds, the cut can remove part of a character.
 - The translations are machine output. If the translator is more than 6 seconds late, it skips older lines to catch up. The Chinese of those lines stays visible.
 - The English comes after a sentence or phrase ends, so it trails the speaker by a few seconds.
+- Screen translation reads horizontal text only. Vertical and rotated text (manga, some posters) is not supported. It works on one monitor at a time.
+- Short labels have no context, so a few are wrong. In a test on a settings dialog, 4 of 34 labels came out clearly wrong (for example 撤销 became "Cancel").
 
 ## Files
 

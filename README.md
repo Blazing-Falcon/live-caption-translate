@@ -1,12 +1,14 @@
 # Live Translation
 
-Live English captions for Chinese speech on Windows. All processing is on the PC.
+Live English captions for Chinese speech on Windows, and translation of Chinese text on the screen. All processing is on the PC.
 
 The app captures the audio that the PC plays (all audio, or only selected apps). It recognizes the Chinese with a streaming X-ASR model and translates it with a local llama.cpp model. The Chinese appears while it is spoken. The English follows when the sentence or phrase ends.
 
+A hotkey (Ctrl+Shift+A) also translates text on the screen. The app freezes the monitor, reads the Chinese in a box that you drag with a PP-OCRv6 text recognizer, and paints the English over it.
+
 ![Caption panel with Chinese and English captions](docs/images/overlay.png)
 
-Rust core, Tauri 2 shell, Svelte UI. Translation: Hy-MT2 1.8B.
+Rust core, Tauri 2 shell, Svelte UI. Translation: Hy-MT2 1.8B. Screen text recognition: PP-OCRv6.
 
 ## Requirements
 
@@ -30,7 +32,7 @@ cargo run -p live-translation    # the app
 
 ## Models
 
-The repository does not contain models. The app downloads them at first run. Developers use `scripts/setup.ps1 -Models`. See [docs/models.md](docs/models.md).
+The repository does not contain models. The app downloads the speech and translation models at first run, and the 23 MB screen text model when you first use screenshot translation. Developers use `scripts/setup.ps1 -Models` for the first group. See [docs/models.md](docs/models.md).
 
 ## Documents
 

@@ -1,20 +1,21 @@
 # Architecture
 
-Live Translation captures the audio that a Windows PC plays. It recognizes Chinese speech with a streaming X-ASR model and translates it with a local llama.cpp model. It shows the result in an overlay that lets mouse clicks pass through. All processing is on the PC. The only network use is the model download.
+Live Translation captures the audio that a Windows PC plays. It recognizes Chinese speech with a streaming X-ASR model and translates it with a local llama.cpp model. It shows the result in an overlay that lets mouse clicks pass through. A hotkey also freezes one monitor, reads the Chinese text in a box that the user drags, and paints the English over it. All processing is on the PC. The only network use is the model download.
 
 ## Repository
 
 | Path | Contents |
 |---|---|
-| `crates/lt-core` | Pipeline, types, config, event bus, metrics, transcripts. No OS code and no engine code. |
+| `crates/lt-core` | Pipeline, types, config, event bus, metrics, transcripts, and the screen logic (grouping text into blocks, the screen job). No OS code and no engine code. |
 | `crates/lt-audio` | WASAPI capture (system mix or selected apps), WAV replay, resampling, normalization |
-| `crates/lt-sherpa` | X-ASR speech recognition: the streaming recognizer and its offline second pass |
+| `crates/lt-sherpa` | X-ASR speech recognition: the streaming recognizer and its offline second pass. It also loads the ONNX Runtime that `lt-ocr` uses. |
 | `crates/lt-llm` | llama-server clients, the server supervisor, model downloads |
-| `crates/lt-cli` | Headless runner: `replay`, `models fetch` |
-| `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge |
-| `app/ui` | Svelte UI: `overlay` and `control` |
+| `crates/lt-ocr` | PP-OCRv6 text recognition for screenshots: a detector and a recognizer on the shared ONNX Runtime |
+| `crates/lt-cli` | Headless runner: `replay`, `screen`, `models fetch` |
+| `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge, screen capture |
+| `app/ui` | Svelte UI: `overlay`, `control` and `screen` |
 | `models/manifest.json` | Model files, URLs and hashes |
-| `reference/fixtures`, `testdata`, `*/tests/fixtures`, `app/ui/src/lib/__fixtures__` | Recorded test data |
+| `reference/fixtures`, `testdata`, `*/tests/fixtures`, `app/ui/src/lib/__fixtures__`, `app/ui/e2e/fixtures` | Recorded test data |
 
 `cargo build` without `--workspace` does not build `app/src-tauri`.
 
@@ -22,8 +23,9 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 
 ```
 +------------------------- live-translation.exe ---------------------------+
-|  Tauri shell: overlay, control window, tray, hotkeys                     |
+|  Tauri shell: overlay, control window, screen window, tray, hotkeys      |
 |  lt-core pipeline: capture -> recognizer -> second pass -> scheduler     |
+|  lt-screen thread: screenshot text recognition and its translation       |
 +--------------------------------|-----------------------------------------+
                                  | HTTP 127.0.0.1
                     +------------v------------+
@@ -33,10 +35,12 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 ```
 
 - Both X-ASR models (streaming and offline) run inside the app through sherpa-onnx.
+- The text recognition model for screenshots runs inside the app through `lt-ocr`, on the same ONNX Runtime. The `lt-screen` thread loads it when a screenshot first needs it and drops it after 5 minutes without a job.
 - The server is a child process of the app. A model crash does not stop the overlay.
 - A Windows Job Object stops the server when the app stops, also after a crash.
 - The supervisor checks `/health`, sends one warm-up request, then reports the server ready. After a crash it restarts the server after 1, 2 and 4 s. Then it reports a failure.
-- The controller loads the server once and keeps it across a pipeline restart. Only a change to `translate.threads` or `performance.low_priority`, a failed server, or a quit stops it.
+- The controller starts the server when listening starts or when a screenshot needs it, whichever comes first. It keeps the server across a pipeline restart and a pause. Only a change to `translate.threads` or `performance.low_priority`, a failed server, or a quit stops it.
+- The server has two clients: the caption translator and the `lt-screen` thread. It has one slot (`-np 1`), so each client sends one request at a time and a request from one client can wait for one request of the other.
 
 ## Data flow
 
@@ -52,6 +56,25 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 
 Both styles fill from the top of a fixed box and scroll up, never down. Each block of the panel, and each paragraph of running text, sits in a `CaptionViewport`: an `overflow: hidden` box around a column moved by `translateY(-offset)`. The offset is the largest it has ever been, rounded up to the next block top (panel) or whole line (running text), so the top edge never cuts a block in half. Text that gets shorter leaves blank space at the bottom; the next block fills it. A block pruned above the viewport takes its height out of the offset in the same frame, so nothing visible moves. One 180 ms ease-out transition covers a scroll step; with `prefers-reduced-motion` the column jumps instead. The status is a pill over the box, so it never changes the box's height.
 
+## Screenshot translation
+
+The `screen_translate` hotkey starts it. It needs the text recognition model, which downloads the first time (see [models.md](models.md)), and the translation model. It does not need listening to run.
+
+```
+hotkey -> capture the monitor -> screen window shows the frozen frame -> the user drags a box
+       -> screen_select(frame, rect) -> lt-screen: crop, lt-ocr reads lines, lt-core groups blocks
+       -> one request per block to llama-server -> screen window paints the English over each block
+```
+
+1. **Capture.** The app copies the monitor under the cursor with GDI `BitBlt` before any window of ours changes, so none of them is in the copy. The caption overlay is in it when it covers the area; its English is not translated. The frame is in physical pixels and carries the monitor's DPI scale.
+2. **Frozen view.** The `screen` window is created hidden at startup. The hotkey moves it onto the monitor, sends `screen://frame` and shows it. The page loads the frame from the `ltshot` protocol as a 32-bit BMP. The hotkey again, Esc, a right click or Alt+F4 closes it and drops the frame.
+3. **Preparing.** At the same moment, off the hotkey's thread, `lt-screen` loads the recognizer if it is not loaded, and the controller starts the translation server if it is not running. Both are usually ready before the user finishes the drag.
+4. **Reading.** `screen_select` cuts the box from the frame and gives it to `lt-screen` as a job. A new job cancels the one before it, and a cancelled job sends nothing more. The detector finds text lines (axis-aligned boxes, no stretching of the image). The recognizer reads each line. `lt_core::screen::blocks` joins lines into blocks: lines in one row become one line, and lines below each other that match in height, spacing and edge become one paragraph. Each block gets a background color from the pixels around its lines and a foreground color that reads on it. The job sends `blocks`.
+5. **Translating.** The job translates the blocks that contain a Han character, in reading order, one request at a time. A block longer than 120 characters is split into pieces at sentence marks, then at commas, then at 120 characters, and the English pieces are joined. The requests are the same as the caption translator's. The same text on one screen, or on a later one, comes from a cache of 512 entries. A block that fails does not stop the next one. The job sends `translated` or `failed` for each block, then `done`.
+6. **Painting.** The page draws each translated block as a box at the place of the Chinese, filled with the block's background, with the English in the block's foreground color. Until a block's English arrives, its Chinese stays visible. The font starts at 0.8 of the line height and shrinks to 10 px; below that, the box grows downward.
+
+Coordinates have one rule each. A frame is in physical pixels from the monitor's top-left. The UI multiplies CSS pixels by `scale` to get frame pixels and divides to go back, and `lib/screen.ts` is the only code that does either. The recognizer returns pixels of the cropped box, and `lt-screen` adds the box's origin, so every rect that leaves the app is in frame pixels. The events and their order are in [ipc.md](ipc.md#screen-jobs).
+
 ## Threads
 
 | Thread | Work |
@@ -63,11 +86,12 @@ Both styles fill from the top of a fixed box and scroll up, never down. Each blo
 | `lt-scheduler` | Translation queue, previews, stats |
 | `lt-translator` | HTTP requests to the server |
 | `lt-transcript` | Transcript writer |
+| `lt-screen` | Screenshot translation: the text recognizer, one screen job at a time, the translation requests of that job |
 | `lt-bridge`, `lt-controller`, `lt-models` | App: events, start and stop, downloads |
 
 - The pipeline code has one module for each thread in `crates/lt-core/src/pipeline/`; `recognizer.rs`
   holds the clause state machine that `lt-asr` runs, and `cancel.rs` the stop flag they share.
-- Each engine has one owner thread.
+- Each in-process engine has one owner thread: the streaming recognizer (`lt-asr`), the second pass (`lt-refine`) and the text recognizer (`lt-screen`). The llama-server process is the exception. It takes requests from `lt-translator` and `lt-screen`, one request at a time from each.
 - The core has no async runtime. Stages use bounded channels, so a slow stage stops the stage before it.
 - Each sample has a position on one stream clock. Timestamps and latency use this clock.
 
