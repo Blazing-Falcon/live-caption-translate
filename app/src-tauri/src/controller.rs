@@ -41,6 +41,8 @@ pub enum Cmd {
         old: Config,
         new: Config,
     },
+    /// Starts the translation server if it is not running; answers with its URL.
+    EnsureServer(Sender<Result<String, String>>),
     Shutdown(Reply),
 }
 
@@ -73,7 +75,10 @@ pub fn spawn(shared: Arc<Shared>, commands: Receiver<Cmd>) -> std::io::Result<Jo
 }
 
 /// Sends a command and waits for the controller's answer.
-pub fn request(shared: &Shared, build: impl FnOnce(Reply) -> Cmd) -> Result<(), String> {
+pub fn request<T>(
+    shared: &Shared,
+    build: impl FnOnce(Sender<Result<T, String>>) -> Cmd,
+) -> Result<T, String> {
     let (reply, answer) = unbounded();
     shared
         .controller
@@ -109,6 +114,10 @@ impl Controller {
                     if let Err(message) = self.apply(&old, &new) {
                         tracing::warn!(message, "Applying settings failed");
                     }
+                }
+                Cmd::EnsureServer(reply) => {
+                    let config = self.shared.config();
+                    let _ = reply.send(self.ensure_server(&config));
                 }
                 Cmd::Shutdown(reply) => {
                     self.stop_listening();
@@ -154,32 +163,7 @@ impl Controller {
             state: EngineState::Ready,
             message: None,
         });
-        if self
-            .session
-            .supervisor
-            .as_ref()
-            .is_some_and(|supervisor| !supervisor.is_running())
-        {
-            // It gave up after repeated crashes; a new start tries a new server.
-            self.stop_server();
-        }
-        if self.session.supervisor.is_none() {
-            // Quit sets `quitting` before its command waits here, so a slow model load
-            // cannot hold up the exit.
-            match engines::start_supervisor(
-                &config,
-                &models,
-                &crate::paths::llama_server(),
-                &bus,
-                &self.shared.quitting,
-            ) {
-                Ok(supervisor) => self.session.supervisor = Some(supervisor),
-                Err(message) => {
-                    engines::fail(&bus, EngineKind::Translator, &message);
-                    return Err(message);
-                }
-            }
-        }
+        self.ensure_server(&config)?;
         let (translator, pid) = engines::translator(
             self.session
                 .supervisor
@@ -219,6 +203,52 @@ impl Controller {
                 Err(format!("Listening could not start: {error}"))
             }
         }
+    }
+
+    /// The server's URL, after starting it if it is not running.
+    fn ensure_server(&mut self, config: &Config) -> Result<String, String> {
+        if self
+            .session
+            .supervisor
+            .as_ref()
+            .is_some_and(|supervisor| !supervisor.is_running())
+        {
+            // It gave up after repeated crashes; a new start tries a new server.
+            self.stop_server();
+        }
+        if self.session.supervisor.is_none() {
+            let models = self.shared.paths.models(config);
+            let (id, file) = lt_core::config::TranslateConfig::MODEL;
+            if !models.join(id).join(file).is_file() {
+                return Err(
+                    "The translation model is not downloaded. The control window shows the download."
+                        .into(),
+                );
+            }
+            // Quit sets `quitting` before its command waits here, so a slow model load
+            // cannot hold up the exit.
+            let bus = &self.shared.bus;
+            match engines::start_supervisor(
+                config,
+                &models,
+                &crate::paths::llama_server(),
+                bus,
+                &self.shared.quitting,
+            ) {
+                Ok(supervisor) => self.session.supervisor = Some(supervisor),
+                Err(message) => {
+                    engines::fail(bus, EngineKind::Translator, &message);
+                    return Err(message);
+                }
+            }
+        }
+        Ok(self
+            .session
+            .supervisor
+            .as_ref()
+            .expect("a start leaves a running supervisor")
+            .url()
+            .to_owned())
     }
 
     fn start_transcript(
@@ -374,6 +404,12 @@ fn make_source(config: &Config) -> Result<(Box<dyn AudioSource>, CaptureMode, St
     };
     let source = LoopbackSource::new(device, config.audio.clone()).map_err(|e| e.to_string())?;
     Ok((Box::new(source), CaptureMode::System, "System audio".into()))
+}
+
+/// The translation server's URL, after starting it if needed. Waits for a start (seconds), so
+/// call it from a thread of its own.
+pub fn server_url(shared: &Shared) -> Result<String, String> {
+    request(shared, Cmd::EnsureServer)
 }
 
 pub fn shutdown(shared: &Shared) {
