@@ -284,6 +284,8 @@ pub struct HotkeysConfig {
     /// The overlay lets clicks through, so without a key the control window is reachable only
     /// from the tray.
     pub settings: String,
+    /// Freezes the monitor under the cursor for screenshot translation.
+    pub screen_translate: String,
 }
 
 impl Default for HotkeysConfig {
@@ -293,6 +295,7 @@ impl Default for HotkeysConfig {
             show_hide: "Ctrl+Shift+H".into(),
             pause: "Ctrl+Shift+P".into(),
             settings: "Ctrl+Shift+S".into(),
+            screen_translate: "Ctrl+Shift+A".into(),
         }
     }
 }

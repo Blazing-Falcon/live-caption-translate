@@ -74,6 +74,30 @@ impl ModelManager {
         cancelled: &AtomicBool,
         on_progress: &mut dyn FnMut(ModelStatus),
     ) -> Result<Vec<ModelStatus>> {
+        self.fetch_where(dir, |model| !model.optional, cancelled, on_progress)
+    }
+
+    /// Download one model, required or optional.
+    pub fn fetch_id(
+        &self,
+        dir: impl AsRef<Path>,
+        id: &str,
+        cancelled: &AtomicBool,
+        on_progress: &mut dyn FnMut(ModelStatus),
+    ) -> Result<Vec<ModelStatus>> {
+        if !self.manifest.models.iter().any(|model| model.id == id) {
+            return Err(Error::Config(format!("Unknown model: {id}")));
+        }
+        self.fetch_where(dir, |model| model.id == id, cancelled, on_progress)
+    }
+
+    fn fetch_where(
+        &self,
+        dir: impl AsRef<Path>,
+        wanted: impl Fn(&ModelEntry) -> bool,
+        cancelled: &AtomicBool,
+        on_progress: &mut dyn FnMut(ModelStatus),
+    ) -> Result<Vec<ModelStatus>> {
         let dir = dir.as_ref();
         fs::create_dir_all(dir)?;
         let mut progress = Progress::new(on_progress);
@@ -82,7 +106,7 @@ impl ModelManager {
             .models
             .iter()
             .enumerate()
-            .filter(|(_, model)| !model.optional)
+            .filter(|(_, model)| wanted(model))
             .flat_map(|(model_index, model)| {
                 model
                     .files

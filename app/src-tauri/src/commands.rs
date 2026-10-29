@@ -5,7 +5,7 @@ use crate::{
     state::AppState,
 };
 use lt_audio::windows::{apps::AudioAppList, AudioDevice};
-use lt_core::{config::Config, types::PipelineStats};
+use lt_core::{config::Config, screen::Rect, types::PipelineStats};
 use lt_llm::models::ModelStatus;
 use std::sync::Arc;
 use tauri::State;
@@ -84,7 +84,12 @@ pub fn models_status(shared: Shell) -> Reply<Vec<ModelStatus>> {
 
 #[tauri::command]
 pub fn models_download(shared: Shell) -> Reply<()> {
-    shared.models.download(shared.inner())
+    shared.models.download(shared.inner(), None)
+}
+
+#[tauri::command]
+pub fn models_download_optional(shared: Shell, id: String) -> Reply<()> {
+    shared.models.download(shared.inner(), Some(id))
 }
 
 #[tauri::command]
@@ -127,6 +132,18 @@ pub fn open_folder_native(shared: &Shared, which: &str) -> Reply<()> {
         .opener()
         .open_path(path.to_string_lossy(), None::<&str>)
         .map_err(|e| format!("Could not open the folder: {e}"))
+}
+
+/// Starts reading and translating `rect` (frame pixels) of the frozen frame; returns the job id.
+#[tauri::command]
+pub async fn screen_select(shared: Shell<'_>, frame: u64, rect: Rect) -> Reply<u64> {
+    let shared = shared.inner().clone();
+    blocking(move || shared.screen.select(frame, rect)).await
+}
+
+#[tauri::command]
+pub fn screen_close(shared: Shell) {
+    crate::screen::close(&shared);
 }
 
 /// Stops listening and the server, then exits.

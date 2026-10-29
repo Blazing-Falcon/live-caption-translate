@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="data:," />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Live Translation screenshot</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: var(--c-ground); cursor: crosshair; user-select: none; }
+      #frame { position: absolute; left: 0; top: 0; display: block; pointer-events: none; }
+      #layer, #box, #status { position: absolute; }
+      #layer { inset: 0; pointer-events: none; }
+      #box { outline: var(--focus-width) dashed var(--ov-accent); pointer-events: none; }
+      #status { padding: var(--space-1) var(--space-2); background: var(--ov-bar-bg); color: var(--ov-text); font: var(--text-ui) var(--font-ui); pointer-events: none; }
+      .block { position: absolute; box-sizing: border-box; outline: 1px solid var(--ov-accent); background: var(--ov-bar-bg); color: var(--ov-text); font: var(--text-help) / 1.15 var(--font-ui); overflow: hidden; padding: 1px; }
+    </style>
+  </head>
+  <body class="overlay-root">
+    <img id="frame" alt="" />
+    <div id="layer"></div>
+    <div id="box" hidden></div>
+    <div id="status" hidden></div>
+    <script type="module" src="/src/screen/main.ts"></script>
+  </body>
+</html>

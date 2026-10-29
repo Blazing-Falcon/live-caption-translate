@@ -13,6 +13,7 @@ mod hotkeys;
 mod models;
 mod overlay;
 mod paths;
+mod screen;
 mod state;
 mod system;
 mod tray;
@@ -54,7 +55,7 @@ fn set_aside(path: &std::path::Path, error: &lt_core::error::Error) -> String {
 fn init_logging(paths: &paths::Paths, config: &Config) {
     let filter = std::env::var("LT_LOG").unwrap_or_else(|_| {
         let level = config.logging.level;
-        format!("warn,live_translation_lib={level},lt_core={level},lt_audio={level},lt_llm={level},lt_sherpa={level}")
+        format!("warn,live_translation_lib={level},lt_core={level},lt_audio={level},lt_llm={level},lt_sherpa={level},lt_ocr={level}")
     });
     let appender = tracing_appender::rolling::Builder::new()
         .rotation(tracing_appender::rolling::Rotation::DAILY)
@@ -96,6 +97,17 @@ pub fn run() {
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .register_asynchronous_uri_scheme_protocol("ltshot", |context, request, responder| {
+            let shared = context
+                .app_handle()
+                .try_state::<Arc<Shared>>()
+                .map(|shared| shared.inner().clone());
+            let path = request.uri().path().to_owned();
+            // A 4K frame is tens of megabytes; building it stays off the UI thread.
+            std::thread::spawn(move || {
+                responder.respond(screen::frame_response(shared.as_deref(), &path));
+            });
+        })
         .setup(|app| {
             let handle = app.handle().clone();
             let paths = paths::Paths::resolve(&handle)?;
@@ -125,6 +137,7 @@ pub fn run() {
                 ..Default::default()
             };
             let (controller_tx, controller_rx) = crossbeam_channel::unbounded();
+            let (screen, screen_work) = screen::Screen::new();
             let retention = config.transcript.retention_days;
             let autostart = config.capture.autostart;
             let shared = Arc::new(Shared {
@@ -137,6 +150,7 @@ pub fn run() {
                 controller: controller_tx,
                 models: Default::default(),
                 overlay: Default::default(),
+                screen,
                 tray: Mutex::new(None),
                 quitting: Default::default(),
                 startup_messages: Mutex::new(notices),
@@ -144,7 +158,9 @@ pub fn run() {
             app.manage(shared.clone());
             controller::spawn(shared.clone(), controller_rx)?;
             bridge::spawn(shared.clone())?;
+            screen::spawn(shared.clone(), screen_work)?;
             windows::create_control(&handle)?;
+            screen::create_window(&handle)?;
             shared.overlay.create(&shared)?;
             *lock(&shared.tray) = Some(tray::build(&handle)?);
             shared.refresh_tray();
@@ -169,6 +185,16 @@ pub fn run() {
             Ok(())
         })
         .on_window_event(|window, event| {
+            if window.label() == screen::LABEL {
+                // Alt+F4 on the frozen view closes it like Esc; the window stays for the next use.
+                if let WindowEvent::CloseRequested { api, .. } = event {
+                    api.prevent_close();
+                    if let Some(shared) = window.app_handle().try_state::<Arc<Shared>>() {
+                        screen::close(&shared);
+                    }
+                }
+                return;
+            }
             if window.label() != windows::CONTROL {
                 return;
             }
@@ -196,11 +222,14 @@ pub fn run() {
             commands::list_audio_apps,
             commands::models_status,
             commands::models_download,
+            commands::models_download_optional,
             commands::models_pause,
             commands::models_use_existing,
             commands::set_overlay_moving,
             commands::set_overlay_visible,
             commands::open_folder,
+            commands::screen_select,
+            commands::screen_close,
             commands::quit,
         ])
         .build(tauri::generate_context!())

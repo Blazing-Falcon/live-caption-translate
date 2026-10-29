@@ -116,6 +116,10 @@ asr_final -> unit_sealed (as leader)*
 | `models://progress` | `ModelStatus[]` | Download progress |
 | `models://error` | `{ message }` | A download failed |
 | `hotkeys://error` | `{ action, accelerator, message }` | A hotkey is not available |
+| `screen://frame` | `{ id, width, height, scale }` | To the `screen` window, before it shows a new frozen frame. `width` and `height` are frame pixels; `scale` is the monitor's DPI / 96 |
+| `screen://event` | `ScreenEvent` | To the `screen` window, for each step of a screen job (see [Screen jobs](#screen-jobs)) |
+
+`models://progress` and `models://error` go to the `control` and `screen` windows.
 
 The coalescer (`coalesce.rs`):
 
@@ -145,14 +149,57 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `models_download` | | | Download every model that is missing |
 | `models_pause` | | | Pause downloads. Partial files stay. |
 | `models_use_existing` | `folder` | `ModelStatus[]` | Find, verify and copy model files from a folder |
+| `models_download_optional` | `id` | | Download one model, also an optional one (the screen text recognizer) |
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
 | `set_overlay_visible` | `visible` | | Show or hide the overlay |
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
+| `screen_select` | `frame`, `rect` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |
+| `screen_close` | | | Cancel the screen job, hide the `screen` window and drop the frame |
 | `quit` | | | Stop the pipeline and the translation server, then exit |
 
 `AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible` and `logical_cpus` (the most threads a setting can use).
 
 `ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`) and `optional`.
+
+## Screen jobs
+
+The `screen_translate` hotkey captures the monitor under the cursor, sends `screen://frame`, and shows the `screen` window over that monitor. The page loads the frame from `http://ltshot.localhost/<id>` (a 32-bit BMP; any other id is 404). The UI converts CSS pixels to frame pixels by multiplying by `scale`, and frame pixels back by dividing; every rect the app sends is in frame pixels.
+
+Each `screen_select` starts a job with a new, larger id. A new job or `screen_close` cancels the running one, which then sends nothing more. A job's first events can arrive before `screen_select` returns its id.
+
+`ScreenEvent` (`type`):
+
+| `type` | Fields | Sent when |
+|---|---|---|
+| `reading` | `job` | The job starts |
+| `blocks` | `job`, `blocks[]`, `ocr_ms` | The text is read and grouped |
+| `translated` | `job`, `id`, `text` | One block's English |
+| `failed` | `job`, `id`, `message` | One block could not be translated |
+| `done` | `job`, `total_ms` | Every block is answered |
+| `error` | `job`, `message` | The job could not run: the text recognition model is missing or could not load, or reading failed |
+
+Order for each job:
+
+```
+reading -> blocks -> (translated | failed)* -> done
+reading -> error
+```
+
+There is one `translated` or `failed` for each block with `translate: true`, in id order. When `error` follows `reading` because the model is missing, `models_status` shows `pp-ocrv6-det-tiny-rec-small` as not `ready`; `models_download_optional` downloads it.
+
+`Block`:
+
+| Field | Meaning |
+|---|---|
+| `id` | Reading order, from 0 |
+| `rect` | `{ x, y, w, h }`, the union of `lines`, frame pixels |
+| `lines` | The rect of each text line |
+| `line_height` | Median line height, frame pixels |
+| `source` | The text of its lines, joined. A line break stays only after a line that ends a sentence (。！？) or before an indented line |
+| `background`, `foreground` | `[r, g, b]` of the surface behind the text and of text that reads on it |
+| `translate` | `false` when `source` has no Han character; such a block gets no translation events |
+
+`app/ui/src/lib/__fixtures__/screen-events.json` has one example of each event; a Rust test reads it.
 
 ## Caption blocks
 

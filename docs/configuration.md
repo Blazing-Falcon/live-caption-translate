@@ -67,6 +67,7 @@ move_lock = "Ctrl+Shift+L"
 show_hide = "Ctrl+Shift+H"
 pause = "Ctrl+Shift+P"
 settings = "Ctrl+Shift+S"
+screen_translate = "Ctrl+Shift+A"
 
 [transcript]
 enabled = true
@@ -150,6 +151,7 @@ Values use the Tauri global-shortcut format, for example `Ctrl+Shift+L`. An empt
 | `show_hide` | Show or hide the overlay |
 | `pause` | Pause or resume |
 | `settings` | Open the control window. The overlay lets clicks through, so this is the way back to it from a game |
+| `screen_translate` | Freeze the monitor under the cursor to translate a box of it; pressed again, close the frozen view. Not `Ctrl+Alt+A`, which QQ uses for its screenshot |
 
 ### transcript
 

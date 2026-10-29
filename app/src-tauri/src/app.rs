@@ -5,6 +5,7 @@ use crate::{
     models::Models,
     overlay::Overlay,
     paths::Paths,
+    screen::Screen,
     state::AppState,
     tray::Tray,
 };
@@ -50,6 +51,7 @@ pub struct Shared {
     pub controller: Sender<Cmd>,
     pub models: Models,
     pub overlay: Overlay,
+    pub screen: Screen,
     pub tray: Mutex<Option<Tray>>,
     pub quitting: AtomicBool,
     /// Config problems found at startup, handed to the control window once.

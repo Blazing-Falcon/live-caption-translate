@@ -11,6 +11,7 @@ enum Action {
     ShowHide,
     Pause,
     Settings,
+    ScreenTranslate,
 }
 
 impl Action {
@@ -20,6 +21,7 @@ impl Action {
             Action::ShowHide => "show_hide",
             Action::Pause => "pause",
             Action::Settings => "settings",
+            Action::ScreenTranslate => "screen_translate",
         }
     }
 
@@ -30,6 +32,7 @@ impl Action {
             Action::ShowHide => "show or hide overlay",
             Action::Pause => "pause",
             Action::Settings => "open settings",
+            Action::ScreenTranslate => "translate the screen",
         }
     }
 }
@@ -44,6 +47,7 @@ pub fn register(app: &AppHandle, hotkeys: &HotkeysConfig) {
         (Action::ShowHide, &hotkeys.show_hide),
         (Action::Pause, &hotkeys.pause),
         (Action::Settings, &hotkeys.settings),
+        (Action::ScreenTranslate, &hotkeys.screen_translate),
     ];
     for (action, accelerator) in wanted {
         if accelerator.trim().is_empty() {
@@ -103,5 +107,6 @@ fn run(app: &AppHandle, action: Action) {
             // The overlay is click-through, so this is the only way to reach the window from it.
             shared.show_control();
         }
+        Action::ScreenTranslate => crate::screen::toggle(&shared),
     }
 }

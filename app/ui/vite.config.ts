@@ -14,7 +14,7 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
-      input: { overlay: page('overlay'), control: page('control') },
+      input: { overlay: page('overlay'), control: page('control'), screen: page('screen') },
     },
   },
 });

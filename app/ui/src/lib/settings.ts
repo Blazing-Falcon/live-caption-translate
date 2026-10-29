@@ -52,6 +52,7 @@ export interface Config {
     show_hide: string;
     pause: string;
     settings: string;
+    screen_translate: string;
   };
   transcript: {
     enabled: boolean;
@@ -233,7 +234,8 @@ export const DEFAULT_CONFIG: Config = {
     "move_lock": "Ctrl+Shift+L",
     "show_hide": "Ctrl+Shift+H",
     "settings": "Ctrl+Shift+S",
-    "pause": "Ctrl+Shift+P"
+    "pause": "Ctrl+Shift+P",
+    "screen_translate": "Ctrl+Shift+A"
   },
   "transcript": {
     "enabled": true,

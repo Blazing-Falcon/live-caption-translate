@@ -29,6 +29,7 @@ lt-core.workspace = true
 lt-audio.workspace = true
 lt-sherpa.workspace = true
 lt-llm.workspace = true
+lt-ocr.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 crossbeam-channel.workspace = true
@@ -47,4 +48,5 @@ tauri-plugin-opener = "=2.7.0"
 webview2-com = "=0.39.1"
 windows = { version = "0.62.2", default-features = false, features = [
     "Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_System_Com", "Win32_System_SystemInformation",
+    "Win32_Graphics_Gdi", "Win32_UI_HiDpi",
 ] }

@@ -40,6 +40,13 @@ pub fn missing_for(dir: &Path) -> Vec<String> {
     }
 }
 
+/// The control window shows every download; the screen window shows the one it asked for.
+fn emit(shared: &Shared, event: &str, payload: &impl serde::Serialize) {
+    for window in [crate::windows::CONTROL, crate::screen::LABEL] {
+        let _ = shared.handle.emit_to(window, event, payload);
+    }
+}
+
 #[derive(Default)]
 pub struct Models {
     /// Live progress for models being downloaded; disk state fills in the rest.
@@ -81,9 +88,7 @@ impl Models {
                 .filter(|m| !m.optional)
                 .all(|m| m.state == ModelState::Ready);
             lock(&shared.state).models_ready = ready;
-            let _ = shared
-                .handle
-                .emit_to("control", "models://progress", &statuses);
+            emit(shared, "models://progress", &statuses);
         }
     }
 
@@ -111,10 +116,16 @@ impl Models {
         self.publish(shared);
     }
 
-    /// Starts or resumes the missing models on a worker thread.
-    pub fn download(&self, shared: &Arc<Shared>) -> Result<(), String> {
+    /// Starts or resumes the missing models on a worker thread: the required ones, or only the
+    /// model `only` names.
+    pub fn download(&self, shared: &Arc<Shared>, only: Option<String>) -> Result<(), String> {
         if self.busy.swap(true, Ordering::AcqRel) {
-            return Ok(());
+            return match only {
+                None => Ok(()),
+                Some(_) => {
+                    Err("A model download is already running. Try again when it ends.".into())
+                }
+            };
         }
         self.cancel.store(false, Ordering::Release);
         let shared = shared.clone();
@@ -126,19 +137,20 @@ impl Models {
                     .map_err(|e| e.to_string())
                     .and_then(|manager| {
                         let dir = shared.paths.models(&shared.config());
-                        manager
-                            .fetch(dir, &models.cancel, &mut |status| {
-                                models.record(&shared, status);
-                            })
-                            .map_err(|e| e.to_string())
+                        let progress = &mut |status| models.record(&shared, status);
+                        match &only {
+                            None => manager.fetch(dir, &models.cancel, progress),
+                            Some(id) => manager.fetch_id(dir, id, &models.cancel, progress),
+                        }
+                        .map_err(|e| e.to_string())
                     });
                 if let Err(message) = outcome {
                     if !models.cancel.load(Ordering::Acquire) {
                         tracing::warn!(message, "Model download failed");
-                        let _ = shared.handle.emit_to(
-                            "control",
+                        emit(
+                            &shared,
                             "models://error",
-                            serde_json::json!({ "message": message }),
+                            &serde_json::json!({ "message": message }),
                         );
                         let mut live = lock(&models.live);
                         for item in live.iter_mut() {
