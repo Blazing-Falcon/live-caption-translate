@@ -2507,6 +2507,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "lt-ocr"
+version = "0.8.0"
+dependencies = [
+ "lt-core",
+ "lt-sherpa",
+ "ort",
+ "png 0.18.1",
+ "serde",
+ "serde_json",
+ "tracing",
+]
+
+[[package]]
 name = "lt-sherpa"
 version = "0.8.0"
 dependencies = [

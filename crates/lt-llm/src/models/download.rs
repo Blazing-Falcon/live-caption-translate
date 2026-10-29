@@ -813,19 +813,29 @@ mod tests {
     #[test]
     fn embedded_manifest_is_valid_and_sizes_are_known() {
         let manifest = embedded_manifest().unwrap();
-        assert_eq!(manifest.models.len(), 3);
-        assert!(manifest.models.iter().all(|model| !model.optional));
+        assert_eq!(manifest.models.len(), 4);
+        // Listening needs every model but the screen text recognizer, which first use downloads.
+        let optional: Vec<&str> = manifest
+            .models
+            .iter()
+            .filter(|model| model.optional)
+            .map(|model| model.id.as_str())
+            .collect();
+        assert_eq!(optional, ["pp-ocrv6-det-tiny-rec-small"]);
         assert_eq!(
             manifest
                 .models
                 .iter()
                 .flat_map(|model| &model.files)
                 .count(),
-            3
+            6
         );
         let manager = ModelManager::new().unwrap();
         let missing = std::env::temp_dir().join("lt-no-such-models");
         let statuses = manager.status(&missing).unwrap();
-        assert_eq!(statuses.len(), 3);
+        assert_eq!(statuses.len(), 4);
+        assert!(statuses
+            .iter()
+            .all(|status| status.optional == (status.id == optional[0])));
     }
 }

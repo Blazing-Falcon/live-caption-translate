@@ -1,0 +1,19 @@
+[package]
+name = "lt-ocr"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+lt-core.workspace = true
+ort = { version = "=2.0.0-rc.13", default-features = false, features = ["std", "load-dynamic", "api-17"] }
+tracing.workspace = true
+
+[dev-dependencies]
+lt-sherpa.workspace = true
+png = "0.18"
+serde.workspace = true
+serde_json.workspace = true

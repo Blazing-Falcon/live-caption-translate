@@ -13,6 +13,7 @@ pub mod metrics;
 pub mod pipeline;
 pub(crate) mod recognizer;
 pub mod refine;
+pub mod screen;
 pub mod source;
 pub(crate) mod text;
 pub mod transcript;

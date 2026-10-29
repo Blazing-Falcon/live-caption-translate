@@ -1,5 +1,6 @@
 use crate::{
     error::{Error, Result},
+    screen::{ImageView, Rect},
     types::UtteranceId,
 };
 use std::{
@@ -71,6 +72,21 @@ pub trait OfflineAsr: Send {
     fn context_s(&self) -> f64 {
         0.0
     }
+}
+
+/// One line of text found in an image.
+#[derive(Clone, Debug, PartialEq)]
+pub struct TextLine {
+    pub rect: Rect,
+    pub text: String,
+    /// Mean probability of the recognized characters, 0 to 1.
+    pub score: f32,
+}
+
+/// Reads the text in a still image.
+pub trait TextRecognizer: Send {
+    /// Lines of text in `image`, rects in its pixels, in no particular order.
+    fn recognize(&mut self, image: &ImageView<'_>) -> Result<Vec<TextLine>>;
 }
 
 #[derive(Clone, Debug)]

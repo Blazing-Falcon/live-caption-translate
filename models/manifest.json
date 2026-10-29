@@ -115,6 +115,34 @@
         }
       ],
       "optional": false
+    },
+    {
+      "id": "pp-ocrv6-det-tiny-rec-small",
+      "name": "Screen text recognition (PaddleOCR PP-OCRv6 tiny detector, small recognizer)",
+      "role": "ocr",
+      "license": "Apache-2.0 (model cards of PaddlePaddle/PP-OCRv6_tiny_det_onnx and PP-OCRv6_small_rec_onnx, and the PaddlePaddle/PaddleOCR LICENSE, checked 2026-10-29)",
+      "page": "https://huggingface.co/PaddlePaddle/PP-OCRv6_small_rec_onnx",
+      "files": [
+        {
+          "name": "det.onnx",
+          "size": 1780590,
+          "sha256": "193bab7a04fca699a6c82e6abb5b81bdb28177f0abd4062552b04908dafb19f8",
+          "url": "https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_onnx/resolve/2ba1506c0380b8f0b03dd142459aac66d4421f6c/inference.onnx"
+        },
+        {
+          "name": "rec.onnx",
+          "size": 21159378,
+          "sha256": "5435fd747c9e0efe15a96d0b378d5bd157e9492ed8fd80edf08f30d02fa24634",
+          "url": "https://huggingface.co/PaddlePaddle/PP-OCRv6_small_rec_onnx/resolve/b8f84f0b80c529de40b4fbb3544b84fa7233a513/inference.onnx"
+        },
+        {
+          "name": "dict.txt",
+          "size": 74947,
+          "sha256": "b5f2bfe2bdd9448429e3e82b51c789775d9b42f2403d082b00662eb77e401c5d",
+          "url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/dab3fe35379033fdcb2d0e9572fac0b36c9a9ebf/ppocr/utils/dict/ppocrv6_dict.txt"
+        }
+      ],
+      "optional": true
     }
   ]
 }

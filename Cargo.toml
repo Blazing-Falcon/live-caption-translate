@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
-members = ["crates/lt-core", "crates/lt-audio", "crates/lt-sherpa", "crates/lt-llm", "crates/lt-cli", "app/src-tauri"]
-default-members = ["crates/lt-core", "crates/lt-audio", "crates/lt-sherpa", "crates/lt-llm", "crates/lt-cli"]
+members = ["crates/lt-core", "crates/lt-audio", "crates/lt-sherpa", "crates/lt-llm", "crates/lt-ocr", "crates/lt-cli", "app/src-tauri"]
+default-members = ["crates/lt-core", "crates/lt-audio", "crates/lt-sherpa", "crates/lt-llm", "crates/lt-ocr", "crates/lt-cli"]
 
 [workspace.package]
 version = "0.8.0"
@@ -13,6 +13,7 @@ lt-core = { path = "crates/lt-core" }
 lt-audio = { path = "crates/lt-audio" }
 lt-sherpa = { path = "crates/lt-sherpa" }
 lt-llm = { path = "crates/lt-llm" }
+lt-ocr = { path = "crates/lt-ocr" }
 serde = { version = "1", features = ["derive", "rc"] }
 serde_json = "1"
 thiserror = "2"
