@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>dense</title>
+<style>
+  html, body { margin: 0; }
+  body {
+    width: 680px; height: 330px; overflow: hidden;
+    background: #ffffff; color: #202020;
+    font: 12px/1.5 'Microsoft YaHei', sans-serif;
+  }
+  table { margin: 20px 20px 0; border-collapse: collapse; width: 640px; table-layout: fixed; }
+  th, td { padding: 5px 10px; border: 1px solid #c9ced6; text-align: left; white-space: nowrap; }
+  th { background: #eef1f5; font-weight: 700; }
+  tr:nth-child(even) td { background: #f8f9fb; }
+  col.id { width: 70px; } col.name { width: 150px; } col.spec { width: 130px; }
+  col.qty { width: 80px; } col.price { width: 120px; } col.state { width: 90px; }
+</style>
+</head>
+<body data-size="680x330">
+  <table>
+    <colgroup><col class="id"><col class="name"><col class="spec"><col class="qty"><col class="price"><col class="state"></colgroup>
+    <thead>
+      <tr><th data-block="0">编号</th><th data-block="1">商品名称</th><th data-block="2">规格</th><th data-block="3">数量</th><th data-block="4">单价</th><th data-block="5">状态</th></tr>
+    </thead>
+    <tbody>
+      <tr><td data-block="6">1001</td><td data-block="7">不锈钢保温杯</td><td data-block="8">500 毫升</td><td data-block="9">120</td><td data-block="10">¥39.90</td><td data-block="11">有货</td></tr>
+      <tr><td data-block="12">1002</td><td data-block="13">无线蓝牙耳机</td><td data-block="14">黑色</td><td data-block="15">45</td><td data-block="16">¥129.00</td><td data-block="17">有货</td></tr>
+      <tr><td data-block="18">1003</td><td data-block="19">纯棉毛巾</td><td data-block="20">三条装</td><td data-block="21">300</td><td data-block="22">¥24.50</td><td data-block="23">有货</td></tr>
+      <tr><td data-block="24">1004</td><td data-block="25">便携充电宝</td><td data-block="26">10000 毫安</td><td data-block="27">0</td><td data-block="28">¥89.00</td><td data-block="29">缺货</td></tr>
+      <tr><td data-block="30">1005</td><td data-block="31">木质书架</td><td data-block="32">五层</td><td data-block="33">18</td><td data-block="34">¥259.00</td><td data-block="35">预订</td></tr>
+      <tr><td data-block="36">1006</td><td data-block="37">记事本</td><td data-block="38">A5 横线</td><td data-block="39">560</td><td data-block="40">¥6.80</td><td data-block="41">有货</td></tr>
+      <tr><td data-block="42">1007</td><td data-block="43">护眼台灯</td><td data-block="44">可调光</td><td data-block="45">72</td><td data-block="46">¥58.00</td><td data-block="47">有货</td></tr>
+      <tr><td data-block="48">1008</td><td data-block="49">保鲜盒套装</td><td data-block="50">六件套</td><td data-block="51">0</td><td data-block="52">¥35.00</td><td data-block="53">缺货</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

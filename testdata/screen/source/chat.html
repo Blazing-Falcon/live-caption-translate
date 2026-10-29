@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>chat</title>
+<style>
+  html, body { margin: 0; }
+  body {
+    width: 480px; height: 480px; overflow: hidden;
+    background: #ededed; color: #111;
+    font: 15px/1.5 'Microsoft YaHei', sans-serif;
+  }
+  .msg { display: flex; align-items: flex-start; gap: 10px; margin: 0 14px; padding-top: 22px; }
+  .msg.me { flex-direction: row-reverse; }
+  .face { flex: none; width: 38px; height: 38px; border-radius: 6px; }
+  .bubble { max-width: 250px; padding: 9px 13px; border-radius: 8px; }
+  .a .face { background: #7a8fb5; } .a .bubble { background: #ffffff; }
+  .b .face { background: #c98f6a; } .b .bubble { background: #a9e5a0; }
+  .c .bubble { background: #cfe3ff; }
+  .d .bubble { background: #ffe9a3; }
+  .c .face { background: #7a8fb5; }
+  .d .face { background: #c98f6a; }
+</style>
+</head>
+<body data-size="480x480">
+  <div class="msg a"><span class="face"></span><div class="bubble" data-block="0">晚上有空吗？</div></div>
+  <div class="msg me b"><span class="face"></span><div class="bubble" data-block="1">有空，不过我六点才下班，可能要晚一点到。</div></div>
+  <div class="msg c"><span class="face"></span><div class="bubble" data-block="2">没关系，我先去占位子。听说新开的那家店要排很久的队，你路上注意安全，不用着急。</div></div>
+  <div class="msg me d"><span class="face"></span><div class="bubble" data-block="3">好的，我到了给你发消息，记得带伞，外面好像要下雨了。</div></div>
+</body>
+</html>
