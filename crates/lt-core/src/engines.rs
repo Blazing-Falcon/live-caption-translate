@@ -3,6 +3,7 @@ use crate::{
     screen::{ImageView, Rect},
     types::UtteranceId,
 };
+use serde::{Deserialize, Serialize};
 use std::{
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -75,7 +76,7 @@ pub trait OfflineAsr: Send {
 }
 
 /// One line of text found in an image.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TextLine {
     pub rect: Rect,
     pub text: String,

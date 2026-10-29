@@ -1,0 +1,52 @@
+[
+  { "type": "reading", "job": 3 },
+  {
+    "type": "blocks",
+    "job": 3,
+    "ocr_ms": 640,
+    "blocks": [
+      {
+        "id": 0,
+        "rect": { "x": 80, "y": 44, "w": 640, "h": 56 },
+        "lines": [
+          { "x": 80, "y": 44, "w": 640, "h": 24 },
+          { "x": 80, "y": 76, "w": 400, "h": 24 }
+        ],
+        "line_height": 24,
+        "source": "清晨的河边总是很安静。薄雾贴着水面慢慢散开，岸上的老人在练太极。",
+        "background": [250, 248, 243],
+        "foreground": [24, 24, 24],
+        "translate": true
+      },
+      {
+        "id": 1,
+        "rect": { "x": 80, "y": 126, "w": 220, "h": 22 },
+        "lines": [{ "x": 80, "y": 126, "w": 220, "h": 22 }],
+        "line_height": 22,
+        "source": "Thank you for your patience.",
+        "background": [250, 248, 243],
+        "foreground": [24, 24, 24],
+        "translate": false
+      },
+      {
+        "id": 2,
+        "rect": { "x": 80, "y": 170, "w": 96, "h": 22 },
+        "lines": [{ "x": 80, "y": 170, "w": 96, "h": 22 }],
+        "line_height": 22,
+        "source": "关闭窗口",
+        "background": [32, 34, 40],
+        "foreground": [245, 245, 245],
+        "translate": true
+      }
+    ]
+  },
+  {
+    "type": "translated",
+    "job": 3,
+    "id": 0,
+    "text": "The riverside is always quiet in the early morning. Thin mist spreads slowly over the water, and old people on the bank practice tai chi."
+  },
+  { "type": "failed", "job": 3, "id": 2, "message": "Translation took too long" },
+  { "type": "done", "job": 3, "total_ms": 4420 },
+  { "type": "error", "job": 4, "message": "Cannot open the OCR model: file not found" }
+]

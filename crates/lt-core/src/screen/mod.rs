@@ -1,5 +1,12 @@
 //! Text on a captured screen, in plain pixel buffers and rectangles.
 
+mod group;
+mod job;
+mod paint;
+
+pub use group::blocks;
+pub use job::{piece_translator, pieces, run_job, TranslationCache, PIECE_CHARS};
+
 use crate::error::{Error, Result};
 use serde::{Deserialize, Serialize};
 
@@ -56,5 +63,130 @@ impl<'a> ImageView<'a> {
     pub fn row(&self, y: u32) -> &'a [u8] {
         let start = y as usize * self.stride as usize;
         &self.bgra[start..start + self.width as usize * 4]
+    }
+}
+
+/// A paragraph or label: the text lines that read as one unit, and how to cover them.
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+pub struct Block {
+    /// Reading order, from 0.
+    pub id: u32,
+    /// The union of `lines`.
+    pub rect: Rect,
+    pub lines: Vec<Rect>,
+    /// Median height of `lines`.
+    pub line_height: u32,
+    pub source: String,
+    /// RGB of the surface behind the text.
+    pub background: [u8; 3],
+    /// RGB of text that reads on `background`.
+    pub foreground: [u8; 3],
+    /// False when `source` has no Han character: there is nothing to translate.
+    pub translate: bool,
+}
+
+/// What a screen job reports, in this order: `Reading`, `Blocks`, one `Translated` or `Failed`
+/// for each block with `translate` set in id order, `Done`. `Error` replaces everything after
+/// `Reading` when the text cannot be read.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum ScreenEvent {
+    Reading {
+        job: u64,
+    },
+    Blocks {
+        job: u64,
+        blocks: Vec<Block>,
+        ocr_ms: u32,
+    },
+    Translated {
+        job: u64,
+        id: u32,
+        text: String,
+    },
+    Failed {
+        job: u64,
+        id: u32,
+        message: String,
+    },
+    Done {
+        job: u64,
+        total_ms: u32,
+    },
+    Error {
+        job: u64,
+        message: String,
+    },
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn rect(x: i32, y: i32, w: u32, h: u32) -> Rect {
+        Rect { x, y, w, h }
+    }
+
+    fn single_line(id: u32, rect: Rect, source: &str, dark: bool, translate: bool) -> Block {
+        Block {
+            id,
+            rect,
+            lines: vec![rect],
+            line_height: rect.h,
+            source: source.into(),
+            background: if dark { [32, 34, 40] } else { [250, 248, 243] },
+            foreground: if dark { [245, 245, 245] } else { [24, 24, 24] },
+            translate,
+        }
+    }
+
+    #[test]
+    fn every_event_matches_the_shared_wire_fixture() {
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../app/ui/src/lib/__fixtures__/screen-events.json"
+        ))
+        .unwrap();
+        let paragraph = Block {
+            id: 0,
+            rect: rect(80, 44, 640, 56),
+            lines: vec![rect(80, 44, 640, 24), rect(80, 76, 400, 24)],
+            line_height: 24,
+            source: "清晨的河边总是很安静。薄雾贴着水面慢慢散开，岸上的老人在练太极。".into(),
+            background: [250, 248, 243],
+            foreground: [24, 24, 24],
+            translate: true,
+        };
+        let events = vec![
+            ScreenEvent::Reading { job: 3 },
+            ScreenEvent::Blocks {
+                job: 3,
+                ocr_ms: 640,
+                blocks: vec![
+                    paragraph,
+                    single_line(1, rect(80, 126, 220, 22), "Thank you for your patience.", false, false),
+                    single_line(2, rect(80, 170, 96, 22), "关闭窗口", true, true),
+                ],
+            },
+            ScreenEvent::Translated {
+                job: 3,
+                id: 0,
+                text: "The riverside is always quiet in the early morning. Thin mist spreads slowly over the water, and old people on the bank practice tai chi.".into(),
+            },
+            ScreenEvent::Failed {
+                job: 3,
+                id: 2,
+                message: "Translation took too long".into(),
+            },
+            ScreenEvent::Done { job: 3, total_ms: 4420 },
+            ScreenEvent::Error {
+                job: 4,
+                message: "Cannot open the OCR model: file not found".into(),
+            },
+        ];
+        assert_eq!(serde_json::to_value(&events).unwrap(), fixture);
+        assert_eq!(
+            serde_json::from_value::<Vec<ScreenEvent>>(fixture).unwrap(),
+            events
+        );
     }
 }
