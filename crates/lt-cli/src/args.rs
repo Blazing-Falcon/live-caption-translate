@@ -15,6 +15,8 @@ pub struct Cli {
 pub enum Commands {
     /// Replay a WAV through the full caption pipeline.
     Replay(ReplayArgs),
+    /// Read and translate the text in a PNG screenshot.
+    Screen(ScreenArgs),
     /// Download and verify the pinned model files.
     Models {
         #[command(subcommand)]
@@ -46,6 +48,24 @@ pub struct ReplayArgs {
     /// Speech instants for the per-word delays: a JSON array of milliseconds from `--start`.
     #[arg(long)]
     pub instants: Option<PathBuf>,
+}
+
+#[derive(Args)]
+pub struct ScreenArgs {
+    pub png: PathBuf,
+    #[arg(long, default_value = "out/screen.json")]
+    pub out: PathBuf,
+    #[arg(long, env = "LT_MODELS_DIR")]
+    pub models: Option<PathBuf>,
+    /// Override the bundled binary for local development.
+    #[arg(long, env = "LT_LLAMA_SERVER")]
+    pub server: Option<PathBuf>,
+    /// Read and group the text only; do not start the translator.
+    #[arg(long)]
+    pub no_translate: bool,
+    /// Threads for text recognition (default: the app's choice, at most 4).
+    #[arg(long, value_parser = clap::value_parser!(u16).range(1..))]
+    pub threads: Option<u16>,
 }
 
 #[derive(Clone, Copy, ValueEnum)]

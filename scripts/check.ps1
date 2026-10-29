@@ -33,6 +33,7 @@ try {
         'Speech recognition (lt-sherpa)' = @('LT_MODELS_DIR')
         'Translation fixtures (lt-llm)'  = @('LT_LLAMA_SERVER')
         'Screen OCR (lt-ocr)'            = @('LT_MODELS_DIR')
+        'Screen translation (lt-cli)'    = @('LT_MODELS_DIR', 'LT_LLAMA_SERVER')
     }
     foreach ($ltTest in $ltRealModel.GetEnumerator()) {
         $ltMissing = @($ltTest.Value | Where-Object { -not [Environment]::GetEnvironmentVariable($_) })

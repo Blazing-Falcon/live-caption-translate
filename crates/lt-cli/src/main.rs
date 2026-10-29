@@ -2,6 +2,7 @@ mod args;
 mod engines;
 mod replay;
 mod report;
+mod screen;
 mod wordreport;
 
 #[cfg(not(feature = "llm"))]
@@ -19,7 +20,7 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     let config_path = match &cli.command {
         Commands::Replay(args) => args.config.as_deref(),
-        Commands::Models { .. } => None,
+        Commands::Models { .. } | Commands::Screen(_) => None,
     };
     let (config, messages) = engines::config(config_path)?;
     let filter = std::env::var("LT_LOG")
@@ -44,6 +45,7 @@ fn main() -> Result<()> {
         .context("Installing graceful shutdown signal handler")?;
     let result = match cli.command {
         Commands::Replay(args) => replay::replay(args, config, cancelled.clone()),
+        Commands::Screen(args) => screen::screen(args, config, cancelled.clone()),
         Commands::Models { command } => models(command, config, cancelled.clone()),
     };
     match result {
