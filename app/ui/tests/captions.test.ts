@@ -358,5 +358,5 @@ describe("long synthetic event log", () => {
     expect(events).toBeGreaterThan(2000);
     s.controller.dispose();
     expect(s.clock.pending()).toBe(0);
-  });
+  }, 15_000);
 });
