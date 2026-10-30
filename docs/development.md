@@ -133,6 +133,10 @@ Do these only when the thing they record changes on purpose, in this order, and 
 
 The renderer uses the fonts of the PC it runs on, so another PC renders differently. The PNGs are the record. A new render changes the truth files and the recorded lines, so record the lines again after it. The `lt-cli` commands need the release build above and `LT_MODELS_DIR`, plus `LT_LLAMA_SERVER` for the e2e fixture.
 
+Pass page names to render only selected fixtures, for example `node app/ui/scripts/render-screen-fixtures.mjs tilted-card tilted-sign`. An element with explicit `[data-line]` children records each child's bounds as one source line or vertical column. Other elements use character boxes to find horizontal lines.
+
+The real-model horizontal OCR baseline covers `article`, `chat`, `dense`, `mixed`, `subtitle` and `ui-panel` at both scales, with a maximum character error rate of 2.4%. Vertical and tilted fixtures record geometry separately from that baseline.
+
 ## Package
 
 ```powershell

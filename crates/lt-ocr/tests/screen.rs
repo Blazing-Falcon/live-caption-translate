@@ -13,6 +13,8 @@ use std::{path::PathBuf, time::Instant};
 /// boxes and resampling.
 const MAX_CER: f64 = 0.0040 + 0.02;
 
+const BASELINE_PAGES: [&str; 6] = ["article", "chat", "dense", "mixed", "subtitle", "ui-panel"];
+
 #[derive(Deserialize)]
 struct Truth {
     blocks: Vec<Block>,
@@ -26,7 +28,7 @@ struct Block {
 }
 
 #[test]
-fn every_fixture_block_is_found_and_read() {
+fn horizontal_baseline_blocks_are_found_and_read() {
     let Some(models) = std::env::var_os("LT_MODELS_DIR").map(PathBuf::from) else {
         eprintln!("Real model test skipped: set LT_MODELS_DIR to verified model directory");
         return;
@@ -38,9 +40,15 @@ fn every_fixture_block_is_found_and_read() {
         .unwrap()
         .map(|entry| entry.unwrap().path())
         .filter(|path| path.extension().is_some_and(|ext| ext == "png"))
+        .filter(|path| {
+            let name = path.file_stem().unwrap().to_string_lossy();
+            BASELINE_PAGES
+                .iter()
+                .any(|page| name == format!("{page}@1") || name == format!("{page}@1.5"))
+        })
         .collect();
     images.sort();
-    assert!(!images.is_empty());
+    assert_eq!(images.len(), BASELINE_PAGES.len() * 2);
     let (mut edits, mut chars) = (0, 0);
     for path in &images {
         let name = path.file_stem().unwrap().to_string_lossy().into_owned();

@@ -17,6 +17,10 @@ function readBlocks() {
 
   // One entry per rendered line: the characters whose boxes share a vertical band.
   const linesOf = (element) => {
+    const explicit = [...element.querySelectorAll('[data-line]')];
+    if (explicit.length) {
+      return explicit.map((line) => ({ text: line.innerText, rect: rectOf(line.getBoundingClientRect()) }));
+    }
     const lines = [];
     const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
     const range = document.createRange();
@@ -62,7 +66,11 @@ const squash = (text) => text.replace(/\s+/g, '');
 const browser = await chromium.launch();
 try {
   mkdirSync(root, { recursive: true });
-  const pages = readdirSync(sourceDir).filter((file) => file.endsWith('.html')).sort();
+  const requested = new Set(process.argv.slice(2));
+  const pages = readdirSync(sourceDir)
+    .filter((file) => file.endsWith('.html') && (!requested.size || requested.has(basename(file, '.html'))))
+    .sort();
+  if (requested.size && pages.length !== requested.size) throw new Error('Unknown screen fixture name');
   for (const file of pages) {
     const name = basename(file, '.html');
     for (const scale of SCALES) {
