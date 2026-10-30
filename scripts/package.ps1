@@ -3,7 +3,7 @@
 # -Jobs limits Cargo's parallel jobs (default: Cargo's own).
 [CmdletBinding()]
 param(
-    [string]$Version = '0.8.0',
+    [string]$Version = '0.9.0',
     [int]$Jobs = 0,
     [switch]$SkipUi,
     [switch]$SkipBuild,
