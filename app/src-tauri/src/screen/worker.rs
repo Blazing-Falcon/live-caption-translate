@@ -247,7 +247,8 @@ impl Server {
     fn translate(&mut self, piece: &str, cancel: &Arc<AtomicBool>) -> Result<String> {
         let first = piece_translator(self.client(false)?, cancel)(piece);
         match first {
-            // A restarted server listens on a new port.
+            // A server the supervisor gave up on is replaced by one on a new port. A crash it
+            // restarts keeps the port, so blocks sent during that restart fail.
             Err(Error::Translation {
                 reason: FailReason::ServerUnavailable,
                 ..
