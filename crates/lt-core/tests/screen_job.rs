@@ -184,6 +184,20 @@ fn cancelling_stops_the_requests_and_the_events() {
     );
     assert_eq!(described(&events), ["reading", "blocks 3"]);
     assert_eq!(requests, ["你好"]);
+
+    // Cancelled when the last block is reported: no `Done`.
+    let (events, _) = run(
+        Some(vec![line(10, "你好")]),
+        &mut TranslationCache::default(),
+        &AtomicBool::new(false),
+        |piece, _| Ok(format!("en:{piece}")),
+        |event, cancel| {
+            if matches!(event, ScreenEvent::Translated { .. }) {
+                cancel.store(true, Ordering::Release);
+            }
+        },
+    );
+    assert_eq!(described(&events), ["reading", "blocks 1", "translated 0"]);
 }
 
 #[test]

@@ -70,6 +70,9 @@ pub fn run_job(
         return;
     }
     let blocks = blocks(image, &lines);
+    if cancelled() {
+        return;
+    }
     let sources: Vec<(u32, String)> = blocks
         .iter()
         .filter(|block| block.translate)
@@ -87,6 +90,9 @@ pub fn run_job(
             Outcome::Failed(message) => ScreenEvent::Failed { job, id, message },
         };
         emit(event);
+    }
+    if cancelled() {
+        return;
     }
     emit(ScreenEvent::Done {
         job,

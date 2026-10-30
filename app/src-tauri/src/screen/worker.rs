@@ -191,6 +191,7 @@ impl Worker {
         });
         let image = match loaded {
             Ok(image) => image,
+            Err(_) if job.cancel.load(Ordering::Acquire) => return,
             Err(message) => {
                 emit(ScreenEvent::Reading { job: job.id });
                 emit(ScreenEvent::Error {
