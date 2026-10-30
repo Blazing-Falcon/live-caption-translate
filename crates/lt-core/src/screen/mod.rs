@@ -2,13 +2,15 @@
 
 pub mod contour;
 pub mod detection;
+pub mod erase;
 pub mod filters;
 pub mod geom;
 pub mod group;
+pub mod imaging;
 pub mod ink;
 mod job;
 pub mod line;
-mod paint;
+pub mod paint;
 pub mod placement;
 pub mod raster;
 pub mod repair;

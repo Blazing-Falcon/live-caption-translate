@@ -14,6 +14,7 @@ fakes = []
 [dev-dependencies]
 # Integration tests build the pipeline from the deterministic engines.
 lt-core = { workspace = true, features = ["fakes"] }
+sha2 = "0.10"
 
 [dependencies]
 serde.workspace = true

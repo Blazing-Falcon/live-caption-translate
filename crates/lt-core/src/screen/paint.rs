@@ -151,3 +151,6 @@ mod tests {
         assert_eq!(foreground([10, 10, 10]), [245, 245, 245]);
     }
 }
+pub mod backdrop;
+pub mod color;
+pub mod vote;
