@@ -1,14 +1,12 @@
-//! PP-OCRv6 text recognition (detector and recognizer) on the shared ONNX Runtime. Horizontal
-//! text only: no angle classifier, and every box is axis-aligned.
+//! PP-OCRv6 detection and quadrilateral recognition on the shared ONNX Runtime.
 
 mod det;
-mod image;
 mod rec;
 
 use lt_core::{
     engines::{TextLine, TextRecognizer},
     error::{Error, Result},
-    screen::{geom::RectF, ImageView},
+    screen::{raster, ImageView},
 };
 use ort::{
     session::{builder::GraphOptimizationLevel, Session},
@@ -66,9 +64,10 @@ impl TextRecognizer for OcrEngine {
         }
         let started = Instant::now();
         let geometry = det::Geometry::new(image.width, image.height);
-        let input = det::input(image, &geometry);
+        let frame = det::frame(image, &geometry);
+        let input = det::input(&frame);
         let shape = [1, 3, geometry.input_h as usize, geometry.input_w as usize];
-        let rects = {
+        let boxes = {
             let tensor = TensorRef::from_array_view((shape, &*input)).map_err(ort_error)?;
             let outputs = self.det.run(ort::inputs![tensor]).map_err(ort_error)?;
             let (map_shape, map) = outputs[0].try_extract_tensor::<f32>().map_err(ort_error)?;
@@ -77,43 +76,45 @@ impl TextRecognizer for OcrEngine {
                     "The text detector returned shape {map_shape:?} for input {shape:?}"
                 )));
             }
-            det::boxes(map, &geometry)
+            det::boxes(map, &geometry, image)
         };
         let detected = started.elapsed();
 
-        let mut order: Vec<usize> = (0..rects.len()).collect();
-        order.sort_by_key(|&index| rec::width(&rects[index]));
         let mut lines = Vec::new();
-        for batch in order.chunks(rec::BATCH) {
-            let batch_width = rec::width(&rects[*batch.last().unwrap_or(&0)]);
-            let slot = 3 * rec::HEIGHT as usize * batch_width as usize;
-            let mut input = vec![0.0_f32; batch.len() * slot];
-            for (&index, slot) in batch.iter().zip(input.chunks_exact_mut(slot)) {
-                rec::fill(image, &rects[index], batch_width, slot);
-            }
-            let shape = [batch.len(), 3, rec::HEIGHT as usize, batch_width as usize];
+        for detection in &boxes {
+            let crop = raster::crop(&frame.view(), &detection.points);
+            let width = rec::width(&crop);
+            let input = rec::input(&crop);
+            let shape = [1, 3, rec::HEIGHT as usize, width as usize];
             let tensor = TensorRef::from_array_view((shape, &*input)).map_err(ort_error)?;
             let outputs = self.rec.run(ort::inputs![tensor]).map_err(ort_error)?;
             let (_, probabilities) = outputs[0].try_extract_tensor::<f32>().map_err(ort_error)?;
-            let per_crop = probabilities.len() / batch.len();
-            for (&index, steps) in batch.iter().zip(probabilities.chunks_exact(per_crop)) {
-                let (text, score, char_scores) = rec::decode(steps, self.classes, &self.dictionary);
-                let text = text.trim();
-                if score >= rec::MIN_SCORE && !text.is_empty() {
-                    lines.push(TextLine {
-                        rect: rects[index],
-                        text: text.to_owned(),
-                        score,
-                        quad: Some(RectF::from(rects[index]).corners()),
-                        char_scores,
-                    });
-                }
+            let (text, score, char_scores) =
+                rec::decode(probabilities, self.classes, &self.dictionary);
+            if score < rec::MIN_SCORE || char_scores.is_empty() {
+                continue;
+            }
+            let points = geometry.source_points(&detection.points);
+            let min_x = detection.points.iter().map(|p| p.0).min().unwrap();
+            let max_x = detection.points.iter().map(|p| p.0).max().unwrap();
+            let min_y = detection.points.iter().map(|p| p.1).min().unwrap();
+            let max_y = detection.points.iter().map(|p| p.1).max().unwrap();
+            if let Some(rect) =
+                geometry.source_rect(min_x as f32, min_y as f32, max_x as f32, max_y as f32)
+            {
+                lines.push(TextLine {
+                    rect,
+                    text,
+                    score,
+                    quad: Some(points),
+                    char_scores,
+                });
             }
         }
         tracing::debug!(
             det_ms = detected.as_millis() as u64,
             total_ms = started.elapsed().as_millis() as u64,
-            boxes = rects.len(),
+            boxes = boxes.len(),
             lines = lines.len(),
             "OCR read an image"
         );

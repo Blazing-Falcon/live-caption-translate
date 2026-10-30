@@ -1,13 +1,9 @@
 //! Text recognition: each detected rect, resized to the recognizer's height, read by greedy CTC.
 
-use crate::image::resize;
-use lt_core::screen::{ImageView, Rect};
+use lt_core::screen::raster::Raster;
 
 pub(crate) const HEIGHT: u32 = 48;
-const MIN_WIDTH: u32 = 16;
-const MAX_WIDTH: u32 = 3072;
-pub(crate) const BATCH: usize = 8;
-pub(crate) const MIN_SCORE: f32 = 0.6;
+pub(crate) const MIN_SCORE: f32 = 0.5;
 
 /// One entry per line. Lines are kept exactly: one of them is U+3000, and trimming it would
 /// shift every later index.
@@ -19,27 +15,23 @@ pub(crate) fn dictionary(text: &str) -> Vec<String> {
     entries
 }
 
-pub(crate) fn width(rect: &Rect) -> u32 {
-    (HEIGHT as u64 * rect.w as u64)
-        .div_ceil(rect.h as u64)
-        .clamp(MIN_WIDTH as u64, MAX_WIDTH as u64) as u32
+pub(crate) fn width(crop: &Raster) -> u32 {
+    let scale = HEIGHT as f32 / crop.height as f32;
+    (crop.width as f32 * scale) as u32
 }
 
-/// Writes one crop into its slot of an NCHW batch `batch_width` wide, normalized to -1..1.
-/// The rest of the slot stays 0.
-pub(crate) fn fill(image: &ImageView<'_>, rect: &Rect, batch_width: u32, slot: &mut [f32]) {
-    let width = width(rect);
-    let pixels = resize(image, *rect, width, HEIGHT);
-    let (width, batch_width) = (width as usize, batch_width as usize);
-    let plane = HEIGHT as usize * batch_width;
-    for y in 0..HEIGHT as usize {
-        for x in 0..width {
-            let pixel = &pixels[(y * width + x) * 3..][..3];
-            for (channel, value) in pixel.iter().enumerate() {
-                slot[channel * plane + y * batch_width + x] = value / 127.5 - 1.0;
-            }
+pub(crate) fn input(crop: &Raster) -> Vec<f32> {
+    let width = width(crop);
+    let resized = Raster::resize(&crop.view(), width, HEIGHT);
+    let plane = HEIGHT as usize * width as usize;
+    let mut tensor = vec![0.0; 3 * plane];
+    const NORM: f32 = 1.0 / 127.5;
+    for (i, pixel) in resized.bgra.as_chunks::<4>().0.iter().enumerate() {
+        for channel in 0..3 {
+            tensor[channel * plane + i] = (f32::from(pixel[channel]) - 127.5) * NORM;
         }
     }
+    tensor
 }
 
 /// Greedy CTC over `steps` (time x classes probabilities). Class 0 is the blank, class i is
@@ -54,11 +46,11 @@ pub(crate) fn decode(
     let mut scores = Vec::new();
     let mut previous = 0;
     for step in steps.chunks_exact(classes) {
-        let (best, probability) = step
-            .iter()
-            .copied()
-            .enumerate()
-            .fold((0, f32::MIN), |a, b| if b.1 > a.1 { b } else { a });
+        let (best, probability) =
+            step.iter()
+                .copied()
+                .enumerate()
+                .fold((0, -1000.0), |a, b| if b.1 > a.1 { b } else { a });
         if best != 0 && best != previous {
             text.push_str(dictionary.get(best - 1).map_or(" ", String::as_str));
             scores.push(probability);

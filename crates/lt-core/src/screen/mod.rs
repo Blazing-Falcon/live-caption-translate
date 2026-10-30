@@ -1,5 +1,7 @@
 //! Text on a captured screen, in plain pixel buffers and rectangles.
 
+pub mod contour;
+pub mod detection;
 pub mod filters;
 pub mod geom;
 mod group;
@@ -7,6 +9,8 @@ pub mod ink;
 mod job;
 pub mod line;
 mod paint;
+pub mod raster;
+pub mod repair;
 
 pub use group::blocks;
 pub use job::{piece_translator, pieces, run_job, TranslationCache, PIECE_CHARS};
