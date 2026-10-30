@@ -1,0 +1,2626 @@
+[
+  {
+    "input": "À",
+    "expected": "A"
+  },
+  {
+    "input": "Á",
+    "expected": "A"
+  },
+  {
+    "input": "Â",
+    "expected": "A"
+  },
+  {
+    "input": "Ã",
+    "expected": "A"
+  },
+  {
+    "input": "Ä",
+    "expected": "A"
+  },
+  {
+    "input": "Å",
+    "expected": "A"
+  },
+  {
+    "input": "Æ",
+    "expected": "Æ"
+  },
+  {
+    "input": "Ç",
+    "expected": "C"
+  },
+  {
+    "input": "È",
+    "expected": "E"
+  },
+  {
+    "input": "É",
+    "expected": "E"
+  },
+  {
+    "input": "Ê",
+    "expected": "E"
+  },
+  {
+    "input": "Ë",
+    "expected": "E"
+  },
+  {
+    "input": "Ì",
+    "expected": "I"
+  },
+  {
+    "input": "Í",
+    "expected": "I"
+  },
+  {
+    "input": "Î",
+    "expected": "I"
+  },
+  {
+    "input": "Ï",
+    "expected": "I"
+  },
+  {
+    "input": "Ð",
+    "expected": "Ð"
+  },
+  {
+    "input": "Ñ",
+    "expected": "N"
+  },
+  {
+    "input": "Ò",
+    "expected": "O"
+  },
+  {
+    "input": "Ó",
+    "expected": "O"
+  },
+  {
+    "input": "Ô",
+    "expected": "O"
+  },
+  {
+    "input": "Õ",
+    "expected": "O"
+  },
+  {
+    "input": "Ö",
+    "expected": "O"
+  },
+  {
+    "input": "×",
+    "expected": "×"
+  },
+  {
+    "input": "Ø",
+    "expected": "Ø"
+  },
+  {
+    "input": "Ù",
+    "expected": "U"
+  },
+  {
+    "input": "Ú",
+    "expected": "U"
+  },
+  {
+    "input": "Û",
+    "expected": "U"
+  },
+  {
+    "input": "Ü",
+    "expected": "U"
+  },
+  {
+    "input": "Ý",
+    "expected": "Y"
+  },
+  {
+    "input": "Þ",
+    "expected": "Þ"
+  },
+  {
+    "input": "ß",
+    "expected": "ß"
+  },
+  {
+    "input": "à",
+    "expected": "a"
+  },
+  {
+    "input": "á",
+    "expected": "a"
+  },
+  {
+    "input": "â",
+    "expected": "a"
+  },
+  {
+    "input": "ã",
+    "expected": "a"
+  },
+  {
+    "input": "ä",
+    "expected": "a"
+  },
+  {
+    "input": "å",
+    "expected": "a"
+  },
+  {
+    "input": "æ",
+    "expected": "æ"
+  },
+  {
+    "input": "ç",
+    "expected": "c"
+  },
+  {
+    "input": "è",
+    "expected": "e"
+  },
+  {
+    "input": "é",
+    "expected": "e"
+  },
+  {
+    "input": "ê",
+    "expected": "e"
+  },
+  {
+    "input": "ë",
+    "expected": "e"
+  },
+  {
+    "input": "ì",
+    "expected": "i"
+  },
+  {
+    "input": "í",
+    "expected": "i"
+  },
+  {
+    "input": "î",
+    "expected": "i"
+  },
+  {
+    "input": "ï",
+    "expected": "i"
+  },
+  {
+    "input": "ð",
+    "expected": "ð"
+  },
+  {
+    "input": "ñ",
+    "expected": "n"
+  },
+  {
+    "input": "ò",
+    "expected": "o"
+  },
+  {
+    "input": "ó",
+    "expected": "o"
+  },
+  {
+    "input": "ô",
+    "expected": "o"
+  },
+  {
+    "input": "õ",
+    "expected": "o"
+  },
+  {
+    "input": "ö",
+    "expected": "o"
+  },
+  {
+    "input": "÷",
+    "expected": "÷"
+  },
+  {
+    "input": "ø",
+    "expected": "ø"
+  },
+  {
+    "input": "ù",
+    "expected": "u"
+  },
+  {
+    "input": "ú",
+    "expected": "u"
+  },
+  {
+    "input": "û",
+    "expected": "u"
+  },
+  {
+    "input": "ü",
+    "expected": "u"
+  },
+  {
+    "input": "ý",
+    "expected": "y"
+  },
+  {
+    "input": "þ",
+    "expected": "þ"
+  },
+  {
+    "input": "ÿ",
+    "expected": "y"
+  },
+  {
+    "input": "Ā",
+    "expected": "A"
+  },
+  {
+    "input": "ā",
+    "expected": "a"
+  },
+  {
+    "input": "Ă",
+    "expected": "A"
+  },
+  {
+    "input": "ă",
+    "expected": "a"
+  },
+  {
+    "input": "Ą",
+    "expected": "A"
+  },
+  {
+    "input": "ą",
+    "expected": "a"
+  },
+  {
+    "input": "Ć",
+    "expected": "C"
+  },
+  {
+    "input": "ć",
+    "expected": "c"
+  },
+  {
+    "input": "Ĉ",
+    "expected": "C"
+  },
+  {
+    "input": "ĉ",
+    "expected": "c"
+  },
+  {
+    "input": "Ċ",
+    "expected": "C"
+  },
+  {
+    "input": "ċ",
+    "expected": "c"
+  },
+  {
+    "input": "Č",
+    "expected": "C"
+  },
+  {
+    "input": "č",
+    "expected": "c"
+  },
+  {
+    "input": "Ď",
+    "expected": "D"
+  },
+  {
+    "input": "ď",
+    "expected": "d"
+  },
+  {
+    "input": "Đ",
+    "expected": "Đ"
+  },
+  {
+    "input": "đ",
+    "expected": "đ"
+  },
+  {
+    "input": "Ē",
+    "expected": "E"
+  },
+  {
+    "input": "ē",
+    "expected": "e"
+  },
+  {
+    "input": "Ĕ",
+    "expected": "E"
+  },
+  {
+    "input": "ĕ",
+    "expected": "e"
+  },
+  {
+    "input": "Ė",
+    "expected": "E"
+  },
+  {
+    "input": "ė",
+    "expected": "e"
+  },
+  {
+    "input": "Ę",
+    "expected": "E"
+  },
+  {
+    "input": "ę",
+    "expected": "e"
+  },
+  {
+    "input": "Ě",
+    "expected": "E"
+  },
+  {
+    "input": "ě",
+    "expected": "e"
+  },
+  {
+    "input": "Ĝ",
+    "expected": "G"
+  },
+  {
+    "input": "ĝ",
+    "expected": "g"
+  },
+  {
+    "input": "Ğ",
+    "expected": "G"
+  },
+  {
+    "input": "ğ",
+    "expected": "g"
+  },
+  {
+    "input": "Ġ",
+    "expected": "G"
+  },
+  {
+    "input": "ġ",
+    "expected": "g"
+  },
+  {
+    "input": "Ģ",
+    "expected": "G"
+  },
+  {
+    "input": "ģ",
+    "expected": "g"
+  },
+  {
+    "input": "Ĥ",
+    "expected": "H"
+  },
+  {
+    "input": "ĥ",
+    "expected": "h"
+  },
+  {
+    "input": "Ħ",
+    "expected": "Ħ"
+  },
+  {
+    "input": "ħ",
+    "expected": "ħ"
+  },
+  {
+    "input": "Ĩ",
+    "expected": "I"
+  },
+  {
+    "input": "ĩ",
+    "expected": "i"
+  },
+  {
+    "input": "Ī",
+    "expected": "I"
+  },
+  {
+    "input": "ī",
+    "expected": "i"
+  },
+  {
+    "input": "Ĭ",
+    "expected": "I"
+  },
+  {
+    "input": "ĭ",
+    "expected": "i"
+  },
+  {
+    "input": "Į",
+    "expected": "I"
+  },
+  {
+    "input": "į",
+    "expected": "i"
+  },
+  {
+    "input": "İ",
+    "expected": "I"
+  },
+  {
+    "input": "ı",
+    "expected": "ı"
+  },
+  {
+    "input": "Ĳ",
+    "expected": "Ĳ"
+  },
+  {
+    "input": "ĳ",
+    "expected": "ĳ"
+  },
+  {
+    "input": "Ĵ",
+    "expected": "J"
+  },
+  {
+    "input": "ĵ",
+    "expected": "j"
+  },
+  {
+    "input": "Ķ",
+    "expected": "K"
+  },
+  {
+    "input": "ķ",
+    "expected": "k"
+  },
+  {
+    "input": "ĸ",
+    "expected": "ĸ"
+  },
+  {
+    "input": "Ĺ",
+    "expected": "L"
+  },
+  {
+    "input": "ĺ",
+    "expected": "l"
+  },
+  {
+    "input": "Ļ",
+    "expected": "L"
+  },
+  {
+    "input": "ļ",
+    "expected": "l"
+  },
+  {
+    "input": "Ľ",
+    "expected": "L"
+  },
+  {
+    "input": "ľ",
+    "expected": "l"
+  },
+  {
+    "input": "Ŀ",
+    "expected": "Ŀ"
+  },
+  {
+    "input": "ŀ",
+    "expected": "ŀ"
+  },
+  {
+    "input": "Ł",
+    "expected": "Ł"
+  },
+  {
+    "input": "ł",
+    "expected": "ł"
+  },
+  {
+    "input": "Ń",
+    "expected": "N"
+  },
+  {
+    "input": "ń",
+    "expected": "n"
+  },
+  {
+    "input": "Ņ",
+    "expected": "N"
+  },
+  {
+    "input": "ņ",
+    "expected": "n"
+  },
+  {
+    "input": "Ň",
+    "expected": "N"
+  },
+  {
+    "input": "ň",
+    "expected": "n"
+  },
+  {
+    "input": "ŉ",
+    "expected": "ŉ"
+  },
+  {
+    "input": "Ŋ",
+    "expected": "Ŋ"
+  },
+  {
+    "input": "ŋ",
+    "expected": "ŋ"
+  },
+  {
+    "input": "Ō",
+    "expected": "O"
+  },
+  {
+    "input": "ō",
+    "expected": "o"
+  },
+  {
+    "input": "Ŏ",
+    "expected": "O"
+  },
+  {
+    "input": "ŏ",
+    "expected": "o"
+  },
+  {
+    "input": "Ő",
+    "expected": "O"
+  },
+  {
+    "input": "ő",
+    "expected": "o"
+  },
+  {
+    "input": "Œ",
+    "expected": "Œ"
+  },
+  {
+    "input": "œ",
+    "expected": "œ"
+  },
+  {
+    "input": "Ŕ",
+    "expected": "R"
+  },
+  {
+    "input": "ŕ",
+    "expected": "r"
+  },
+  {
+    "input": "Ŗ",
+    "expected": "R"
+  },
+  {
+    "input": "ŗ",
+    "expected": "r"
+  },
+  {
+    "input": "Ř",
+    "expected": "R"
+  },
+  {
+    "input": "ř",
+    "expected": "r"
+  },
+  {
+    "input": "Ś",
+    "expected": "S"
+  },
+  {
+    "input": "ś",
+    "expected": "s"
+  },
+  {
+    "input": "Ŝ",
+    "expected": "S"
+  },
+  {
+    "input": "ŝ",
+    "expected": "s"
+  },
+  {
+    "input": "Ş",
+    "expected": "S"
+  },
+  {
+    "input": "ş",
+    "expected": "s"
+  },
+  {
+    "input": "Š",
+    "expected": "S"
+  },
+  {
+    "input": "š",
+    "expected": "s"
+  },
+  {
+    "input": "Ţ",
+    "expected": "T"
+  },
+  {
+    "input": "ţ",
+    "expected": "t"
+  },
+  {
+    "input": "Ť",
+    "expected": "T"
+  },
+  {
+    "input": "ť",
+    "expected": "t"
+  },
+  {
+    "input": "Ŧ",
+    "expected": "Ŧ"
+  },
+  {
+    "input": "ŧ",
+    "expected": "ŧ"
+  },
+  {
+    "input": "Ũ",
+    "expected": "U"
+  },
+  {
+    "input": "ũ",
+    "expected": "u"
+  },
+  {
+    "input": "Ū",
+    "expected": "U"
+  },
+  {
+    "input": "ū",
+    "expected": "u"
+  },
+  {
+    "input": "Ŭ",
+    "expected": "U"
+  },
+  {
+    "input": "ŭ",
+    "expected": "u"
+  },
+  {
+    "input": "Ů",
+    "expected": "U"
+  },
+  {
+    "input": "ů",
+    "expected": "u"
+  },
+  {
+    "input": "Ű",
+    "expected": "U"
+  },
+  {
+    "input": "ű",
+    "expected": "u"
+  },
+  {
+    "input": "Ų",
+    "expected": "U"
+  },
+  {
+    "input": "ų",
+    "expected": "u"
+  },
+  {
+    "input": "Ŵ",
+    "expected": "W"
+  },
+  {
+    "input": "ŵ",
+    "expected": "w"
+  },
+  {
+    "input": "Ŷ",
+    "expected": "Y"
+  },
+  {
+    "input": "ŷ",
+    "expected": "y"
+  },
+  {
+    "input": "Ÿ",
+    "expected": "Y"
+  },
+  {
+    "input": "Ź",
+    "expected": "Z"
+  },
+  {
+    "input": "ź",
+    "expected": "z"
+  },
+  {
+    "input": "Ż",
+    "expected": "Z"
+  },
+  {
+    "input": "ż",
+    "expected": "z"
+  },
+  {
+    "input": "Ž",
+    "expected": "Z"
+  },
+  {
+    "input": "ž",
+    "expected": "z"
+  },
+  {
+    "input": "ſ",
+    "expected": "ſ"
+  },
+  {
+    "input": "ƀ",
+    "expected": "ƀ"
+  },
+  {
+    "input": "Ɓ",
+    "expected": "Ɓ"
+  },
+  {
+    "input": "Ƃ",
+    "expected": "Ƃ"
+  },
+  {
+    "input": "ƃ",
+    "expected": "ƃ"
+  },
+  {
+    "input": "Ƅ",
+    "expected": "Ƅ"
+  },
+  {
+    "input": "ƅ",
+    "expected": "ƅ"
+  },
+  {
+    "input": "Ɔ",
+    "expected": "Ɔ"
+  },
+  {
+    "input": "Ƈ",
+    "expected": "Ƈ"
+  },
+  {
+    "input": "ƈ",
+    "expected": "ƈ"
+  },
+  {
+    "input": "Ɖ",
+    "expected": "Ɖ"
+  },
+  {
+    "input": "Ɗ",
+    "expected": "Ɗ"
+  },
+  {
+    "input": "Ƌ",
+    "expected": "Ƌ"
+  },
+  {
+    "input": "ƌ",
+    "expected": "ƌ"
+  },
+  {
+    "input": "ƍ",
+    "expected": "ƍ"
+  },
+  {
+    "input": "Ǝ",
+    "expected": "Ǝ"
+  },
+  {
+    "input": "Ə",
+    "expected": "Ə"
+  },
+  {
+    "input": "Ɛ",
+    "expected": "Ɛ"
+  },
+  {
+    "input": "Ƒ",
+    "expected": "Ƒ"
+  },
+  {
+    "input": "ƒ",
+    "expected": "ƒ"
+  },
+  {
+    "input": "Ɠ",
+    "expected": "Ɠ"
+  },
+  {
+    "input": "Ɣ",
+    "expected": "Ɣ"
+  },
+  {
+    "input": "ƕ",
+    "expected": "ƕ"
+  },
+  {
+    "input": "Ɩ",
+    "expected": "Ɩ"
+  },
+  {
+    "input": "Ɨ",
+    "expected": "Ɨ"
+  },
+  {
+    "input": "Ƙ",
+    "expected": "Ƙ"
+  },
+  {
+    "input": "ƙ",
+    "expected": "ƙ"
+  },
+  {
+    "input": "ƚ",
+    "expected": "ƚ"
+  },
+  {
+    "input": "ƛ",
+    "expected": "ƛ"
+  },
+  {
+    "input": "Ɯ",
+    "expected": "Ɯ"
+  },
+  {
+    "input": "Ɲ",
+    "expected": "Ɲ"
+  },
+  {
+    "input": "ƞ",
+    "expected": "ƞ"
+  },
+  {
+    "input": "Ɵ",
+    "expected": "Ɵ"
+  },
+  {
+    "input": "Ơ",
+    "expected": "O"
+  },
+  {
+    "input": "ơ",
+    "expected": "o"
+  },
+  {
+    "input": "Ƣ",
+    "expected": "Ƣ"
+  },
+  {
+    "input": "ƣ",
+    "expected": "ƣ"
+  },
+  {
+    "input": "Ƥ",
+    "expected": "Ƥ"
+  },
+  {
+    "input": "ƥ",
+    "expected": "ƥ"
+  },
+  {
+    "input": "Ʀ",
+    "expected": "Ʀ"
+  },
+  {
+    "input": "Ƨ",
+    "expected": "Ƨ"
+  },
+  {
+    "input": "ƨ",
+    "expected": "ƨ"
+  },
+  {
+    "input": "Ʃ",
+    "expected": "Ʃ"
+  },
+  {
+    "input": "ƪ",
+    "expected": "ƪ"
+  },
+  {
+    "input": "ƫ",
+    "expected": "ƫ"
+  },
+  {
+    "input": "Ƭ",
+    "expected": "Ƭ"
+  },
+  {
+    "input": "ƭ",
+    "expected": "ƭ"
+  },
+  {
+    "input": "Ʈ",
+    "expected": "Ʈ"
+  },
+  {
+    "input": "Ư",
+    "expected": "U"
+  },
+  {
+    "input": "ư",
+    "expected": "u"
+  },
+  {
+    "input": "Ʊ",
+    "expected": "Ʊ"
+  },
+  {
+    "input": "Ʋ",
+    "expected": "Ʋ"
+  },
+  {
+    "input": "Ƴ",
+    "expected": "Ƴ"
+  },
+  {
+    "input": "ƴ",
+    "expected": "ƴ"
+  },
+  {
+    "input": "Ƶ",
+    "expected": "Ƶ"
+  },
+  {
+    "input": "ƶ",
+    "expected": "ƶ"
+  },
+  {
+    "input": "Ʒ",
+    "expected": "Ʒ"
+  },
+  {
+    "input": "Ƹ",
+    "expected": "Ƹ"
+  },
+  {
+    "input": "ƹ",
+    "expected": "ƹ"
+  },
+  {
+    "input": "ƺ",
+    "expected": "ƺ"
+  },
+  {
+    "input": "ƻ",
+    "expected": "ƻ"
+  },
+  {
+    "input": "Ƽ",
+    "expected": "Ƽ"
+  },
+  {
+    "input": "ƽ",
+    "expected": "ƽ"
+  },
+  {
+    "input": "ƾ",
+    "expected": "ƾ"
+  },
+  {
+    "input": "ƿ",
+    "expected": "ƿ"
+  },
+  {
+    "input": "ǀ",
+    "expected": "ǀ"
+  },
+  {
+    "input": "ǁ",
+    "expected": "ǁ"
+  },
+  {
+    "input": "ǂ",
+    "expected": "ǂ"
+  },
+  {
+    "input": "ǃ",
+    "expected": "ǃ"
+  },
+  {
+    "input": "Ǆ",
+    "expected": "Ǆ"
+  },
+  {
+    "input": "ǅ",
+    "expected": "ǅ"
+  },
+  {
+    "input": "ǆ",
+    "expected": "ǆ"
+  },
+  {
+    "input": "Ǉ",
+    "expected": "Ǉ"
+  },
+  {
+    "input": "ǈ",
+    "expected": "ǈ"
+  },
+  {
+    "input": "ǉ",
+    "expected": "ǉ"
+  },
+  {
+    "input": "Ǌ",
+    "expected": "Ǌ"
+  },
+  {
+    "input": "ǋ",
+    "expected": "ǋ"
+  },
+  {
+    "input": "ǌ",
+    "expected": "ǌ"
+  },
+  {
+    "input": "Ǎ",
+    "expected": "A"
+  },
+  {
+    "input": "ǎ",
+    "expected": "a"
+  },
+  {
+    "input": "Ǐ",
+    "expected": "I"
+  },
+  {
+    "input": "ǐ",
+    "expected": "i"
+  },
+  {
+    "input": "Ǒ",
+    "expected": "O"
+  },
+  {
+    "input": "ǒ",
+    "expected": "o"
+  },
+  {
+    "input": "Ǔ",
+    "expected": "U"
+  },
+  {
+    "input": "ǔ",
+    "expected": "u"
+  },
+  {
+    "input": "Ǖ",
+    "expected": "U"
+  },
+  {
+    "input": "ǖ",
+    "expected": "u"
+  },
+  {
+    "input": "Ǘ",
+    "expected": "U"
+  },
+  {
+    "input": "ǘ",
+    "expected": "u"
+  },
+  {
+    "input": "Ǚ",
+    "expected": "U"
+  },
+  {
+    "input": "ǚ",
+    "expected": "u"
+  },
+  {
+    "input": "Ǜ",
+    "expected": "U"
+  },
+  {
+    "input": "ǜ",
+    "expected": "u"
+  },
+  {
+    "input": "ǝ",
+    "expected": "ǝ"
+  },
+  {
+    "input": "Ǟ",
+    "expected": "A"
+  },
+  {
+    "input": "ǟ",
+    "expected": "a"
+  },
+  {
+    "input": "Ǡ",
+    "expected": "A"
+  },
+  {
+    "input": "ǡ",
+    "expected": "a"
+  },
+  {
+    "input": "Ǣ",
+    "expected": "Æ"
+  },
+  {
+    "input": "ǣ",
+    "expected": "æ"
+  },
+  {
+    "input": "Ǥ",
+    "expected": "Ǥ"
+  },
+  {
+    "input": "ǥ",
+    "expected": "ǥ"
+  },
+  {
+    "input": "Ǧ",
+    "expected": "G"
+  },
+  {
+    "input": "ǧ",
+    "expected": "g"
+  },
+  {
+    "input": "Ǩ",
+    "expected": "K"
+  },
+  {
+    "input": "ǩ",
+    "expected": "k"
+  },
+  {
+    "input": "Ǫ",
+    "expected": "O"
+  },
+  {
+    "input": "ǫ",
+    "expected": "o"
+  },
+  {
+    "input": "Ǭ",
+    "expected": "O"
+  },
+  {
+    "input": "ǭ",
+    "expected": "o"
+  },
+  {
+    "input": "Ǯ",
+    "expected": "Ʒ"
+  },
+  {
+    "input": "ǯ",
+    "expected": "ʒ"
+  },
+  {
+    "input": "ǰ",
+    "expected": "j"
+  },
+  {
+    "input": "Ǳ",
+    "expected": "Ǳ"
+  },
+  {
+    "input": "ǲ",
+    "expected": "ǲ"
+  },
+  {
+    "input": "ǳ",
+    "expected": "ǳ"
+  },
+  {
+    "input": "Ǵ",
+    "expected": "G"
+  },
+  {
+    "input": "ǵ",
+    "expected": "g"
+  },
+  {
+    "input": "Ƕ",
+    "expected": "Ƕ"
+  },
+  {
+    "input": "Ƿ",
+    "expected": "Ƿ"
+  },
+  {
+    "input": "Ǹ",
+    "expected": "N"
+  },
+  {
+    "input": "ǹ",
+    "expected": "n"
+  },
+  {
+    "input": "Ǻ",
+    "expected": "A"
+  },
+  {
+    "input": "ǻ",
+    "expected": "a"
+  },
+  {
+    "input": "Ǽ",
+    "expected": "Æ"
+  },
+  {
+    "input": "ǽ",
+    "expected": "æ"
+  },
+  {
+    "input": "Ǿ",
+    "expected": "Ø"
+  },
+  {
+    "input": "ǿ",
+    "expected": "ø"
+  },
+  {
+    "input": "Ȁ",
+    "expected": "A"
+  },
+  {
+    "input": "ȁ",
+    "expected": "a"
+  },
+  {
+    "input": "Ȃ",
+    "expected": "A"
+  },
+  {
+    "input": "ȃ",
+    "expected": "a"
+  },
+  {
+    "input": "Ȅ",
+    "expected": "E"
+  },
+  {
+    "input": "ȅ",
+    "expected": "e"
+  },
+  {
+    "input": "Ȇ",
+    "expected": "E"
+  },
+  {
+    "input": "ȇ",
+    "expected": "e"
+  },
+  {
+    "input": "Ȉ",
+    "expected": "I"
+  },
+  {
+    "input": "ȉ",
+    "expected": "i"
+  },
+  {
+    "input": "Ȋ",
+    "expected": "I"
+  },
+  {
+    "input": "ȋ",
+    "expected": "i"
+  },
+  {
+    "input": "Ȍ",
+    "expected": "O"
+  },
+  {
+    "input": "ȍ",
+    "expected": "o"
+  },
+  {
+    "input": "Ȏ",
+    "expected": "O"
+  },
+  {
+    "input": "ȏ",
+    "expected": "o"
+  },
+  {
+    "input": "Ȑ",
+    "expected": "R"
+  },
+  {
+    "input": "ȑ",
+    "expected": "r"
+  },
+  {
+    "input": "Ȓ",
+    "expected": "R"
+  },
+  {
+    "input": "ȓ",
+    "expected": "r"
+  },
+  {
+    "input": "Ȕ",
+    "expected": "U"
+  },
+  {
+    "input": "ȕ",
+    "expected": "u"
+  },
+  {
+    "input": "Ȗ",
+    "expected": "U"
+  },
+  {
+    "input": "ȗ",
+    "expected": "u"
+  },
+  {
+    "input": "Ș",
+    "expected": "S"
+  },
+  {
+    "input": "ș",
+    "expected": "s"
+  },
+  {
+    "input": "Ț",
+    "expected": "T"
+  },
+  {
+    "input": "ț",
+    "expected": "t"
+  },
+  {
+    "input": "Ȝ",
+    "expected": "Ȝ"
+  },
+  {
+    "input": "ȝ",
+    "expected": "ȝ"
+  },
+  {
+    "input": "Ȟ",
+    "expected": "H"
+  },
+  {
+    "input": "ȟ",
+    "expected": "h"
+  },
+  {
+    "input": "Ƞ",
+    "expected": "Ƞ"
+  },
+  {
+    "input": "ȡ",
+    "expected": "ȡ"
+  },
+  {
+    "input": "Ȣ",
+    "expected": "Ȣ"
+  },
+  {
+    "input": "ȣ",
+    "expected": "ȣ"
+  },
+  {
+    "input": "Ȥ",
+    "expected": "Ȥ"
+  },
+  {
+    "input": "ȥ",
+    "expected": "ȥ"
+  },
+  {
+    "input": "Ȧ",
+    "expected": "A"
+  },
+  {
+    "input": "ȧ",
+    "expected": "a"
+  },
+  {
+    "input": "Ȩ",
+    "expected": "E"
+  },
+  {
+    "input": "ȩ",
+    "expected": "e"
+  },
+  {
+    "input": "Ȫ",
+    "expected": "O"
+  },
+  {
+    "input": "ȫ",
+    "expected": "o"
+  },
+  {
+    "input": "Ȭ",
+    "expected": "O"
+  },
+  {
+    "input": "ȭ",
+    "expected": "o"
+  },
+  {
+    "input": "Ȯ",
+    "expected": "O"
+  },
+  {
+    "input": "ȯ",
+    "expected": "o"
+  },
+  {
+    "input": "Ȱ",
+    "expected": "O"
+  },
+  {
+    "input": "ȱ",
+    "expected": "o"
+  },
+  {
+    "input": "Ȳ",
+    "expected": "Y"
+  },
+  {
+    "input": "ȳ",
+    "expected": "y"
+  },
+  {
+    "input": "ȴ",
+    "expected": "ȴ"
+  },
+  {
+    "input": "ȵ",
+    "expected": "ȵ"
+  },
+  {
+    "input": "ȶ",
+    "expected": "ȶ"
+  },
+  {
+    "input": "ȷ",
+    "expected": "ȷ"
+  },
+  {
+    "input": "ȸ",
+    "expected": "ȸ"
+  },
+  {
+    "input": "ȹ",
+    "expected": "ȹ"
+  },
+  {
+    "input": "Ⱥ",
+    "expected": "Ⱥ"
+  },
+  {
+    "input": "Ȼ",
+    "expected": "Ȼ"
+  },
+  {
+    "input": "ȼ",
+    "expected": "ȼ"
+  },
+  {
+    "input": "Ƚ",
+    "expected": "Ƚ"
+  },
+  {
+    "input": "Ⱦ",
+    "expected": "Ⱦ"
+  },
+  {
+    "input": "ȿ",
+    "expected": "ȿ"
+  },
+  {
+    "input": "ɀ",
+    "expected": "ɀ"
+  },
+  {
+    "input": "Ɂ",
+    "expected": "Ɂ"
+  },
+  {
+    "input": "ɂ",
+    "expected": "ɂ"
+  },
+  {
+    "input": "Ƀ",
+    "expected": "Ƀ"
+  },
+  {
+    "input": "Ʉ",
+    "expected": "Ʉ"
+  },
+  {
+    "input": "Ʌ",
+    "expected": "Ʌ"
+  },
+  {
+    "input": "Ɇ",
+    "expected": "Ɇ"
+  },
+  {
+    "input": "ɇ",
+    "expected": "ɇ"
+  },
+  {
+    "input": "Ɉ",
+    "expected": "Ɉ"
+  },
+  {
+    "input": "ɉ",
+    "expected": "ɉ"
+  },
+  {
+    "input": "Ɋ",
+    "expected": "Ɋ"
+  },
+  {
+    "input": "ɋ",
+    "expected": "ɋ"
+  },
+  {
+    "input": "Ɍ",
+    "expected": "Ɍ"
+  },
+  {
+    "input": "ɍ",
+    "expected": "ɍ"
+  },
+  {
+    "input": "Ɏ",
+    "expected": "Ɏ"
+  },
+  {
+    "input": "ɏ",
+    "expected": "ɏ"
+  },
+  {
+    "input": "Ḁ",
+    "expected": "A"
+  },
+  {
+    "input": "ḁ",
+    "expected": "a"
+  },
+  {
+    "input": "Ḃ",
+    "expected": "B"
+  },
+  {
+    "input": "ḃ",
+    "expected": "b"
+  },
+  {
+    "input": "Ḅ",
+    "expected": "B"
+  },
+  {
+    "input": "ḅ",
+    "expected": "b"
+  },
+  {
+    "input": "Ḇ",
+    "expected": "B"
+  },
+  {
+    "input": "ḇ",
+    "expected": "b"
+  },
+  {
+    "input": "Ḉ",
+    "expected": "C"
+  },
+  {
+    "input": "ḉ",
+    "expected": "c"
+  },
+  {
+    "input": "Ḋ",
+    "expected": "D"
+  },
+  {
+    "input": "ḋ",
+    "expected": "d"
+  },
+  {
+    "input": "Ḍ",
+    "expected": "D"
+  },
+  {
+    "input": "ḍ",
+    "expected": "d"
+  },
+  {
+    "input": "Ḏ",
+    "expected": "D"
+  },
+  {
+    "input": "ḏ",
+    "expected": "d"
+  },
+  {
+    "input": "Ḑ",
+    "expected": "D"
+  },
+  {
+    "input": "ḑ",
+    "expected": "d"
+  },
+  {
+    "input": "Ḓ",
+    "expected": "D"
+  },
+  {
+    "input": "ḓ",
+    "expected": "d"
+  },
+  {
+    "input": "Ḕ",
+    "expected": "E"
+  },
+  {
+    "input": "ḕ",
+    "expected": "e"
+  },
+  {
+    "input": "Ḗ",
+    "expected": "E"
+  },
+  {
+    "input": "ḗ",
+    "expected": "e"
+  },
+  {
+    "input": "Ḙ",
+    "expected": "E"
+  },
+  {
+    "input": "ḙ",
+    "expected": "e"
+  },
+  {
+    "input": "Ḛ",
+    "expected": "E"
+  },
+  {
+    "input": "ḛ",
+    "expected": "e"
+  },
+  {
+    "input": "Ḝ",
+    "expected": "E"
+  },
+  {
+    "input": "ḝ",
+    "expected": "e"
+  },
+  {
+    "input": "Ḟ",
+    "expected": "F"
+  },
+  {
+    "input": "ḟ",
+    "expected": "f"
+  },
+  {
+    "input": "Ḡ",
+    "expected": "G"
+  },
+  {
+    "input": "ḡ",
+    "expected": "g"
+  },
+  {
+    "input": "Ḣ",
+    "expected": "H"
+  },
+  {
+    "input": "ḣ",
+    "expected": "h"
+  },
+  {
+    "input": "Ḥ",
+    "expected": "H"
+  },
+  {
+    "input": "ḥ",
+    "expected": "h"
+  },
+  {
+    "input": "Ḧ",
+    "expected": "H"
+  },
+  {
+    "input": "ḧ",
+    "expected": "h"
+  },
+  {
+    "input": "Ḩ",
+    "expected": "H"
+  },
+  {
+    "input": "ḩ",
+    "expected": "h"
+  },
+  {
+    "input": "Ḫ",
+    "expected": "H"
+  },
+  {
+    "input": "ḫ",
+    "expected": "h"
+  },
+  {
+    "input": "Ḭ",
+    "expected": "I"
+  },
+  {
+    "input": "ḭ",
+    "expected": "i"
+  },
+  {
+    "input": "Ḯ",
+    "expected": "I"
+  },
+  {
+    "input": "ḯ",
+    "expected": "i"
+  },
+  {
+    "input": "Ḱ",
+    "expected": "K"
+  },
+  {
+    "input": "ḱ",
+    "expected": "k"
+  },
+  {
+    "input": "Ḳ",
+    "expected": "K"
+  },
+  {
+    "input": "ḳ",
+    "expected": "k"
+  },
+  {
+    "input": "Ḵ",
+    "expected": "K"
+  },
+  {
+    "input": "ḵ",
+    "expected": "k"
+  },
+  {
+    "input": "Ḷ",
+    "expected": "L"
+  },
+  {
+    "input": "ḷ",
+    "expected": "l"
+  },
+  {
+    "input": "Ḹ",
+    "expected": "L"
+  },
+  {
+    "input": "ḹ",
+    "expected": "l"
+  },
+  {
+    "input": "Ḻ",
+    "expected": "L"
+  },
+  {
+    "input": "ḻ",
+    "expected": "l"
+  },
+  {
+    "input": "Ḽ",
+    "expected": "L"
+  },
+  {
+    "input": "ḽ",
+    "expected": "l"
+  },
+  {
+    "input": "Ḿ",
+    "expected": "M"
+  },
+  {
+    "input": "ḿ",
+    "expected": "m"
+  },
+  {
+    "input": "Ṁ",
+    "expected": "M"
+  },
+  {
+    "input": "ṁ",
+    "expected": "m"
+  },
+  {
+    "input": "Ṃ",
+    "expected": "M"
+  },
+  {
+    "input": "ṃ",
+    "expected": "m"
+  },
+  {
+    "input": "Ṅ",
+    "expected": "N"
+  },
+  {
+    "input": "ṅ",
+    "expected": "n"
+  },
+  {
+    "input": "Ṇ",
+    "expected": "N"
+  },
+  {
+    "input": "ṇ",
+    "expected": "n"
+  },
+  {
+    "input": "Ṉ",
+    "expected": "N"
+  },
+  {
+    "input": "ṉ",
+    "expected": "n"
+  },
+  {
+    "input": "Ṋ",
+    "expected": "N"
+  },
+  {
+    "input": "ṋ",
+    "expected": "n"
+  },
+  {
+    "input": "Ṍ",
+    "expected": "O"
+  },
+  {
+    "input": "ṍ",
+    "expected": "o"
+  },
+  {
+    "input": "Ṏ",
+    "expected": "O"
+  },
+  {
+    "input": "ṏ",
+    "expected": "o"
+  },
+  {
+    "input": "Ṑ",
+    "expected": "O"
+  },
+  {
+    "input": "ṑ",
+    "expected": "o"
+  },
+  {
+    "input": "Ṓ",
+    "expected": "O"
+  },
+  {
+    "input": "ṓ",
+    "expected": "o"
+  },
+  {
+    "input": "Ṕ",
+    "expected": "P"
+  },
+  {
+    "input": "ṕ",
+    "expected": "p"
+  },
+  {
+    "input": "Ṗ",
+    "expected": "P"
+  },
+  {
+    "input": "ṗ",
+    "expected": "p"
+  },
+  {
+    "input": "Ṙ",
+    "expected": "R"
+  },
+  {
+    "input": "ṙ",
+    "expected": "r"
+  },
+  {
+    "input": "Ṛ",
+    "expected": "R"
+  },
+  {
+    "input": "ṛ",
+    "expected": "r"
+  },
+  {
+    "input": "Ṝ",
+    "expected": "R"
+  },
+  {
+    "input": "ṝ",
+    "expected": "r"
+  },
+  {
+    "input": "Ṟ",
+    "expected": "R"
+  },
+  {
+    "input": "ṟ",
+    "expected": "r"
+  },
+  {
+    "input": "Ṡ",
+    "expected": "S"
+  },
+  {
+    "input": "ṡ",
+    "expected": "s"
+  },
+  {
+    "input": "Ṣ",
+    "expected": "S"
+  },
+  {
+    "input": "ṣ",
+    "expected": "s"
+  },
+  {
+    "input": "Ṥ",
+    "expected": "S"
+  },
+  {
+    "input": "ṥ",
+    "expected": "s"
+  },
+  {
+    "input": "Ṧ",
+    "expected": "S"
+  },
+  {
+    "input": "ṧ",
+    "expected": "s"
+  },
+  {
+    "input": "Ṩ",
+    "expected": "S"
+  },
+  {
+    "input": "ṩ",
+    "expected": "s"
+  },
+  {
+    "input": "Ṫ",
+    "expected": "T"
+  },
+  {
+    "input": "ṫ",
+    "expected": "t"
+  },
+  {
+    "input": "Ṭ",
+    "expected": "T"
+  },
+  {
+    "input": "ṭ",
+    "expected": "t"
+  },
+  {
+    "input": "Ṯ",
+    "expected": "T"
+  },
+  {
+    "input": "ṯ",
+    "expected": "t"
+  },
+  {
+    "input": "Ṱ",
+    "expected": "T"
+  },
+  {
+    "input": "ṱ",
+    "expected": "t"
+  },
+  {
+    "input": "Ṳ",
+    "expected": "U"
+  },
+  {
+    "input": "ṳ",
+    "expected": "u"
+  },
+  {
+    "input": "Ṵ",
+    "expected": "U"
+  },
+  {
+    "input": "ṵ",
+    "expected": "u"
+  },
+  {
+    "input": "Ṷ",
+    "expected": "U"
+  },
+  {
+    "input": "ṷ",
+    "expected": "u"
+  },
+  {
+    "input": "Ṹ",
+    "expected": "U"
+  },
+  {
+    "input": "ṹ",
+    "expected": "u"
+  },
+  {
+    "input": "Ṻ",
+    "expected": "U"
+  },
+  {
+    "input": "ṻ",
+    "expected": "u"
+  },
+  {
+    "input": "Ṽ",
+    "expected": "V"
+  },
+  {
+    "input": "ṽ",
+    "expected": "v"
+  },
+  {
+    "input": "Ṿ",
+    "expected": "V"
+  },
+  {
+    "input": "ṿ",
+    "expected": "v"
+  },
+  {
+    "input": "Ẁ",
+    "expected": "W"
+  },
+  {
+    "input": "ẁ",
+    "expected": "w"
+  },
+  {
+    "input": "Ẃ",
+    "expected": "W"
+  },
+  {
+    "input": "ẃ",
+    "expected": "w"
+  },
+  {
+    "input": "Ẅ",
+    "expected": "W"
+  },
+  {
+    "input": "ẅ",
+    "expected": "w"
+  },
+  {
+    "input": "Ẇ",
+    "expected": "W"
+  },
+  {
+    "input": "ẇ",
+    "expected": "w"
+  },
+  {
+    "input": "Ẉ",
+    "expected": "W"
+  },
+  {
+    "input": "ẉ",
+    "expected": "w"
+  },
+  {
+    "input": "Ẋ",
+    "expected": "X"
+  },
+  {
+    "input": "ẋ",
+    "expected": "x"
+  },
+  {
+    "input": "Ẍ",
+    "expected": "X"
+  },
+  {
+    "input": "ẍ",
+    "expected": "x"
+  },
+  {
+    "input": "Ẏ",
+    "expected": "Y"
+  },
+  {
+    "input": "ẏ",
+    "expected": "y"
+  },
+  {
+    "input": "Ẑ",
+    "expected": "Z"
+  },
+  {
+    "input": "ẑ",
+    "expected": "z"
+  },
+  {
+    "input": "Ẓ",
+    "expected": "Z"
+  },
+  {
+    "input": "ẓ",
+    "expected": "z"
+  },
+  {
+    "input": "Ẕ",
+    "expected": "Z"
+  },
+  {
+    "input": "ẕ",
+    "expected": "z"
+  },
+  {
+    "input": "ẖ",
+    "expected": "h"
+  },
+  {
+    "input": "ẗ",
+    "expected": "t"
+  },
+  {
+    "input": "ẘ",
+    "expected": "w"
+  },
+  {
+    "input": "ẙ",
+    "expected": "y"
+  },
+  {
+    "input": "ẚ",
+    "expected": "ẚ"
+  },
+  {
+    "input": "ẛ",
+    "expected": "ſ"
+  },
+  {
+    "input": "ẜ",
+    "expected": "ẜ"
+  },
+  {
+    "input": "ẝ",
+    "expected": "ẝ"
+  },
+  {
+    "input": "ẞ",
+    "expected": "ẞ"
+  },
+  {
+    "input": "ẟ",
+    "expected": "ẟ"
+  },
+  {
+    "input": "Ạ",
+    "expected": "A"
+  },
+  {
+    "input": "ạ",
+    "expected": "a"
+  },
+  {
+    "input": "Ả",
+    "expected": "A"
+  },
+  {
+    "input": "ả",
+    "expected": "a"
+  },
+  {
+    "input": "Ấ",
+    "expected": "A"
+  },
+  {
+    "input": "ấ",
+    "expected": "a"
+  },
+  {
+    "input": "Ầ",
+    "expected": "A"
+  },
+  {
+    "input": "ầ",
+    "expected": "a"
+  },
+  {
+    "input": "Ẩ",
+    "expected": "A"
+  },
+  {
+    "input": "ẩ",
+    "expected": "a"
+  },
+  {
+    "input": "Ẫ",
+    "expected": "A"
+  },
+  {
+    "input": "ẫ",
+    "expected": "a"
+  },
+  {
+    "input": "Ậ",
+    "expected": "A"
+  },
+  {
+    "input": "ậ",
+    "expected": "a"
+  },
+  {
+    "input": "Ắ",
+    "expected": "A"
+  },
+  {
+    "input": "ắ",
+    "expected": "a"
+  },
+  {
+    "input": "Ằ",
+    "expected": "A"
+  },
+  {
+    "input": "ằ",
+    "expected": "a"
+  },
+  {
+    "input": "Ẳ",
+    "expected": "A"
+  },
+  {
+    "input": "ẳ",
+    "expected": "a"
+  },
+  {
+    "input": "Ẵ",
+    "expected": "A"
+  },
+  {
+    "input": "ẵ",
+    "expected": "a"
+  },
+  {
+    "input": "Ặ",
+    "expected": "A"
+  },
+  {
+    "input": "ặ",
+    "expected": "a"
+  },
+  {
+    "input": "Ẹ",
+    "expected": "E"
+  },
+  {
+    "input": "ẹ",
+    "expected": "e"
+  },
+  {
+    "input": "Ẻ",
+    "expected": "E"
+  },
+  {
+    "input": "ẻ",
+    "expected": "e"
+  },
+  {
+    "input": "Ẽ",
+    "expected": "E"
+  },
+  {
+    "input": "ẽ",
+    "expected": "e"
+  },
+  {
+    "input": "Ế",
+    "expected": "E"
+  },
+  {
+    "input": "ế",
+    "expected": "e"
+  },
+  {
+    "input": "Ề",
+    "expected": "E"
+  },
+  {
+    "input": "ề",
+    "expected": "e"
+  },
+  {
+    "input": "Ể",
+    "expected": "E"
+  },
+  {
+    "input": "ể",
+    "expected": "e"
+  },
+  {
+    "input": "Ễ",
+    "expected": "E"
+  },
+  {
+    "input": "ễ",
+    "expected": "e"
+  },
+  {
+    "input": "Ệ",
+    "expected": "E"
+  },
+  {
+    "input": "ệ",
+    "expected": "e"
+  },
+  {
+    "input": "Ỉ",
+    "expected": "I"
+  },
+  {
+    "input": "ỉ",
+    "expected": "i"
+  },
+  {
+    "input": "Ị",
+    "expected": "I"
+  },
+  {
+    "input": "ị",
+    "expected": "i"
+  },
+  {
+    "input": "Ọ",
+    "expected": "O"
+  },
+  {
+    "input": "ọ",
+    "expected": "o"
+  },
+  {
+    "input": "Ỏ",
+    "expected": "O"
+  },
+  {
+    "input": "ỏ",
+    "expected": "o"
+  },
+  {
+    "input": "Ố",
+    "expected": "O"
+  },
+  {
+    "input": "ố",
+    "expected": "o"
+  },
+  {
+    "input": "Ồ",
+    "expected": "O"
+  },
+  {
+    "input": "ồ",
+    "expected": "o"
+  },
+  {
+    "input": "Ổ",
+    "expected": "O"
+  },
+  {
+    "input": "ổ",
+    "expected": "o"
+  },
+  {
+    "input": "Ỗ",
+    "expected": "O"
+  },
+  {
+    "input": "ỗ",
+    "expected": "o"
+  },
+  {
+    "input": "Ộ",
+    "expected": "O"
+  },
+  {
+    "input": "ộ",
+    "expected": "o"
+  },
+  {
+    "input": "Ớ",
+    "expected": "O"
+  },
+  {
+    "input": "ớ",
+    "expected": "o"
+  },
+  {
+    "input": "Ờ",
+    "expected": "O"
+  },
+  {
+    "input": "ờ",
+    "expected": "o"
+  },
+  {
+    "input": "Ở",
+    "expected": "O"
+  },
+  {
+    "input": "ở",
+    "expected": "o"
+  },
+  {
+    "input": "Ỡ",
+    "expected": "O"
+  },
+  {
+    "input": "ỡ",
+    "expected": "o"
+  },
+  {
+    "input": "Ợ",
+    "expected": "O"
+  },
+  {
+    "input": "ợ",
+    "expected": "o"
+  },
+  {
+    "input": "Ụ",
+    "expected": "U"
+  },
+  {
+    "input": "ụ",
+    "expected": "u"
+  },
+  {
+    "input": "Ủ",
+    "expected": "U"
+  },
+  {
+    "input": "ủ",
+    "expected": "u"
+  },
+  {
+    "input": "Ứ",
+    "expected": "U"
+  },
+  {
+    "input": "ứ",
+    "expected": "u"
+  },
+  {
+    "input": "Ừ",
+    "expected": "U"
+  },
+  {
+    "input": "ừ",
+    "expected": "u"
+  },
+  {
+    "input": "Ử",
+    "expected": "U"
+  },
+  {
+    "input": "ử",
+    "expected": "u"
+  },
+  {
+    "input": "Ữ",
+    "expected": "U"
+  },
+  {
+    "input": "ữ",
+    "expected": "u"
+  },
+  {
+    "input": "Ự",
+    "expected": "U"
+  },
+  {
+    "input": "ự",
+    "expected": "u"
+  },
+  {
+    "input": "Ỳ",
+    "expected": "Y"
+  },
+  {
+    "input": "ỳ",
+    "expected": "y"
+  },
+  {
+    "input": "Ỵ",
+    "expected": "Y"
+  },
+  {
+    "input": "ỵ",
+    "expected": "y"
+  },
+  {
+    "input": "Ỷ",
+    "expected": "Y"
+  },
+  {
+    "input": "ỷ",
+    "expected": "y"
+  },
+  {
+    "input": "Ỹ",
+    "expected": "Y"
+  },
+  {
+    "input": "ỹ",
+    "expected": "y"
+  },
+  {
+    "input": "Ỻ",
+    "expected": "Ỻ"
+  },
+  {
+    "input": "ỻ",
+    "expected": "ỻ"
+  },
+  {
+    "input": "Ỽ",
+    "expected": "Ỽ"
+  },
+  {
+    "input": "ỽ",
+    "expected": "ỽ"
+  },
+  {
+    "input": "Ỿ",
+    "expected": "Ỿ"
+  },
+  {
+    "input": "ỿ",
+    "expected": "ỿ"
+  }
+]

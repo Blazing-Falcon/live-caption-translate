@@ -120,6 +120,8 @@ target\release\lt-cli.exe screen testdata\screen\article@1.png --server .deps\ll
 
 It prints a table of block, Chinese, English and milliseconds. The JSON file has the `lines` the recognizer found, every `ScreenEvent` in `events` with `t_ms` since the job started, `ocr_load_ms` and `server_ms`. `--models` (or `LT_MODELS_DIR`) and `--server` (or `LT_LLAMA_SERVER`) select the model folder and the server. `--no-translate` stops after `blocks`. `--threads` sets the recognizer threads (default: half the logical CPUs, from 1 to 4). `--out` defaults to `out/screen.json`.
 
+Recognized lines include a `quad` of four source-pixel points and `char_scores` for the kept recognition steps. The job derives script, glyph heights and ink height from these lines, folds Latin accents, removes isolated icon ideographs and rejects misshapen detections before grouping.
+
 ### Regenerate the screen fixtures
 
 Do these only when the thing they record changes on purpose, in this order, and say so in the commit body. Then run `cargo test -p lt-core --test screen_group` and `npm --prefix app/ui run e2e -- screen`.

@@ -1,8 +1,10 @@
 //! One screen job: read the text, group it, translate each block.
 
-use super::{blocks, ImageView, ScreenEvent};
+use super::{blocks, filters, ink, line::RawLine, ImageView, ScreenEvent};
 use crate::{
-    engines::{TextRecognizer, TranslateRequest, TranslationControl, Translator, REQUEST_TIMEOUT},
+    engines::{
+        TextLine, TextRecognizer, TranslateRequest, TranslationControl, Translator, REQUEST_TIMEOUT,
+    },
     error::Result,
     types::UtteranceId,
 };
@@ -69,6 +71,18 @@ pub fn run_job(
     if cancelled() {
         return;
     }
+    let raw: Vec<RawLine> = lines.iter().map(RawLine::from).collect();
+    let mut facts = filters::prepare(&raw);
+    ink::annotate(image, &mut facts);
+    let lines: Vec<TextLine> = facts
+        .into_iter()
+        .map(|line| TextLine {
+            rect: line.layout_bounds.outward(),
+            text: line.text,
+            score: line.confidence.unwrap_or(1.0) as f32,
+            ..TextLine::default()
+        })
+        .collect();
     let blocks = blocks(image, &lines);
     if cancelled() {
         return;

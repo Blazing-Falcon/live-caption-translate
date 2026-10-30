@@ -76,12 +76,16 @@ pub trait OfflineAsr: Send {
 }
 
 /// One line of text found in an image.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct TextLine {
     pub rect: Rect,
     pub text: String,
     /// Mean probability of the recognized characters, 0 to 1.
     pub score: f32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quad: Option<[crate::screen::geom::PointF; 4]>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub char_scores: Vec<f32>,
 }
 
 /// Reads the text in a still image.

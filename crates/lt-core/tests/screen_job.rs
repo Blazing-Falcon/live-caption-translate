@@ -25,11 +25,12 @@ fn line(y: i32, text: &str) -> TextLine {
         rect: Rect {
             x: 10,
             y,
-            w: 280,
+            w: (lt_core::screen::line::glyphs_in(text) as u32 * 20).clamp(20, 280),
             h: 20,
         },
         text: text.into(),
         score: 0.99,
+        ..TextLine::default()
     }
 }
 

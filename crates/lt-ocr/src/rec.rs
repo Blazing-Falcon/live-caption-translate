@@ -44,10 +44,14 @@ pub(crate) fn fill(image: &ImageView<'_>, rect: &Rect, batch_width: u32, slot: &
 
 /// Greedy CTC over `steps` (time x classes probabilities). Class 0 is the blank, class i is
 /// dictionary entry i - 1, and the class after the dictionary is a space. Returns the text and
-/// the mean probability of the kept steps.
-pub(crate) fn decode(steps: &[f32], classes: usize, dictionary: &[String]) -> (String, f32) {
+/// the mean probability and individual probabilities of the kept steps.
+pub(crate) fn decode(
+    steps: &[f32],
+    classes: usize,
+    dictionary: &[String],
+) -> (String, f32, Vec<f32>) {
     let mut text = String::new();
-    let (mut sum, mut kept) = (0.0_f32, 0_u32);
+    let mut scores = Vec::new();
     let mut previous = 0;
     for step in steps.chunks_exact(classes) {
         let (best, probability) = step
@@ -57,13 +61,16 @@ pub(crate) fn decode(steps: &[f32], classes: usize, dictionary: &[String]) -> (S
             .fold((0, f32::MIN), |a, b| if b.1 > a.1 { b } else { a });
         if best != 0 && best != previous {
             text.push_str(dictionary.get(best - 1).map_or(" ", String::as_str));
-            sum += probability;
-            kept += 1;
+            scores.push(probability);
         }
         previous = best;
     }
-    let score = if kept == 0 { 0.0 } else { sum / kept as f32 };
-    (text, score)
+    let score = if scores.is_empty() {
+        0.0
+    } else {
+        (scores.iter().map(|score| f64::from(*score)).sum::<f64>() / scores.len() as f64) as f32
+    };
+    (text, score, scores)
 }
 
 #[cfg(test)]
@@ -80,6 +87,9 @@ mod tests {
             step
         };
         let steps: Vec<f32> = [4, 4, 0, 4, 5, 1].into_iter().flat_map(one_hot).collect();
-        assert_eq!(decode(&steps, 6, &entries), ("cc a".to_owned(), 1.0));
+        assert_eq!(
+            decode(&steps, 6, &entries),
+            ("cc a".to_owned(), 1.0, vec![1.0; 4])
+        );
     }
 }

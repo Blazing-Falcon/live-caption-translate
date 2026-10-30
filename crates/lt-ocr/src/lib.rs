@@ -8,7 +8,7 @@ mod rec;
 use lt_core::{
     engines::{TextLine, TextRecognizer},
     error::{Error, Result},
-    screen::ImageView,
+    screen::{geom::RectF, ImageView},
 };
 use ort::{
     session::{builder::GraphOptimizationLevel, Session},
@@ -97,13 +97,15 @@ impl TextRecognizer for OcrEngine {
             let (_, probabilities) = outputs[0].try_extract_tensor::<f32>().map_err(ort_error)?;
             let per_crop = probabilities.len() / batch.len();
             for (&index, steps) in batch.iter().zip(probabilities.chunks_exact(per_crop)) {
-                let (text, score) = rec::decode(steps, self.classes, &self.dictionary);
+                let (text, score, char_scores) = rec::decode(steps, self.classes, &self.dictionary);
                 let text = text.trim();
                 if score >= rec::MIN_SCORE && !text.is_empty() {
                     lines.push(TextLine {
                         rect: rects[index],
                         text: text.to_owned(),
                         score,
+                        quad: Some(RectF::from(rects[index]).corners()),
+                        char_scores,
                     });
                 }
             }

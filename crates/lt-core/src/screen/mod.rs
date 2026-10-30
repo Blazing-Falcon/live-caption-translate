@@ -1,7 +1,11 @@
 //! Text on a captured screen, in plain pixel buffers and rectangles.
 
+pub mod filters;
+pub mod geom;
 mod group;
+pub mod ink;
 mod job;
+pub mod line;
 mod paint;
 
 pub use group::blocks;
