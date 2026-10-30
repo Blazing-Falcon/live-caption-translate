@@ -1,0 +1,11 @@
+{
+  "test": "OrdinaryLines_DoNotOpenLikeASpeaker",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "speaker",
+      "input": "https://translate.google.com",
+      "output": false
+    }
+  ]
+}

@@ -194,8 +194,9 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 | `id` | Reading order, from 0 |
 | `rect` | `{ x, y, w, h }`, the union of `lines`, frame pixels |
 | `lines` | The rect of each text line |
+| `intent` | `single` for one source line, `group_reflow` for a group assembled from several source lines |
 | `line_height` | Median line height, frame pixels |
-| `source` | The text of its lines, joined. A line break stays only after a line that ends a sentence (。！？) or before an indented line |
+| `source` | Same-row fragments joined at their text boundary; consecutive lines of a group joined with one space |
 | `background`, `foreground` | `[r, g, b]` of the surface behind the text and of text that reads on it |
 | `translate` | `false` when `source` has no Han character; such a block gets no translation events |
 

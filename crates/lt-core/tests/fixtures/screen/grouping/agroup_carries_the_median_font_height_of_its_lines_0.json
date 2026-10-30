@@ -1,0 +1,149 @@
+{
+  "test": "AGroupCarriesTheMedianFontHeightOfItsLines",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "build_group",
+      "input": [
+        {
+          "text": "A",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 300,
+            "height": 180
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 150,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 16,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "B",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 300,
+            "height": 180
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 148,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 18,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "C",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 80,
+            "width": 300,
+            "height": 180
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 152,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 17,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": {
+        "text": "A B C",
+        "bounds": {
+          "empty": false,
+          "x": 0,
+          "y": 0,
+          "width": 300,
+          "height": 260
+        },
+        "sourceLineBounds": [
+          {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 300,
+            "height": 180
+          },
+          {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 300,
+            "height": 180
+          },
+          {
+            "empty": false,
+            "x": 0,
+            "y": 80,
+            "width": 300,
+            "height": 180
+          }
+        ],
+        "renderGlyphHeight": 150,
+        "confidence": null,
+        "layoutScript": "Latin",
+        "layoutBounds": {
+          "empty": false,
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "layoutGlyphHeight": null,
+        "layoutInkHeight": null,
+        "fontGlyphHeight": 17,
+        "lineGeometry": null,
+        "uprightLayoutBounds": null,
+        "tiltedLines": null,
+        "tilt": null,
+        "runsAcross": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,1266 @@
+[
+  {
+    "Image": "mixed-cjk-tight.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          87,
+          69,
+          738,
+          48
+        ],
+        "LayoutBounds": [
+          87,
+          69,
+          738,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997528791427612,
+        "Ink": 40
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          89,
+          122,
+          125,
+          29
+        ],
+        "LayoutBounds": [
+          89,
+          122,
+          125,
+          29
+        ],
+        "Script": 2,
+        "Glyph": 23.779999999999998,
+        "Render": 23.779999999999998,
+        "Confidence": 0.9977098703384399,
+        "Ink": null
+      },
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          88,
+          309,
+          737,
+          48
+        ],
+        "LayoutBounds": [
+          88,
+          309,
+          737,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9998540878295898,
+        "Ink": 40
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          89,
+          356,
+          126,
+          29
+        ],
+        "LayoutBounds": [
+          89,
+          356,
+          126,
+          29
+        ],
+        "Script": 2,
+        "Glyph": 23.779999999999998,
+        "Render": 23.779999999999998,
+        "Confidence": 0.9976655840873718,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "mixed-cjk.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          88,
+          70,
+          736,
+          45
+        ],
+        "LayoutBounds": [
+          88,
+          70,
+          736,
+          45
+        ],
+        "Script": 2,
+        "Glyph": 36.9,
+        "Render": 36.9,
+        "Confidence": 0.9998536705970764,
+        "Ink": 40
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          88,
+          131,
+          126,
+          32
+        ],
+        "LayoutBounds": [
+          88,
+          131,
+          126,
+          32
+        ],
+        "Script": 2,
+        "Glyph": 26.24,
+        "Render": 26.24,
+        "Confidence": 0.9985591769218445,
+        "Ink": null
+      },
+      {
+        "Text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Bounds": [
+          89,
+          304,
+          807,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          304,
+          807,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9998301863670349,
+        "Ink": 23
+      },
+      {
+        "Text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Bounds": [
+          91,
+          344,
+          779,
+          28
+        ],
+        "LayoutBounds": [
+          91,
+          344,
+          779,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9996122121810913,
+        "Ink": 23
+      },
+      {
+        "Text": "盟。",
+        "Bounds": [
+          86,
+          382,
+          49,
+          33
+        ],
+        "LayoutBounds": [
+          86,
+          382,
+          49,
+          33
+        ],
+        "Script": 2,
+        "Glyph": 27.06,
+        "Render": 16.5,
+        "Confidence": 0.999840259552002,
+        "Ink": null
+      },
+      {
+        "Text": "我們處理資料。",
+        "Bounds": [
+          89,
+          548,
+          307,
+          48
+        ],
+        "LayoutBounds": [
+          89,
+          548,
+          307,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997261166572571,
+        "Ink": null
+      },
+      {
+        "Text": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說",
+        "Bounds": [
+          89,
+          614,
+          808,
+          31
+        ],
+        "LayoutBounds": [
+          89,
+          614,
+          808,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9996912479400635,
+        "Ink": 23
+      },
+      {
+        "Text": "明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
+        "Bounds": [
+          88,
+          654,
+          697,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          654,
+          697,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9998010396957397,
+        "Ink": 23
+      }
+    ]
+  },
+  {
+    "Image": "mixed-latin-tight.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          58,
+          847,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          58,
+          847,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.46,
+        "Render": 31.46,
+        "Confidence": 0.9893477559089661,
+        "Ink": 32
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          117,
+          142,
+          34
+        ],
+        "LayoutBounds": [
+          86,
+          117,
+          142,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9894405603408813,
+        "Ink": null
+      },
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          299,
+          847,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          299,
+          847,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.46,
+        "Render": 31.46,
+        "Confidence": 0.9900674223899841,
+        "Ink": 32
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          87,
+          355,
+          142,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          355,
+          142,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9999560713768005,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "mixed-latin.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          58,
+          848,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          58,
+          848,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.497142857142858,
+        "Render": 31.497142857142858,
+        "Confidence": 0.9888512492179871,
+        "Ink": 32
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          124,
+          142,
+          35
+        ],
+        "LayoutBounds": [
+          86,
+          124,
+          142,
+          35
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9999549388885498,
+        "Ink": null
+      },
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to entry: any",
+        "Bounds": [
+          86,
+          295,
+          856,
+          37
+        ],
+        "LayoutBounds": [
+          86,
+          295,
+          856,
+          37
+        ],
+        "Script": 1,
+        "Glyph": 17.12,
+        "Render": 17.12,
+        "Confidence": 0.9999280571937561,
+        "Ink": 19
+      },
+      {
+        "Text": "model provider or application builder may join it, and every member keeps",
+        "Bounds": [
+          87,
+          337,
+          845,
+          34
+        ],
+        "LayoutBounds": [
+          87,
+          337,
+          845,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 17.717741935483872,
+        "Render": 17.717741935483872,
+        "Confidence": 0.9990457892417908,
+        "Ink": 18
+      },
+      {
+        "Text": "the right to leave at any time without notice or",
+        "Bounds": [
+          87,
+          379,
+          519,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          379,
+          519,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 17.3,
+        "Render": 17.3,
+        "Confidence": 0.9952772855758667,
+        "Ink": 18
+      },
+      {
+        "Text": "cost.",
+        "Bounds": [
+          85,
+          417,
+          61,
+          34
+        ],
+        "LayoutBounds": [
+          85,
+          417,
+          61,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 27.88,
+        "Render": 27.88,
+        "Confidence": 0.9999211430549622,
+        "Ink": null
+      },
+      {
+        "Text": "We process data.",
+        "Bounds": [
+          86,
+          579,
+          367,
+          51
+        ],
+        "LayoutBounds": [
+          86,
+          579,
+          367,
+          51
+        ],
+        "Script": 1,
+        "Glyph": 34.07857142857143,
+        "Render": 34.07857142857143,
+        "Confidence": 0.9998233914375305,
+        "Ink": null
+      },
+      {
+        "Text": "Use precise geolocation data and actively scan device characteristics for",
+        "Bounds": [
+          86,
+          648,
+          828,
+          37
+        ],
+        "LayoutBounds": [
+          86,
+          648,
+          828,
+          37
+        ],
+        "Script": 1,
+        "Glyph": 16.81875,
+        "Render": 16.81875,
+        "Confidence": 0.9998883008956909,
+        "Ink": 18
+      },
+      {
+        "Text": "identification, then store or access information on a device as described.",
+        "Bounds": [
+          87,
+          690,
+          820,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          690,
+          820,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 16.65625,
+        "Render": 16.65625,
+        "Confidence": 0.988165020942688,
+        "Ink": 19
+      }
+    ]
+  },
+  {
+    "Image": "mixed-script.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "端側到服務端的全場景部署",
+        "Bounds": [
+          89,
+          69,
+          551,
+          46
+        ],
+        "LayoutBounds": [
+          89,
+          69,
+          551,
+          46
+        ],
+        "Script": 2,
+        "Glyph": 37.72,
+        "Render": 37.72,
+        "Confidence": 0.9995586276054382,
+        "Ink": 40
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          128,
+          147,
+          38
+        ],
+        "LayoutBounds": [
+          86,
+          128,
+          147,
+          38
+        ],
+        "Script": 1,
+        "Glyph": 21.233333333333334,
+        "Render": 21.233333333333334,
+        "Confidence": 0.9999571442604065,
+        "Ink": null
+      },
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          305,
+          882,
+          59
+        ],
+        "LayoutBounds": [
+          84,
+          305,
+          882,
+          59
+        ],
+        "Script": 1,
+        "Glyph": 32.76,
+        "Render": 32.76,
+        "Confidence": 0.9910849928855896,
+        "Ink": 34
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          87,
+          368,
+          128,
+          34
+        ],
+        "LayoutBounds": [
+          87,
+          368,
+          128,
+          34
+        ],
+        "Script": 2,
+        "Glyph": 27.88,
+        "Render": 27.88,
+        "Confidence": 0.997950553894043,
+        "Ink": null
+      },
+      {
+        "Text": "本次 PaddleOCR 3.7.0 release 針對古籍與圖表理解做了大幅改善，並且在",
+        "Bounds": [
+          88,
+          541,
+          862,
+          34
+        ],
+        "LayoutBounds": [
+          88,
+          541,
+          862,
+          34
+        ],
+        "Script": 3,
+        "Glyph": null,
+        "Render": 26.680952380952384,
+        "Confidence": 0.9763821959495544,
+        "Ink": 23
+      },
+      {
+        "Text": "OmniDocBench 上再次刷新紀錄，完整說明請見 release notes for",
+        "Bounds": [
+          86,
+          579,
+          783,
+          37
+        ],
+        "LayoutBounds": [
+          86,
+          579,
+          783,
+          37
+        ],
+        "Script": 3,
+        "Glyph": null,
+        "Render": 24.826829268292684,
+        "Confidence": 0.9880703091621399,
+        "Ink": 22
+      },
+      {
+        "Text": "1.81.0.",
+        "Bounds": [
+          86,
+          620,
+          85,
+          36
+        ],
+        "LayoutBounds": [
+          86,
+          620,
+          85,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 15.785714285714286,
+        "Render": 15.785714285714286,
+        "Confidence": 0.9997852444648743,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-cjk.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Bounds": [
+          88,
+          62,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          62,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9976613521575928,
+        "Ink": 23
+      },
+      {
+        "Text": "已儲存。",
+        "Bounds": [
+          89,
+          120,
+          158,
+          50
+        ],
+        "LayoutBounds": [
+          89,
+          120,
+          158,
+          50
+        ],
+        "Script": 2,
+        "Glyph": 41,
+        "Render": 41,
+        "Confidence": 0.9998271465301514,
+        "Ink": null
+      },
+      {
+        "Text": "這裡統計的是過去三十天之內曾經回報過的每一部裝置，不含停用的",
+        "Bounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9989458918571472,
+        "Ink": 23
+      },
+      {
+        "Text": "已完成。",
+        "Bounds": [
+          90,
+          361,
+          158,
+          51
+        ],
+        "LayoutBounds": [
+          90,
+          361,
+          158,
+          51
+        ],
+        "Script": 2,
+        "Glyph": 41.82,
+        "Render": 41.82,
+        "Confidence": 0.9991983771324158,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-cross.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "Changes to the capture shortcut take effect the next time the app",
+        "Bounds": [
+          87,
+          60,
+          803,
+          38
+        ],
+        "LayoutBounds": [
+          87,
+          60,
+          803,
+          38
+        ],
+        "Script": 1,
+        "Glyph": 19.331481481481482,
+        "Render": 19.331481481481482,
+        "Confidence": 0.9999384880065918,
+        "Ink": 18
+      },
+      {
+        "Text": "已儲存。",
+        "Bounds": [
+          89,
+          121,
+          158,
+          48
+        ],
+        "LayoutBounds": [
+          89,
+          121,
+          158,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997966289520264,
+        "Ink": null
+      },
+      {
+        "Text": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Bounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9976613521575928,
+        "Ink": 23
+      },
+      {
+        "Text": "Saved.",
+        "Bounds": [
+          85,
+          359,
+          138,
+          54
+        ],
+        "LayoutBounds": [
+          85,
+          359,
+          138,
+          54
+        ],
+        "Script": 1,
+        "Glyph": 29.900000000000002,
+        "Render": 29.900000000000002,
+        "Confidence": 0.999957799911499,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-latin.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "Changes to the capture shortcut take effect the next time the app",
+        "Bounds": [
+          85,
+          57,
+          737,
+          36
+        ],
+        "LayoutBounds": [
+          85,
+          57,
+          737,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 17.742592592592594,
+        "Render": 17.742592592592594,
+        "Confidence": 0.9933447241783142,
+        "Ink": 18
+      },
+      {
+        "Text": "Saved.",
+        "Bounds": [
+          85,
+          116,
+          136,
+          47
+        ],
+        "LayoutBounds": [
+          85,
+          116,
+          136,
+          47
+        ],
+        "Script": 1,
+        "Glyph": 29.46666666666667,
+        "Render": 29.46666666666667,
+        "Confidence": 0.9999399781227112,
+        "Ink": null
+      },
+      {
+        "Text": "Every device that reported in the last thirty days is counted here",
+        "Bounds": [
+          87,
+          299,
+          724,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          299,
+          724,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 17.112727272727273,
+        "Render": 17.112727272727273,
+        "Confidence": 0.9865894913673401,
+        "Ink": 19
+      },
+      {
+        "Text": "Done.",
+        "Bounds": [
+          86,
+          359,
+          117,
+          44
+        ],
+        "LayoutBounds": [
+          86,
+          359,
+          117,
+          44
+        ],
+        "Script": 1,
+        "Glyph": 30.419999999999998,
+        "Render": 30.419999999999998,
+        "Confidence": 0.9999567270278931,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "f7-c2-cjk.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴",
+        "Bounds": [
+          86,
+          60,
+          784,
+          33
+        ],
+        "LayoutBounds": [
+          86,
+          60,
+          784,
+          33
+        ],
+        "Script": 2,
+        "Glyph": 27.06,
+        "Render": 27.06,
+        "Confidence": 0.9964416027069092,
+        "Ink": 23
+      },
+      {
+        "Text": "注意。",
+        "Bounds": [
+          86,
+          102,
+          78,
+          35
+        ],
+        "LayoutBounds": [
+          86,
+          102,
+          78,
+          35
+        ],
+        "Script": 2,
+        "Glyph": 28.7,
+        "Render": 17.5,
+        "Confidence": 0.9997752904891968,
+        "Ink": null
+      },
+      {
+        "Text": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+        "Bounds": [
+          89,
+          304,
+          782,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          304,
+          782,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9990872144699097,
+        "Ink": 23
+      },
+      {
+        "Text": "警告。",
+        "Bounds": [
+          84,
+          338,
+          81,
+          41
+        ],
+        "LayoutBounds": [
+          84,
+          338,
+          81,
+          41
+        ],
+        "Script": 2,
+        "Glyph": 33.62,
+        "Render": 20.5,
+        "Confidence": 0.9998121857643127,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "f7-c2-latin.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to",
+        "Bounds": [
+          87,
+          59,
+          737,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          59,
+          737,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 17.108928571428574,
+        "Render": 17.108928571428574,
+        "Confidence": 0.9996083378791809,
+        "Ink": 19
+      },
+      {
+        "Text": "Note.",
+        "Bounds": [
+          84,
+          97,
+          71,
+          36
+        ],
+        "LayoutBounds": [
+          84,
+          97,
+          71,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 29.52,
+        "Render": 29.52,
+        "Confidence": 0.9998266100883484,
+        "Ink": null
+      },
+      {
+        "Text": "Download the installer from the mirror closest to you and then run",
+        "Bounds": [
+          86,
+          297,
+          748,
+          33
+        ],
+        "LayoutBounds": [
+          86,
+          297,
+          748,
+          33
+        ],
+        "Script": 1,
+        "Glyph": 17.68,
+        "Render": 17.68,
+        "Confidence": 0.9978850483894348,
+        "Ink": 19
+      },
+      {
+        "Text": "Warning.",
+        "Bounds": [
+          83,
+          338,
+          113,
+          38
+        ],
+        "LayoutBounds": [
+          83,
+          338,
+          113,
+          38
+        ],
+        "Script": 1,
+        "Glyph": 18.3625,
+        "Render": 18.3625,
+        "Confidence": 0.9999610781669617,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "f7-c3-cjk.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Bounds": [
+          90,
+          64,
+          806,
+          28
+        ],
+        "LayoutBounds": [
+          90,
+          64,
+          806,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9998020529747009,
+        "Ink": 23
+      },
+      {
+        "Text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Bounds": [
+          89,
+          106,
+          781,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          106,
+          781,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9995632767677307,
+        "Ink": 23
+      },
+      {
+        "Text": "盟。",
+        "Bounds": [
+          84,
+          144,
+          54,
+          37
+        ],
+        "LayoutBounds": [
+          84,
+          144,
+          54,
+          37
+        ],
+        "Script": 2,
+        "Glyph": 30.34,
+        "Render": 18.5,
+        "Confidence": 0.9983813762664795,
+        "Ink": null
+      }
+    ]
+  },
+  {
+    "Image": "f7-c3-latin.png",
+    "Flow": "screenshot",
+    "Language": "EN",
+    "Blocks": [
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to entry:",
+        "Bounds": [
+          87,
+          57,
+          809,
+          34
+        ],
+        "LayoutBounds": [
+          87,
+          57,
+          809,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 16.962903225806453,
+        "Render": 16.962903225806453,
+        "Confidence": 0.9963368773460388,
+        "Ink": 19
+      },
+      {
+        "Text": "any model provider or application builder may join it, and every member",
+        "Bounds": [
+          86,
+          100,
+          819,
+          34
+        ],
+        "LayoutBounds": [
+          86,
+          100,
+          819,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 17.745,
+        "Render": 17.745,
+        "Confidence": 0.9959494471549988,
+        "Ink": 18
+      },
+      {
+        "Text": "keeps the right to leave at any time without notice or",
+        "Bounds": [
+          85,
+          141,
+          596,
+          34
+        ],
+        "LayoutBounds": [
+          85,
+          141,
+          596,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 17.60909090909091,
+        "Render": 17.60909090909091,
+        "Confidence": 0.986638069152832,
+        "Ink": 18
+      },
+      {
+        "Text": "cost.",
+        "Bounds": [
+          86,
+          186,
+          62,
+          31
+        ],
+        "LayoutBounds": [
+          86,
+          186,
+          62,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9999487996101379,
+        "Ink": null
+      }
+    ]
+  }
+]

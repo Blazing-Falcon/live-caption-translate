@@ -1,0 +1,555 @@
+{
+  "test": "AShortLineBetweenTwoSlightlySlopedLongOnes_StillLiesBetweenThem",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "SYNTHETIC FLAVOUR COFFEE DL MENTHOL SUGAR ALCOHOL CONTAINING",
+          "bounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 92.00761422734514,
+            "width": 570.1553964995044,
+            "height": 40.84782234355124
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.984943687723694,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 92.00761422734514,
+            "width": 570.1553964995044,
+            "height": 40.84782234355124
+          },
+          "layoutGlyphHeight": 13.984943687723694,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 13.984943687723694,
+          "lineGeometry": {
+            "length": 570,
+            "thickness": 16,
+            "angleDegrees": 2.5,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "EXCESSIVE INTAKE MAY CAUSE IT.",
+          "bounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 112.00761422734514,
+            "width": 290.42189445658414,
+            "height": 28.634393881257168
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 14.521094722829208,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 112.00761422734514,
+            "width": 290.42189445658414,
+            "height": 28.634393881257168
+          },
+          "layoutGlyphHeight": 14.521094722829208,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 14.521094722829208,
+          "lineGeometry": {
+            "length": 290,
+            "thickness": 16,
+            "angleDegrees": 2.5,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "STORAGE KEEP AWAY FROM DIRECT SUNLIGHT AND STORE IN A COOL PLACE",
+          "bounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 132.00761422734513,
+            "width": 570.1553964995044,
+            "height": 40.847822343551286
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.984943687723694,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 132.00761422734513,
+            "width": 570.1553964995044,
+            "height": 40.847822343551286
+          },
+          "layoutGlyphHeight": 13.984943687723694,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 13.984943687723694,
+          "lineGeometry": {
+            "length": 570,
+            "thickness": 16,
+            "angleDegrees": 2.5,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "SYNTHETIC FLAVOUR COFFEE DL MENTHOL SUGAR ALCOHOL CONTAINING",
+          "bounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 92.00761422734514,
+            "width": 570.1553964995044,
+            "height": 40.84782234355124
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.984943687723694,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 92.00761422734514,
+            "width": 570.1553964995044,
+            "height": 40.84782234355124
+          },
+          "layoutGlyphHeight": 13.984943687723694,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 13.984943687723694,
+          "lineGeometry": {
+            "length": 570,
+            "thickness": 16,
+            "angleDegrees": 2.5,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "EXCESSIVE INTAKE MAY CAUSE IT.",
+          "bounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 112.00761422734514,
+            "width": 290.42189445658414,
+            "height": 28.634393881257168
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 14.521094722829208,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 112.00761422734514,
+            "width": 290.42189445658414,
+            "height": 28.634393881257168
+          },
+          "layoutGlyphHeight": 14.521094722829208,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 14.521094722829208,
+          "lineGeometry": {
+            "length": 290,
+            "thickness": 16,
+            "angleDegrees": 2.5,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "STORAGE KEEP AWAY FROM DIRECT SUNLIGHT AND STORE IN A COOL PLACE",
+          "bounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 132.00761422734513,
+            "width": 570.1553964995044,
+            "height": 40.847822343551286
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.984943687723694,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 99.65104490107731,
+            "y": 132.00761422734513,
+            "width": 570.1553964995044,
+            "height": 40.847822343551286
+          },
+          "layoutGlyphHeight": 13.984943687723694,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 13.984943687723694,
+          "lineGeometry": {
+            "length": 570,
+            "thickness": 16,
+            "angleDegrees": 2.5,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "SYNTHETIC FLAVOUR COFFEE DL MENTHOL SUGAR ALCOHOL CONTAINING",
+          "current": "EXCESSIVE INTAKE MAY CAUSE IT.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -16.41154895390145,
+          "leftDelta": 0.728069273266417,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 1.9631970157289167,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "overlaps too far",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "SYNTHETIC FLAVOUR COFFEE DL MENTHOL SUGAR ALCOHOL CONTAINING",
+          "current": "EXCESSIVE INTAKE MAY CAUSE IT.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.6000908858778627,
+          "leftDelta": 0,
+          "centerDelta": 4.025972647991648,
+          "rightDelta": 8.051945295983298,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.9630777813009781,
+          "widthRatio": 1.9631970157289167,
+          "lineAdvance": 0.5756868760573317,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 13.984943687723694,
+          "currentSizeValue": 14.521094722829208,
+          "advancePixels": 20,
+          "advanceDenominator": 34.741108112404206
+        },
+        {
+          "kind": "next",
+          "previous": "EXCESSIVE INTAKE MAY CAUSE IT.",
+          "current": "STORAGE KEEP AWAY FROM DIRECT SUNLIGHT AND STORE IN A COOL PLACE",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.24853536200747417,
+          "leftDelta": 0,
+          "centerDelta": 4.025972647991646,
+          "rightDelta": 8.051945295983293,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.9630777813009781,
+          "widthRatio": 0.50937322743877,
+          "lineAdvance": 0.5756868760573309,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "sentence terminator",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 14.521094722829208,
+          "currentSizeValue": 13.984943687723694,
+          "advancePixels": 19.999999999999986,
+          "advanceDenominator": 34.74110811240423
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "SYNTHETIC FLAVOUR COFFEE DL MENTHOL SUGAR ALCOHOL CONTAINING",
+              "bounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 92.00761422734514,
+                "width": 570.1553964995044,
+                "height": 40.84782234355124
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.984943687723694,
+              "confidence": 0.98,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 92.00761422734514,
+                "width": 570.1553964995044,
+                "height": 40.84782234355124
+              },
+              "layoutGlyphHeight": 13.984943687723694,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 99.65104490107731,
+                  "y": 92.00761422734514,
+                  "width": 570.1553964995044,
+                  "height": 40.84782234355124
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 13.984943687723694,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "EXCESSIVE INTAKE MAY CAUSE IT.",
+              "bounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 112.00761422734514,
+                "width": 290.42189445658414,
+                "height": 28.634393881257168
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 14.521094722829208,
+              "confidence": 0.98,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 112.00761422734514,
+                "width": 290.42189445658414,
+                "height": 28.634393881257168
+              },
+              "layoutGlyphHeight": 14.521094722829208,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 99.65104490107731,
+                  "y": 112.00761422734514,
+                  "width": 290.42189445658414,
+                  "height": 28.634393881257168
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 14.521094722829208,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "STORAGE KEEP AWAY FROM DIRECT SUNLIGHT AND STORE IN A COOL PLACE",
+              "bounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 132.00761422734513,
+                "width": 570.1553964995044,
+                "height": 40.847822343551286
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.984943687723694,
+              "confidence": 0.98,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 132.00761422734513,
+                "width": 570.1553964995044,
+                "height": 40.847822343551286
+              },
+              "layoutGlyphHeight": 13.984943687723694,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 99.65104490107731,
+                  "y": 132.00761422734513,
+                  "width": 570.1553964995044,
+                  "height": 40.847822343551286
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 13.984943687723694,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "SYNTHETIC FLAVOUR COFFEE DL MENTHOL SUGAR ALCOHOL CONTAINING",
+              "bounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 92.00761422734514,
+                "width": 570.1553964995044,
+                "height": 40.84782234355124
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.984943687723694,
+              "confidence": 0.98,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 92.00761422734514,
+                "width": 570.1553964995044,
+                "height": 40.84782234355124
+              },
+              "layoutGlyphHeight": 13.984943687723694,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 99.65104490107731,
+                  "y": 92.00761422734514,
+                  "width": 570.1553964995044,
+                  "height": 40.84782234355124
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 13.984943687723694,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "EXCESSIVE INTAKE MAY CAUSE IT.",
+              "bounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 112.00761422734514,
+                "width": 290.42189445658414,
+                "height": 28.634393881257168
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 14.521094722829208,
+              "confidence": 0.98,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 112.00761422734514,
+                "width": 290.42189445658414,
+                "height": 28.634393881257168
+              },
+              "layoutGlyphHeight": 14.521094722829208,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 99.65104490107731,
+                  "y": 112.00761422734514,
+                  "width": 290.42189445658414,
+                  "height": 28.634393881257168
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 14.521094722829208,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "STORAGE KEEP AWAY FROM DIRECT SUNLIGHT AND STORE IN A COOL PLACE",
+              "bounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 132.00761422734513,
+                "width": 570.1553964995044,
+                "height": 40.847822343551286
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.984943687723694,
+              "confidence": 0.98,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 99.65104490107731,
+                "y": 132.00761422734513,
+                "width": 570.1553964995044,
+                "height": 40.847822343551286
+              },
+              "layoutGlyphHeight": 13.984943687723694,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 99.65104490107731,
+                  "y": 132.00761422734513,
+                  "width": 570.1553964995044,
+                  "height": 40.847822343551286
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 13.984943687723694,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ]
+        ]
+      }
+    }
+  ]
+}

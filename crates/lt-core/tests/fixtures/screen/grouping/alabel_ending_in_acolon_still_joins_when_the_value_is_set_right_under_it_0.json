@@ -1,0 +1,318 @@
+{
+  "test": "ALabelEndingInAColon_StillJoinsWhenTheValueIsSetRightUnderIt",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Automatically navigate to the next objective:",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 500,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 500,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Prioritize opening coffers over cairns",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 52,
+            "width": 500,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 52,
+            "width": 500,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "Automatically navigate to the next objective: Prioritize opening coffers over cairns",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 500,
+            "height": 82
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 100,
+              "y": 10,
+              "width": 500,
+              "height": 40
+            },
+            {
+              "empty": false,
+              "x": 100,
+              "y": 52,
+              "width": 500,
+              "height": 40
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 500,
+            "height": 82
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Automatically navigate to the next objective:",
+          "current": "Prioritize opening coffers over cairns",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.05,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.05,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "punctuation",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 28,
+          "currentSizeValue": 28,
+          "advancePixels": 42,
+          "advanceDenominator": 40
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Automatically navigate to the next objective:",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 500,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 500,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 500,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Prioritize opening coffers over cairns",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 52,
+                "width": 500,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 52,
+                "width": 500,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 52,
+                  "width": 500,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Automatically navigate to the next objective:",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 500,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 500,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 500,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Prioritize opening coffers over cairns",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 52,
+                "width": 500,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 52,
+                "width": 500,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 52,
+                  "width": 500,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

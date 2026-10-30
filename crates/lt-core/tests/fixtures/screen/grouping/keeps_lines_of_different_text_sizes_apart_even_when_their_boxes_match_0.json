@@ -1,0 +1,334 @@
+{
+  "test": "KeepsLinesOfDifferentTextSizesApartEvenWhenTheirBoxesMatch",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "2026/07/24 23:29 AUTO SAVE",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 354,
+            "height": 35
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 20,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 354,
+            "height": 35
+          },
+          "layoutGlyphHeight": 20.008695652173916,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Narmaya",
+          "bounds": {
+            "empty": false,
+            "x": 41,
+            "y": 79,
+            "width": 63,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.7,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 41,
+            "y": 79,
+            "width": 63,
+            "height": 29
+          },
+          "layoutGlyphHeight": 11.700000000000001,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "2026/07/24 23:29 AUTO SAVE",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 354,
+            "height": 35
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 20,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 354,
+            "height": 35
+          },
+          "layoutGlyphHeight": 20.008695652173916,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Narmaya",
+          "bounds": {
+            "empty": false,
+            "x": 41,
+            "y": 79,
+            "width": 63,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.7,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 41,
+            "y": 79,
+            "width": 63,
+            "height": 29
+          },
+          "layoutGlyphHeight": 11.700000000000001,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "2026/07/24 23:29 AUTO SAVE",
+          "current": "Narmaya",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.125,
+          "leftDelta": 0.03125,
+          "centerDelta": 4.515625,
+          "rightDelta": 9.0625,
+          "alignmentDelta": 0.03125,
+          "textSizeRatio": 0.5847457627118644,
+          "widthRatio": 5.619047619047619,
+          "lineAdvance": 1.21875,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 20.008695652173916,
+          "currentSizeValue": 11.700000000000001,
+          "advancePixels": 39,
+          "advanceDenominator": 32
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "2026/07/24 23:29 AUTO SAVE",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 354,
+                "height": 35
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 20,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 354,
+                "height": 35
+              },
+              "layoutGlyphHeight": 20.008695652173916,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 40,
+                  "width": 354,
+                  "height": 35
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Narmaya",
+              "bounds": {
+                "empty": false,
+                "x": 41,
+                "y": 79,
+                "width": 63,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.7,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 41,
+                "y": 79,
+                "width": 63,
+                "height": 29
+              },
+              "layoutGlyphHeight": 11.700000000000001,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 41,
+                  "y": 79,
+                  "width": 63,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "2026/07/24 23:29 AUTO SAVE",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 354,
+                "height": 35
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 20,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 354,
+                "height": 35
+              },
+              "layoutGlyphHeight": 20.008695652173916,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 40,
+                  "width": 354,
+                  "height": 35
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Narmaya",
+              "bounds": {
+                "empty": false,
+                "x": 41,
+                "y": 79,
+                "width": 63,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.7,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 41,
+                "y": 79,
+                "width": 63,
+                "height": 29
+              },
+              "layoutGlyphHeight": 11.700000000000001,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 41,
+                  "y": 79,
+                  "width": 63,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

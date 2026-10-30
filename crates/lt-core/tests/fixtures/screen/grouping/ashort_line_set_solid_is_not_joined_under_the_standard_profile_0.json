@@ -1,0 +1,334 @@
+{
+  "test": "AShortLineSetSolid_IsNotJoinedUnderTheStandardProfile",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "WHY ARE",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "YOU PICKING ON THE GOBLIN",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 50,
+            "width": 400,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 50,
+            "width": 400,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "WHY ARE",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "YOU PICKING ON THE GOBLIN",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 50,
+            "width": 400,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 50,
+            "width": 400,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "WHY ARE",
+          "current": "YOU PICKING ON THE GOBLIN",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 3.5,
+          "rightDelta": 7,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 0.3,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 28,
+          "currentSizeValue": 28,
+          "advancePixels": 40,
+          "advanceDenominator": 40
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "WHY ARE",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 120,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "YOU PICKING ON THE GOBLIN",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 50,
+                "width": 400,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 50,
+                "width": 400,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 50,
+                  "width": 400,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "WHY ARE",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 120,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "YOU PICKING ON THE GOBLIN",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 50,
+                "width": 400,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 50,
+                "width": 400,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 50,
+                  "width": 400,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

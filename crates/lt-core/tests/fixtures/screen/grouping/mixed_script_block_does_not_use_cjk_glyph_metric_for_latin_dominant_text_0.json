@@ -1,0 +1,73 @@
+{
+  "test": "MixedScriptBlock_DoesNotUseCjkGlyphMetricForLatinDominantText",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "size_ratio",
+      "input": [
+        {
+          "text": "2005 年から CSS, HTML, JavaScript のドキュメントを作成しています。",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 600,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 600,
+            "height": 30
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "技術文書を書いています",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 600,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 600,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "ratio": 1,
+      "basis": "BoxDifferentScript",
+      "previousCompared": 30,
+      "currentCompared": 30
+    }
+  ]
+}

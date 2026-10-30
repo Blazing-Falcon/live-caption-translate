@@ -1,0 +1,334 @@
+{
+  "test": "TheRelaxedSizeRatio_DoesNotReachPairsThatAreNotSetSolid",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "THAT GUY'S FAULT",
+          "bounds": {
+            "empty": false,
+            "x": 368,
+            "y": 725,
+            "width": 417,
+            "height": 58
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 368,
+            "y": 725,
+            "width": 417,
+            "height": 58
+          },
+          "layoutGlyphHeight": 36,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "YOU ENDED UP IN",
+          "bounds": {
+            "empty": false,
+            "x": 407,
+            "y": 780,
+            "width": 415,
+            "height": 58
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 407,
+            "y": 780,
+            "width": 415,
+            "height": 58
+          },
+          "layoutGlyphHeight": 31,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "THAT GUY'S FAULT",
+          "bounds": {
+            "empty": false,
+            "x": 368,
+            "y": 725,
+            "width": 417,
+            "height": 58
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 368,
+            "y": 725,
+            "width": 417,
+            "height": 58
+          },
+          "layoutGlyphHeight": 36,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "YOU ENDED UP IN",
+          "bounds": {
+            "empty": false,
+            "x": 407,
+            "y": 780,
+            "width": 415,
+            "height": 58
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 407,
+            "y": 780,
+            "width": 415,
+            "height": 58
+          },
+          "layoutGlyphHeight": 31,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "THAT GUY'S FAULT",
+          "current": "YOU ENDED UP IN",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.05172413793103448,
+          "leftDelta": 0.6724137931034483,
+          "centerDelta": 0.6551724137931034,
+          "rightDelta": 0.6379310344827587,
+          "alignmentDelta": 0.6379310344827587,
+          "textSizeRatio": 0.8611111111111112,
+          "widthRatio": 1.0048192771084337,
+          "lineAdvance": 0.9482758620689655,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 36,
+          "currentSizeValue": 31,
+          "advancePixels": 55,
+          "advanceDenominator": 58
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "THAT GUY'S FAULT",
+              "bounds": {
+                "empty": false,
+                "x": 368,
+                "y": 725,
+                "width": 417,
+                "height": 58
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 368,
+                "y": 725,
+                "width": 417,
+                "height": 58
+              },
+              "layoutGlyphHeight": 36,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 368,
+                  "y": 725,
+                  "width": 417,
+                  "height": 58
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "YOU ENDED UP IN",
+              "bounds": {
+                "empty": false,
+                "x": 407,
+                "y": 780,
+                "width": 415,
+                "height": 58
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 407,
+                "y": 780,
+                "width": 415,
+                "height": 58
+              },
+              "layoutGlyphHeight": 31,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 407,
+                  "y": 780,
+                  "width": 415,
+                  "height": 58
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "THAT GUY'S FAULT",
+              "bounds": {
+                "empty": false,
+                "x": 368,
+                "y": 725,
+                "width": 417,
+                "height": 58
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 368,
+                "y": 725,
+                "width": 417,
+                "height": 58
+              },
+              "layoutGlyphHeight": 36,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 368,
+                  "y": 725,
+                  "width": 417,
+                  "height": 58
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "YOU ENDED UP IN",
+              "bounds": {
+                "empty": false,
+                "x": 407,
+                "y": 780,
+                "width": 415,
+                "height": 58
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 407,
+                "y": 780,
+                "width": 415,
+                "height": 58
+              },
+              "layoutGlyphHeight": 31,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 407,
+                  "y": 780,
+                  "width": 415,
+                  "height": 58
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

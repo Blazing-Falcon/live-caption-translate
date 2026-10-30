@@ -1,0 +1,11 @@
+{
+  "test": "OrdinaryLines_DoNotOpenLikeASpeaker",
+  "parameterIndex": 2,
+  "calls": [
+    {
+      "kind": "speaker",
+      "input": "and continues with some ordinary prose",
+      "output": false
+    }
+  ]
+}

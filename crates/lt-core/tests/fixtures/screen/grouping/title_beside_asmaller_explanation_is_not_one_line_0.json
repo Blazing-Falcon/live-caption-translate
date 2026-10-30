@@ -1,0 +1,714 @@
+{
+  "test": "TitleBesideASmallerExplanation_IsNotOneLine",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "装備",
+          "bounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "layoutGlyphHeight": 50.02,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "装備する武器・ジーンの確認や変更を行います",
+          "bounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "layoutGlyphHeight": 28.66,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "装備",
+          "bounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "layoutGlyphHeight": 50.02,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "装備する武器・ジーンの確認や変更を行います",
+          "bounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "layoutGlyphHeight": 28.66,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "装備",
+          "current": "装備する武器・ジーンの確認や変更を行います",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.24742268041237114,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.20588235294117646,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "different size",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "装備",
+          "current": "装備する武器・ジーンの確認や変更を行います",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.7628865979381443,
+          "leftDelta": 2.4123711340206184,
+          "centerDelta": 6.587628865979381,
+          "rightDelta": 10.762886597938145,
+          "alignmentDelta": 2.4123711340206184,
+          "textSizeRatio": 0.5729708116753298,
+          "widthRatio": 0.20588235294117646,
+          "lineAdvance": 0.4948453608247423,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 50.02,
+          "currentSizeValue": 28.66,
+          "advancePixels": 24,
+          "advanceDenominator": 48.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "装備",
+              "bounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "layoutGlyphHeight": 50.02,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 107,
+                  "y": 15,
+                  "width": 105,
+                  "height": 61
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "装備する武器・ジーンの確認や変更を行います",
+              "bounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "layoutGlyphHeight": 28.66,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 224,
+                  "y": 39,
+                  "width": 510,
+                  "height": 36
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "装備",
+              "bounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "layoutGlyphHeight": 50.02,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 107,
+                  "y": 15,
+                  "width": 105,
+                  "height": 61
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "装備する武器・ジーンの確認や変更を行います",
+              "bounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "layoutGlyphHeight": 28.66,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 224,
+                  "y": 39,
+                  "width": 510,
+                  "height": 36
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "装備",
+          "bounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "layoutGlyphHeight": 50.02,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "装備する武器・ジーンの確認や変更を行います",
+          "bounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "layoutGlyphHeight": 28.66,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "装備",
+          "bounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 107,
+            "y": 15,
+            "width": 105,
+            "height": 61
+          },
+          "layoutGlyphHeight": 50.02,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "装備する武器・ジーンの確認や変更を行います",
+          "bounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 224,
+            "y": 39,
+            "width": 510,
+            "height": 36
+          },
+          "layoutGlyphHeight": 28.66,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "装備",
+          "current": "装備する武器・ジーンの確認や変更を行います",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.24742268041237114,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.20588235294117646,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "different size",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "装備",
+          "current": "装備する武器・ジーンの確認や変更を行います",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.7628865979381443,
+          "leftDelta": 2.4123711340206184,
+          "centerDelta": 6.587628865979381,
+          "rightDelta": 10.762886597938145,
+          "alignmentDelta": 2.4123711340206184,
+          "textSizeRatio": 0.5729708116753298,
+          "widthRatio": 0.20588235294117646,
+          "lineAdvance": 0.4948453608247423,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 50.02,
+          "currentSizeValue": 28.66,
+          "advancePixels": 24,
+          "advanceDenominator": 48.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "装備",
+              "bounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "layoutGlyphHeight": 50.02,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 107,
+                  "y": 15,
+                  "width": 105,
+                  "height": 61
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "装備する武器・ジーンの確認や変更を行います",
+              "bounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "layoutGlyphHeight": 28.66,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 224,
+                  "y": 39,
+                  "width": 510,
+                  "height": 36
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "装備",
+              "bounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 107,
+                "y": 15,
+                "width": 105,
+                "height": 61
+              },
+              "layoutGlyphHeight": 50.02,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 107,
+                  "y": 15,
+                  "width": 105,
+                  "height": 61
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "装備する武器・ジーンの確認や変更を行います",
+              "bounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 224,
+                "y": 39,
+                "width": 510,
+                "height": 36
+              },
+              "layoutGlyphHeight": 28.66,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 224,
+                  "y": 39,
+                  "width": 510,
+                  "height": 36
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

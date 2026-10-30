@@ -1,0 +1,412 @@
+{
+  "test": "WrappedProseRejoinsFragmentsAcrossAnUnrecognisedDash",
+  "parameterIndex": 1,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Screen translator for Windows",
+          "bounds": {
+            "empty": false,
+            "x": 32,
+            "y": 67,
+            "width": 242,
+            "height": 23
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 32,
+            "y": 67,
+            "width": 242,
+            "height": 23
+          },
+          "layoutGlyphHeight": 12.100000000000001,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "screenshot, real-time, text selection & quick",
+          "bounds": {
+            "empty": false,
+            "x": 291,
+            "y": 70,
+            "width": 345,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 291,
+            "y": 70,
+            "width": 345,
+            "height": 18
+          },
+          "layoutGlyphHeight": 11.2125,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "translation, with results displayed directly on screen. | Windows 螢幕翻譯工",
+          "bounds": {
+            "empty": false,
+            "x": 31,
+            "y": 92,
+            "width": 600,
+            "height": 26
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 31,
+            "y": 92,
+            "width": 600,
+            "height": 26
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "Screen translator for Windows screenshot, real-time, text selection & quick translation, with results displayed directly on screen. | Windows 螢幕翻譯工",
+          "bounds": {
+            "empty": false,
+            "x": 31,
+            "y": 67,
+            "width": 605,
+            "height": 51
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 32,
+              "y": 67,
+              "width": 604,
+              "height": 23
+            },
+            {
+              "empty": false,
+              "x": 31,
+              "y": 92,
+              "width": 600,
+              "height": 26
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 31,
+            "y": 67,
+            "width": 605,
+            "height": 51
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "Screen translator for Windows",
+          "current": "screenshot, real-time, text selection & quick",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.8292682926829268,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7014492753623188,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "spanning prose continuation",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "Screen translator for Windows screenshot, real-time, text selection & quick",
+          "current": "translation, with results displayed directly on screen. | Windows 螢幕翻譯工",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": 0.08163265306122448,
+          "leftDelta": 0.04081632653061224,
+          "centerDelta": 0.12244897959183673,
+          "rightDelta": 0.20408163265306123,
+          "alignmentDelta": 0.04081632653061224,
+          "textSizeRatio": 0.8846153846153846,
+          "widthRatio": 1.0066666666666666,
+          "lineAdvance": 1.0204081632653061,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 23,
+          "currentSizeValue": 26,
+          "advancePixels": 25,
+          "advanceDenominator": 24.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Screen translator for Windows",
+              "bounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 242,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 242,
+                "height": 23
+              },
+              "layoutGlyphHeight": 12.100000000000001,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 32,
+                  "y": 67,
+                  "width": 242,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "screenshot, real-time, text selection & quick",
+              "bounds": {
+                "empty": false,
+                "x": 291,
+                "y": 70,
+                "width": 345,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 291,
+                "y": 70,
+                "width": 345,
+                "height": 18
+              },
+              "layoutGlyphHeight": 11.2125,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 291,
+                  "y": 70,
+                  "width": 345,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "translation, with results displayed directly on screen. | Windows 螢幕翻譯工",
+              "bounds": {
+                "empty": false,
+                "x": 31,
+                "y": 92,
+                "width": 600,
+                "height": 26
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 31,
+                "y": 92,
+                "width": 600,
+                "height": 26
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 31,
+                  "y": 92,
+                  "width": 600,
+                  "height": 26
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Screen translator for Windows screenshot, real-time, text selection & quick",
+              "bounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 604,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 604,
+                "height": 23
+              },
+              "layoutGlyphHeight": 12.100000000000001,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 32,
+                  "y": 67,
+                  "width": 604,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0",
+              "b1"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "translation, with results displayed directly on screen. | Windows 螢幕翻譯工",
+              "bounds": {
+                "empty": false,
+                "x": 31,
+                "y": 92,
+                "width": 600,
+                "height": 26
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 31,
+                "y": 92,
+                "width": 600,
+                "height": 26
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 31,
+                  "y": 92,
+                  "width": 600,
+                  "height": 26
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

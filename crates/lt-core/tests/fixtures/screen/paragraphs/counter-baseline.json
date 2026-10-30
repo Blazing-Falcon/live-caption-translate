@@ -1,0 +1,4925 @@
+[
+  {
+    "Image": "mixed-cjk-tight.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          87,
+          69,
+          738,
+          48
+        ],
+        "LayoutBounds": [
+          87,
+          69,
+          738,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997528791427612
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          89,
+          122,
+          125,
+          29
+        ],
+        "LayoutBounds": [
+          89,
+          122,
+          125,
+          29
+        ],
+        "Script": 2,
+        "Glyph": 23.779999999999998,
+        "Render": 23.779999999999998,
+        "Confidence": 0.9977098703384399
+      },
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          88,
+          309,
+          737,
+          48
+        ],
+        "LayoutBounds": [
+          88,
+          309,
+          737,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9998540878295898
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          89,
+          356,
+          126,
+          29
+        ],
+        "LayoutBounds": [
+          89,
+          356,
+          126,
+          29
+        ],
+        "Script": 2,
+        "Glyph": 23.779999999999998,
+        "Render": 23.779999999999998,
+        "Confidence": 0.9976655840873718
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景文件智慧部署",
+        "Current": "閱讀更多。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.12987012987012986,
+        "LeftDelta": 0.05194805194805195,
+        "CenterDelta": 7.909090909090909,
+        "RightDelta": 15.87012987012987,
+        "AlignmentDelta": 0.05194805194805195,
+        "TextSizeRatio": 0.6041666666666666,
+        "WidthRatio": 5.904,
+        "LineAdvance": 1.3766233766233766,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 23.779999999999998,
+        "AdvancePixels": 53,
+        "AdvanceDenominator": 38.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "閱讀更多。",
+        "Current": "端側到服務端的全場景文件智慧部署",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 4.103896103896104,
+        "LeftDelta": 0.025974025974025976,
+        "CenterDelta": 7.922077922077922,
+        "RightDelta": 15.87012987012987,
+        "AlignmentDelta": 0.025974025974025976,
+        "TextSizeRatio": 0.6041666666666666,
+        "WidthRatio": 0.16960651289009498,
+        "LineAdvance": 4.857142857142857,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 23.779999999999998,
+        "CurrentSizeValue": 39.36,
+        "AdvancePixels": 187,
+        "AdvanceDenominator": 38.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景文件智慧部署",
+        "Current": "閱讀更多。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": -0.025974025974025976,
+        "LeftDelta": 0.025974025974025976,
+        "CenterDelta": 7.909090909090909,
+        "RightDelta": 15.844155844155845,
+        "AlignmentDelta": 0.025974025974025976,
+        "TextSizeRatio": 0.6041666666666666,
+        "WidthRatio": 5.849206349206349,
+        "LineAdvance": 1.2207792207792207,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 23.779999999999998,
+        "AdvancePixels": 47,
+        "AdvanceDenominator": 38.5
+      }
+    ]
+  },
+  {
+    "Image": "mixed-cjk-tight.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          87,
+          69,
+          738,
+          48
+        ],
+        "LayoutBounds": [
+          87,
+          69,
+          738,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997528791427612
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          89,
+          122,
+          125,
+          29
+        ],
+        "LayoutBounds": [
+          89,
+          122,
+          125,
+          29
+        ],
+        "Script": 2,
+        "Glyph": 23.779999999999998,
+        "Render": 23.779999999999998,
+        "Confidence": 0.9977098703384399
+      },
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          88,
+          309,
+          737,
+          48
+        ],
+        "LayoutBounds": [
+          88,
+          309,
+          737,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9998540878295898
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          89,
+          356,
+          126,
+          29
+        ],
+        "LayoutBounds": [
+          89,
+          356,
+          126,
+          29
+        ],
+        "Script": 2,
+        "Glyph": 23.779999999999998,
+        "Render": 23.779999999999998,
+        "Confidence": 0.9976655840873718
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景文件智慧部署",
+        "Current": "閱讀更多。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.12987012987012986,
+        "LeftDelta": 0.05194805194805195,
+        "CenterDelta": 7.909090909090909,
+        "RightDelta": 15.87012987012987,
+        "AlignmentDelta": 0.05194805194805195,
+        "TextSizeRatio": 0.6041666666666666,
+        "WidthRatio": 5.904,
+        "LineAdvance": 1.3766233766233766,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 23.779999999999998,
+        "AdvancePixels": 53,
+        "AdvanceDenominator": 38.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "閱讀更多。",
+        "Current": "端側到服務端的全場景文件智慧部署",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 4.103896103896104,
+        "LeftDelta": 0.025974025974025976,
+        "CenterDelta": 7.922077922077922,
+        "RightDelta": 15.87012987012987,
+        "AlignmentDelta": 0.025974025974025976,
+        "TextSizeRatio": 0.6041666666666666,
+        "WidthRatio": 0.16960651289009498,
+        "LineAdvance": 4.857142857142857,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 23.779999999999998,
+        "CurrentSizeValue": 39.36,
+        "AdvancePixels": 187,
+        "AdvanceDenominator": 38.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景文件智慧部署",
+        "Current": "閱讀更多。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": -0.025974025974025976,
+        "LeftDelta": 0.025974025974025976,
+        "CenterDelta": 7.909090909090909,
+        "RightDelta": 15.844155844155845,
+        "AlignmentDelta": 0.025974025974025976,
+        "TextSizeRatio": 0.6041666666666666,
+        "WidthRatio": 5.849206349206349,
+        "LineAdvance": 1.2207792207792207,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 23.779999999999998,
+        "AdvancePixels": 47,
+        "AdvanceDenominator": 38.5
+      }
+    ]
+  },
+  {
+    "Image": "mixed-cjk.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2",
+        "b3",
+        "b4"
+      ],
+      [
+        "b5"
+      ],
+      [
+        "b6",
+        "b7"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          88,
+          70,
+          736,
+          45
+        ],
+        "LayoutBounds": [
+          88,
+          70,
+          736,
+          45
+        ],
+        "Script": 2,
+        "Glyph": 36.9,
+        "Render": 36.9,
+        "Confidence": 0.9998536705970764
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          88,
+          131,
+          126,
+          32
+        ],
+        "LayoutBounds": [
+          88,
+          131,
+          126,
+          32
+        ],
+        "Script": 2,
+        "Glyph": 26.24,
+        "Render": 26.24,
+        "Confidence": 0.9985591769218445
+      },
+      {
+        "Text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件 智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯 盟。",
+        "Bounds": [
+          86,
+          304,
+          810,
+          111
+        ],
+        "LayoutBounds": [
+          86,
+          304,
+          810,
+          111
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.999726708919283
+      },
+      {
+        "Text": "我們處理資料。",
+        "Bounds": [
+          89,
+          548,
+          307,
+          48
+        ],
+        "LayoutBounds": [
+          89,
+          548,
+          307,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997261166572571
+      },
+      {
+        "Text": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說 明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
+        "Bounds": [
+          88,
+          614,
+          809,
+          71
+        ],
+        "LayoutBounds": [
+          88,
+          614,
+          809,
+          71
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9997423578952921
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景文件智慧部署",
+        "Current": "閱讀更多。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.4155844155844156,
+        "LeftDelta": 0,
+        "CenterDelta": 7.922077922077922,
+        "RightDelta": 15.844155844155845,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.7111111111111111,
+        "WidthRatio": 5.841269841269841,
+        "LineAdvance": 1.5844155844155845,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 36.9,
+        "CurrentSizeValue": 26.24,
+        "AdvancePixels": 61,
+        "AdvanceDenominator": 38.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "閱讀更多。",
+        "Current": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 4.7,
+        "LeftDelta": 0.03333333333333333,
+        "CenterDelta": 11.383333333333333,
+        "RightDelta": 22.733333333333334,
+        "AlignmentDelta": 0.03333333333333333,
+        "TextSizeRatio": 0.875,
+        "WidthRatio": 0.15613382899628253,
+        "LineAdvance": 5.766666666666667,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "vertical gap",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 26.24,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 173,
+        "AdvanceDenominator": 30
+      },
+      {
+        "Kind": "next",
+        "Previous": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Current": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.42857142857142855,
+        "LeftDelta": 0.07142857142857142,
+        "CenterDelta": 0.42857142857142855,
+        "RightDelta": 0.9285714285714286,
+        "AlignmentDelta": 0.07142857142857142,
+        "TextSizeRatio": 1,
+        "WidthRatio": 1.03594351732991,
+        "LineAdvance": 1.4285714285714286,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 40,
+        "AdvanceDenominator": 28
+      },
+      {
+        "Kind": "next",
+        "Previous": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Current": "盟。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.32786885245901637,
+        "LeftDelta": 0.16393442622950818,
+        "CenterDelta": 12.131147540983607,
+        "RightDelta": 24.098360655737704,
+        "AlignmentDelta": 0.16393442622950818,
+        "TextSizeRatio": 0.8484848484848484,
+        "WidthRatio": 15.89795918367347,
+        "LineAdvance": 1.2459016393442623,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L3",
+        "CurrentId": "L4",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 27.06,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 30.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "盟。",
+        "Current": "我們處理資料。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 3.2839506172839505,
+        "LeftDelta": 0.07407407407407407,
+        "CenterDelta": 3.259259259259259,
+        "RightDelta": 6.444444444444445,
+        "AlignmentDelta": 0.07407407407407407,
+        "TextSizeRatio": 0.6875,
+        "WidthRatio": 0.15960912052117263,
+        "LineAdvance": 4.098765432098766,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L4",
+        "CurrentId": "L5",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 27.06,
+        "CurrentSizeValue": 39.36,
+        "AdvancePixels": 166,
+        "AdvanceDenominator": 40.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "我們處理資料。",
+        "Current": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.45569620253164556,
+        "LeftDelta": 0,
+        "CenterDelta": 6.341772151898734,
+        "RightDelta": 12.683544303797468,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.6458333333333333,
+        "WidthRatio": 0.37995049504950495,
+        "LineAdvance": 1.6708860759493671,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L5",
+        "CurrentId": "L6",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 66,
+        "AdvanceDenominator": 39.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說",
+        "Current": "明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.2903225806451613,
+        "LeftDelta": 0.03225806451612903,
+        "CenterDelta": 1.8225806451612903,
+        "RightDelta": 3.6129032258064515,
+        "AlignmentDelta": 0.03225806451612903,
+        "TextSizeRatio": 1,
+        "WidthRatio": 1.1592539454806312,
+        "LineAdvance": 1.2903225806451613,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L6",
+        "CurrentId": "L7",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 25.419999999999998,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 40,
+        "AdvanceDenominator": 31
+      }
+    ]
+  },
+  {
+    "Image": "mixed-cjk.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ],
+      [
+        "b4"
+      ],
+      [
+        "b5"
+      ],
+      [
+        "b6"
+      ],
+      [
+        "b7"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "端側到服務端的全場景文件智慧部署",
+        "Bounds": [
+          88,
+          70,
+          736,
+          45
+        ],
+        "LayoutBounds": [
+          88,
+          70,
+          736,
+          45
+        ],
+        "Script": 2,
+        "Glyph": 36.9,
+        "Render": 36.9,
+        "Confidence": 0.9998536705970764
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          88,
+          131,
+          126,
+          32
+        ],
+        "LayoutBounds": [
+          88,
+          131,
+          126,
+          32
+        ],
+        "Script": 2,
+        "Glyph": 26.24,
+        "Render": 26.24,
+        "Confidence": 0.9985591769218445
+      },
+      {
+        "Text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Bounds": [
+          89,
+          304,
+          807,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          304,
+          807,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9998301863670349
+      },
+      {
+        "Text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Bounds": [
+          91,
+          344,
+          779,
+          28
+        ],
+        "LayoutBounds": [
+          91,
+          344,
+          779,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9996122121810913
+      },
+      {
+        "Text": "盟。",
+        "Bounds": [
+          86,
+          382,
+          49,
+          33
+        ],
+        "LayoutBounds": [
+          86,
+          382,
+          49,
+          33
+        ],
+        "Script": 2,
+        "Glyph": 27.06,
+        "Render": 16.5,
+        "Confidence": 0.999840259552002
+      },
+      {
+        "Text": "我們處理資料。",
+        "Bounds": [
+          89,
+          548,
+          307,
+          48
+        ],
+        "LayoutBounds": [
+          89,
+          548,
+          307,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997261166572571
+      },
+      {
+        "Text": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說",
+        "Bounds": [
+          89,
+          614,
+          808,
+          31
+        ],
+        "LayoutBounds": [
+          89,
+          614,
+          808,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9996912479400635
+      },
+      {
+        "Text": "明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
+        "Bounds": [
+          88,
+          654,
+          697,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          654,
+          697,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9998010396957397
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景文件智慧部署",
+        "Current": "閱讀更多。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.4155844155844156,
+        "LeftDelta": 0,
+        "CenterDelta": 7.922077922077922,
+        "RightDelta": 15.844155844155845,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.7111111111111111,
+        "WidthRatio": 5.841269841269841,
+        "LineAdvance": 1.5844155844155845,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 36.9,
+        "CurrentSizeValue": 26.24,
+        "AdvancePixels": 61,
+        "AdvanceDenominator": 38.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "閱讀更多。",
+        "Current": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 4.7,
+        "LeftDelta": 0.03333333333333333,
+        "CenterDelta": 11.383333333333333,
+        "RightDelta": 22.733333333333334,
+        "AlignmentDelta": 0.03333333333333333,
+        "TextSizeRatio": 0.875,
+        "WidthRatio": 0.15613382899628253,
+        "LineAdvance": 5.766666666666667,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 26.24,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 173,
+        "AdvanceDenominator": 30
+      },
+      {
+        "Kind": "next",
+        "Previous": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Current": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.42857142857142855,
+        "LeftDelta": 0.07142857142857142,
+        "CenterDelta": 0.42857142857142855,
+        "RightDelta": 0.9285714285714286,
+        "AlignmentDelta": 0.07142857142857142,
+        "TextSizeRatio": 1,
+        "WidthRatio": 1.03594351732991,
+        "LineAdvance": 1.4285714285714286,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "no continuation evidence",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 40,
+        "AdvanceDenominator": 28
+      },
+      {
+        "Kind": "next",
+        "Previous": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Current": "盟。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.32786885245901637,
+        "LeftDelta": 0.16393442622950818,
+        "CenterDelta": 12.131147540983607,
+        "RightDelta": 24.098360655737704,
+        "AlignmentDelta": 0.16393442622950818,
+        "TextSizeRatio": 0.8484848484848484,
+        "WidthRatio": 15.89795918367347,
+        "LineAdvance": 1.2459016393442623,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L3",
+        "CurrentId": "L4",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 27.06,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 30.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "盟。",
+        "Current": "我們處理資料。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 3.2839506172839505,
+        "LeftDelta": 0.07407407407407407,
+        "CenterDelta": 3.259259259259259,
+        "RightDelta": 6.444444444444445,
+        "AlignmentDelta": 0.07407407407407407,
+        "TextSizeRatio": 0.6875,
+        "WidthRatio": 0.15960912052117263,
+        "LineAdvance": 4.098765432098766,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L4",
+        "CurrentId": "L5",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 27.06,
+        "CurrentSizeValue": 39.36,
+        "AdvancePixels": 166,
+        "AdvanceDenominator": 40.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "我們處理資料。",
+        "Current": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.45569620253164556,
+        "LeftDelta": 0,
+        "CenterDelta": 6.341772151898734,
+        "RightDelta": 12.683544303797468,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.6458333333333333,
+        "WidthRatio": 0.37995049504950495,
+        "LineAdvance": 1.6708860759493671,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L5",
+        "CurrentId": "L6",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 66,
+        "AdvanceDenominator": 39.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說",
+        "Current": "明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.2903225806451613,
+        "LeftDelta": 0.03225806451612903,
+        "CenterDelta": 1.8225806451612903,
+        "RightDelta": 3.6129032258064515,
+        "AlignmentDelta": 0.03225806451612903,
+        "TextSizeRatio": 1,
+        "WidthRatio": 1.1592539454806312,
+        "LineAdvance": 1.2903225806451613,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "no continuation evidence",
+        "PreviousId": "L6",
+        "CurrentId": "L7",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 25.419999999999998,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 40,
+        "AdvanceDenominator": 31
+      }
+    ]
+  },
+  {
+    "Image": "mixed-latin-tight.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          58,
+          847,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          58,
+          847,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.46,
+        "Render": 31.46,
+        "Confidence": 0.9893477559089661
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          117,
+          142,
+          34
+        ],
+        "LayoutBounds": [
+          86,
+          117,
+          142,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9894405603408813
+      },
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          299,
+          847,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          299,
+          847,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.46,
+        "Render": 31.46,
+        "Confidence": 0.9900674223899841
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          87,
+          355,
+          142,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          355,
+          142,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9999560713768005
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "Read more.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.0898876404494382,
+        "LeftDelta": 0.0449438202247191,
+        "CenterDelta": 7.876404494382022,
+        "RightDelta": 15.797752808988765,
+        "AlignmentDelta": 0.0449438202247191,
+        "TextSizeRatio": 0.6519742883379247,
+        "WidthRatio": 5.964788732394366,
+        "LineAdvance": 1.3258426966292134,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 31.46,
+        "CurrentSizeValue": 20.511111111111113,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 44.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Read more.",
+        "Current": "Precise geolocation and device scanning",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.3258426966292136,
+        "LeftDelta": 0.0449438202247191,
+        "CenterDelta": 7.876404494382022,
+        "RightDelta": 15.797752808988765,
+        "AlignmentDelta": 0.0449438202247191,
+        "TextSizeRatio": 0.6519742883379247,
+        "WidthRatio": 0.16765053128689492,
+        "LineAdvance": 4.089887640449438,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 20.511111111111113,
+        "CurrentSizeValue": 31.46,
+        "AdvancePixels": 182,
+        "AdvanceDenominator": 44.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "Read more.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.023255813953488372,
+        "LeftDelta": 0.06976744186046512,
+        "CenterDelta": 8.127906976744185,
+        "RightDelta": 16.325581395348838,
+        "AlignmentDelta": 0.06976744186046512,
+        "TextSizeRatio": 0.6519742883379247,
+        "WidthRatio": 5.964788732394366,
+        "LineAdvance": 1.302325581395349,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 31.46,
+        "CurrentSizeValue": 20.511111111111113,
+        "AdvancePixels": 56,
+        "AdvanceDenominator": 43
+      }
+    ]
+  },
+  {
+    "Image": "mixed-latin-tight.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          58,
+          847,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          58,
+          847,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.46,
+        "Render": 31.46,
+        "Confidence": 0.9893477559089661
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          117,
+          142,
+          34
+        ],
+        "LayoutBounds": [
+          86,
+          117,
+          142,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9894405603408813
+      },
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          299,
+          847,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          299,
+          847,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.46,
+        "Render": 31.46,
+        "Confidence": 0.9900674223899841
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          87,
+          355,
+          142,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          355,
+          142,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9999560713768005
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "Read more.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.0898876404494382,
+        "LeftDelta": 0.0449438202247191,
+        "CenterDelta": 7.876404494382022,
+        "RightDelta": 15.797752808988765,
+        "AlignmentDelta": 0.0449438202247191,
+        "TextSizeRatio": 0.6519742883379247,
+        "WidthRatio": 5.964788732394366,
+        "LineAdvance": 1.3258426966292134,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 31.46,
+        "CurrentSizeValue": 20.511111111111113,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 44.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Read more.",
+        "Current": "Precise geolocation and device scanning",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.3258426966292136,
+        "LeftDelta": 0.0449438202247191,
+        "CenterDelta": 7.876404494382022,
+        "RightDelta": 15.797752808988765,
+        "AlignmentDelta": 0.0449438202247191,
+        "TextSizeRatio": 0.6519742883379247,
+        "WidthRatio": 0.16765053128689492,
+        "LineAdvance": 4.089887640449438,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 20.511111111111113,
+        "CurrentSizeValue": 31.46,
+        "AdvancePixels": 182,
+        "AdvanceDenominator": 44.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "Read more.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.023255813953488372,
+        "LeftDelta": 0.06976744186046512,
+        "CenterDelta": 8.127906976744185,
+        "RightDelta": 16.325581395348838,
+        "AlignmentDelta": 0.06976744186046512,
+        "TextSizeRatio": 0.6519742883379247,
+        "WidthRatio": 5.964788732394366,
+        "LineAdvance": 1.302325581395349,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 31.46,
+        "CurrentSizeValue": 20.511111111111113,
+        "AdvancePixels": 56,
+        "AdvanceDenominator": 43
+      }
+    ]
+  },
+  {
+    "Image": "mixed-latin.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2",
+        "b3",
+        "b4"
+      ],
+      [
+        "b5"
+      ],
+      [
+        "b6"
+      ],
+      [
+        "b7",
+        "b8"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          58,
+          848,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          58,
+          848,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.497142857142858,
+        "Render": 31.497142857142858,
+        "Confidence": 0.9888512492179871
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          124,
+          142,
+          35
+        ],
+        "LayoutBounds": [
+          86,
+          124,
+          142,
+          35
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9999549388885498
+      },
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to entry: any model provider or application builder may join it, and every member keeps the right to leave at any time without notice or",
+        "Bounds": [
+          86,
+          295,
+          856,
+          115
+        ],
+        "LayoutBounds": [
+          86,
+          295,
+          856,
+          115
+        ],
+        "Script": 1,
+        "Glyph": 17.3,
+        "Render": 17.3,
+        "Confidence": 0.9984679424823238
+      },
+      {
+        "Text": "cost.",
+        "Bounds": [
+          85,
+          417,
+          61,
+          34
+        ],
+        "LayoutBounds": [
+          85,
+          417,
+          61,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 27.88,
+        "Render": 27.88,
+        "Confidence": 0.9999211430549622
+      },
+      {
+        "Text": "We process data.",
+        "Bounds": [
+          86,
+          579,
+          367,
+          51
+        ],
+        "LayoutBounds": [
+          86,
+          579,
+          367,
+          51
+        ],
+        "Script": 1,
+        "Glyph": 34.07857142857143,
+        "Render": 34.07857142857143,
+        "Confidence": 0.9998233914375305
+      },
+      {
+        "Text": "Use precise geolocation data and actively scan device characteristics for identification, then store or access information on a device as described.",
+        "Bounds": [
+          86,
+          648,
+          828,
+          73
+        ],
+        "LayoutBounds": [
+          86,
+          648,
+          828,
+          73
+        ],
+        "Script": 1,
+        "Glyph": 16.81875,
+        "Render": 16.81875,
+        "Confidence": 0.9939867858173085
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "Read more.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.24444444444444444,
+        "LeftDelta": 0.044444444444444446,
+        "CenterDelta": 7.8,
+        "RightDelta": 15.644444444444444,
+        "AlignmentDelta": 0.044444444444444446,
+        "TextSizeRatio": 0.6512054507337527,
+        "WidthRatio": 5.971830985915493,
+        "LineAdvance": 1.4666666666666666,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 31.497142857142858,
+        "CurrentSizeValue": 20.511111111111113,
+        "AdvancePixels": 66,
+        "AdvanceDenominator": 45
+      },
+      {
+        "Kind": "next",
+        "Previous": "Read more.",
+        "Current": "The alliance involves no commercial exclusivity and no barrier to entry: any",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.7777777777777777,
+        "LeftDelta": 0,
+        "CenterDelta": 9.916666666666666,
+        "RightDelta": 19.833333333333332,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.8346695557963163,
+        "WidthRatio": 0.1658878504672897,
+        "LineAdvance": 4.75,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "vertical gap",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 20.511111111111113,
+        "CurrentSizeValue": 17.12,
+        "AdvancePixels": 171,
+        "AdvanceDenominator": 36
+      },
+      {
+        "Kind": "next",
+        "Previous": "The alliance involves no commercial exclusivity and no barrier to entry: any",
+        "Current": "model provider or application builder may join it, and every member keeps",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.14084507042253522,
+        "LeftDelta": 0.028169014084507043,
+        "CenterDelta": 0.1267605633802817,
+        "RightDelta": 0.28169014084507044,
+        "AlignmentDelta": 0.028169014084507043,
+        "TextSizeRatio": 0.9662630860263997,
+        "WidthRatio": 1.01301775147929,
+        "LineAdvance": 1.1830985915492958,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.12,
+        "CurrentSizeValue": 17.717741935483872,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 35.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "model provider or application builder may join it, and every member keeps",
+        "Current": "the right to leave at any time without notice or",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.24615384615384617,
+        "LeftDelta": 0,
+        "CenterDelta": 5.015384615384615,
+        "RightDelta": 10.03076923076923,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.9764223941738734,
+        "WidthRatio": 1.628131021194605,
+        "LineAdvance": 1.2923076923076924,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L3",
+        "CurrentId": "L4",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.717741935483872,
+        "CurrentSizeValue": 17.3,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 32.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "the right to leave at any time without notice or",
+        "Current": "cost.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.2153846153846154,
+        "LeftDelta": 0.06153846153846154,
+        "CenterDelta": 7.107692307692307,
+        "RightDelta": 14.153846153846153,
+        "AlignmentDelta": 0.06153846153846154,
+        "TextSizeRatio": 0.62051649928264,
+        "WidthRatio": 8.508196721311476,
+        "LineAdvance": 1.1692307692307693,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L4",
+        "CurrentId": "L5",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.3,
+        "CurrentSizeValue": 27.88,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 32.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "cost.",
+        "Current": "We process data.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.011764705882353,
+        "LeftDelta": 0.023529411764705882,
+        "CenterDelta": 3.623529411764706,
+        "RightDelta": 7.223529411764706,
+        "AlignmentDelta": 0.023529411764705882,
+        "TextSizeRatio": 0.8181094110249423,
+        "WidthRatio": 0.16621253405994552,
+        "LineAdvance": 3.8117647058823527,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "vertical gap",
+        "PreviousId": "L5",
+        "CurrentId": "L6",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 27.88,
+        "CurrentSizeValue": 34.07857142857143,
+        "AdvancePixels": 162,
+        "AdvanceDenominator": 42.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "We process data.",
+        "Current": "Use precise geolocation data and actively scan device characteristics for",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.4090909090909091,
+        "LeftDelta": 0,
+        "CenterDelta": 5.238636363636363,
+        "RightDelta": 10.477272727272727,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.49352861035422346,
+        "WidthRatio": 0.44323671497584544,
+        "LineAdvance": 1.5681818181818181,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L6",
+        "CurrentId": "L7",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 34.07857142857143,
+        "CurrentSizeValue": 16.81875,
+        "AdvancePixels": 69,
+        "AdvanceDenominator": 44
+      },
+      {
+        "Kind": "next",
+        "Previous": "Use precise geolocation data and actively scan device characteristics for",
+        "Current": "identification, then store or access information on a device as described.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.14705882352941177,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 0.08823529411764706,
+        "RightDelta": 0.20588235294117646,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 0.9903381642512077,
+        "WidthRatio": 1.0097560975609756,
+        "LineAdvance": 1.2352941176470589,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L7",
+        "CurrentId": "L8",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 16.81875,
+        "CurrentSizeValue": 16.65625,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 34
+      }
+    ]
+  },
+  {
+    "Image": "mixed-latin.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2",
+        "b3",
+        "b4"
+      ],
+      [
+        "b5"
+      ],
+      [
+        "b6"
+      ],
+      [
+        "b7"
+      ],
+      [
+        "b8"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          58,
+          848,
+          55
+        ],
+        "LayoutBounds": [
+          84,
+          58,
+          848,
+          55
+        ],
+        "Script": 1,
+        "Glyph": 31.497142857142858,
+        "Render": 31.497142857142858,
+        "Confidence": 0.9888512492179871
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          124,
+          142,
+          35
+        ],
+        "LayoutBounds": [
+          86,
+          124,
+          142,
+          35
+        ],
+        "Script": 1,
+        "Glyph": 20.511111111111113,
+        "Render": 20.511111111111113,
+        "Confidence": 0.9999549388885498
+      },
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to entry: any model provider or application builder may join it, and every member keeps the right to leave at any time without notice or",
+        "Bounds": [
+          86,
+          295,
+          856,
+          115
+        ],
+        "LayoutBounds": [
+          86,
+          295,
+          856,
+          115
+        ],
+        "Script": 1,
+        "Glyph": 17.3,
+        "Render": 17.3,
+        "Confidence": 0.9984679424823238
+      },
+      {
+        "Text": "cost.",
+        "Bounds": [
+          85,
+          417,
+          61,
+          34
+        ],
+        "LayoutBounds": [
+          85,
+          417,
+          61,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 27.88,
+        "Render": 27.88,
+        "Confidence": 0.9999211430549622
+      },
+      {
+        "Text": "We process data.",
+        "Bounds": [
+          86,
+          579,
+          367,
+          51
+        ],
+        "LayoutBounds": [
+          86,
+          579,
+          367,
+          51
+        ],
+        "Script": 1,
+        "Glyph": 34.07857142857143,
+        "Render": 34.07857142857143,
+        "Confidence": 0.9998233914375305
+      },
+      {
+        "Text": "Use precise geolocation data and actively scan device characteristics for",
+        "Bounds": [
+          86,
+          648,
+          828,
+          37
+        ],
+        "LayoutBounds": [
+          86,
+          648,
+          828,
+          37
+        ],
+        "Script": 1,
+        "Glyph": 16.81875,
+        "Render": 16.81875,
+        "Confidence": 0.9998883008956909
+      },
+      {
+        "Text": "identification, then store or access information on a device as described.",
+        "Bounds": [
+          87,
+          690,
+          820,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          690,
+          820,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 16.65625,
+        "Render": 16.65625,
+        "Confidence": 0.988165020942688
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "Read more.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.24444444444444444,
+        "LeftDelta": 0.044444444444444446,
+        "CenterDelta": 7.8,
+        "RightDelta": 15.644444444444444,
+        "AlignmentDelta": 0.044444444444444446,
+        "TextSizeRatio": 0.6512054507337527,
+        "WidthRatio": 5.971830985915493,
+        "LineAdvance": 1.4666666666666666,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 31.497142857142858,
+        "CurrentSizeValue": 20.511111111111113,
+        "AdvancePixels": 66,
+        "AdvanceDenominator": 45
+      },
+      {
+        "Kind": "next",
+        "Previous": "Read more.",
+        "Current": "The alliance involves no commercial exclusivity and no barrier to entry: any",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.7777777777777777,
+        "LeftDelta": 0,
+        "CenterDelta": 9.916666666666666,
+        "RightDelta": 19.833333333333332,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.8346695557963163,
+        "WidthRatio": 0.1658878504672897,
+        "LineAdvance": 4.75,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 20.511111111111113,
+        "CurrentSizeValue": 17.12,
+        "AdvancePixels": 171,
+        "AdvanceDenominator": 36
+      },
+      {
+        "Kind": "next",
+        "Previous": "The alliance involves no commercial exclusivity and no barrier to entry: any",
+        "Current": "model provider or application builder may join it, and every member keeps",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.14084507042253522,
+        "LeftDelta": 0.028169014084507043,
+        "CenterDelta": 0.1267605633802817,
+        "RightDelta": 0.28169014084507044,
+        "AlignmentDelta": 0.028169014084507043,
+        "TextSizeRatio": 0.9662630860263997,
+        "WidthRatio": 1.01301775147929,
+        "LineAdvance": 1.1830985915492958,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.12,
+        "CurrentSizeValue": 17.717741935483872,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 35.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "model provider or application builder may join it, and every member keeps",
+        "Current": "the right to leave at any time without notice or",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.24615384615384617,
+        "LeftDelta": 0,
+        "CenterDelta": 5.015384615384615,
+        "RightDelta": 10.03076923076923,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.9764223941738734,
+        "WidthRatio": 1.628131021194605,
+        "LineAdvance": 1.2923076923076924,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": true,
+        "Rule": "shorter final line",
+        "PreviousId": "L3",
+        "CurrentId": "L4",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.717741935483872,
+        "CurrentSizeValue": 17.3,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 32.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "the right to leave at any time without notice or",
+        "Current": "cost.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.2153846153846154,
+        "LeftDelta": 0.06153846153846154,
+        "CenterDelta": 7.107692307692307,
+        "RightDelta": 14.153846153846153,
+        "AlignmentDelta": 0.06153846153846154,
+        "TextSizeRatio": 0.62051649928264,
+        "WidthRatio": 8.508196721311476,
+        "LineAdvance": 1.1692307692307693,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L4",
+        "CurrentId": "L5",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.3,
+        "CurrentSizeValue": 27.88,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 32.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "cost.",
+        "Current": "We process data.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.011764705882353,
+        "LeftDelta": 0.023529411764705882,
+        "CenterDelta": 3.623529411764706,
+        "RightDelta": 7.223529411764706,
+        "AlignmentDelta": 0.023529411764705882,
+        "TextSizeRatio": 0.8181094110249423,
+        "WidthRatio": 0.16621253405994552,
+        "LineAdvance": 3.8117647058823527,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L5",
+        "CurrentId": "L6",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 27.88,
+        "CurrentSizeValue": 34.07857142857143,
+        "AdvancePixels": 162,
+        "AdvanceDenominator": 42.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "We process data.",
+        "Current": "Use precise geolocation data and actively scan device characteristics for",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.4090909090909091,
+        "LeftDelta": 0,
+        "CenterDelta": 5.238636363636363,
+        "RightDelta": 10.477272727272727,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.49352861035422346,
+        "WidthRatio": 0.44323671497584544,
+        "LineAdvance": 1.5681818181818181,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L6",
+        "CurrentId": "L7",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 34.07857142857143,
+        "CurrentSizeValue": 16.81875,
+        "AdvancePixels": 69,
+        "AdvanceDenominator": 44
+      },
+      {
+        "Kind": "next",
+        "Previous": "Use precise geolocation data and actively scan device characteristics for",
+        "Current": "identification, then store or access information on a device as described.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.14705882352941177,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 0.08823529411764706,
+        "RightDelta": 0.20588235294117646,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 0.9903381642512077,
+        "WidthRatio": 1.0097560975609756,
+        "LineAdvance": 1.2352941176470589,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "no continuation evidence",
+        "PreviousId": "L7",
+        "CurrentId": "L8",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 16.81875,
+        "CurrentSizeValue": 16.65625,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 34
+      }
+    ]
+  },
+  {
+    "Image": "mixed-script.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0",
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ],
+      [
+        "b4",
+        "b5"
+      ],
+      [
+        "b6"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "端側到服務端的全場景部署 Read more.",
+        "Bounds": [
+          86,
+          69,
+          554,
+          97
+        ],
+        "LayoutBounds": [
+          86,
+          69,
+          554,
+          97
+        ],
+        "Script": 3,
+        "Glyph": null,
+        "Render": 37.72,
+        "Confidence": 0.9997397715395148
+      },
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          305,
+          882,
+          59
+        ],
+        "LayoutBounds": [
+          84,
+          305,
+          882,
+          59
+        ],
+        "Script": 1,
+        "Glyph": 32.76,
+        "Render": 32.76,
+        "Confidence": 0.9910849928855896
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          87,
+          368,
+          128,
+          34
+        ],
+        "LayoutBounds": [
+          87,
+          368,
+          128,
+          34
+        ],
+        "Script": 2,
+        "Glyph": 27.88,
+        "Render": 27.88,
+        "Confidence": 0.997950553894043
+      },
+      {
+        "Text": "本次 PaddleOCR 3.7.0 release 針對古籍與圖表理解做了大幅改善，並且在 OmniDocBench 上再次刷新紀錄，完整說明請見 release notes for",
+        "Bounds": [
+          86,
+          541,
+          864,
+          75
+        ],
+        "LayoutBounds": [
+          86,
+          541,
+          864,
+          75
+        ],
+        "Script": 3,
+        "Glyph": null,
+        "Render": 26.680952380952384,
+        "Confidence": 0.9821620321535802
+      },
+      {
+        "Text": "1.81.0.",
+        "Bounds": [
+          86,
+          620,
+          85,
+          36
+        ],
+        "LayoutBounds": [
+          86,
+          620,
+          85,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 15.785714285714286,
+        "Render": 15.785714285714286,
+        "Confidence": 0.9997852444648743
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景部署",
+        "Current": "Read more.",
+        "PreviousScript": 2,
+        "CurrentScript": 1,
+        "VerticalGap": 0.30952380952380953,
+        "LeftDelta": 0.07142857142857142,
+        "CenterDelta": 4.880952380952381,
+        "RightDelta": 9.69047619047619,
+        "AlignmentDelta": 0.07142857142857142,
+        "TextSizeRatio": 0.8260869565217391,
+        "WidthRatio": 3.748299319727891,
+        "LineAdvance": 1.4047619047619047,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 46,
+        "CurrentSizeValue": 38,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 42
+      },
+      {
+        "Kind": "next",
+        "Previous": "Read more.",
+        "Current": "Precise geolocation and device scanning",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 2.865979381443299,
+        "LeftDelta": 0.041237113402061855,
+        "CenterDelta": 7.536082474226804,
+        "RightDelta": 15.11340206185567,
+        "AlignmentDelta": 0.041237113402061855,
+        "TextSizeRatio": 0.6481481481481483,
+        "WidthRatio": 0.16666666666666666,
+        "LineAdvance": 3.649484536082474,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 21.233333333333334,
+        "CurrentSizeValue": 32.76,
+        "AdvancePixels": 177,
+        "AdvanceDenominator": 48.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "閱讀更多。",
+        "PreviousScript": 1,
+        "CurrentScript": 2,
+        "VerticalGap": 0.08602150537634409,
+        "LeftDelta": 0.06451612903225806,
+        "CenterDelta": 8.043010752688172,
+        "RightDelta": 16.150537634408604,
+        "AlignmentDelta": 0.06451612903225806,
+        "TextSizeRatio": 0.576271186440678,
+        "WidthRatio": 6.890625,
+        "LineAdvance": 1.3548387096774193,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 59,
+        "CurrentSizeValue": 34,
+        "AdvancePixels": 63,
+        "AdvanceDenominator": 46.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "閱讀更多。",
+        "Current": "本次 PaddleOCR 3.7.0 release 針對古籍與圖表理解做了大幅改善，並且在",
+        "PreviousScript": 2,
+        "CurrentScript": 3,
+        "VerticalGap": 4.088235294117647,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 10.823529411764707,
+        "RightDelta": 21.61764705882353,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 1,
+        "WidthRatio": 0.14849187935034802,
+        "LineAdvance": 5.088235294117647,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "vertical gap",
+        "PreviousId": "L3",
+        "CurrentId": "L4",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 34,
+        "CurrentSizeValue": 34,
+        "AdvancePixels": 173,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "本次 PaddleOCR 3.7.0 release 針對古籍與圖表理解做了大幅改善，並且在",
+        "Current": "OmniDocBench 上再次刷新紀錄，完整說明請見 release notes for",
+        "PreviousScript": 3,
+        "CurrentScript": 3,
+        "VerticalGap": 0.11267605633802817,
+        "LeftDelta": 0.056338028169014086,
+        "CenterDelta": 1.1690140845070423,
+        "RightDelta": 2.2816901408450705,
+        "AlignmentDelta": 0.056338028169014086,
+        "TextSizeRatio": 0.918918918918919,
+        "WidthRatio": 1.1008939974457215,
+        "LineAdvance": 1.0704225352112675,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L4",
+        "CurrentId": "L5",
+        "SizeBasis": 3,
+        "PreviousSizeValue": 34,
+        "CurrentSizeValue": 37,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 35.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "OmniDocBench 上再次刷新紀錄，完整說明請見 release notes for",
+        "Current": "1.81.0.",
+        "PreviousScript": 3,
+        "CurrentScript": 1,
+        "VerticalGap": 0.1095890410958904,
+        "LeftDelta": 0,
+        "CenterDelta": 9.561643835616438,
+        "RightDelta": 19.123287671232877,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.972972972972973,
+        "WidthRatio": 9.211764705882352,
+        "LineAdvance": 1.1232876712328768,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "numeric row",
+        "PreviousId": "L5",
+        "CurrentId": "L6",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 37,
+        "CurrentSizeValue": 36,
+        "AdvancePixels": 41,
+        "AdvanceDenominator": 36.5
+      }
+    ]
+  },
+  {
+    "Image": "mixed-script.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ],
+      [
+        "b4",
+        "b5"
+      ],
+      [
+        "b6"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "端側到服務端的全場景部署",
+        "Bounds": [
+          89,
+          69,
+          551,
+          46
+        ],
+        "LayoutBounds": [
+          89,
+          69,
+          551,
+          46
+        ],
+        "Script": 2,
+        "Glyph": 37.72,
+        "Render": 37.72,
+        "Confidence": 0.9995586276054382
+      },
+      {
+        "Text": "Read more.",
+        "Bounds": [
+          86,
+          128,
+          147,
+          38
+        ],
+        "LayoutBounds": [
+          86,
+          128,
+          147,
+          38
+        ],
+        "Script": 1,
+        "Glyph": 21.233333333333334,
+        "Render": 21.233333333333334,
+        "Confidence": 0.9999571442604065
+      },
+      {
+        "Text": "Precise geolocation and device scanning",
+        "Bounds": [
+          84,
+          305,
+          882,
+          59
+        ],
+        "LayoutBounds": [
+          84,
+          305,
+          882,
+          59
+        ],
+        "Script": 1,
+        "Glyph": 32.76,
+        "Render": 32.76,
+        "Confidence": 0.9910849928855896
+      },
+      {
+        "Text": "閱讀更多。",
+        "Bounds": [
+          87,
+          368,
+          128,
+          34
+        ],
+        "LayoutBounds": [
+          87,
+          368,
+          128,
+          34
+        ],
+        "Script": 2,
+        "Glyph": 27.88,
+        "Render": 27.88,
+        "Confidence": 0.997950553894043
+      },
+      {
+        "Text": "本次 PaddleOCR 3.7.0 release 針對古籍與圖表理解做了大幅改善，並且在 OmniDocBench 上再次刷新紀錄，完整說明請見 release notes for",
+        "Bounds": [
+          86,
+          541,
+          864,
+          75
+        ],
+        "LayoutBounds": [
+          86,
+          541,
+          864,
+          75
+        ],
+        "Script": 3,
+        "Glyph": null,
+        "Render": 26.680952380952384,
+        "Confidence": 0.9821620321535802
+      },
+      {
+        "Text": "1.81.0.",
+        "Bounds": [
+          86,
+          620,
+          85,
+          36
+        ],
+        "LayoutBounds": [
+          86,
+          620,
+          85,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 15.785714285714286,
+        "Render": 15.785714285714286,
+        "Confidence": 0.9997852444648743
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "端側到服務端的全場景部署",
+        "Current": "Read more.",
+        "PreviousScript": 2,
+        "CurrentScript": 1,
+        "VerticalGap": 0.30952380952380953,
+        "LeftDelta": 0.07142857142857142,
+        "CenterDelta": 4.880952380952381,
+        "RightDelta": 9.69047619047619,
+        "AlignmentDelta": 0.07142857142857142,
+        "TextSizeRatio": 0.8260869565217391,
+        "WidthRatio": 3.748299319727891,
+        "LineAdvance": 1.4047619047619047,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 46,
+        "CurrentSizeValue": 38,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 42
+      },
+      {
+        "Kind": "next",
+        "Previous": "Read more.",
+        "Current": "Precise geolocation and device scanning",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 2.865979381443299,
+        "LeftDelta": 0.041237113402061855,
+        "CenterDelta": 7.536082474226804,
+        "RightDelta": 15.11340206185567,
+        "AlignmentDelta": 0.041237113402061855,
+        "TextSizeRatio": 0.6481481481481483,
+        "WidthRatio": 0.16666666666666666,
+        "LineAdvance": 3.649484536082474,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 21.233333333333334,
+        "CurrentSizeValue": 32.76,
+        "AdvancePixels": 177,
+        "AdvanceDenominator": 48.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Precise geolocation and device scanning",
+        "Current": "閱讀更多。",
+        "PreviousScript": 1,
+        "CurrentScript": 2,
+        "VerticalGap": 0.08602150537634409,
+        "LeftDelta": 0.06451612903225806,
+        "CenterDelta": 8.043010752688172,
+        "RightDelta": 16.150537634408604,
+        "AlignmentDelta": 0.06451612903225806,
+        "TextSizeRatio": 0.576271186440678,
+        "WidthRatio": 6.890625,
+        "LineAdvance": 1.3548387096774193,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 59,
+        "CurrentSizeValue": 34,
+        "AdvancePixels": 63,
+        "AdvanceDenominator": 46.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "閱讀更多。",
+        "Current": "本次 PaddleOCR 3.7.0 release 針對古籍與圖表理解做了大幅改善，並且在",
+        "PreviousScript": 2,
+        "CurrentScript": 3,
+        "VerticalGap": 4.088235294117647,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 10.823529411764707,
+        "RightDelta": 21.61764705882353,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 1,
+        "WidthRatio": 0.14849187935034802,
+        "LineAdvance": 5.088235294117647,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "vertical gap",
+        "PreviousId": "L3",
+        "CurrentId": "L4",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 34,
+        "CurrentSizeValue": 34,
+        "AdvancePixels": 173,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "本次 PaddleOCR 3.7.0 release 針對古籍與圖表理解做了大幅改善，並且在",
+        "Current": "OmniDocBench 上再次刷新紀錄，完整說明請見 release notes for",
+        "PreviousScript": 3,
+        "CurrentScript": 3,
+        "VerticalGap": 0.11267605633802817,
+        "LeftDelta": 0.056338028169014086,
+        "CenterDelta": 1.1690140845070423,
+        "RightDelta": 2.2816901408450705,
+        "AlignmentDelta": 0.056338028169014086,
+        "TextSizeRatio": 0.918918918918919,
+        "WidthRatio": 1.1008939974457215,
+        "LineAdvance": 1.0704225352112675,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L4",
+        "CurrentId": "L5",
+        "SizeBasis": 3,
+        "PreviousSizeValue": 34,
+        "CurrentSizeValue": 37,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 35.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "OmniDocBench 上再次刷新紀錄，完整說明請見 release notes for",
+        "Current": "1.81.0.",
+        "PreviousScript": 3,
+        "CurrentScript": 1,
+        "VerticalGap": 0.1095890410958904,
+        "LeftDelta": 0,
+        "CenterDelta": 9.561643835616438,
+        "RightDelta": 19.123287671232877,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.972972972972973,
+        "WidthRatio": 9.211764705882352,
+        "LineAdvance": 1.1232876712328768,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "numeric row",
+        "PreviousId": "L5",
+        "CurrentId": "L6",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 37,
+        "CurrentSizeValue": 36,
+        "AdvancePixels": 41,
+        "AdvanceDenominator": 36.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-cjk.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Bounds": [
+          88,
+          62,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          62,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9976613521575928
+      },
+      {
+        "Text": "已儲存。",
+        "Bounds": [
+          89,
+          120,
+          158,
+          50
+        ],
+        "LayoutBounds": [
+          89,
+          120,
+          158,
+          50
+        ],
+        "Script": 2,
+        "Glyph": 41,
+        "Render": 41,
+        "Confidence": 0.9998271465301514
+      },
+      {
+        "Text": "這裡統計的是過去三十天之內曾經回報過的每一部裝置，不含停用的",
+        "Bounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9989458918571472
+      },
+      {
+        "Text": "已完成。",
+        "Bounds": [
+          90,
+          361,
+          158,
+          51
+        ],
+        "LayoutBounds": [
+          90,
+          361,
+          158,
+          51
+        ],
+        "Script": 2,
+        "Glyph": 41.82,
+        "Render": 41.82,
+        "Confidence": 0.9991983771324158
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Current": "已儲存。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.6666666666666666,
+        "LeftDelta": 0.024691358024691357,
+        "CenterDelta": 7.679012345679013,
+        "RightDelta": 15.382716049382717,
+        "AlignmentDelta": 0.024691358024691357,
+        "TextSizeRatio": 0.62,
+        "WidthRatio": 4.949367088607595,
+        "LineAdvance": 1.4320987654320987,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 25.419999999999998,
+        "CurrentSizeValue": 41,
+        "AdvancePixels": 58,
+        "AdvanceDenominator": 40.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "已儲存。",
+        "Current": "這裡統計的是過去三十天之內曾經回報過的每一部裝置，不含停用的",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 3.259259259259259,
+        "LeftDelta": 0.024691358024691357,
+        "CenterDelta": 7.679012345679013,
+        "RightDelta": 15.382716049382717,
+        "AlignmentDelta": 0.024691358024691357,
+        "TextSizeRatio": 0.62,
+        "WidthRatio": 0.2020460358056266,
+        "LineAdvance": 4.493827160493828,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 41,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 182,
+        "AdvanceDenominator": 40.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "這裡統計的是過去三十天之內曾經回報過的每一部裝置，不含停用的",
+        "Current": "已完成。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.6829268292682927,
+        "LeftDelta": 0.04878048780487805,
+        "CenterDelta": 7.560975609756097,
+        "RightDelta": 15.170731707317072,
+        "AlignmentDelta": 0.04878048780487805,
+        "TextSizeRatio": 0.6078431372549019,
+        "WidthRatio": 4.949367088607595,
+        "LineAdvance": 1.4390243902439024,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 25.419999999999998,
+        "CurrentSizeValue": 41.82,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 41
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-cjk.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Bounds": [
+          88,
+          62,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          62,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9976613521575928
+      },
+      {
+        "Text": "已儲存。",
+        "Bounds": [
+          89,
+          120,
+          158,
+          50
+        ],
+        "LayoutBounds": [
+          89,
+          120,
+          158,
+          50
+        ],
+        "Script": 2,
+        "Glyph": 41,
+        "Render": 41,
+        "Confidence": 0.9998271465301514
+      },
+      {
+        "Text": "這裡統計的是過去三十天之內曾經回報過的每一部裝置，不含停用的",
+        "Bounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9989458918571472
+      },
+      {
+        "Text": "已完成。",
+        "Bounds": [
+          90,
+          361,
+          158,
+          51
+        ],
+        "LayoutBounds": [
+          90,
+          361,
+          158,
+          51
+        ],
+        "Script": 2,
+        "Glyph": 41.82,
+        "Render": 41.82,
+        "Confidence": 0.9991983771324158
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Current": "已儲存。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.6666666666666666,
+        "LeftDelta": 0.024691358024691357,
+        "CenterDelta": 7.679012345679013,
+        "RightDelta": 15.382716049382717,
+        "AlignmentDelta": 0.024691358024691357,
+        "TextSizeRatio": 0.62,
+        "WidthRatio": 4.949367088607595,
+        "LineAdvance": 1.4320987654320987,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 25.419999999999998,
+        "CurrentSizeValue": 41,
+        "AdvancePixels": 58,
+        "AdvanceDenominator": 40.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "已儲存。",
+        "Current": "這裡統計的是過去三十天之內曾經回報過的每一部裝置，不含停用的",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 3.259259259259259,
+        "LeftDelta": 0.024691358024691357,
+        "CenterDelta": 7.679012345679013,
+        "RightDelta": 15.382716049382717,
+        "AlignmentDelta": 0.024691358024691357,
+        "TextSizeRatio": 0.62,
+        "WidthRatio": 0.2020460358056266,
+        "LineAdvance": 4.493827160493828,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 41,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 182,
+        "AdvanceDenominator": 40.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "這裡統計的是過去三十天之內曾經回報過的每一部裝置，不含停用的",
+        "Current": "已完成。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.6829268292682927,
+        "LeftDelta": 0.04878048780487805,
+        "CenterDelta": 7.560975609756097,
+        "RightDelta": 15.170731707317072,
+        "AlignmentDelta": 0.04878048780487805,
+        "TextSizeRatio": 0.6078431372549019,
+        "WidthRatio": 4.949367088607595,
+        "LineAdvance": 1.4390243902439024,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 25.419999999999998,
+        "CurrentSizeValue": 41.82,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 41
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-cross.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Changes to the capture shortcut take effect the next time the app",
+        "Bounds": [
+          87,
+          60,
+          803,
+          38
+        ],
+        "LayoutBounds": [
+          87,
+          60,
+          803,
+          38
+        ],
+        "Script": 1,
+        "Glyph": 19.331481481481482,
+        "Render": 19.331481481481482,
+        "Confidence": 0.9999384880065918
+      },
+      {
+        "Text": "已儲存。",
+        "Bounds": [
+          89,
+          121,
+          158,
+          48
+        ],
+        "LayoutBounds": [
+          89,
+          121,
+          158,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997966289520264
+      },
+      {
+        "Text": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Bounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9976613521575928
+      },
+      {
+        "Text": "Saved.",
+        "Bounds": [
+          85,
+          359,
+          138,
+          54
+        ],
+        "LayoutBounds": [
+          85,
+          359,
+          138,
+          54
+        ],
+        "Script": 1,
+        "Glyph": 29.900000000000002,
+        "Render": 29.900000000000002,
+        "Confidence": 0.999957799911499
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Changes to the capture shortcut take effect the next time the app",
+        "Current": "已儲存。",
+        "PreviousScript": 1,
+        "CurrentScript": 2,
+        "VerticalGap": 0.5348837209302325,
+        "LeftDelta": 0.046511627906976744,
+        "CenterDelta": 7.453488372093023,
+        "RightDelta": 14.953488372093023,
+        "AlignmentDelta": 0.046511627906976744,
+        "TextSizeRatio": 0.7916666666666666,
+        "WidthRatio": 5.082278481012659,
+        "LineAdvance": 1.4186046511627908,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 38,
+        "CurrentSizeValue": 48,
+        "AdvancePixels": 61,
+        "AdvanceDenominator": 43
+      },
+      {
+        "Kind": "next",
+        "Previous": "已儲存。",
+        "Current": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 3.367088607594937,
+        "LeftDelta": 0.02531645569620253,
+        "CenterDelta": 7.8734177215189876,
+        "RightDelta": 15.772151898734178,
+        "AlignmentDelta": 0.02531645569620253,
+        "TextSizeRatio": 0.6458333333333333,
+        "WidthRatio": 0.2020460358056266,
+        "LineAdvance": 4.582278481012659,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 181,
+        "AdvanceDenominator": 39.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Current": "Saved.",
+        "PreviousScript": 2,
+        "CurrentScript": 1,
+        "VerticalGap": 0.611764705882353,
+        "LeftDelta": 0.07058823529411765,
+        "CenterDelta": 7.647058823529412,
+        "RightDelta": 15.223529411764705,
+        "AlignmentDelta": 0.07058823529411765,
+        "TextSizeRatio": 0.5740740740740741,
+        "WidthRatio": 5.666666666666667,
+        "LineAdvance": 1.3411764705882352,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 31,
+        "CurrentSizeValue": 54,
+        "AdvancePixels": 57,
+        "AdvanceDenominator": 42.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-cross.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Changes to the capture shortcut take effect the next time the app",
+        "Bounds": [
+          87,
+          60,
+          803,
+          38
+        ],
+        "LayoutBounds": [
+          87,
+          60,
+          803,
+          38
+        ],
+        "Script": 1,
+        "Glyph": 19.331481481481482,
+        "Render": 19.331481481481482,
+        "Confidence": 0.9999384880065918
+      },
+      {
+        "Text": "已儲存。",
+        "Bounds": [
+          89,
+          121,
+          158,
+          48
+        ],
+        "LayoutBounds": [
+          89,
+          121,
+          158,
+          48
+        ],
+        "Script": 2,
+        "Glyph": 39.36,
+        "Render": 39.36,
+        "Confidence": 0.9997966289520264
+      },
+      {
+        "Text": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Bounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "LayoutBounds": [
+          88,
+          302,
+          782,
+          31
+        ],
+        "Script": 2,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9976613521575928
+      },
+      {
+        "Text": "Saved.",
+        "Bounds": [
+          85,
+          359,
+          138,
+          54
+        ],
+        "LayoutBounds": [
+          85,
+          359,
+          138,
+          54
+        ],
+        "Script": 1,
+        "Glyph": 29.900000000000002,
+        "Render": 29.900000000000002,
+        "Confidence": 0.999957799911499
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Changes to the capture shortcut take effect the next time the app",
+        "Current": "已儲存。",
+        "PreviousScript": 1,
+        "CurrentScript": 2,
+        "VerticalGap": 0.5348837209302325,
+        "LeftDelta": 0.046511627906976744,
+        "CenterDelta": 7.453488372093023,
+        "RightDelta": 14.953488372093023,
+        "AlignmentDelta": 0.046511627906976744,
+        "TextSizeRatio": 0.7916666666666666,
+        "WidthRatio": 5.082278481012659,
+        "LineAdvance": 1.4186046511627908,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 38,
+        "CurrentSizeValue": 48,
+        "AdvancePixels": 61,
+        "AdvanceDenominator": 43
+      },
+      {
+        "Kind": "next",
+        "Previous": "已儲存。",
+        "Current": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 3.367088607594937,
+        "LeftDelta": 0.02531645569620253,
+        "CenterDelta": 7.8734177215189876,
+        "RightDelta": 15.772151898734178,
+        "AlignmentDelta": 0.02531645569620253,
+        "TextSizeRatio": 0.6458333333333333,
+        "WidthRatio": 0.2020460358056266,
+        "LineAdvance": 4.582278481012659,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 39.36,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 181,
+        "AdvanceDenominator": 39.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "變更擷取快速鍵之後，新的設定會在下一次開啟應用程式時生效並且",
+        "Current": "Saved.",
+        "PreviousScript": 2,
+        "CurrentScript": 1,
+        "VerticalGap": 0.611764705882353,
+        "LeftDelta": 0.07058823529411765,
+        "CenterDelta": 7.647058823529412,
+        "RightDelta": 15.223529411764705,
+        "AlignmentDelta": 0.07058823529411765,
+        "TextSizeRatio": 0.5740740740740741,
+        "WidthRatio": 5.666666666666667,
+        "LineAdvance": 1.3411764705882352,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 2,
+        "PreviousSizeValue": 31,
+        "CurrentSizeValue": 54,
+        "AdvancePixels": 57,
+        "AdvanceDenominator": 42.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-latin.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Changes to the capture shortcut take effect the next time the app",
+        "Bounds": [
+          85,
+          57,
+          737,
+          36
+        ],
+        "LayoutBounds": [
+          85,
+          57,
+          737,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 17.742592592592594,
+        "Render": 17.742592592592594,
+        "Confidence": 0.9933447241783142
+      },
+      {
+        "Text": "Saved.",
+        "Bounds": [
+          85,
+          116,
+          136,
+          47
+        ],
+        "LayoutBounds": [
+          85,
+          116,
+          136,
+          47
+        ],
+        "Script": 1,
+        "Glyph": 29.46666666666667,
+        "Render": 29.46666666666667,
+        "Confidence": 0.9999399781227112
+      },
+      {
+        "Text": "Every device that reported in the last thirty days is counted here",
+        "Bounds": [
+          87,
+          299,
+          724,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          299,
+          724,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 17.112727272727273,
+        "Render": 17.112727272727273,
+        "Confidence": 0.9865894913673401
+      },
+      {
+        "Text": "Done.",
+        "Bounds": [
+          86,
+          359,
+          117,
+          44
+        ],
+        "LayoutBounds": [
+          86,
+          359,
+          117,
+          44
+        ],
+        "Script": 1,
+        "Glyph": 30.419999999999998,
+        "Render": 30.419999999999998,
+        "Confidence": 0.9999567270278931
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Changes to the capture shortcut take effect the next time the app",
+        "Current": "Saved.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.5542168674698795,
+        "LeftDelta": 0,
+        "CenterDelta": 7.240963855421687,
+        "RightDelta": 14.481927710843374,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.6021241830065359,
+        "WidthRatio": 5.419117647058823,
+        "LineAdvance": 1.4216867469879517,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.742592592592594,
+        "CurrentSizeValue": 29.46666666666667,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 41.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Saved.",
+        "Current": "Every device that reported in the last thirty days is counted here",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.4871794871794872,
+        "LeftDelta": 0.05128205128205128,
+        "CenterDelta": 7.589743589743589,
+        "RightDelta": 15.128205128205128,
+        "AlignmentDelta": 0.05128205128205128,
+        "TextSizeRatio": 0.5807486631016042,
+        "WidthRatio": 0.1878453038674033,
+        "LineAdvance": 4.6923076923076925,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 29.46666666666667,
+        "CurrentSizeValue": 17.112727272727273,
+        "AdvancePixels": 183,
+        "AdvanceDenominator": 39
+      },
+      {
+        "Kind": "next",
+        "Previous": "Every device that reported in the last thirty days is counted here",
+        "Current": "Done.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.7733333333333333,
+        "LeftDelta": 0.02666666666666667,
+        "CenterDelta": 8.12,
+        "RightDelta": 16.213333333333335,
+        "AlignmentDelta": 0.02666666666666667,
+        "TextSizeRatio": 0.5625485625485626,
+        "WidthRatio": 6.188034188034188,
+        "LineAdvance": 1.6,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.112727272727273,
+        "CurrentSizeValue": 30.419999999999998,
+        "AdvancePixels": 60,
+        "AdvanceDenominator": 37.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c1-latin.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "Changes to the capture shortcut take effect the next time the app",
+        "Bounds": [
+          85,
+          57,
+          737,
+          36
+        ],
+        "LayoutBounds": [
+          85,
+          57,
+          737,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 17.742592592592594,
+        "Render": 17.742592592592594,
+        "Confidence": 0.9933447241783142
+      },
+      {
+        "Text": "Saved.",
+        "Bounds": [
+          85,
+          116,
+          136,
+          47
+        ],
+        "LayoutBounds": [
+          85,
+          116,
+          136,
+          47
+        ],
+        "Script": 1,
+        "Glyph": 29.46666666666667,
+        "Render": 29.46666666666667,
+        "Confidence": 0.9999399781227112
+      },
+      {
+        "Text": "Every device that reported in the last thirty days is counted here",
+        "Bounds": [
+          87,
+          299,
+          724,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          299,
+          724,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 17.112727272727273,
+        "Render": 17.112727272727273,
+        "Confidence": 0.9865894913673401
+      },
+      {
+        "Text": "Done.",
+        "Bounds": [
+          86,
+          359,
+          117,
+          44
+        ],
+        "LayoutBounds": [
+          86,
+          359,
+          117,
+          44
+        ],
+        "Script": 1,
+        "Glyph": 30.419999999999998,
+        "Render": 30.419999999999998,
+        "Confidence": 0.9999567270278931
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "Changes to the capture shortcut take effect the next time the app",
+        "Current": "Saved.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.5542168674698795,
+        "LeftDelta": 0,
+        "CenterDelta": 7.240963855421687,
+        "RightDelta": 14.481927710843374,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.6021241830065359,
+        "WidthRatio": 5.419117647058823,
+        "LineAdvance": 1.4216867469879517,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.742592592592594,
+        "CurrentSizeValue": 29.46666666666667,
+        "AdvancePixels": 59,
+        "AdvanceDenominator": 41.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Saved.",
+        "Current": "Every device that reported in the last thirty days is counted here",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 3.4871794871794872,
+        "LeftDelta": 0.05128205128205128,
+        "CenterDelta": 7.589743589743589,
+        "RightDelta": 15.128205128205128,
+        "AlignmentDelta": 0.05128205128205128,
+        "TextSizeRatio": 0.5807486631016042,
+        "WidthRatio": 0.1878453038674033,
+        "LineAdvance": 4.6923076923076925,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 29.46666666666667,
+        "CurrentSizeValue": 17.112727272727273,
+        "AdvancePixels": 183,
+        "AdvanceDenominator": 39
+      },
+      {
+        "Kind": "next",
+        "Previous": "Every device that reported in the last thirty days is counted here",
+        "Current": "Done.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.7733333333333333,
+        "LeftDelta": 0.02666666666666667,
+        "CenterDelta": 8.12,
+        "RightDelta": 16.213333333333335,
+        "AlignmentDelta": 0.02666666666666667,
+        "TextSizeRatio": 0.5625485625485626,
+        "WidthRatio": 6.188034188034188,
+        "LineAdvance": 1.6,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.112727272727273,
+        "CurrentSizeValue": 30.419999999999998,
+        "AdvancePixels": 60,
+        "AdvanceDenominator": 37.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c2-cjk.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0",
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴 注意。",
+        "Bounds": [
+          86,
+          60,
+          784,
+          77
+        ],
+        "LayoutBounds": [
+          86,
+          60,
+          784,
+          77
+        ],
+        "Script": 2,
+        "Glyph": 28.7,
+        "Render": 27.06,
+        "Confidence": 0.9967446652325717
+      },
+      {
+        "Text": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+        "Bounds": [
+          89,
+          304,
+          782,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          304,
+          782,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9990872144699097
+      },
+      {
+        "Text": "警告。",
+        "Bounds": [
+          84,
+          338,
+          81,
+          41
+        ],
+        "LayoutBounds": [
+          84,
+          338,
+          81,
+          41
+        ],
+        "Script": 2,
+        "Glyph": 33.62,
+        "Render": 20.5,
+        "Confidence": 0.9998121857643127
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴",
+        "Current": "注意。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.2647058823529412,
+        "LeftDelta": 0,
+        "CenterDelta": 10.382352941176471,
+        "RightDelta": 20.764705882352942,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.9428571428571428,
+        "WidthRatio": 10.051282051282051,
+        "LineAdvance": 1.2352941176470589,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 27.06,
+        "CurrentSizeValue": 28.7,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "注意。",
+        "Current": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 5.301587301587301,
+        "LeftDelta": 0.09523809523809523,
+        "CenterDelta": 11.26984126984127,
+        "RightDelta": 22.444444444444443,
+        "AlignmentDelta": 0.09523809523809523,
+        "TextSizeRatio": 0.7999999999999999,
+        "WidthRatio": 0.09974424552429667,
+        "LineAdvance": 6.412698412698413,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 28.7,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 202,
+        "AdvanceDenominator": 31.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+        "Current": "警告。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.17391304347826086,
+        "LeftDelta": 0.14492753623188406,
+        "CenterDelta": 10.304347826086957,
+        "RightDelta": 20.463768115942027,
+        "AlignmentDelta": 0.14492753623188406,
+        "TextSizeRatio": 0.6829268292682926,
+        "WidthRatio": 9.654320987654321,
+        "LineAdvance": 0.9855072463768116,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 33.62,
+        "AdvancePixels": 34,
+        "AdvanceDenominator": 34.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c2-cjk.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0",
+        "b1"
+      ],
+      [
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴 注意。",
+        "Bounds": [
+          86,
+          60,
+          784,
+          77
+        ],
+        "LayoutBounds": [
+          86,
+          60,
+          784,
+          77
+        ],
+        "Script": 2,
+        "Glyph": 28.7,
+        "Render": 27.06,
+        "Confidence": 0.9967446652325717
+      },
+      {
+        "Text": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+        "Bounds": [
+          89,
+          304,
+          782,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          304,
+          782,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9990872144699097
+      },
+      {
+        "Text": "警告。",
+        "Bounds": [
+          84,
+          338,
+          81,
+          41
+        ],
+        "LayoutBounds": [
+          84,
+          338,
+          81,
+          41
+        ],
+        "Script": 2,
+        "Glyph": 33.62,
+        "Render": 20.5,
+        "Confidence": 0.9998121857643127
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴",
+        "Current": "注意。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.2647058823529412,
+        "LeftDelta": 0,
+        "CenterDelta": 10.382352941176471,
+        "RightDelta": 20.764705882352942,
+        "AlignmentDelta": 0,
+        "TextSizeRatio": 0.9428571428571428,
+        "WidthRatio": 10.051282051282051,
+        "LineAdvance": 1.2352941176470589,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": true,
+        "Rule": "shorter final line",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 27.06,
+        "CurrentSizeValue": 28.7,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "注意。",
+        "Current": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 5.301587301587301,
+        "LeftDelta": 0.09523809523809523,
+        "CenterDelta": 11.26984126984127,
+        "RightDelta": 22.444444444444443,
+        "AlignmentDelta": 0.09523809523809523,
+        "TextSizeRatio": 0.7999999999999999,
+        "WidthRatio": 0.09974424552429667,
+        "LineAdvance": 6.412698412698413,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 28.7,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 202,
+        "AdvanceDenominator": 31.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+        "Current": "警告。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.17391304347826086,
+        "LeftDelta": 0.14492753623188406,
+        "CenterDelta": 10.304347826086957,
+        "RightDelta": 20.463768115942027,
+        "AlignmentDelta": 0.14492753623188406,
+        "TextSizeRatio": 0.6829268292682926,
+        "WidthRatio": 9.654320987654321,
+        "LineAdvance": 0.9855072463768116,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 33.62,
+        "AdvancePixels": 34,
+        "AdvanceDenominator": 34.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c2-latin.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2",
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to",
+        "Bounds": [
+          87,
+          59,
+          737,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          59,
+          737,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 17.108928571428574,
+        "Render": 17.108928571428574,
+        "Confidence": 0.9996083378791809
+      },
+      {
+        "Text": "Note.",
+        "Bounds": [
+          84,
+          97,
+          71,
+          36
+        ],
+        "LayoutBounds": [
+          84,
+          97,
+          71,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 29.52,
+        "Render": 29.52,
+        "Confidence": 0.9998266100883484
+      },
+      {
+        "Text": "Download the installer from the mirror closest to you and then run Warning.",
+        "Bounds": [
+          83,
+          297,
+          751,
+          79
+        ],
+        "LayoutBounds": [
+          83,
+          297,
+          751,
+          79
+        ],
+        "Script": 1,
+        "Glyph": 18.3625,
+        "Render": 18.3625,
+        "Confidence": 0.9981094840410594
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "The alliance involves no commercial exclusivity and no barrier to",
+        "Current": "Note.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.208955223880597,
+        "LeftDelta": 0.08955223880597014,
+        "CenterDelta": 10.029850746268657,
+        "RightDelta": 19.970149253731343,
+        "AlignmentDelta": 0.08955223880597014,
+        "TextSizeRatio": 0.5795707510646536,
+        "WidthRatio": 10.380281690140846,
+        "LineAdvance": 1.1343283582089552,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.108928571428574,
+        "CurrentSizeValue": 29.52,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 33.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Note.",
+        "Current": "Download the installer from the mirror closest to you and then run",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 4.753623188405797,
+        "LeftDelta": 0.057971014492753624,
+        "CenterDelta": 9.869565217391305,
+        "RightDelta": 19.681159420289855,
+        "AlignmentDelta": 0.057971014492753624,
+        "TextSizeRatio": 0.5989159891598916,
+        "WidthRatio": 0.09491978609625669,
+        "LineAdvance": 5.797101449275362,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 29.52,
+        "CurrentSizeValue": 17.68,
+        "AdvancePixels": 200,
+        "AdvanceDenominator": 34.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Download the installer from the mirror closest to you and then run",
+        "Current": "Warning.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.22535211267605634,
+        "LeftDelta": 0.08450704225352113,
+        "CenterDelta": 9.028169014084508,
+        "RightDelta": 17.971830985915492,
+        "AlignmentDelta": 0.08450704225352113,
+        "TextSizeRatio": 0.9628318584070796,
+        "WidthRatio": 6.619469026548672,
+        "LineAdvance": 1.1549295774647887,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.68,
+        "CurrentSizeValue": 18.3625,
+        "AdvancePixels": 41,
+        "AdvanceDenominator": 35.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c2-latin.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2",
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to",
+        "Bounds": [
+          87,
+          59,
+          737,
+          31
+        ],
+        "LayoutBounds": [
+          87,
+          59,
+          737,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 17.108928571428574,
+        "Render": 17.108928571428574,
+        "Confidence": 0.9996083378791809
+      },
+      {
+        "Text": "Note.",
+        "Bounds": [
+          84,
+          97,
+          71,
+          36
+        ],
+        "LayoutBounds": [
+          84,
+          97,
+          71,
+          36
+        ],
+        "Script": 1,
+        "Glyph": 29.52,
+        "Render": 29.52,
+        "Confidence": 0.9998266100883484
+      },
+      {
+        "Text": "Download the installer from the mirror closest to you and then run Warning.",
+        "Bounds": [
+          83,
+          297,
+          751,
+          79
+        ],
+        "LayoutBounds": [
+          83,
+          297,
+          751,
+          79
+        ],
+        "Script": 1,
+        "Glyph": 18.3625,
+        "Render": 18.3625,
+        "Confidence": 0.9981094840410594
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "The alliance involves no commercial exclusivity and no barrier to",
+        "Current": "Note.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.208955223880597,
+        "LeftDelta": 0.08955223880597014,
+        "CenterDelta": 10.029850746268657,
+        "RightDelta": 19.970149253731343,
+        "AlignmentDelta": 0.08955223880597014,
+        "TextSizeRatio": 0.5795707510646536,
+        "WidthRatio": 10.380281690140846,
+        "LineAdvance": 1.1343283582089552,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.108928571428574,
+        "CurrentSizeValue": 29.52,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 33.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Note.",
+        "Current": "Download the installer from the mirror closest to you and then run",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 4.753623188405797,
+        "LeftDelta": 0.057971014492753624,
+        "CenterDelta": 9.869565217391305,
+        "RightDelta": 19.681159420289855,
+        "AlignmentDelta": 0.057971014492753624,
+        "TextSizeRatio": 0.5989159891598916,
+        "WidthRatio": 0.09491978609625669,
+        "LineAdvance": 5.797101449275362,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 29.52,
+        "CurrentSizeValue": 17.68,
+        "AdvancePixels": 200,
+        "AdvanceDenominator": 34.5
+      },
+      {
+        "Kind": "next",
+        "Previous": "Download the installer from the mirror closest to you and then run",
+        "Current": "Warning.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.22535211267605634,
+        "LeftDelta": 0.08450704225352113,
+        "CenterDelta": 9.028169014084508,
+        "RightDelta": 17.971830985915492,
+        "AlignmentDelta": 0.08450704225352113,
+        "TextSizeRatio": 0.9628318584070796,
+        "WidthRatio": 6.619469026548672,
+        "LineAdvance": 1.1549295774647887,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.68,
+        "CurrentSizeValue": 18.3625,
+        "AdvancePixels": 41,
+        "AdvanceDenominator": 35.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c3-cjk.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Bounds": [
+          90,
+          64,
+          806,
+          28
+        ],
+        "LayoutBounds": [
+          90,
+          64,
+          806,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9998020529747009
+      },
+      {
+        "Text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Bounds": [
+          89,
+          106,
+          781,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          106,
+          781,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9995632767677307
+      },
+      {
+        "Text": "盟。",
+        "Bounds": [
+          84,
+          144,
+          54,
+          37
+        ],
+        "LayoutBounds": [
+          84,
+          144,
+          54,
+          37
+        ],
+        "Script": 2,
+        "Glyph": 30.34,
+        "Render": 18.5,
+        "Confidence": 0.9983813762664795
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Current": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.5,
+        "LeftDelta": 0.03571428571428571,
+        "CenterDelta": 0.48214285714285715,
+        "RightDelta": 0.9285714285714286,
+        "AlignmentDelta": 0.03571428571428571,
+        "TextSizeRatio": 1,
+        "WidthRatio": 1.0320102432778488,
+        "LineAdvance": 1.5,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "no continuation evidence",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 28
+      },
+      {
+        "Kind": "next",
+        "Previous": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Current": "盟。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.3076923076923077,
+        "LeftDelta": 0.15384615384615385,
+        "CenterDelta": 11.338461538461539,
+        "RightDelta": 22.523076923076925,
+        "AlignmentDelta": 0.15384615384615385,
+        "TextSizeRatio": 0.7567567567567567,
+        "WidthRatio": 14.462962962962964,
+        "LineAdvance": 1.1692307692307693,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 30.34,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 32.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c3-cjk.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1"
+      ],
+      [
+        "b2"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Bounds": [
+          90,
+          64,
+          806,
+          28
+        ],
+        "LayoutBounds": [
+          90,
+          64,
+          806,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9998020529747009
+      },
+      {
+        "Text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Bounds": [
+          89,
+          106,
+          781,
+          28
+        ],
+        "LayoutBounds": [
+          89,
+          106,
+          781,
+          28
+        ],
+        "Script": 2,
+        "Glyph": 22.959999999999997,
+        "Render": 22.959999999999997,
+        "Confidence": 0.9995632767677307
+      },
+      {
+        "Text": "盟。",
+        "Bounds": [
+          84,
+          144,
+          54,
+          37
+        ],
+        "LayoutBounds": [
+          84,
+          144,
+          54,
+          37
+        ],
+        "Script": 2,
+        "Glyph": 30.34,
+        "Render": 18.5,
+        "Confidence": 0.9983813762664795
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件",
+        "Current": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.5,
+        "LeftDelta": 0.03571428571428571,
+        "CenterDelta": 0.48214285714285715,
+        "RightDelta": 0.9285714285714286,
+        "AlignmentDelta": 0.03571428571428571,
+        "TextSizeRatio": 1,
+        "WidthRatio": 1.0320102432778488,
+        "LineAdvance": 1.5,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "no continuation evidence",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 22.959999999999997,
+        "AdvancePixels": 42,
+        "AdvanceDenominator": 28
+      },
+      {
+        "Kind": "next",
+        "Previous": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+        "Current": "盟。",
+        "PreviousScript": 2,
+        "CurrentScript": 2,
+        "VerticalGap": 0.3076923076923077,
+        "LeftDelta": 0.15384615384615385,
+        "CenterDelta": 11.338461538461539,
+        "RightDelta": 22.523076923076925,
+        "AlignmentDelta": 0.15384615384615385,
+        "TextSizeRatio": 0.7567567567567567,
+        "WidthRatio": 14.462962962962964,
+        "LineAdvance": 1.1692307692307693,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 22.959999999999997,
+        "CurrentSizeValue": 30.34,
+        "AdvancePixels": 38,
+        "AdvanceDenominator": 32.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c3-latin.png",
+    "Profile": "general",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1",
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to entry:",
+        "Bounds": [
+          87,
+          57,
+          809,
+          34
+        ],
+        "LayoutBounds": [
+          87,
+          57,
+          809,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 16.962903225806453,
+        "Render": 16.962903225806453,
+        "Confidence": 0.9963368773460388
+      },
+      {
+        "Text": "any model provider or application builder may join it, and every member keeps the right to leave at any time without notice or",
+        "Bounds": [
+          85,
+          100,
+          820,
+          75
+        ],
+        "LayoutBounds": [
+          85,
+          100,
+          820,
+          75
+        ],
+        "Script": 1,
+        "Glyph": 17.745,
+        "Render": 17.745,
+        "Confidence": 0.9919269318580628
+      },
+      {
+        "Text": "cost.",
+        "Bounds": [
+          86,
+          186,
+          62,
+          31
+        ],
+        "LayoutBounds": [
+          86,
+          186,
+          62,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9999487996101379
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "The alliance involves no commercial exclusivity and no barrier to entry:",
+        "Current": "any model provider or application builder may join it, and every member",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.2647058823529412,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 0.11764705882352941,
+        "RightDelta": 0.2647058823529412,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 0.9559257946354721,
+        "WidthRatio": 0.9877899877899878,
+        "LineAdvance": 1.2647058823529411,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "label colon",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 16.962903225806453,
+        "CurrentSizeValue": 17.745,
+        "AdvancePixels": 43,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "any model provider or application builder may join it, and every member",
+        "Current": "keeps the right to leave at any time without notice or",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.20588235294117646,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 3.3088235294117645,
+        "RightDelta": 6.588235294117647,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 0.9923409923409923,
+        "WidthRatio": 1.3741610738255035,
+        "LineAdvance": 1.2058823529411764,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": true,
+        "Rule": "set solid",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.745,
+        "CurrentSizeValue": 17.60909090909091,
+        "AdvancePixels": 41,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "keeps the right to leave at any time without notice or",
+        "Current": "cost.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.3384615384615385,
+        "LeftDelta": 0.03076923076923077,
+        "CenterDelta": 8.184615384615384,
+        "RightDelta": 16.4,
+        "AlignmentDelta": 0.03076923076923077,
+        "TextSizeRatio": 0.6927258422144339,
+        "WidthRatio": 9.612903225806452,
+        "LineAdvance": 1.3846153846153846,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.45,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.60909090909091,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 45,
+        "AdvanceDenominator": 32.5
+      }
+    ]
+  },
+  {
+    "Image": "f7-c3-latin.png",
+    "Profile": "interface",
+    "Groups": [
+      [
+        "b0"
+      ],
+      [
+        "b1",
+        "b2"
+      ],
+      [
+        "b3"
+      ]
+    ],
+    "Output": [
+      {
+        "Text": "The alliance involves no commercial exclusivity and no barrier to entry:",
+        "Bounds": [
+          87,
+          57,
+          809,
+          34
+        ],
+        "LayoutBounds": [
+          87,
+          57,
+          809,
+          34
+        ],
+        "Script": 1,
+        "Glyph": 16.962903225806453,
+        "Render": 16.962903225806453,
+        "Confidence": 0.9963368773460388
+      },
+      {
+        "Text": "any model provider or application builder may join it, and every member keeps the right to leave at any time without notice or",
+        "Bounds": [
+          85,
+          100,
+          820,
+          75
+        ],
+        "LayoutBounds": [
+          85,
+          100,
+          820,
+          75
+        ],
+        "Script": 1,
+        "Glyph": 17.745,
+        "Render": 17.745,
+        "Confidence": 0.9919269318580628
+      },
+      {
+        "Text": "cost.",
+        "Bounds": [
+          86,
+          186,
+          62,
+          31
+        ],
+        "LayoutBounds": [
+          86,
+          186,
+          62,
+          31
+        ],
+        "Script": 1,
+        "Glyph": 25.419999999999998,
+        "Render": 25.419999999999998,
+        "Confidence": 0.9999487996101379
+      }
+    ],
+    "Decisions": [
+      {
+        "Kind": "next",
+        "Previous": "The alliance involves no commercial exclusivity and no barrier to entry:",
+        "Current": "any model provider or application builder may join it, and every member",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.2647058823529412,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 0.11764705882352941,
+        "RightDelta": 0.2647058823529412,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 0.9559257946354721,
+        "WidthRatio": 0.9877899877899878,
+        "LineAdvance": 1.2647058823529411,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "label colon",
+        "PreviousId": "L0",
+        "CurrentId": "L1",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 16.962903225806453,
+        "CurrentSizeValue": 17.745,
+        "AdvancePixels": 43,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "any model provider or application builder may join it, and every member",
+        "Current": "keeps the right to leave at any time without notice or",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.20588235294117646,
+        "LeftDelta": 0.029411764705882353,
+        "CenterDelta": 3.3088235294117645,
+        "RightDelta": 6.588235294117647,
+        "AlignmentDelta": 0.029411764705882353,
+        "TextSizeRatio": 0.9923409923409923,
+        "WidthRatio": 1.3741610738255035,
+        "LineAdvance": 1.2058823529411764,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": true,
+        "Rule": "shorter final line",
+        "PreviousId": "L1",
+        "CurrentId": "L2",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.745,
+        "CurrentSizeValue": 17.60909090909091,
+        "AdvancePixels": 41,
+        "AdvanceDenominator": 34
+      },
+      {
+        "Kind": "next",
+        "Previous": "keeps the right to leave at any time without notice or",
+        "Current": "cost.",
+        "PreviousScript": 1,
+        "CurrentScript": 1,
+        "VerticalGap": 0.3384615384615385,
+        "LeftDelta": 0.03076923076923077,
+        "CenterDelta": 8.184615384615384,
+        "RightDelta": 16.4,
+        "AlignmentDelta": 0.03076923076923077,
+        "TextSizeRatio": 0.6927258422144339,
+        "WidthRatio": 9.612903225806452,
+        "LineAdvance": 1.3846153846153846,
+        "LeadingBar": 1.38,
+        "SolidBar": 1.2,
+        "Joined": false,
+        "Rule": "text size",
+        "PreviousId": "L2",
+        "CurrentId": "L3",
+        "SizeBasis": 1,
+        "PreviousSizeValue": 17.60909090909091,
+        "CurrentSizeValue": 25.419999999999998,
+        "AdvancePixels": 45,
+        "AdvanceDenominator": 32.5
+      }
+    ]
+  }
+]

@@ -1,0 +1,129 @@
+{
+  "test": "A_line_of_kana_the_same_size_as_the_one_below_is_kept",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "ruby",
+      "input": [
+        {
+          "text": "そのひとはなにもいわずに",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 200,
+            "width": 620,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 200,
+            "width": 620,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "静かに席を立った。",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 252,
+            "width": 480,
+            "height": 55
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 252,
+            "width": 480,
+            "height": 55
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "そのひとはなにもいわずに",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 200,
+            "width": 620,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 200,
+            "width": 620,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "静かに席を立った。",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 252,
+            "width": 480,
+            "height": 55
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 252,
+            "width": 480,
+            "height": 55
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ]
+    }
+  ]
+}

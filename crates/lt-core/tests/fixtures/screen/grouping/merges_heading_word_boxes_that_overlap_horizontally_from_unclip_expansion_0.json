@@ -1,0 +1,263 @@
+{
+  "test": "MergesHeadingWordBoxesThatOverlapHorizontallyFromUnclipExpansion",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Translate",
+          "bounds": {
+            "empty": false,
+            "x": 136,
+            "y": 68,
+            "width": 397,
+            "height": 99
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 136,
+            "y": 68,
+            "width": 397,
+            "height": 99
+          },
+          "layoutGlyphHeight": 57.34444444444445,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "your website",
+          "bounds": {
+            "empty": false,
+            "x": 515,
+            "y": 71,
+            "width": 565,
+            "height": 102
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 515,
+            "y": 71,
+            "width": 565,
+            "height": 102
+          },
+          "layoutGlyphHeight": 66.77272727272728,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Translate your website",
+          "bounds": {
+            "empty": false,
+            "x": 136,
+            "y": 68,
+            "width": 944,
+            "height": 105
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 136,
+            "y": 68,
+            "width": 944,
+            "height": 105
+          },
+          "layoutGlyphHeight": 66.77272727272728,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "Translate",
+          "current": "your website",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.1791044776119403,
+          "leftDelta": 0.9696969696969697,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7026548672566372,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Translate",
+              "bounds": {
+                "empty": false,
+                "x": 136,
+                "y": 68,
+                "width": 397,
+                "height": 99
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 136,
+                "y": 68,
+                "width": 397,
+                "height": 99
+              },
+              "layoutGlyphHeight": 57.34444444444445,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 136,
+                  "y": 68,
+                  "width": 397,
+                  "height": 99
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "your website",
+              "bounds": {
+                "empty": false,
+                "x": 515,
+                "y": 71,
+                "width": 565,
+                "height": 102
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 515,
+                "y": 71,
+                "width": 565,
+                "height": 102
+              },
+              "layoutGlyphHeight": 66.77272727272728,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 515,
+                  "y": 71,
+                  "width": 565,
+                  "height": 102
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Translate your website",
+              "bounds": {
+                "empty": false,
+                "x": 136,
+                "y": 68,
+                "width": 944,
+                "height": 105
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 136,
+                "y": 68,
+                "width": 944,
+                "height": 105
+              },
+              "layoutGlyphHeight": 66.77272727272728,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 136,
+                  "y": 68,
+                  "width": 944,
+                  "height": 105
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0",
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ]
+        ]
+      }
+    }
+  ]
+}

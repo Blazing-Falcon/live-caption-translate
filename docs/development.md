@@ -112,6 +112,12 @@ python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeat
 
 `lt-cli screen` runs the app's screenshot path on a PNG: it reads the text, groups it into blocks and translates each block. It needs the `ocr` feature (which turns on `sherpa` and `llm`) and the text recognition model. Unless you pass `--no-translate`, it also needs the translation model and `llama-server`.
 
+Pass `--explain` to include `decisions` and `grouping_trace` in the output JSON.
+Each verdict names its source lines, rule, join/refusal and geometry. Row verdicts
+use `vertical_gap` for horizontal spacing and `left_delta` for vertical overlap;
+next-line verdicts use those fields for their vertical gap and left alignment.
+Trace IDs distinguish detected boxes (`b0`, ...) from merged lines (`L0`, ...).
+
 ```powershell
 cargo build --release -p lt-cli --features ocr
 ./scripts/install-native-runtime.ps1

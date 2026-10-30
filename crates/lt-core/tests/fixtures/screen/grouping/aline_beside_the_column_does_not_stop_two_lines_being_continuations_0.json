@@ -1,0 +1,509 @@
+{
+  "test": "ALineBesideTheColumn_DoesNotStopTwoLinesBeingContinuations",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Council approves the new transport plan",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 0,
+            "width": 600,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 0,
+            "width": 600,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "TRANSPORT",
+          "bounds": {
+            "empty": false,
+            "x": 900,
+            "y": 42,
+            "width": 160,
+            "height": 12
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 900,
+            "y": 42,
+            "width": 160,
+            "height": 12
+          },
+          "layoutGlyphHeight": 8.399999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "after a long delay",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 54,
+            "width": 400,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 54,
+            "width": 400,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Council approves the new transport plan after a long delay",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 0,
+            "width": 600,
+            "height": 94
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 100,
+              "y": 0,
+              "width": 600,
+              "height": 40
+            },
+            {
+              "empty": false,
+              "x": 100,
+              "y": 54,
+              "width": 400,
+              "height": 40
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 0,
+            "width": 600,
+            "height": 94
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "TRANSPORT",
+          "bounds": {
+            "empty": false,
+            "x": 900,
+            "y": 42,
+            "width": 160,
+            "height": 12
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 900,
+            "y": 42,
+            "width": 160,
+            "height": 12
+          },
+          "layoutGlyphHeight": 8.399999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Council approves the new transport plan",
+          "current": "TRANSPORT",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.07692307692307693,
+          "leftDelta": 30.76923076923077,
+          "centerDelta": 22.307692307692307,
+          "rightDelta": 13.846153846153847,
+          "alignmentDelta": 13.846153846153847,
+          "textSizeRatio": 0.29999999999999993,
+          "widthRatio": 3.75,
+          "lineAdvance": 1.6153846153846154,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 28,
+          "currentSizeValue": 8.399999999999999,
+          "advancePixels": 42,
+          "advanceDenominator": 26
+        },
+        {
+          "kind": "next",
+          "previous": "TRANSPORT",
+          "current": "after a long delay",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 30.76923076923077,
+          "centerDelta": 26.153846153846153,
+          "rightDelta": 21.53846153846154,
+          "alignmentDelta": 21.53846153846154,
+          "textSizeRatio": 0.29999999999999993,
+          "widthRatio": 0.4,
+          "lineAdvance": 0.46153846153846156,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 8.399999999999999,
+          "currentSizeValue": 28,
+          "advancePixels": 12,
+          "advanceDenominator": 26
+        },
+        {
+          "kind": "next",
+          "previous": "Council approves the new transport plan",
+          "current": "after a long delay",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.35,
+          "leftDelta": 0,
+          "centerDelta": 2.5,
+          "rightDelta": 5,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1.5,
+          "lineAdvance": 1.35,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "shorter final line",
+          "previousId": "L0",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 28,
+          "currentSizeValue": 28,
+          "advancePixels": 54,
+          "advanceDenominator": 40
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Council approves the new transport plan",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 0,
+                "width": 600,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 0,
+                "width": 600,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 0,
+                  "width": 600,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "TRANSPORT",
+              "bounds": {
+                "empty": false,
+                "x": 900,
+                "y": 42,
+                "width": 160,
+                "height": 12
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 900,
+                "y": 42,
+                "width": 160,
+                "height": 12
+              },
+              "layoutGlyphHeight": 8.399999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 900,
+                  "y": 42,
+                  "width": 160,
+                  "height": 12
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "after a long delay",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 54,
+                "width": 400,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 54,
+                "width": 400,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 54,
+                  "width": 400,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Council approves the new transport plan",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 0,
+                "width": 600,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 0,
+                "width": 600,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 0,
+                  "width": 600,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "TRANSPORT",
+              "bounds": {
+                "empty": false,
+                "x": 900,
+                "y": 42,
+                "width": 160,
+                "height": 12
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 900,
+                "y": 42,
+                "width": 160,
+                "height": 12
+              },
+              "layoutGlyphHeight": 8.399999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 900,
+                  "y": 42,
+                  "width": 160,
+                  "height": 12
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "after a long delay",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 54,
+                "width": 400,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 54,
+                "width": 400,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 54,
+                  "width": 400,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L2"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

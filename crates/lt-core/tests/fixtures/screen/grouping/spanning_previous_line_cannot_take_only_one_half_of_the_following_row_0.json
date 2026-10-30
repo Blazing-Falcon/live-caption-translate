@@ -1,0 +1,551 @@
+{
+  "test": "SpanningPreviousLineCannotTakeOnlyOneHalfOfTheFollowingRow",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "A long introductory sentence continues with these details",
+          "bounds": {
+            "empty": false,
+            "x": 2,
+            "y": 20,
+            "width": 658,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 2,
+            "y": 20,
+            "width": 658,
+            "height": 18
+          },
+          "layoutGlyphHeight": 14.76,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "nav rail still offers the update",
+          "bounds": {
+            "empty": false,
+            "x": 2,
+            "y": 38,
+            "width": 233,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 2,
+            "y": 38,
+            "width": 233,
+            "height": 18
+          },
+          "layoutGlyphHeight": 11.218518518518518,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "because what the user declined was being interrupted, not",
+          "bounds": {
+            "empty": false,
+            "x": 256,
+            "y": 39,
+            "width": 404,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 256,
+            "y": 39,
+            "width": 404,
+            "height": 18
+          },
+          "layoutGlyphHeight": 10.718367346938775,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "A long introductory sentence continues with these details",
+          "bounds": {
+            "empty": false,
+            "x": 2,
+            "y": 20,
+            "width": 658,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 2,
+            "y": 20,
+            "width": 658,
+            "height": 18
+          },
+          "layoutGlyphHeight": 14.76,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "nav rail still offers the update",
+          "bounds": {
+            "empty": false,
+            "x": 2,
+            "y": 38,
+            "width": 233,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 2,
+            "y": 38,
+            "width": 233,
+            "height": 18
+          },
+          "layoutGlyphHeight": 11.218518518518518,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "because what the user declined was being interrupted, not",
+          "bounds": {
+            "empty": false,
+            "x": 256,
+            "y": 39,
+            "width": 404,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 256,
+            "y": 39,
+            "width": 404,
+            "height": 18
+          },
+          "layoutGlyphHeight": 10.718367346938775,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "nav rail still offers the update",
+          "current": "because what the user declined was being interrupted, not",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 1.1666666666666667,
+          "leftDelta": 0.9444444444444444,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.5767326732673267,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b1",
+          "currentId": "b2",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "A long introductory sentence continues with these details",
+          "current": "nav rail still offers the update",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 11.805555555555555,
+          "rightDelta": 23.61111111111111,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.7600622302519322,
+          "widthRatio": 2.8240343347639487,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 14.76,
+          "currentSizeValue": 11.218518518518518,
+          "advancePixels": 18,
+          "advanceDenominator": 18
+        },
+        {
+          "kind": "next",
+          "previous": "nav rail still offers the update",
+          "current": "because what the user declined was being interrupted, not",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.9444444444444444,
+          "leftDelta": 14.11111111111111,
+          "centerDelta": 18.86111111111111,
+          "rightDelta": 23.61111111111111,
+          "alignmentDelta": 14.11111111111111,
+          "textSizeRatio": 0.955417360077078,
+          "widthRatio": 0.5767326732673267,
+          "lineAdvance": 0.05555555555555555,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 11.218518518518518,
+          "currentSizeValue": 10.718367346938775,
+          "advancePixels": 1,
+          "advanceDenominator": 18
+        },
+        {
+          "kind": "next",
+          "previous": "A long introductory sentence continues with these details",
+          "current": "because what the user declined was being interrupted, not",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.05555555555555555,
+          "leftDelta": 14.11111111111111,
+          "centerDelta": 7.055555555555555,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.7261766495215972,
+          "widthRatio": 1.6287128712871286,
+          "lineAdvance": 1.0555555555555556,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 14.76,
+          "currentSizeValue": 10.718367346938775,
+          "advancePixels": 19,
+          "advanceDenominator": 18
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "A long introductory sentence continues with these details",
+              "bounds": {
+                "empty": false,
+                "x": 2,
+                "y": 20,
+                "width": 658,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 2,
+                "y": 20,
+                "width": 658,
+                "height": 18
+              },
+              "layoutGlyphHeight": 14.76,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 2,
+                  "y": 20,
+                  "width": 658,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "nav rail still offers the update",
+              "bounds": {
+                "empty": false,
+                "x": 2,
+                "y": 38,
+                "width": 233,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 2,
+                "y": 38,
+                "width": 233,
+                "height": 18
+              },
+              "layoutGlyphHeight": 11.218518518518518,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 2,
+                  "y": 38,
+                  "width": 233,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "because what the user declined was being interrupted, not",
+              "bounds": {
+                "empty": false,
+                "x": 256,
+                "y": 39,
+                "width": 404,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 256,
+                "y": 39,
+                "width": 404,
+                "height": 18
+              },
+              "layoutGlyphHeight": 10.718367346938775,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 256,
+                  "y": 39,
+                  "width": 404,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "A long introductory sentence continues with these details",
+              "bounds": {
+                "empty": false,
+                "x": 2,
+                "y": 20,
+                "width": 658,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 2,
+                "y": 20,
+                "width": 658,
+                "height": 18
+              },
+              "layoutGlyphHeight": 14.76,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 2,
+                  "y": 20,
+                  "width": 658,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "nav rail still offers the update",
+              "bounds": {
+                "empty": false,
+                "x": 2,
+                "y": 38,
+                "width": 233,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 2,
+                "y": 38,
+                "width": 233,
+                "height": 18
+              },
+              "layoutGlyphHeight": 11.218518518518518,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 2,
+                  "y": 38,
+                  "width": 233,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "because what the user declined was being interrupted, not",
+              "bounds": {
+                "empty": false,
+                "x": 256,
+                "y": 39,
+                "width": 404,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 256,
+                "y": 39,
+                "width": 404,
+                "height": 18
+              },
+              "layoutGlyphHeight": 10.718367346938775,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 256,
+                  "y": 39,
+                  "width": 404,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ]
+        ]
+      }
+    }
+  ]
+}

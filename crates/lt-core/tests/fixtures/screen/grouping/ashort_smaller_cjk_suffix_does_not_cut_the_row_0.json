@@ -1,0 +1,263 @@
+{
+  "test": "AShortSmallerCjkSuffix_DoesNotCutTheRow",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "12,800",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 90,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 90,
+            "height": 30
+          },
+          "layoutGlyphHeight": 22,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "円",
+          "bounds": {
+            "empty": false,
+            "x": 196,
+            "y": 110,
+            "width": 18,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 196,
+            "y": 110,
+            "width": 18,
+            "height": 18
+          },
+          "layoutGlyphHeight": 13,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "12,800円",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 114,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 114,
+            "height": 30
+          },
+          "layoutGlyphHeight": 22,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "12,800",
+          "current": "円",
+          "previousScript": "Latin",
+          "currentScript": "Cjk",
+          "verticalGap": 0.25,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 5,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "12,800",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 90,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 90,
+                "height": 30
+              },
+              "layoutGlyphHeight": 22,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 90,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "円",
+              "bounds": {
+                "empty": false,
+                "x": 196,
+                "y": 110,
+                "width": 18,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 196,
+                "y": 110,
+                "width": 18,
+                "height": 18
+              },
+              "layoutGlyphHeight": 13,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 196,
+                  "y": 110,
+                  "width": 18,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "12,800円",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 114,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 114,
+                "height": 30
+              },
+              "layoutGlyphHeight": 22,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 114,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0",
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ]
+        ]
+      }
+    }
+  ]
+}

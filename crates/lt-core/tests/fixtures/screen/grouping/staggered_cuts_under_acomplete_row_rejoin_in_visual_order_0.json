@@ -1,0 +1,647 @@
+{
+  "test": "StaggeredCutsUnderACompleteRowRejoinInVisualOrder",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "A complete line establishes the edges of this ordinary paragraph",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 660,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 12,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 660,
+            "height": 20
+          },
+          "layoutGlyphHeight": 12,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "The next line continues until the missing separator before",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 20,
+            "width": 610,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 12,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 20,
+            "width": 610,
+            "height": 20
+          },
+          "layoutGlyphHeight": 12,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "the",
+          "bounds": {
+            "empty": false,
+            "x": 634,
+            "y": 20,
+            "width": 26,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 12,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 634,
+            "y": 20,
+            "width": 26,
+            "height": 20
+          },
+          "layoutGlyphHeight": 12,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "next part continues",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 230,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 12,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 230,
+            "height": 20
+          },
+          "layoutGlyphHeight": 12,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "with the rest of this last sentence.",
+          "bounds": {
+            "empty": false,
+            "x": 254,
+            "y": 40,
+            "width": 406,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 12,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 254,
+            "y": 40,
+            "width": 406,
+            "height": 20
+          },
+          "layoutGlyphHeight": 12,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "A complete line establishes the edges of this ordinary paragraph The next line continues until the missing separator before the next part continues with the rest of this last sentence.",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 660,
+            "height": 60
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 0,
+              "y": 0,
+              "width": 660,
+              "height": 20
+            },
+            {
+              "empty": false,
+              "x": 0,
+              "y": 20,
+              "width": 660,
+              "height": 20
+            },
+            {
+              "empty": false,
+              "x": 0,
+              "y": 40,
+              "width": 660,
+              "height": 20
+            }
+          ],
+          "renderGlyphHeight": 12,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 660,
+            "height": 60
+          },
+          "layoutGlyphHeight": 12,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "The next line continues until the missing separator before",
+          "current": "the",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 1.2,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 23.46153846153846,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "paragraph row evidence",
+          "previousId": "b1",
+          "currentId": "b2",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "next part continues",
+          "current": "with the rest of this last sentence.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 1.2,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.5665024630541872,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "paragraph row evidence",
+          "previousId": "b3",
+          "currentId": "b4",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "A complete line establishes the edges of this ordinary paragraph",
+          "current": "The next line continues until the missing separator before the",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 12,
+          "currentSizeValue": 12,
+          "advancePixels": 20,
+          "advanceDenominator": 20
+        },
+        {
+          "kind": "next",
+          "previous": "The next line continues until the missing separator before the",
+          "current": "next part continues with the rest of this last sentence.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 12,
+          "currentSizeValue": 12,
+          "advancePixels": 20,
+          "advanceDenominator": 20
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "A complete line establishes the edges of this ordinary paragraph",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 660,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 660,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 660,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "The next line continues until the missing separator before",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 610,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 610,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 20,
+                  "width": 610,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "the",
+              "bounds": {
+                "empty": false,
+                "x": 634,
+                "y": 20,
+                "width": 26,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 634,
+                "y": 20,
+                "width": 26,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 634,
+                  "y": 20,
+                  "width": 26,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "next part continues",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 40,
+                "width": 230,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 40,
+                "width": 230,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 40,
+                  "width": 230,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "with the rest of this last sentence.",
+              "bounds": {
+                "empty": false,
+                "x": 254,
+                "y": 40,
+                "width": 406,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 254,
+                "y": 40,
+                "width": 406,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 254,
+                  "y": 40,
+                  "width": 406,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "A complete line establishes the edges of this ordinary paragraph",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 660,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 660,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 660,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "The next line continues until the missing separator before the",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 660,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 660,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 20,
+                  "width": 660,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1",
+              "b2"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "next part continues with the rest of this last sentence.",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 40,
+                "width": 660,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 12,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 40,
+                "width": 660,
+                "height": 20
+              },
+              "layoutGlyphHeight": 12,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 40,
+                  "width": 660,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3",
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1",
+            "L2"
+          ]
+        ]
+      }
+    }
+  ]
+}

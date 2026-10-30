@@ -174,6 +174,7 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
       id: 0,
       rect,
       lines: [rect],
+      intent: "single",
       line_height: rect.h,
       source: "应用",
       background: [240, 240, 240],

@@ -1,0 +1,360 @@
+{
+  "test": "SeparateColumnsWithoutASpanningContinuationStaySeparate",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Screen translator for Windows",
+          "bounds": {
+            "empty": false,
+            "x": 32,
+            "y": 67,
+            "width": 242,
+            "height": 23
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 32,
+            "y": 67,
+            "width": 242,
+            "height": 23
+          },
+          "layoutGlyphHeight": 12.100000000000001,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "screenshot, real-time, text selection & quick",
+          "bounds": {
+            "empty": false,
+            "x": 291,
+            "y": 70,
+            "width": 345,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 291,
+            "y": 70,
+            "width": 345,
+            "height": 18
+          },
+          "layoutGlyphHeight": 11.2125,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "Screen translator for Windows",
+          "bounds": {
+            "empty": false,
+            "x": 32,
+            "y": 67,
+            "width": 242,
+            "height": 23
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 32,
+            "y": 67,
+            "width": 242,
+            "height": 23
+          },
+          "layoutGlyphHeight": 12.100000000000001,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "screenshot, real-time, text selection & quick",
+          "bounds": {
+            "empty": false,
+            "x": 291,
+            "y": 70,
+            "width": 345,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 291,
+            "y": 70,
+            "width": 345,
+            "height": 18
+          },
+          "layoutGlyphHeight": 11.2125,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "Screen translator for Windows",
+          "current": "screenshot, real-time, text selection & quick",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.8292682926829268,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7014492753623188,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "Screen translator for Windows",
+          "current": "screenshot, real-time, text selection & quick",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.975609756097561,
+          "leftDelta": 12.634146341463415,
+          "centerDelta": 15.146341463414634,
+          "rightDelta": 17.658536585365855,
+          "alignmentDelta": 12.634146341463415,
+          "textSizeRatio": 0.9266528925619834,
+          "widthRatio": 0.7014492753623188,
+          "lineAdvance": 0.14634146341463414,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 12.100000000000001,
+          "currentSizeValue": 11.2125,
+          "advancePixels": 3,
+          "advanceDenominator": 20.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Screen translator for Windows",
+              "bounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 242,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 242,
+                "height": 23
+              },
+              "layoutGlyphHeight": 12.100000000000001,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 32,
+                  "y": 67,
+                  "width": 242,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "screenshot, real-time, text selection & quick",
+              "bounds": {
+                "empty": false,
+                "x": 291,
+                "y": 70,
+                "width": 345,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 291,
+                "y": 70,
+                "width": 345,
+                "height": 18
+              },
+              "layoutGlyphHeight": 11.2125,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 291,
+                  "y": 70,
+                  "width": 345,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Screen translator for Windows",
+              "bounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 242,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 32,
+                "y": 67,
+                "width": 242,
+                "height": 23
+              },
+              "layoutGlyphHeight": 12.100000000000001,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 32,
+                  "y": 67,
+                  "width": 242,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "screenshot, real-time, text selection & quick",
+              "bounds": {
+                "empty": false,
+                "x": 291,
+                "y": 70,
+                "width": 345,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 291,
+                "y": 70,
+                "width": 345,
+                "height": 18
+              },
+              "layoutGlyphHeight": 11.2125,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 291,
+                  "y": 70,
+                  "width": 345,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

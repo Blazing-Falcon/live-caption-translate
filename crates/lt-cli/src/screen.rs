@@ -134,7 +134,7 @@ mod run {
             .png
             .file_name()
             .map(|name| name.to_string_lossy().into_owned());
-        let output = serde_json::json!({
+        let mut output = serde_json::json!({
             "image": name,
             "width": width,
             "height": height,
@@ -146,6 +146,15 @@ mod run {
                 .map(|(t_ms, event)| serde_json::json!({"t_ms": t_ms, "event": event}))
                 .collect::<Vec<_>>(),
         });
+        if args.explain {
+            use lt_core::screen::{filters, group, ink, line::RawLine};
+            let raw: Vec<RawLine> = lines.iter().map(RawLine::from).collect();
+            let mut facts = filters::prepare(&raw);
+            ink::annotate(&image, &mut facts);
+            let grouping = group::group_with_profile(&facts, &group::profile::GENERAL, true);
+            output["decisions"] = serde_json::to_value(grouping.decisions)?;
+            output["grouping_trace"] = serde_json::to_value(grouping.trace)?;
+        }
         let file =
             File::create(&args.out).with_context(|| format!("Creating {}", args.out.display()))?;
         serde_json::to_writer_pretty(file, &output)?;

@@ -22,6 +22,7 @@
               24
             ],
             "id": 0,
+            "intent": "group_reflow",
             "line_height": 27,
             "lines": [
               {
@@ -64,6 +65,7 @@
               24
             ],
             "id": 1,
+            "intent": "group_reflow",
             "line_height": 30,
             "lines": [
               {

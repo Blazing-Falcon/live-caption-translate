@@ -1,0 +1,318 @@
+{
+  "test": "WrappedFinalLineLeading_IsMeasuredOnLayoutBounds_NotTheNormalisedBox",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "彾匣內每發子彈的傷害會增加而且",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 103.05,
+            "width": 460,
+            "height": 27.9
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 460,
+            "height": 34
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "更容易觸發",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 147.05,
+            "width": 160,
+            "height": 27.9
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 144,
+            "width": 160,
+            "height": 34
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "彾匣內每發子彈的傷害會增加而且 更容易觸發",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 103.05,
+            "width": 460,
+            "height": 71.90000000000002
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 100,
+              "y": 103.05,
+              "width": 460,
+              "height": 27.9
+            },
+            {
+              "empty": false,
+              "x": 100,
+              "y": 147.05,
+              "width": 160,
+              "height": 27.9
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 460,
+            "height": 78
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "彾匣內每發子彈的傷害會增加而且",
+          "current": "更容易觸發",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.29411764705882354,
+          "leftDelta": 0,
+          "centerDelta": 4.411764705882353,
+          "rightDelta": 8.823529411764707,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 2.875,
+          "lineAdvance": 1.2941176470588236,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "shorter final line",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 34,
+          "currentSizeValue": 34,
+          "advancePixels": 44,
+          "advanceDenominator": 34
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "彾匣內每發子彈的傷害會增加而且",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 103.05,
+                "width": 460,
+                "height": 27.9
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 460,
+                "height": 34
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 103.05,
+                  "width": 460,
+                  "height": 27.9
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "更容易觸發",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 147.05,
+                "width": 160,
+                "height": 27.9
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 144,
+                "width": 160,
+                "height": 34
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 147.05,
+                  "width": 160,
+                  "height": 27.9
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "彾匣內每發子彈的傷害會增加而且",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 103.05,
+                "width": 460,
+                "height": 27.9
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 460,
+                "height": 34
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 103.05,
+                  "width": 460,
+                  "height": 27.9
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "更容易觸發",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 147.05,
+                "width": 160,
+                "height": 27.9
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 144,
+                "width": 160,
+                "height": 34
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 147.05,
+                  "width": 160,
+                  "height": 27.9
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

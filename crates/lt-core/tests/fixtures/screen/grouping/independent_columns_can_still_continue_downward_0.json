@@ -1,0 +1,710 @@
+{
+  "test": "IndependentColumnsCanStillContinueDownward",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "The left column has a long opening line",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 300,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 300,
+            "height": 18
+          },
+          "layoutGlyphHeight": 12.1875,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "The right column has its own opening",
+          "bounds": {
+            "empty": false,
+            "x": 400,
+            "y": 0,
+            "width": 300,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 400,
+            "y": 0,
+            "width": 300,
+            "height": 18
+          },
+          "layoutGlyphHeight": 13,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "and continues in the left column.",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 19,
+            "width": 280,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 19,
+            "width": 280,
+            "height": 18
+          },
+          "layoutGlyphHeight": 13,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "and continues in the right column.",
+          "bounds": {
+            "empty": false,
+            "x": 400,
+            "y": 19,
+            "width": 280,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 400,
+            "y": 19,
+            "width": 280,
+            "height": 18
+          },
+          "layoutGlyphHeight": 12.551724137931034,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "The left column has a long opening line and continues in the left column.",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 300,
+            "height": 37
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 0,
+              "y": 0,
+              "width": 300,
+              "height": 18
+            },
+            {
+              "empty": false,
+              "x": 0,
+              "y": 19,
+              "width": 280,
+              "height": 18
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 300,
+            "height": 37
+          },
+          "layoutGlyphHeight": 13,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "The right column has its own opening and continues in the right column.",
+          "bounds": {
+            "empty": false,
+            "x": 400,
+            "y": 0,
+            "width": 300,
+            "height": 37
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 400,
+              "y": 0,
+              "width": 300,
+              "height": 18
+            },
+            {
+              "empty": false,
+              "x": 400,
+              "y": 19,
+              "width": 280,
+              "height": 18
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 400,
+            "y": 0,
+            "width": 300,
+            "height": 37
+          },
+          "layoutGlyphHeight": 13,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "The left column has a long opening line",
+          "current": "The right column has its own opening",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 5.555555555555555,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 1,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "and continues in the left column.",
+          "current": "and continues in the right column.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 6.666666666666667,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 1,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b2",
+          "currentId": "b3",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "The left column has a long opening line",
+          "current": "The right column has its own opening",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -1,
+          "leftDelta": 22.22222222222222,
+          "centerDelta": 22.22222222222222,
+          "rightDelta": 22.22222222222222,
+          "alignmentDelta": 22.22222222222222,
+          "textSizeRatio": 0.9375,
+          "widthRatio": 1,
+          "lineAdvance": 0,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 12.1875,
+          "currentSizeValue": 13,
+          "advancePixels": 0,
+          "advanceDenominator": 18
+        },
+        {
+          "kind": "next",
+          "previous": "The right column has its own opening",
+          "current": "and continues in the left column.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.05555555555555555,
+          "leftDelta": 22.22222222222222,
+          "centerDelta": 22.77777777777778,
+          "rightDelta": 23.333333333333332,
+          "alignmentDelta": 22.22222222222222,
+          "textSizeRatio": 1,
+          "widthRatio": 1.0714285714285714,
+          "lineAdvance": 1.0555555555555556,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 13,
+          "currentSizeValue": 13,
+          "advancePixels": 19,
+          "advanceDenominator": 18
+        },
+        {
+          "kind": "next",
+          "previous": "The left column has a long opening line",
+          "current": "and continues in the left column.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.05555555555555555,
+          "leftDelta": 0,
+          "centerDelta": 0.5555555555555556,
+          "rightDelta": 1.1111111111111112,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.9375,
+          "widthRatio": 1.0714285714285714,
+          "lineAdvance": 1.0555555555555556,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 12.1875,
+          "currentSizeValue": 13,
+          "advancePixels": 19,
+          "advanceDenominator": 18
+        },
+        {
+          "kind": "next",
+          "previous": "The right column has its own opening",
+          "current": "and continues in the right column.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.05555555555555555,
+          "leftDelta": 0,
+          "centerDelta": 0.5555555555555556,
+          "rightDelta": 1.1111111111111112,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.9655172413793103,
+          "widthRatio": 1.0714285714285714,
+          "lineAdvance": 1.0555555555555556,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L1",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 13,
+          "currentSizeValue": 12.551724137931034,
+          "advancePixels": 19,
+          "advanceDenominator": 18
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "The left column has a long opening line",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "layoutGlyphHeight": 12.1875,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 300,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "The right column has its own opening",
+              "bounds": {
+                "empty": false,
+                "x": 400,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 400,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "layoutGlyphHeight": 13,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 400,
+                  "y": 0,
+                  "width": 300,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "and continues in the left column.",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "layoutGlyphHeight": 13,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 19,
+                  "width": 280,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "and continues in the right column.",
+              "bounds": {
+                "empty": false,
+                "x": 400,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 400,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "layoutGlyphHeight": 12.551724137931034,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 400,
+                  "y": 19,
+                  "width": 280,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "The left column has a long opening line",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "layoutGlyphHeight": 12.1875,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 300,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "The right column has its own opening",
+              "bounds": {
+                "empty": false,
+                "x": 400,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 400,
+                "y": 0,
+                "width": 300,
+                "height": 18
+              },
+              "layoutGlyphHeight": 13,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 400,
+                  "y": 0,
+                  "width": 300,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "and continues in the left column.",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "layoutGlyphHeight": 13,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 19,
+                  "width": 280,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "and continues in the right column.",
+              "bounds": {
+                "empty": false,
+                "x": 400,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 400,
+                "y": 19,
+                "width": 280,
+                "height": 18
+              },
+              "layoutGlyphHeight": 12.551724137931034,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 400,
+                  "y": 19,
+                  "width": 280,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L2"
+          ],
+          [
+            "L1",
+            "L3"
+          ]
+        ]
+      }
+    }
+  ]
+}

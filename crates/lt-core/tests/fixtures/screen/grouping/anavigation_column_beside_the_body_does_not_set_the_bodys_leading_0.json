@@ -1,0 +1,3418 @@
+{
+  "test": "ANavigationColumnBesideTheBodyDoesNotSetTheBodysLeading",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 130,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 130,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 160,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 160,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 190,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 190,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 220,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 220,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 250,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 250,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 145,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 145,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 190,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 190,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 235,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 235,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "導覽項目 導覽項目 導覽項目 導覽項目 導覽項目 導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 180
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 20,
+              "y": 100,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 130,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 160,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 190,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 220,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 250,
+              "width": 120,
+              "height": 30
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 180
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容 這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容 這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容 這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 165
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 300,
+              "y": 100,
+              "width": 700,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 300,
+              "y": 145,
+              "width": 700,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 300,
+              "y": 190,
+              "width": 700,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 300,
+              "y": 235,
+              "width": 700,
+              "height": 30
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 165
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 5.333333333333333,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b0",
+          "currentId": "b6",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 5.333333333333333,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b3",
+          "currentId": "b8",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -1,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 0,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "regular prose leading",
+          "previousId": "L1",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L2",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L3",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L4",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "regular prose leading",
+          "previousId": "L3",
+          "currentId": "L6",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L6",
+          "currentId": "L7",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L5",
+          "currentId": "L7",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "regular prose leading",
+          "previousId": "L6",
+          "currentId": "L8",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L7",
+          "currentId": "L8",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L8",
+          "currentId": "L9",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L7",
+          "currentId": "L9",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 100,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 130,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 160,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 190,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 220,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b5",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 250,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b6",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 100,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b7",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 145,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b8",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 190,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b9",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 235,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 100,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 100,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b6"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 130,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 145,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b7"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 160,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L5",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 190,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L6",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 190,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b8"
+            ]
+          },
+          {
+            "id": "L7",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 220,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          },
+          {
+            "id": "L8",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 235,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b9"
+            ]
+          },
+          {
+            "id": "L9",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 250,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b5"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L2",
+            "L4",
+            "L5",
+            "L7",
+            "L9"
+          ],
+          [
+            "L1",
+            "L3",
+            "L6",
+            "L8"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 130,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 130,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 160,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 160,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 190,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 190,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 220,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 220,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 250,
+            "width": 120,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 250,
+            "width": 120,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 145,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 145,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 190,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 190,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 235,
+            "width": 700,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 235,
+            "width": 700,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "導覽項目 導覽項目 導覽項目 導覽項目 導覽項目 導覽項目",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 180
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 20,
+              "y": 100,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 130,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 160,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 190,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 220,
+              "width": 120,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 20,
+              "y": 250,
+              "width": 120,
+              "height": 30
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 100,
+            "width": 120,
+            "height": 180
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容 這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容 這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容 這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 165
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 300,
+              "y": 100,
+              "width": 700,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 300,
+              "y": 145,
+              "width": 700,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 300,
+              "y": 190,
+              "width": 700,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 300,
+              "y": 235,
+              "width": 700,
+              "height": 30
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 100,
+            "width": 700,
+            "height": 165
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 5.333333333333333,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b0",
+          "currentId": "b6",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 5.333333333333333,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b3",
+          "currentId": "b8",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -1,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 0,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "regular prose leading",
+          "previousId": "L1",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L2",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L3",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L4",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "regular prose leading",
+          "previousId": "L3",
+          "currentId": "L6",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L6",
+          "currentId": "L7",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L5",
+          "currentId": "L7",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.5,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "regular prose leading",
+          "previousId": "L6",
+          "currentId": "L8",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 45,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 0.17142857142857143,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L7",
+          "currentId": "L8",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -0.5,
+          "leftDelta": 9.333333333333334,
+          "centerDelta": 19,
+          "rightDelta": 28.666666666666668,
+          "alignmentDelta": 9.333333333333334,
+          "textSizeRatio": 1,
+          "widthRatio": 5.833333333333333,
+          "lineAdvance": 0.5,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L8",
+          "currentId": "L9",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 15,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "導覽項目",
+          "current": "導覽項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L7",
+          "currentId": "L9",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 30,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 100,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 130,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 160,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 190,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 220,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b5",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 250,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b6",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 100,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b7",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 145,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b8",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 190,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b9",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 235,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 100,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 100,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 100,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 100,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b6"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 130,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 130,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 145,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 145,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b7"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 160,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 160,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L5",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 190,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 190,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L6",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 190,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 190,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b8"
+            ]
+          },
+          {
+            "id": "L7",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 220,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 220,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          },
+          {
+            "id": "L8",
+            "block": {
+              "text": "這一段正文的行距比介面文字寬鬆一些但仍然是同一段落的內容",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 235,
+                "width": 700,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 235,
+                  "width": 700,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b9"
+            ]
+          },
+          {
+            "id": "L9",
+            "block": {
+              "text": "導覽項目",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 250,
+                "width": 120,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 250,
+                  "width": 120,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b5"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L2",
+            "L4",
+            "L5",
+            "L7",
+            "L9"
+          ],
+          [
+            "L1",
+            "L3",
+            "L6",
+            "L8"
+          ]
+        ]
+      }
+    }
+  ]
+}

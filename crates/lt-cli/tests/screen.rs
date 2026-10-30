@@ -16,7 +16,12 @@ fn every_block_of_the_article_is_translated() {
     let out = std::env::temp_dir().join(format!("lt-cli-screen-{}.json", std::process::id()));
     let run = Command::new(env!("CARGO_BIN_EXE_lt-cli"))
         .current_dir(&workspace)
-        .args(["screen", "testdata/screen/article@1.png", "--out"])
+        .args([
+            "screen",
+            "testdata/screen/article@1.png",
+            "--explain",
+            "--out",
+        ])
         .arg(&out)
         .output()
         .unwrap();
@@ -44,6 +49,11 @@ fn every_block_of_the_article_is_translated() {
         "{events:#?}"
     );
     let blocks = events[1]["blocks"].as_array().unwrap();
+    assert!(!output["decisions"].as_array().unwrap().is_empty());
+    assert_eq!(
+        output["grouping_trace"]["groups"].as_array().unwrap().len(),
+        2
+    );
     assert_eq!(blocks.len(), 2);
     assert!(blocks.iter().all(|block| block["translate"] == true));
     for event in &events[2..4] {

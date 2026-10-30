@@ -1,0 +1,646 @@
+{
+  "test": "ABalloonInteriorWithTheWideLineFirst_IsStillRead",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "YOU THINK THAT'D",
+          "bounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 57
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 57
+          },
+          "layoutGlyphHeight": 39.84,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "HURT ME?",
+          "bounds": {
+            "empty": false,
+            "x": 293,
+            "y": 634,
+            "width": 248,
+            "height": 60
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 293,
+            "y": 634,
+            "width": 248,
+            "height": 60
+          },
+          "layoutGlyphHeight": 46.06,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "YOU THINK THAT'D",
+          "bounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 57
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 57
+          },
+          "layoutGlyphHeight": 39.84,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "HURT ME?",
+          "bounds": {
+            "empty": false,
+            "x": 293,
+            "y": 634,
+            "width": 248,
+            "height": 60
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 293,
+            "y": 634,
+            "width": 248,
+            "height": 60
+          },
+          "layoutGlyphHeight": 46.06,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "YOU THINK THAT'D",
+          "current": "HURT ME?",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.05128205128205128,
+          "leftDelta": 1.5213675213675213,
+          "centerDelta": 0.02564102564102564,
+          "rightDelta": 1.5726495726495726,
+          "alignmentDelta": 0.02564102564102564,
+          "textSizeRatio": 0.8649587494572297,
+          "widthRatio": 1.7298387096774193,
+          "lineAdvance": 0.9230769230769231,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 39.84,
+          "currentSizeValue": 46.06,
+          "advancePixels": 54,
+          "advanceDenominator": 58.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "YOU THINK THAT'D",
+              "bounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "layoutGlyphHeight": 39.84,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 204,
+                  "y": 580,
+                  "width": 429,
+                  "height": 57
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "HURT ME?",
+              "bounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "layoutGlyphHeight": 46.06,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 293,
+                  "y": 634,
+                  "width": 248,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "YOU THINK THAT'D",
+              "bounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "layoutGlyphHeight": 39.84,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 204,
+                  "y": 580,
+                  "width": 429,
+                  "height": 57
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "HURT ME?",
+              "bounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "layoutGlyphHeight": 46.06,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 293,
+                  "y": 634,
+                  "width": 248,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "YOU THINK THAT'D",
+          "bounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 57
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 57
+          },
+          "layoutGlyphHeight": 39.84,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "HURT ME?",
+          "bounds": {
+            "empty": false,
+            "x": 293,
+            "y": 634,
+            "width": 248,
+            "height": 60
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 293,
+            "y": 634,
+            "width": 248,
+            "height": 60
+          },
+          "layoutGlyphHeight": 46.06,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "YOU THINK THAT'D HURT ME?",
+          "bounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 114
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 204,
+              "y": 580,
+              "width": 429,
+              "height": 57
+            },
+            {
+              "empty": false,
+              "x": 293,
+              "y": 634,
+              "width": 248,
+              "height": 60
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 204,
+            "y": 580,
+            "width": 429,
+            "height": 114
+          },
+          "layoutGlyphHeight": 46.06,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "YOU THINK THAT'D",
+          "current": "HURT ME?",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.05128205128205128,
+          "leftDelta": 1.5213675213675213,
+          "centerDelta": 0.02564102564102564,
+          "rightDelta": 1.5726495726495726,
+          "alignmentDelta": 0.02564102564102564,
+          "textSizeRatio": 0.8649587494572297,
+          "widthRatio": 1.7298387096774193,
+          "lineAdvance": 0.9230769230769231,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 39.84,
+          "currentSizeValue": 46.06,
+          "advancePixels": 54,
+          "advanceDenominator": 58.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "YOU THINK THAT'D",
+              "bounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "layoutGlyphHeight": 39.84,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 204,
+                  "y": 580,
+                  "width": 429,
+                  "height": 57
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "HURT ME?",
+              "bounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "layoutGlyphHeight": 46.06,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 293,
+                  "y": 634,
+                  "width": 248,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "YOU THINK THAT'D",
+              "bounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 204,
+                "y": 580,
+                "width": 429,
+                "height": 57
+              },
+              "layoutGlyphHeight": 39.84,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 204,
+                  "y": 580,
+                  "width": 429,
+                  "height": 57
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "HURT ME?",
+              "bounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 293,
+                "y": 634,
+                "width": 248,
+                "height": 60
+              },
+              "layoutGlyphHeight": 46.06,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 293,
+                  "y": 634,
+                  "width": 248,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

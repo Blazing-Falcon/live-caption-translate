@@ -1,0 +1,334 @@
+{
+  "test": "ListLinesWhoseCentresMeetByChance_AreNotSetSolid",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "126 points by Bluestein 9 hours ago | hide | 21 comments",
+          "bounds": {
+            "empty": false,
+            "x": 157,
+            "y": 406,
+            "width": 284,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 157,
+            "y": 406,
+            "width": 284,
+            "height": 20
+          },
+          "layoutGlyphHeight": 8.2,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "12.▲The efficient frontier of LLM inference (baseten.co)",
+          "bounds": {
+            "empty": false,
+            "x": 123,
+            "y": 426,
+            "width": 364,
+            "height": 21
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 123,
+            "y": 426,
+            "width": 364,
+            "height": 21
+          },
+          "layoutGlyphHeight": 9.46,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "126 points by Bluestein 9 hours ago | hide | 21 comments",
+          "bounds": {
+            "empty": false,
+            "x": 157,
+            "y": 406,
+            "width": 284,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 157,
+            "y": 406,
+            "width": 284,
+            "height": 20
+          },
+          "layoutGlyphHeight": 8.2,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "12.▲The efficient frontier of LLM inference (baseten.co)",
+          "bounds": {
+            "empty": false,
+            "x": 123,
+            "y": 426,
+            "width": 364,
+            "height": 21
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 123,
+            "y": 426,
+            "width": 364,
+            "height": 21
+          },
+          "layoutGlyphHeight": 9.46,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "126 points by Bluestein 9 hours ago | hide | 21 comments",
+          "current": "12.▲The efficient frontier of LLM inference (baseten.co)",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 1.6585365853658536,
+          "centerDelta": 0.2926829268292683,
+          "rightDelta": 2.2439024390243905,
+          "alignmentDelta": 0.2926829268292683,
+          "textSizeRatio": 0.8668076109936573,
+          "widthRatio": 0.7802197802197802,
+          "lineAdvance": 0.975609756097561,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 8.2,
+          "currentSizeValue": 9.46,
+          "advancePixels": 20,
+          "advanceDenominator": 20.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "126 points by Bluestein 9 hours ago | hide | 21 comments",
+              "bounds": {
+                "empty": false,
+                "x": 157,
+                "y": 406,
+                "width": 284,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 157,
+                "y": 406,
+                "width": 284,
+                "height": 20
+              },
+              "layoutGlyphHeight": 8.2,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 157,
+                  "y": 406,
+                  "width": 284,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "12.▲The efficient frontier of LLM inference (baseten.co)",
+              "bounds": {
+                "empty": false,
+                "x": 123,
+                "y": 426,
+                "width": 364,
+                "height": 21
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 123,
+                "y": 426,
+                "width": 364,
+                "height": 21
+              },
+              "layoutGlyphHeight": 9.46,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 123,
+                  "y": 426,
+                  "width": 364,
+                  "height": 21
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "126 points by Bluestein 9 hours ago | hide | 21 comments",
+              "bounds": {
+                "empty": false,
+                "x": 157,
+                "y": 406,
+                "width": 284,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 157,
+                "y": 406,
+                "width": 284,
+                "height": 20
+              },
+              "layoutGlyphHeight": 8.2,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 157,
+                  "y": 406,
+                  "width": 284,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "12.▲The efficient frontier of LLM inference (baseten.co)",
+              "bounds": {
+                "empty": false,
+                "x": 123,
+                "y": 426,
+                "width": 364,
+                "height": 21
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 123,
+                "y": 426,
+                "width": 364,
+                "height": 21
+              },
+              "layoutGlyphHeight": 9.46,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 123,
+                  "y": 426,
+                  "width": 364,
+                  "height": 21
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

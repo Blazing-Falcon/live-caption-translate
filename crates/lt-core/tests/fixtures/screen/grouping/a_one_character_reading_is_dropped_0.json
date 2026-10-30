@@ -1,0 +1,100 @@
+{
+  "test": "A_one_character_reading_is_dropped",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "ruby",
+      "input": [
+        {
+          "text": "よ",
+          "bounds": {
+            "empty": false,
+            "x": 838,
+            "y": 228,
+            "width": 32,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 838,
+            "y": 228,
+            "width": 32,
+            "height": 31
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "今日は学校の図書館で、まえから読みたかった本を借りました。",
+          "bounds": {
+            "empty": false,
+            "x": 93,
+            "y": 252,
+            "width": 1378,
+            "height": 57
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 93,
+            "y": 252,
+            "width": 1378,
+            "height": 57
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "今日は学校の図書館で、まえから読みたかった本を借りました。",
+          "bounds": {
+            "empty": false,
+            "x": 93,
+            "y": 228,
+            "width": 1378,
+            "height": 81
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 93,
+            "y": 252,
+            "width": 1378,
+            "height": 57
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ]
+    }
+  ]
+}

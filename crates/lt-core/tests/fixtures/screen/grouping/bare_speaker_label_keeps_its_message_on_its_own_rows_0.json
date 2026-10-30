@@ -1,0 +1,334 @@
+{
+  "test": "BareSpeakerLabel_KeepsItsMessageOnItsOwnRows",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "[GLOBAL] Conor_Braxton:",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 24
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "feels good making over 1m off a 33k rental ship",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 26,
+            "width": 350,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 26,
+            "width": 350,
+            "height": 24
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "[GLOBAL] Conor_Braxton:",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 24
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "feels good making over 1m off a 33k rental ship",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 26,
+            "width": 350,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 26,
+            "width": 350,
+            "height": 24
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "[GLOBAL] Conor_Braxton:",
+          "current": "feels good making over 1m off a 33k rental ship",
+          "previousScript": "Unknown",
+          "currentScript": "Unknown",
+          "verticalGap": 0.08333333333333333,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.0833333333333333,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "speaker label",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 24,
+          "currentSizeValue": 24,
+          "advancePixels": 26,
+          "advanceDenominator": 24
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "[GLOBAL] Conor_Braxton:",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "feels good making over 1m off a 33k rental ship",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 26,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "[GLOBAL] Conor_Braxton:",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "feels good making over 1m off a 33k rental ship",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 26,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

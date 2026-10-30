@@ -1,0 +1,334 @@
+{
+  "test": "StackedControlsOfSimilarHeightAreStillKeptApart",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Download report",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 200,
+            "height": 32
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 200,
+            "height": 32
+          },
+          "layoutGlyphHeight": 18.571428571428573,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Create key",
+          "bounds": {
+            "empty": false,
+            "x": 215,
+            "y": 27,
+            "width": 160,
+            "height": 38
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 215,
+            "y": 27,
+            "width": 160,
+            "height": 38
+          },
+          "layoutGlyphHeight": 23.111111111111114,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Download report",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 200,
+            "height": 32
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 200,
+            "height": 32
+          },
+          "layoutGlyphHeight": 18.571428571428573,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Create key",
+          "bounds": {
+            "empty": false,
+            "x": 215,
+            "y": 27,
+            "width": 160,
+            "height": 38
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 215,
+            "y": 27,
+            "width": 160,
+            "height": 38
+          },
+          "layoutGlyphHeight": 23.111111111111114,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Download report",
+          "current": "Create key",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.42857142857142855,
+          "leftDelta": 5.857142857142857,
+          "centerDelta": 5.285714285714286,
+          "rightDelta": 4.714285714285714,
+          "alignmentDelta": 4.714285714285714,
+          "textSizeRatio": 0.8035714285714285,
+          "widthRatio": 1.25,
+          "lineAdvance": 0.4857142857142857,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 18.571428571428573,
+          "currentSizeValue": 23.111111111111114,
+          "advancePixels": 17,
+          "advanceDenominator": 35
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Download report",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 200,
+                "height": 32
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 200,
+                "height": 32
+              },
+              "layoutGlyphHeight": 18.571428571428573,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 10,
+                  "width": 200,
+                  "height": 32
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Create key",
+              "bounds": {
+                "empty": false,
+                "x": 215,
+                "y": 27,
+                "width": 160,
+                "height": 38
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 215,
+                "y": 27,
+                "width": 160,
+                "height": 38
+              },
+              "layoutGlyphHeight": 23.111111111111114,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 215,
+                  "y": 27,
+                  "width": 160,
+                  "height": 38
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Download report",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 200,
+                "height": 32
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 200,
+                "height": 32
+              },
+              "layoutGlyphHeight": 18.571428571428573,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 10,
+                  "width": 200,
+                  "height": 32
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Create key",
+              "bounds": {
+                "empty": false,
+                "x": 215,
+                "y": 27,
+                "width": 160,
+                "height": 38
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 215,
+                "y": 27,
+                "width": 160,
+                "height": 38
+              },
+              "layoutGlyphHeight": 23.111111111111114,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 215,
+                  "y": 27,
+                  "width": 160,
+                  "height": 38
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

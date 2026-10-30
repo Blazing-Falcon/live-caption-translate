@@ -1,0 +1,1290 @@
+{
+  "test": "AskingForTheTraceChangesNothingAboutTheGrouping",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Since its initial release, PaddleOCR has",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1742,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1742,
+            "height": 29
+          },
+          "layoutGlyphHeight": 23.779999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "proven performance in real-world use",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 62,
+            "width": 1771,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 62,
+            "width": 1771,
+            "height": 31
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "cost.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 15.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "On June 11, 2026, PaddleOCR released",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "layoutGlyphHeight": 22.139999999999997,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "Since its initial release, PaddleOCR has proven performance in real-world use",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1771,
+            "height": 69
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 147,
+              "y": 24,
+              "width": 1742,
+              "height": 29
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 62,
+              "width": 1771,
+              "height": 31
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1771,
+            "height": 69
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "cost.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 15.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "On June 11, 2026, PaddleOCR released",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "layoutGlyphHeight": 22.139999999999997,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Since its initial release, PaddleOCR has",
+          "current": "proven performance in real-world use",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3,
+          "leftDelta": 0,
+          "centerDelta": 0.48333333333333334,
+          "rightDelta": 0.9666666666666667,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.9354838709677419,
+          "widthRatio": 0.9836250705815923,
+          "lineAdvance": 1.2666666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 23.779999999999998,
+          "currentSizeValue": 25.419999999999998,
+          "advancePixels": 38,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "proven performance in real-world use",
+          "current": "cost.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 17.903225806451612,
+          "leftDelta": 0.06451612903225806,
+          "centerDelta": 27.629032258064516,
+          "rightDelta": 55.193548387096776,
+          "alignmentDelta": 0.06451612903225806,
+          "textSizeRatio": 0.6097560975609757,
+          "widthRatio": 28.56451612903226,
+          "lineAdvance": 18.903225806451612,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 25.419999999999998,
+          "currentSizeValue": 15.5,
+          "advancePixels": 586,
+          "advanceDenominator": 31
+        },
+        {
+          "kind": "next",
+          "previous": "cost.",
+          "current": "On June 11, 2026, PaddleOCR released",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 1.103448275862069,
+          "leftDelta": 0.10344827586206896,
+          "centerDelta": 29.29310344827586,
+          "rightDelta": 58.48275862068966,
+          "alignmentDelta": 0.10344827586206896,
+          "textSizeRatio": 0.7000903342366758,
+          "widthRatio": 0.035327635327635325,
+          "lineAdvance": 2.1724137931034484,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.5,
+          "currentSizeValue": 22.139999999999997,
+          "advancePixels": 63,
+          "advanceDenominator": 29
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Since its initial release, PaddleOCR has",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "layoutGlyphHeight": 23.779999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 24,
+                  "width": 1742,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "proven performance in real-world use",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 62,
+                  "width": 1771,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "cost.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 15.5,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "On June 11, 2026, PaddleOCR released",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "layoutGlyphHeight": 22.139999999999997,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 711,
+                  "width": 1755,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Since its initial release, PaddleOCR has",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "layoutGlyphHeight": 23.779999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 24,
+                  "width": 1742,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "proven performance in real-world use",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 62,
+                  "width": 1771,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "cost.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 15.5,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "On June 11, 2026, PaddleOCR released",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "layoutGlyphHeight": 22.139999999999997,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 711,
+                  "width": 1755,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Since its initial release, PaddleOCR has",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1742,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1742,
+            "height": 29
+          },
+          "layoutGlyphHeight": 23.779999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "proven performance in real-world use",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 62,
+            "width": 1771,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 62,
+            "width": 1771,
+            "height": 31
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "cost.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 15.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "On June 11, 2026, PaddleOCR released",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "layoutGlyphHeight": 22.139999999999997,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "Since its initial release, PaddleOCR has proven performance in real-world use",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1771,
+            "height": 69
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 147,
+              "y": 24,
+              "width": 1742,
+              "height": 29
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 62,
+              "width": 1771,
+              "height": 31
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 24,
+            "width": 1771,
+            "height": 69
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "cost.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 15.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "On June 11, 2026, PaddleOCR released",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 711,
+            "width": 1755,
+            "height": 27
+          },
+          "layoutGlyphHeight": 22.139999999999997,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Since its initial release, PaddleOCR has",
+          "current": "proven performance in real-world use",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3,
+          "leftDelta": 0,
+          "centerDelta": 0.48333333333333334,
+          "rightDelta": 0.9666666666666667,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.9354838709677419,
+          "widthRatio": 0.9836250705815923,
+          "lineAdvance": 1.2666666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 23.779999999999998,
+          "currentSizeValue": 25.419999999999998,
+          "advancePixels": 38,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "proven performance in real-world use",
+          "current": "cost.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 17.903225806451612,
+          "leftDelta": 0.06451612903225806,
+          "centerDelta": 27.629032258064516,
+          "rightDelta": 55.193548387096776,
+          "alignmentDelta": 0.06451612903225806,
+          "textSizeRatio": 0.6097560975609757,
+          "widthRatio": 28.56451612903226,
+          "lineAdvance": 18.903225806451612,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 25.419999999999998,
+          "currentSizeValue": 15.5,
+          "advancePixels": 586,
+          "advanceDenominator": 31
+        },
+        {
+          "kind": "next",
+          "previous": "cost.",
+          "current": "On June 11, 2026, PaddleOCR released",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 1.103448275862069,
+          "leftDelta": 0.10344827586206896,
+          "centerDelta": 29.29310344827586,
+          "rightDelta": 58.48275862068966,
+          "alignmentDelta": 0.10344827586206896,
+          "textSizeRatio": 0.7000903342366758,
+          "widthRatio": 0.035327635327635325,
+          "lineAdvance": 2.1724137931034484,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.5,
+          "currentSizeValue": 22.139999999999997,
+          "advancePixels": 63,
+          "advanceDenominator": 29
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Since its initial release, PaddleOCR has",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "layoutGlyphHeight": 23.779999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 24,
+                  "width": 1742,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "proven performance in real-world use",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 62,
+                  "width": 1771,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "cost.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 15.5,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "On June 11, 2026, PaddleOCR released",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "layoutGlyphHeight": 22.139999999999997,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 711,
+                  "width": 1755,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Since its initial release, PaddleOCR has",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 24,
+                "width": 1742,
+                "height": 29
+              },
+              "layoutGlyphHeight": 23.779999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 24,
+                  "width": 1742,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "proven performance in real-world use",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 62,
+                "width": 1771,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 62,
+                  "width": 1771,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "cost.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 15.5,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "On June 11, 2026, PaddleOCR released",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 711,
+                "width": 1755,
+                "height": 27
+              },
+              "layoutGlyphHeight": 22.139999999999997,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 711,
+                  "width": 1755,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ]
+        ]
+      }
+    }
+  ]
+}

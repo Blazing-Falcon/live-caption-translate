@@ -1,0 +1,129 @@
+{
+  "test": "A_label_standing_clear_above_a_line_is_kept",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "ruby",
+      "input": [
+        {
+          "text": "しゅとく",
+          "bounds": {
+            "empty": false,
+            "x": 113,
+            "y": 224,
+            "width": 97,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 113,
+            "y": 224,
+            "width": 97,
+            "height": 30
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "第三階層 西の祭壇",
+          "bounds": {
+            "empty": false,
+            "x": 105,
+            "y": 273,
+            "width": 328,
+            "height": 47
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 105,
+            "y": 273,
+            "width": 328,
+            "height": 47
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "しゅとく",
+          "bounds": {
+            "empty": false,
+            "x": 113,
+            "y": 224,
+            "width": 97,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 113,
+            "y": 224,
+            "width": 97,
+            "height": 30
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "第三階層 西の祭壇",
+          "bounds": {
+            "empty": false,
+            "x": 105,
+            "y": 273,
+            "width": 328,
+            "height": 47
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 105,
+            "y": 273,
+            "width": 328,
+            "height": 47
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ]
+    }
+  ]
+}

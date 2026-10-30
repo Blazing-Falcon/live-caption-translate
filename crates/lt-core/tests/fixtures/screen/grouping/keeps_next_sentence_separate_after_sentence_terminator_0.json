@@ -1,0 +1,334 @@
+{
+  "test": "KeepsNextSentenceSeparateAfterSentenceTerminator",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "第一句已經結束。",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "layoutGlyphHeight": 19.68,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "第二句重新開始",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 110,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 110,
+            "height": 24
+          },
+          "layoutGlyphHeight": 18.54285714285714,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "第一句已經結束。",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "layoutGlyphHeight": 19.68,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "第二句重新開始",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 110,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 110,
+            "height": 24
+          },
+          "layoutGlyphHeight": 18.54285714285714,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "第一句已經結束。",
+          "current": "第二句重新開始",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.25,
+          "leftDelta": 0,
+          "centerDelta": 2.2916666666666665,
+          "rightDelta": 4.583333333333333,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.942218350754936,
+          "widthRatio": 2,
+          "lineAdvance": 1.25,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "sentence terminator",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 19.68,
+          "currentSizeValue": 18.54285714285714,
+          "advancePixels": 30,
+          "advanceDenominator": 24
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "第一句已經結束。",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "layoutGlyphHeight": 19.68,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 10,
+                  "width": 220,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "第二句重新開始",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 110,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 110,
+                "height": 24
+              },
+              "layoutGlyphHeight": 18.54285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 40,
+                  "width": 110,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "第一句已經結束。",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "layoutGlyphHeight": 19.68,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 10,
+                  "width": 220,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "第二句重新開始",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 110,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 110,
+                "height": 24
+              },
+              "layoutGlyphHeight": 18.54285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 40,
+                  "width": 110,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

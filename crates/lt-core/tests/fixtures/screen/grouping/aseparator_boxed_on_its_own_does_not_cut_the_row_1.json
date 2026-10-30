@@ -1,0 +1,357 @@
+{
+  "test": "ASeparatorBoxedOnItsOwn_DoesNotCutTheRow",
+  "parameterIndex": 1,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "首頁",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 60,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 60,
+            "height": 24
+          },
+          "layoutGlyphHeight": 17,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "|",
+          "bounds": {
+            "empty": false,
+            "x": 165,
+            "y": 104,
+            "width": 8,
+            "height": 16
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 165,
+            "y": 104,
+            "width": 8,
+            "height": 16
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "新聞",
+          "bounds": {
+            "empty": false,
+            "x": 178,
+            "y": 100,
+            "width": 60,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 178,
+            "y": 100,
+            "width": 60,
+            "height": 24
+          },
+          "layoutGlyphHeight": 17,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "首頁|新聞",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 138,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 138,
+            "height": 24
+          },
+          "layoutGlyphHeight": 17,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "首頁",
+          "current": "|",
+          "previousScript": "Cjk",
+          "currentScript": "Unknown",
+          "verticalGap": 0.25,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 7.5,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "|",
+          "current": "新聞",
+          "previousScript": "Unknown",
+          "currentScript": "Cjk",
+          "verticalGap": 0.25,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.13333333333333333,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b1",
+          "currentId": "b2",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "首頁",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 60,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 60,
+                "height": 24
+              },
+              "layoutGlyphHeight": 17,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 60,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "|",
+              "bounds": {
+                "empty": false,
+                "x": 165,
+                "y": 104,
+                "width": 8,
+                "height": 16
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 165,
+                "y": 104,
+                "width": 8,
+                "height": 16
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 165,
+                  "y": 104,
+                  "width": 8,
+                  "height": 16
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "新聞",
+              "bounds": {
+                "empty": false,
+                "x": 178,
+                "y": 100,
+                "width": 60,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 178,
+                "y": 100,
+                "width": 60,
+                "height": 24
+              },
+              "layoutGlyphHeight": 17,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 178,
+                  "y": 100,
+                  "width": 60,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "首頁|新聞",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 138,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 138,
+                "height": 24
+              },
+              "layoutGlyphHeight": 17,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 138,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0",
+              "b1",
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ]
+        ]
+      }
+    }
+  ]
+}

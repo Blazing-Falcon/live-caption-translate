@@ -1,0 +1,535 @@
+{
+  "test": "AWrappedTitle_JoinsAcrossALineFromAnotherColumn",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "TVアニメ「バンドリ」放送記念フリーライブ",
+          "bounds": {
+            "empty": false,
+            "x": 1340,
+            "y": 612,
+            "width": 449,
+            "height": 32
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1340,
+            "y": 612,
+            "width": 449,
+            "height": 32
+          },
+          "layoutGlyphHeight": 22.4,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "RoseliaのRADIO SHOUT! -Prost-",
+          "bounds": {
+            "empty": false,
+            "x": 1912,
+            "y": 615,
+            "width": 366,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1912,
+            "y": 615,
+            "width": 366,
+            "height": 27
+          },
+          "layoutGlyphHeight": 18.9,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "「新宿着陸計画」DAY2 チケット受付中",
+          "bounds": {
+            "empty": false,
+            "x": 1339,
+            "y": 650,
+            "width": 405,
+            "height": 33
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1339,
+            "y": 650,
+            "width": 405,
+            "height": 33
+          },
+          "layoutGlyphHeight": 23.099999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "TVアニメ「バンドリ」放送記念フリーライブ 「新宿着陸計画」DAY2 チケット受付中",
+          "bounds": {
+            "empty": false,
+            "x": 1339,
+            "y": 612,
+            "width": 450,
+            "height": 71
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 1340,
+              "y": 612,
+              "width": 449,
+              "height": 32
+            },
+            {
+              "empty": false,
+              "x": 1339,
+              "y": 650,
+              "width": 405,
+              "height": 33
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1339,
+            "y": 612,
+            "width": 450,
+            "height": 71
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "RoseliaのRADIO SHOUT! -Prost-",
+          "bounds": {
+            "empty": false,
+            "x": 1912,
+            "y": 615,
+            "width": 366,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1912,
+            "y": 615,
+            "width": 366,
+            "height": 27
+          },
+          "layoutGlyphHeight": 18.9,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "TVアニメ「バンドリ」放送記念フリーライブ",
+          "current": "RoseliaのRADIO SHOUT! -Prost-",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 4.169491525423729,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 1.226775956284153,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "TVアニメ「バンドリ」放送記念フリーライブ",
+          "current": "RoseliaのRADIO SHOUT! -Prost-",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.9830508474576272,
+          "leftDelta": 19.389830508474578,
+          "centerDelta": 17.983050847457626,
+          "rightDelta": 16.576271186440678,
+          "alignmentDelta": 16.576271186440678,
+          "textSizeRatio": 0.84375,
+          "widthRatio": 1.226775956284153,
+          "lineAdvance": 0.1016949152542373,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 22.4,
+          "currentSizeValue": 18.9,
+          "advancePixels": 3,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "RoseliaのRADIO SHOUT! -Prost-",
+          "current": "「新宿着陸計画」DAY2 チケット受付中",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.26666666666666666,
+          "leftDelta": 19.1,
+          "centerDelta": 18.45,
+          "rightDelta": 17.8,
+          "alignmentDelta": 17.8,
+          "textSizeRatio": 0.8181818181818182,
+          "widthRatio": 0.9037037037037037,
+          "lineAdvance": 1.1666666666666667,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 18.9,
+          "currentSizeValue": 23.099999999999998,
+          "advancePixels": 35,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "TVアニメ「バンドリ」放送記念フリーライブ",
+          "current": "「新宿着陸計画」DAY2 チケット受付中",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.18461538461538463,
+          "leftDelta": 0.03076923076923077,
+          "centerDelta": 0.7076923076923077,
+          "rightDelta": 1.3846153846153846,
+          "alignmentDelta": 0.03076923076923077,
+          "textSizeRatio": 0.9696969696969697,
+          "widthRatio": 1.108641975308642,
+          "lineAdvance": 1.1692307692307693,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 22.4,
+          "currentSizeValue": 23.099999999999998,
+          "advancePixels": 38,
+          "advanceDenominator": 32.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "TVアニメ「バンドリ」放送記念フリーライブ",
+              "bounds": {
+                "empty": false,
+                "x": 1340,
+                "y": 612,
+                "width": 449,
+                "height": 32
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1340,
+                "y": 612,
+                "width": 449,
+                "height": 32
+              },
+              "layoutGlyphHeight": 22.4,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1340,
+                  "y": 612,
+                  "width": 449,
+                  "height": 32
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "RoseliaのRADIO SHOUT! -Prost-",
+              "bounds": {
+                "empty": false,
+                "x": 1912,
+                "y": 615,
+                "width": 366,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1912,
+                "y": 615,
+                "width": 366,
+                "height": 27
+              },
+              "layoutGlyphHeight": 18.9,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1912,
+                  "y": 615,
+                  "width": 366,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "「新宿着陸計画」DAY2 チケット受付中",
+              "bounds": {
+                "empty": false,
+                "x": 1339,
+                "y": 650,
+                "width": 405,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1339,
+                "y": 650,
+                "width": 405,
+                "height": 33
+              },
+              "layoutGlyphHeight": 23.099999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1339,
+                  "y": 650,
+                  "width": 405,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "TVアニメ「バンドリ」放送記念フリーライブ",
+              "bounds": {
+                "empty": false,
+                "x": 1340,
+                "y": 612,
+                "width": 449,
+                "height": 32
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1340,
+                "y": 612,
+                "width": 449,
+                "height": 32
+              },
+              "layoutGlyphHeight": 22.4,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1340,
+                  "y": 612,
+                  "width": 449,
+                  "height": 32
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "RoseliaのRADIO SHOUT! -Prost-",
+              "bounds": {
+                "empty": false,
+                "x": 1912,
+                "y": 615,
+                "width": 366,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1912,
+                "y": 615,
+                "width": 366,
+                "height": 27
+              },
+              "layoutGlyphHeight": 18.9,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1912,
+                  "y": 615,
+                  "width": 366,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "「新宿着陸計画」DAY2 チケット受付中",
+              "bounds": {
+                "empty": false,
+                "x": 1339,
+                "y": 650,
+                "width": 405,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1339,
+                "y": 650,
+                "width": 405,
+                "height": 33
+              },
+              "layoutGlyphHeight": 23.099999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1339,
+                  "y": 650,
+                  "width": 405,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L2"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

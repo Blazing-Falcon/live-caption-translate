@@ -1,0 +1,334 @@
+{
+  "test": "ALabelOverABodyOfText_IsStillRefusedByTheAlignmentGate",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "MERIT",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "SERVED AS THE EXPEDITION'S",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 56,
+            "width": 400,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 56,
+            "width": 400,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "MERIT",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 120,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "SERVED AS THE EXPEDITION'S",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 56,
+            "width": 400,
+            "height": 40
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 56,
+            "width": 400,
+            "height": 40
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "MERIT",
+          "current": "SERVED AS THE EXPEDITION'S",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.15,
+          "leftDelta": 5,
+          "centerDelta": 8.5,
+          "rightDelta": 12,
+          "alignmentDelta": 5,
+          "textSizeRatio": 1,
+          "widthRatio": 0.3,
+          "lineAdvance": 1.15,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 28,
+          "currentSizeValue": 28,
+          "advancePixels": 46,
+          "advanceDenominator": 40
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "MERIT",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 120,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "SERVED AS THE EXPEDITION'S",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 56,
+                "width": 400,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 56,
+                "width": 400,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 56,
+                  "width": 400,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "MERIT",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 120,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 120,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "SERVED AS THE EXPEDITION'S",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 56,
+                "width": 400,
+                "height": 40
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 56,
+                "width": 400,
+                "height": 40
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 56,
+                  "width": 400,
+                  "height": 40
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

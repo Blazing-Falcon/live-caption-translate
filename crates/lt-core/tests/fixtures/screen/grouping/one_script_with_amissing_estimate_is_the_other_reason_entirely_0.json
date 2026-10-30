@@ -1,0 +1,73 @@
+{
+  "test": "OneScriptWithAMissingEstimateIsTheOtherReasonEntirely",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "size_ratio",
+      "input": [
+        {
+          "text": "english again",
+          "bounds": {
+            "empty": false,
+            "x": 31,
+            "y": 108,
+            "width": 803,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 31,
+            "y": 108,
+            "width": 803,
+            "height": 27
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "layoutGlyphHeight": 20.18095238095238,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "ratio": 0.9,
+      "basis": "BoxNoGlyphHeight",
+      "previousCompared": 27,
+      "currentCompared": 30
+    }
+  ]
+}

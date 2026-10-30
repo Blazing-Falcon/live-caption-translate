@@ -1,0 +1,646 @@
+{
+  "test": "ALineEndingOnAColon_ContinuesOnlyWhenTheNextLineIsSetCloseUnderIt",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Column type:",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 30
+          },
+          "layoutGlyphHeight": 21,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Standard",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 64,
+            "width": 160,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 64,
+            "width": 160,
+            "height": 30
+          },
+          "layoutGlyphHeight": 21,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Column type:",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 30
+          },
+          "layoutGlyphHeight": 21,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Standard",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 64,
+            "width": 160,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 64,
+            "width": 160,
+            "height": 30
+          },
+          "layoutGlyphHeight": 21,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Column type:",
+          "current": "Standard",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.8,
+          "leftDelta": 0,
+          "centerDelta": 0.6666666666666666,
+          "rightDelta": 1.3333333333333333,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1.25,
+          "lineAdvance": 1.8,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "label colon",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 21,
+          "currentSizeValue": 21,
+          "advancePixels": 54,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Column type:",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 200,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Standard",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 64,
+                "width": 160,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 64,
+                "width": 160,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 64,
+                  "width": 160,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Column type:",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 200,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Standard",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 64,
+                "width": 160,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 64,
+                "width": 160,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 64,
+                  "width": 160,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Column type:",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 30
+          },
+          "layoutGlyphHeight": 21,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Standard",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 44,
+            "width": 160,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 44,
+            "width": 160,
+            "height": 30
+          },
+          "layoutGlyphHeight": 21,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Column type: Standard",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 64
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 100,
+              "y": 10,
+              "width": 200,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 100,
+              "y": 44,
+              "width": 160,
+              "height": 30
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 10,
+            "width": 200,
+            "height": 64
+          },
+          "layoutGlyphHeight": 21,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Column type:",
+          "current": "Standard",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.13333333333333333,
+          "leftDelta": 0,
+          "centerDelta": 0.6666666666666666,
+          "rightDelta": 1.3333333333333333,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1.25,
+          "lineAdvance": 1.1333333333333333,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "punctuation",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 21,
+          "currentSizeValue": 21,
+          "advancePixels": 34,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Column type:",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 200,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Standard",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 44,
+                "width": 160,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 44,
+                "width": 160,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 44,
+                  "width": 160,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Column type:",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 10,
+                "width": 200,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 10,
+                  "width": 200,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Standard",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 44,
+                "width": 160,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 44,
+                "width": 160,
+                "height": 30
+              },
+              "layoutGlyphHeight": 21,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 44,
+                  "width": 160,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

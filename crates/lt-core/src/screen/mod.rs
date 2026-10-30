@@ -4,11 +4,12 @@ pub mod contour;
 pub mod detection;
 pub mod filters;
 pub mod geom;
-mod group;
+pub mod group;
 pub mod ink;
 mod job;
 pub mod line;
 mod paint;
+pub mod placement;
 pub mod raster;
 pub mod repair;
 
@@ -82,6 +83,8 @@ pub struct Block {
     /// The union of `lines`.
     pub rect: Rect,
     pub lines: Vec<Rect>,
+    #[serde(default)]
+    pub intent: placement::LayoutIntent,
     /// Median height of `lines`.
     pub line_height: u32,
     pub source: String,
@@ -140,6 +143,7 @@ mod tests {
             id,
             rect,
             lines: vec![rect],
+            intent: placement::LayoutIntent::Single,
             line_height: rect.h,
             source: source.into(),
             background: if dark { [32, 34, 40] } else { [250, 248, 243] },
@@ -158,6 +162,7 @@ mod tests {
             id: 0,
             rect: rect(80, 44, 640, 56),
             lines: vec![rect(80, 44, 640, 24), rect(80, 76, 400, 24)],
+            intent: placement::LayoutIntent::GroupReflow,
             line_height: 24,
             source: "清晨的河边总是很安静。薄雾贴着水面慢慢散开，岸上的老人在练太极。".into(),
             background: [250, 248, 243],

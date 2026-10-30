@@ -1,0 +1,630 @@
+{
+  "test": "SmallCentredLinesPaddedUnevenly_StillSetSolid",
+  "parameterIndex": 2,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "the small centred caption under the",
+          "bounds": {
+            "empty": false,
+            "x": 130,
+            "y": 100,
+            "width": 200,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 130,
+            "y": 100,
+            "width": 200,
+            "height": 14
+          },
+          "layoutGlyphHeight": 9.799999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "picture goes on for a longer second line",
+          "bounds": {
+            "empty": false,
+            "x": 104,
+            "y": 116.1,
+            "width": 260,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 104,
+            "y": 116.1,
+            "width": 260,
+            "height": 14
+          },
+          "layoutGlyphHeight": 9.799999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "the small centred caption under the picture goes on for a longer second line",
+          "bounds": {
+            "empty": false,
+            "x": 104,
+            "y": 100,
+            "width": 260,
+            "height": 30.099999999999994
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 130,
+              "y": 100,
+              "width": 200,
+              "height": 14
+            },
+            {
+              "empty": false,
+              "x": 104,
+              "y": 116.1,
+              "width": 260,
+              "height": 14
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 104,
+            "y": 100,
+            "width": 260,
+            "height": 30.099999999999994
+          },
+          "layoutGlyphHeight": 9.799999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "the small centred caption under the",
+          "current": "picture goes on for a longer second line",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.1499999999999996,
+          "leftDelta": 1.8571428571428572,
+          "centerDelta": 0.2857142857142857,
+          "rightDelta": 2.4285714285714284,
+          "alignmentDelta": 0.2857142857142857,
+          "textSizeRatio": 1,
+          "widthRatio": 0.7692307692307693,
+          "lineAdvance": 1.1499999999999997,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 9.799999999999999,
+          "currentSizeValue": 9.799999999999999,
+          "advancePixels": 16.099999999999994,
+          "advanceDenominator": 14
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "the small centred caption under the",
+              "bounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 130,
+                  "y": 100,
+                  "width": 200,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "picture goes on for a longer second line",
+              "bounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 104,
+                  "y": 116.1,
+                  "width": 260,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "the small centred caption under the",
+              "bounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 130,
+                  "y": 100,
+                  "width": 200,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "picture goes on for a longer second line",
+              "bounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 104,
+                  "y": 116.1,
+                  "width": 260,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "the small centred caption under the",
+          "bounds": {
+            "empty": false,
+            "x": 130,
+            "y": 100,
+            "width": 200,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 130,
+            "y": 100,
+            "width": 200,
+            "height": 14
+          },
+          "layoutGlyphHeight": 9.799999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "picture goes on for a longer second line",
+          "bounds": {
+            "empty": false,
+            "x": 104,
+            "y": 116.1,
+            "width": 260,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 104,
+            "y": 116.1,
+            "width": 260,
+            "height": 14
+          },
+          "layoutGlyphHeight": 9.799999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "the small centred caption under the picture goes on for a longer second line",
+          "bounds": {
+            "empty": false,
+            "x": 104,
+            "y": 100,
+            "width": 260,
+            "height": 30.099999999999994
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 130,
+              "y": 100,
+              "width": 200,
+              "height": 14
+            },
+            {
+              "empty": false,
+              "x": 104,
+              "y": 116.1,
+              "width": 260,
+              "height": 14
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 104,
+            "y": 100,
+            "width": 260,
+            "height": 30.099999999999994
+          },
+          "layoutGlyphHeight": 9.799999999999999,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "the small centred caption under the",
+          "current": "picture goes on for a longer second line",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.1499999999999996,
+          "leftDelta": 1.8571428571428572,
+          "centerDelta": 0.2857142857142857,
+          "rightDelta": 2.4285714285714284,
+          "alignmentDelta": 0.2857142857142857,
+          "textSizeRatio": 1,
+          "widthRatio": 0.7692307692307693,
+          "lineAdvance": 1.1499999999999997,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 9.799999999999999,
+          "currentSizeValue": 9.799999999999999,
+          "advancePixels": 16.099999999999994,
+          "advanceDenominator": 14
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "the small centred caption under the",
+              "bounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 130,
+                  "y": 100,
+                  "width": 200,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "picture goes on for a longer second line",
+              "bounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 104,
+                  "y": 116.1,
+                  "width": 260,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "the small centred caption under the",
+              "bounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 130,
+                "y": 100,
+                "width": 200,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 130,
+                  "y": 100,
+                  "width": 200,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "picture goes on for a longer second line",
+              "bounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 104,
+                "y": 116.1,
+                "width": 260,
+                "height": 14
+              },
+              "layoutGlyphHeight": 9.799999999999999,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 104,
+                  "y": 116.1,
+                  "width": 260,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

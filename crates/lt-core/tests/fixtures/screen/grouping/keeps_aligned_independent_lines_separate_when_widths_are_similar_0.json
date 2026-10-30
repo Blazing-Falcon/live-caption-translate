@@ -1,0 +1,334 @@
+{
+  "test": "KeepsAlignedIndependentLinesSeparateWhenWidthsAreSimilar",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "寧夏夜市美食攻略",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "layoutGlyphHeight": 19.68,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "食尚玩家最新整理",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 210,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 210,
+            "height": 24
+          },
+          "layoutGlyphHeight": 19.68,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "寧夏夜市美食攻略",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 220,
+            "height": 24
+          },
+          "layoutGlyphHeight": 19.68,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "食尚玩家最新整理",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 210,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 40,
+            "width": 210,
+            "height": 24
+          },
+          "layoutGlyphHeight": 19.68,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "寧夏夜市美食攻略",
+          "current": "食尚玩家最新整理",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.25,
+          "leftDelta": 0,
+          "centerDelta": 0.20833333333333334,
+          "rightDelta": 0.4166666666666667,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1.0476190476190477,
+          "lineAdvance": 1.25,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 19.68,
+          "currentSizeValue": 19.68,
+          "advancePixels": 30,
+          "advanceDenominator": 24
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "寧夏夜市美食攻略",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "layoutGlyphHeight": 19.68,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 10,
+                  "width": 220,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "食尚玩家最新整理",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 210,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 210,
+                "height": 24
+              },
+              "layoutGlyphHeight": 19.68,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 40,
+                  "width": 210,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "寧夏夜市美食攻略",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 10,
+                "width": 220,
+                "height": 24
+              },
+              "layoutGlyphHeight": 19.68,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 10,
+                  "width": 220,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "食尚玩家最新整理",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 210,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 40,
+                "width": 210,
+                "height": 24
+              },
+              "layoutGlyphHeight": 19.68,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 40,
+                  "width": 210,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

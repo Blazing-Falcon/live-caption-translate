@@ -1,0 +1,2798 @@
+{
+  "test": "Auto_English_Japanese_Chinese_ProduceSameGrouping_ForAJapaneseParagraph",
+  "parameterIndex": 1,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 42.7,
+            "width": 460,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 460,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 460,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 80.7,
+            "width": 490,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 78,
+            "width": 490,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 490,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 202.7,
+            "width": 68,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 202.7,
+            "width": 96,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。 どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 42.7,
+            "width": 490,
+            "height": 62.599999999999994
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 40,
+              "y": 42.7,
+              "width": 460,
+              "height": 24.599999999999998
+            },
+            {
+              "empty": false,
+              "x": 40,
+              "y": 80.7,
+              "width": 490,
+              "height": 24.599999999999998
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 490,
+            "height": 68
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 202.7,
+            "width": 68,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 202.7,
+            "width": 96,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b2",
+          "currentId": "b3",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "吾輩は猫である。名前はまだ無い。",
+          "current": "どこで生まれたか頓と見当がつかぬ。",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.26666666666666666,
+          "leftDelta": 0,
+          "centerDelta": 0.5,
+          "rightDelta": 1,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 0.9387755102040817,
+          "lineAdvance": 1.2666666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "Japanese prose rows",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 38,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "どこで生まれたか頓と見当がつかぬ。",
+          "current": "決定",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 0,
+          "centerDelta": 7.033333333333333,
+          "rightDelta": 14.066666666666666,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 7.205882352941177,
+          "lineAdvance": 4.066666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 122,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -1,
+          "leftDelta": 5.333333333333333,
+          "centerDelta": 5.8,
+          "rightDelta": 6.266666666666667,
+          "alignmentDelta": 5.333333333333333,
+          "textSizeRatio": 1,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 0,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 42.7,
+                "width": 460,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 42.7,
+                  "width": 460,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 80.7,
+                "width": 490,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 80.7,
+                  "width": 490,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 202.7,
+                "width": 68,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 202.7,
+                  "width": 68,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 202.7,
+                "width": 96,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 202.7,
+                  "width": 96,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 42.7,
+                "width": 460,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 42.7,
+                  "width": 460,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 80.7,
+                "width": 490,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 80.7,
+                  "width": 490,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 202.7,
+                "width": 68,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 202.7,
+                  "width": 68,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 202.7,
+                "width": 96,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 202.7,
+                  "width": 96,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 460,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 24.599999999999998,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 460,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 24.599999999999998,
+          "lineGeometry": {
+            "length": 460,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 78,
+            "width": 490,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 24.599999999999998,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 78,
+            "width": 490,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 24.599999999999998,
+          "lineGeometry": {
+            "length": 490,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 15,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 15,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。 どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 490,
+            "height": 68
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 40,
+              "y": 40,
+              "width": 460,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 40,
+              "y": 78,
+              "width": 490,
+              "height": 30
+            }
+          ],
+          "renderGlyphHeight": 24.599999999999998,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 490,
+            "height": 68
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 24.599999999999998,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 15,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 15,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b2",
+          "currentId": "b3",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "吾輩は猫である。名前はまだ無い。",
+          "current": "どこで生まれたか頓と見当がつかぬ。",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.26666666666666666,
+          "leftDelta": 0,
+          "centerDelta": 0.5,
+          "rightDelta": 1,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 0.9387755102040817,
+          "lineAdvance": 1.2666666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "Japanese prose rows",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 38,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "どこで生まれたか頓と見当がつかぬ。",
+          "current": "決定",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 0,
+          "centerDelta": 7.033333333333333,
+          "rightDelta": 14.066666666666666,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 7.205882352941177,
+          "lineAdvance": 4.066666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 122,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -1,
+          "leftDelta": 5.333333333333333,
+          "centerDelta": 5.8,
+          "rightDelta": 6.266666666666667,
+          "alignmentDelta": 5.333333333333333,
+          "textSizeRatio": 1,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 0,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 24.599999999999998,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 40,
+                  "width": 460,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 24.599999999999998,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 24.599999999999998,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 78,
+                  "width": 490,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 24.599999999999998,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 200,
+                  "width": 68,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 15,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 200,
+                  "width": 96,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 15,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 24.599999999999998,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 40,
+                  "width": 460,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 24.599999999999998,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 24.599999999999998,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 78,
+                  "width": 490,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 24.599999999999998,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 200,
+                  "width": 68,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 15,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 200,
+                  "width": 96,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": 15,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 42.7,
+            "width": 460,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 460,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 460,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 80.7,
+            "width": 490,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 78,
+            "width": 490,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 490,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 202.7,
+            "width": 68,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 202.7,
+            "width": 96,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。 どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 42.7,
+            "width": 490,
+            "height": 62.599999999999994
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 40,
+              "y": 42.7,
+              "width": 460,
+              "height": 24.599999999999998
+            },
+            {
+              "empty": false,
+              "x": 40,
+              "y": 80.7,
+              "width": 490,
+              "height": 24.599999999999998
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 490,
+            "height": 68
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 202.7,
+            "width": 68,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 202.7,
+            "width": 96,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b2",
+          "currentId": "b3",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "吾輩は猫である。名前はまだ無い。",
+          "current": "どこで生まれたか頓と見当がつかぬ。",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.26666666666666666,
+          "leftDelta": 0,
+          "centerDelta": 0.5,
+          "rightDelta": 1,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 0.9387755102040817,
+          "lineAdvance": 1.2666666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "Japanese prose rows",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 38,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "どこで生まれたか頓と見当がつかぬ。",
+          "current": "決定",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 0,
+          "centerDelta": 7.033333333333333,
+          "rightDelta": 14.066666666666666,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 7.205882352941177,
+          "lineAdvance": 4.066666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 122,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -1,
+          "leftDelta": 5.333333333333333,
+          "centerDelta": 5.8,
+          "rightDelta": 6.266666666666667,
+          "alignmentDelta": 5.333333333333333,
+          "textSizeRatio": 1,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 0,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 42.7,
+                "width": 460,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 42.7,
+                  "width": 460,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 80.7,
+                "width": 490,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 80.7,
+                  "width": 490,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 202.7,
+                "width": 68,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 202.7,
+                  "width": 68,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 202.7,
+                "width": 96,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 202.7,
+                  "width": 96,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 42.7,
+                "width": 460,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 42.7,
+                  "width": 460,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 80.7,
+                "width": 490,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 80.7,
+                  "width": 490,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 202.7,
+                "width": 68,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 202.7,
+                  "width": 68,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 202.7,
+                "width": 96,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 202.7,
+                  "width": 96,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 42.7,
+            "width": 460,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 460,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 460,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 80.7,
+            "width": 490,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 78,
+            "width": 490,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 490,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 202.7,
+            "width": 68,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 202.7,
+            "width": 96,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "吾輩は猫である。名前はまだ無い。 どこで生まれたか頓と見当がつかぬ。",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 42.7,
+            "width": 490,
+            "height": 62.599999999999994
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 40,
+              "y": 42.7,
+              "width": 460,
+              "height": 24.599999999999998
+            },
+            {
+              "empty": false,
+              "x": 40,
+              "y": 80.7,
+              "width": 490,
+              "height": 24.599999999999998
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 40,
+            "width": 490,
+            "height": 68
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "決定",
+          "bounds": {
+            "empty": false,
+            "x": 40,
+            "y": 202.7,
+            "width": 68,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 40,
+            "y": 200,
+            "width": 68,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 68,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "もどる",
+          "bounds": {
+            "empty": false,
+            "x": 200,
+            "y": 202.7,
+            "width": 96,
+            "height": 24.599999999999998
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": 0.9900000095367432,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 200,
+            "y": 200,
+            "width": 96,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": {
+            "length": 96,
+            "thickness": 30,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b2",
+          "currentId": "b3",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "吾輩は猫である。名前はまだ無い。",
+          "current": "どこで生まれたか頓と見当がつかぬ。",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.26666666666666666,
+          "leftDelta": 0,
+          "centerDelta": 0.5,
+          "rightDelta": 1,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 0.9387755102040817,
+          "lineAdvance": 1.2666666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "Japanese prose rows",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 38,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "どこで生まれたか頓と見当がつかぬ。",
+          "current": "決定",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 3.066666666666667,
+          "leftDelta": 0,
+          "centerDelta": 7.033333333333333,
+          "rightDelta": 14.066666666666666,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 7.205882352941177,
+          "lineAdvance": 4.066666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 122,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "決定",
+          "current": "もどる",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": -1,
+          "leftDelta": 5.333333333333333,
+          "centerDelta": 5.8,
+          "rightDelta": 6.266666666666667,
+          "alignmentDelta": 5.333333333333333,
+          "textSizeRatio": 1,
+          "widthRatio": 0.7083333333333334,
+          "lineAdvance": 0,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 0,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 42.7,
+                "width": 460,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 42.7,
+                  "width": 460,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 80.7,
+                "width": 490,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 80.7,
+                  "width": 490,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 202.7,
+                "width": 68,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 202.7,
+                  "width": 68,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 202.7,
+                "width": 96,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 202.7,
+                  "width": 96,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "吾輩は猫である。名前はまだ無い。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 42.7,
+                "width": 460,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 460,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 42.7,
+                  "width": 460,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "どこで生まれたか頓と見当がつかぬ。",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 80.7,
+                "width": 490,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 78,
+                "width": 490,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 80.7,
+                  "width": 490,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "決定",
+              "bounds": {
+                "empty": false,
+                "x": 40,
+                "y": 202.7,
+                "width": 68,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 40,
+                "y": 200,
+                "width": 68,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 40,
+                  "y": 202.7,
+                  "width": 68,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "もどる",
+              "bounds": {
+                "empty": false,
+                "x": 200,
+                "y": 202.7,
+                "width": 96,
+                "height": 24.599999999999998
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": 0.9900000095367432,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 200,
+                "y": 200,
+                "width": 96,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 200,
+                  "y": 202.7,
+                  "width": 96,
+                  "height": 24.599999999999998
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ]
+        ]
+      }
+    }
+  ]
+}

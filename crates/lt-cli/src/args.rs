@@ -63,6 +63,9 @@ pub struct ScreenArgs {
     /// Read and group the text only; do not start the translator.
     #[arg(long)]
     pub no_translate: bool,
+    /// Include grouping decisions and line identities in the output JSON.
+    #[arg(long)]
+    pub explain: bool,
     /// Threads for text recognition (default: the app's choice, at most 4).
     #[arg(long, value_parser = clap::value_parser!(u16).range(1..))]
     pub threads: Option<u16>,

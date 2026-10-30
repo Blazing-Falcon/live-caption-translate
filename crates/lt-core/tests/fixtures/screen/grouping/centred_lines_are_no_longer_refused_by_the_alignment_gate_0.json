@@ -1,0 +1,334 @@
+{
+  "test": "CentredLines_AreNoLongerRefusedByTheAlignmentGate",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "WHY ARE",
+          "bounds": {
+            "empty": false,
+            "x": 320,
+            "y": 305,
+            "width": 201,
+            "height": 52
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 320,
+            "y": 305,
+            "width": 201,
+            "height": 52
+          },
+          "layoutGlyphHeight": 36.4,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "YOU PICKING ON",
+          "bounds": {
+            "empty": false,
+            "x": 244,
+            "y": 358,
+            "width": 356,
+            "height": 50
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 244,
+            "y": 358,
+            "width": 356,
+            "height": 50
+          },
+          "layoutGlyphHeight": 35,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "WHY ARE",
+          "bounds": {
+            "empty": false,
+            "x": 320,
+            "y": 305,
+            "width": 201,
+            "height": 52
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 320,
+            "y": 305,
+            "width": 201,
+            "height": 52
+          },
+          "layoutGlyphHeight": 36.4,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "YOU PICKING ON",
+          "bounds": {
+            "empty": false,
+            "x": 244,
+            "y": 358,
+            "width": 356,
+            "height": 50
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 244,
+            "y": 358,
+            "width": 356,
+            "height": 50
+          },
+          "layoutGlyphHeight": 35,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "WHY ARE",
+          "current": "YOU PICKING ON",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.0196078431372549,
+          "leftDelta": 1.4901960784313726,
+          "centerDelta": 0.029411764705882353,
+          "rightDelta": 1.5490196078431373,
+          "alignmentDelta": 0.029411764705882353,
+          "textSizeRatio": 0.9615384615384616,
+          "widthRatio": 0.5646067415730337,
+          "lineAdvance": 1.0392156862745099,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 36.4,
+          "currentSizeValue": 35,
+          "advancePixels": 53,
+          "advanceDenominator": 51
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "WHY ARE",
+              "bounds": {
+                "empty": false,
+                "x": 320,
+                "y": 305,
+                "width": 201,
+                "height": 52
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 320,
+                "y": 305,
+                "width": 201,
+                "height": 52
+              },
+              "layoutGlyphHeight": 36.4,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 320,
+                  "y": 305,
+                  "width": 201,
+                  "height": 52
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "YOU PICKING ON",
+              "bounds": {
+                "empty": false,
+                "x": 244,
+                "y": 358,
+                "width": 356,
+                "height": 50
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 244,
+                "y": 358,
+                "width": 356,
+                "height": 50
+              },
+              "layoutGlyphHeight": 35,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 244,
+                  "y": 358,
+                  "width": 356,
+                  "height": 50
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "WHY ARE",
+              "bounds": {
+                "empty": false,
+                "x": 320,
+                "y": 305,
+                "width": 201,
+                "height": 52
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 320,
+                "y": 305,
+                "width": 201,
+                "height": 52
+              },
+              "layoutGlyphHeight": 36.4,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 320,
+                  "y": 305,
+                  "width": 201,
+                  "height": 52
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "YOU PICKING ON",
+              "bounds": {
+                "empty": false,
+                "x": 244,
+                "y": 358,
+                "width": 356,
+                "height": 50
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 244,
+                "y": 358,
+                "width": 356,
+                "height": 50
+              },
+              "layoutGlyphHeight": 35,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 244,
+                  "y": 358,
+                  "width": 356,
+                  "height": 50
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

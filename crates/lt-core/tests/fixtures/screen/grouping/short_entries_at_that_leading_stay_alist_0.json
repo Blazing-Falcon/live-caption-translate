@@ -1,0 +1,1652 @@
+{
+  "test": "ShortEntriesAtThatLeadingStayAList",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 148,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 196,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 244,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 292,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 148,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 196,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 244,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 292,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ],
+          [
+            "L4"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 100,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 148,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 196,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 244,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "清單裡的一個設定項目",
+          "bounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Cjk",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100,
+            "y": 292,
+            "width": 300,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        },
+        {
+          "kind": "next",
+          "previous": "清單裡的一個設定項目",
+          "current": "清單裡的一個設定項目",
+          "previousScript": "Cjk",
+          "currentScript": "Cjk",
+          "verticalGap": 0.6,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.6,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "no continuation evidence",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 24.599999999999998,
+          "currentSizeValue": 24.599999999999998,
+          "advancePixels": 48,
+          "advanceDenominator": 30
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 148,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 196,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 244,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 292,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 100,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 100,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 148,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 148,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 196,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 196,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 244,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 244,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "清單裡的一個設定項目",
+              "bounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Cjk",
+              "layoutBounds": {
+                "empty": false,
+                "x": 100,
+                "y": 292,
+                "width": 300,
+                "height": 30
+              },
+              "layoutGlyphHeight": 24.599999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 100,
+                  "y": 292,
+                  "width": 300,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3"
+          ],
+          [
+            "L4"
+          ]
+        ]
+      }
+    }
+  ]
+}

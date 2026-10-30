@@ -1,0 +1,334 @@
+{
+  "test": "ASettingsPanelsEntries_StayApartInTheGeneralModeToo_ByTwoHundredthsOfALine",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Reveal all rooms before proceeding to next floor",
+          "bounds": {
+            "empty": false,
+            "x": 84,
+            "y": 378,
+            "width": 307,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 84,
+            "y": 378,
+            "width": 307,
+            "height": 18
+          },
+          "layoutGlyphHeight": 12.6,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Allow automatic pomander use",
+          "bounds": {
+            "empty": false,
+            "x": 83,
+            "y": 406,
+            "width": 202,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 83,
+            "y": 406,
+            "width": 202,
+            "height": 20
+          },
+          "layoutGlyphHeight": 14,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "Reveal all rooms before proceeding to next floor",
+          "bounds": {
+            "empty": false,
+            "x": 84,
+            "y": 378,
+            "width": 307,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 84,
+            "y": 378,
+            "width": 307,
+            "height": 18
+          },
+          "layoutGlyphHeight": 12.6,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Allow automatic pomander use",
+          "bounds": {
+            "empty": false,
+            "x": 83,
+            "y": 406,
+            "width": 202,
+            "height": 20
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 83,
+            "y": 406,
+            "width": 202,
+            "height": 20
+          },
+          "layoutGlyphHeight": 14,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Reveal all rooms before proceeding to next floor",
+          "current": "Allow automatic pomander use",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.5263157894736842,
+          "leftDelta": 0.05263157894736842,
+          "centerDelta": 2.8157894736842106,
+          "rightDelta": 5.578947368421052,
+          "alignmentDelta": 0.05263157894736842,
+          "textSizeRatio": 0.9,
+          "widthRatio": 1.5198019801980198,
+          "lineAdvance": 1.4736842105263157,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "leading",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 12.6,
+          "currentSizeValue": 14,
+          "advancePixels": 28,
+          "advanceDenominator": 19
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Reveal all rooms before proceeding to next floor",
+              "bounds": {
+                "empty": false,
+                "x": 84,
+                "y": 378,
+                "width": 307,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 84,
+                "y": 378,
+                "width": 307,
+                "height": 18
+              },
+              "layoutGlyphHeight": 12.6,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 84,
+                  "y": 378,
+                  "width": 307,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Allow automatic pomander use",
+              "bounds": {
+                "empty": false,
+                "x": 83,
+                "y": 406,
+                "width": 202,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 83,
+                "y": 406,
+                "width": 202,
+                "height": 20
+              },
+              "layoutGlyphHeight": 14,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 83,
+                  "y": 406,
+                  "width": 202,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Reveal all rooms before proceeding to next floor",
+              "bounds": {
+                "empty": false,
+                "x": 84,
+                "y": 378,
+                "width": 307,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 84,
+                "y": 378,
+                "width": 307,
+                "height": 18
+              },
+              "layoutGlyphHeight": 12.6,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 84,
+                  "y": 378,
+                  "width": 307,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Allow automatic pomander use",
+              "bounds": {
+                "empty": false,
+                "x": 83,
+                "y": 406,
+                "width": 202,
+                "height": 20
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 83,
+                "y": 406,
+                "width": 202,
+                "height": 20
+              },
+              "layoutGlyphHeight": 14,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 83,
+                  "y": 406,
+                  "width": 202,
+                  "height": 20
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

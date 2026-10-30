@@ -1,0 +1,318 @@
+{
+  "test": "GroupsAWrappedLineWhoseBoxIsShortForWantOfAnAscender",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Shots deal more damage for each bullet remaining in the",
+          "bounds": {
+            "empty": false,
+            "x": 111,
+            "y": 78,
+            "width": 566,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 111,
+            "y": 78,
+            "width": 566,
+            "height": 30
+          },
+          "layoutGlyphHeight": 15.995652173913046,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "magazine",
+          "bounds": {
+            "empty": false,
+            "x": 112,
+            "y": 108,
+            "width": 105,
+            "height": 26
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 112,
+            "y": 108,
+            "width": 105,
+            "height": 26
+          },
+          "layoutGlyphHeight": 17.0625,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Shots deal more damage for each bullet remaining in the magazine",
+          "bounds": {
+            "empty": false,
+            "x": 111,
+            "y": 78,
+            "width": 566,
+            "height": 56
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 111,
+              "y": 78,
+              "width": 566,
+              "height": 30
+            },
+            {
+              "empty": false,
+              "x": 112,
+              "y": 108,
+              "width": 105,
+              "height": 26
+            }
+          ],
+          "renderGlyphHeight": 16,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 111,
+            "y": 78,
+            "width": 566,
+            "height": 56
+          },
+          "layoutGlyphHeight": 17.0625,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Shots deal more damage for each bullet remaining in the",
+          "current": "magazine",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 0.03571428571428571,
+          "centerDelta": 8.196428571428571,
+          "rightDelta": 16.428571428571427,
+          "alignmentDelta": 0.03571428571428571,
+          "textSizeRatio": 0.9374741200828158,
+          "widthRatio": 5.390476190476191,
+          "lineAdvance": 1.0714285714285714,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.995652173913046,
+          "currentSizeValue": 17.0625,
+          "advancePixels": 30,
+          "advanceDenominator": 28
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Shots deal more damage for each bullet remaining in the",
+              "bounds": {
+                "empty": false,
+                "x": 111,
+                "y": 78,
+                "width": 566,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 111,
+                "y": 78,
+                "width": 566,
+                "height": 30
+              },
+              "layoutGlyphHeight": 15.995652173913046,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 111,
+                  "y": 78,
+                  "width": 566,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "magazine",
+              "bounds": {
+                "empty": false,
+                "x": 112,
+                "y": 108,
+                "width": 105,
+                "height": 26
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 112,
+                "y": 108,
+                "width": 105,
+                "height": 26
+              },
+              "layoutGlyphHeight": 17.0625,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 112,
+                  "y": 108,
+                  "width": 105,
+                  "height": 26
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Shots deal more damage for each bullet remaining in the",
+              "bounds": {
+                "empty": false,
+                "x": 111,
+                "y": 78,
+                "width": 566,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 111,
+                "y": 78,
+                "width": 566,
+                "height": 30
+              },
+              "layoutGlyphHeight": 15.995652173913046,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 111,
+                  "y": 78,
+                  "width": 566,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "magazine",
+              "bounds": {
+                "empty": false,
+                "x": 112,
+                "y": 108,
+                "width": 105,
+                "height": 26
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 112,
+                "y": 108,
+                "width": 105,
+                "height": 26
+              },
+              "layoutGlyphHeight": 17.0625,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 112,
+                  "y": 108,
+                  "width": 105,
+                  "height": 26
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

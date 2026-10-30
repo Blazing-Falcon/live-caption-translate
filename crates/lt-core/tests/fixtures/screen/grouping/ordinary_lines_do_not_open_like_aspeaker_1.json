@@ -1,0 +1,11 @@
+{
+  "test": "OrdinaryLines_DoNotOpenLikeASpeaker",
+  "parameterIndex": 1,
+  "calls": [
+    {
+      "kind": "speaker",
+      "input": "flex: 1 30px;",
+      "output": false
+    }
+  ]
+}

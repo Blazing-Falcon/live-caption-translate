@@ -1,0 +1,129 @@
+{
+  "test": "Kana_above_a_line_without_kanji_is_kept",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "ruby",
+      "input": [
+        {
+          "text": "あたら",
+          "bounds": {
+            "empty": false,
+            "x": 94,
+            "y": 394,
+            "width": 77,
+            "height": 33
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 94,
+            "y": 394,
+            "width": 77,
+            "height": 33
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "あたらしいものがたりはとてもおもしろくて",
+          "bounds": {
+            "empty": false,
+            "x": 103,
+            "y": 419,
+            "width": 1434,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 103,
+            "y": 419,
+            "width": 1434,
+            "height": 56
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "あたら",
+          "bounds": {
+            "empty": false,
+            "x": 94,
+            "y": 394,
+            "width": 77,
+            "height": 33
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 94,
+            "y": 394,
+            "width": 77,
+            "height": 33
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "あたらしいものがたりはとてもおもしろくて",
+          "bounds": {
+            "empty": false,
+            "x": 103,
+            "y": 419,
+            "width": 1434,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 103,
+            "y": 419,
+            "width": 1434,
+            "height": 56
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ]
+    }
+  ]
+}

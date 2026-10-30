@@ -1,0 +1,318 @@
+{
+  "test": "CentredSpeech_StillSetsSolidOnItsCentre",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "YOU PICKING ON",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 358,
+            "width": 300,
+            "height": 50
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 358,
+            "width": 300,
+            "height": 50
+          },
+          "layoutGlyphHeight": 38,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "AN INNOCENT",
+          "bounds": {
+            "empty": false,
+            "x": 330,
+            "y": 408,
+            "width": 248,
+            "height": 50
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 330,
+            "y": 408,
+            "width": 248,
+            "height": 50
+          },
+          "layoutGlyphHeight": 38,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "YOU PICKING ON AN INNOCENT",
+          "bounds": {
+            "empty": false,
+            "x": 300,
+            "y": 358,
+            "width": 300,
+            "height": 100
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 300,
+              "y": 358,
+              "width": 300,
+              "height": 50
+            },
+            {
+              "empty": false,
+              "x": 330,
+              "y": 408,
+              "width": 248,
+              "height": 50
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 300,
+            "y": 358,
+            "width": 300,
+            "height": 100
+          },
+          "layoutGlyphHeight": 38,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "YOU PICKING ON",
+          "current": "AN INNOCENT",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0,
+          "leftDelta": 0.6,
+          "centerDelta": 0.08,
+          "rightDelta": 0.44,
+          "alignmentDelta": 0.08,
+          "textSizeRatio": 1,
+          "widthRatio": 1.2096774193548387,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 38,
+          "currentSizeValue": 38,
+          "advancePixels": 50,
+          "advanceDenominator": 50
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "YOU PICKING ON",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 358,
+                "width": 300,
+                "height": 50
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 358,
+                "width": 300,
+                "height": 50
+              },
+              "layoutGlyphHeight": 38,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 358,
+                  "width": 300,
+                  "height": 50
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "AN INNOCENT",
+              "bounds": {
+                "empty": false,
+                "x": 330,
+                "y": 408,
+                "width": 248,
+                "height": 50
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 330,
+                "y": 408,
+                "width": 248,
+                "height": 50
+              },
+              "layoutGlyphHeight": 38,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 330,
+                  "y": 408,
+                  "width": 248,
+                  "height": 50
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "YOU PICKING ON",
+              "bounds": {
+                "empty": false,
+                "x": 300,
+                "y": 358,
+                "width": 300,
+                "height": 50
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 300,
+                "y": 358,
+                "width": 300,
+                "height": 50
+              },
+              "layoutGlyphHeight": 38,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 300,
+                  "y": 358,
+                  "width": 300,
+                  "height": 50
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "AN INNOCENT",
+              "bounds": {
+                "empty": false,
+                "x": 330,
+                "y": 408,
+                "width": 248,
+                "height": 50
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 330,
+                "y": 408,
+                "width": 248,
+                "height": 50
+              },
+              "layoutGlyphHeight": 38,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 330,
+                  "y": 408,
+                  "width": 248,
+                  "height": 50
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

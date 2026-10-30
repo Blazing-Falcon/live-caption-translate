@@ -1,0 +1,551 @@
+{
+  "test": "EmptyCornerOfAParagraphDoesNotAbsorbAnIndependentLabel",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "A wide first line of an ordinary paragraph",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 500,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 500,
+            "height": 18
+          },
+          "layoutGlyphHeight": 14.76,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "a shorter concluding sentence.",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 20,
+            "width": 240,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 20,
+            "width": 240,
+            "height": 18
+          },
+          "layoutGlyphHeight": 11.555555555555557,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "TEST!!!",
+          "bounds": {
+            "empty": false,
+            "x": 430,
+            "y": 22,
+            "width": 60,
+            "height": 12
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 430,
+            "y": 22,
+            "width": 60,
+            "height": 12
+          },
+          "layoutGlyphHeight": 9.84,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "A wide first line of an ordinary paragraph",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 500,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 500,
+            "height": 18
+          },
+          "layoutGlyphHeight": 14.76,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "a shorter concluding sentence.",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 20,
+            "width": 240,
+            "height": 18
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 20,
+            "width": 240,
+            "height": 18
+          },
+          "layoutGlyphHeight": 11.555555555555557,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "TEST!!!",
+          "bounds": {
+            "empty": false,
+            "x": 430,
+            "y": 22,
+            "width": 60,
+            "height": 12
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 430,
+            "y": 22,
+            "width": 60,
+            "height": 12
+          },
+          "layoutGlyphHeight": 9.84,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "a shorter concluding sentence.",
+          "current": "TEST!!!",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 12.666666666666666,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 4,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "horizontal gap",
+          "previousId": "b1",
+          "currentId": "b2",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "A wide first line of an ordinary paragraph",
+          "current": "a shorter concluding sentence.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.1111111111111111,
+          "leftDelta": 0,
+          "centerDelta": 7.222222222222222,
+          "rightDelta": 14.444444444444445,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.7828967178560675,
+          "widthRatio": 2.0833333333333335,
+          "lineAdvance": 1.1111111111111112,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 14.76,
+          "currentSizeValue": 11.555555555555557,
+          "advancePixels": 20,
+          "advanceDenominator": 18
+        },
+        {
+          "kind": "next",
+          "previous": "a shorter concluding sentence.",
+          "current": "TEST!!!",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -1.0666666666666667,
+          "leftDelta": 28.666666666666668,
+          "centerDelta": 22.666666666666668,
+          "rightDelta": 16.666666666666668,
+          "alignmentDelta": 16.666666666666668,
+          "textSizeRatio": 0.8515384615384614,
+          "widthRatio": 4,
+          "lineAdvance": 0.13333333333333333,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 11.555555555555557,
+          "currentSizeValue": 9.84,
+          "advancePixels": 2,
+          "advanceDenominator": 15
+        },
+        {
+          "kind": "next",
+          "previous": "A wide first line of an ordinary paragraph",
+          "current": "TEST!!!",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.26666666666666666,
+          "leftDelta": 28.666666666666668,
+          "centerDelta": 14,
+          "rightDelta": 0.6666666666666666,
+          "alignmentDelta": 0.6666666666666666,
+          "textSizeRatio": 0.6666666666666666,
+          "widthRatio": 8.333333333333334,
+          "lineAdvance": 1.4666666666666666,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 14.76,
+          "currentSizeValue": 9.84,
+          "advancePixels": 22,
+          "advanceDenominator": 15
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "A wide first line of an ordinary paragraph",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 500,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 500,
+                "height": 18
+              },
+              "layoutGlyphHeight": 14.76,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 500,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "a shorter concluding sentence.",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 240,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 240,
+                "height": 18
+              },
+              "layoutGlyphHeight": 11.555555555555557,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 20,
+                  "width": 240,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "TEST!!!",
+              "bounds": {
+                "empty": false,
+                "x": 430,
+                "y": 22,
+                "width": 60,
+                "height": 12
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 430,
+                "y": 22,
+                "width": 60,
+                "height": 12
+              },
+              "layoutGlyphHeight": 9.84,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 430,
+                  "y": 22,
+                  "width": 60,
+                  "height": 12
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "A wide first line of an ordinary paragraph",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 500,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 500,
+                "height": 18
+              },
+              "layoutGlyphHeight": 14.76,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 500,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "a shorter concluding sentence.",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 240,
+                "height": 18
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 20,
+                "width": 240,
+                "height": 18
+              },
+              "layoutGlyphHeight": 11.555555555555557,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 20,
+                  "width": 240,
+                  "height": 18
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "TEST!!!",
+              "bounds": {
+                "empty": false,
+                "x": 430,
+                "y": 22,
+                "width": 60,
+                "height": 12
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 430,
+                "y": 22,
+                "width": 60,
+                "height": 12
+              },
+              "layoutGlyphHeight": 9.84,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 430,
+                  "y": 22,
+                  "width": 60,
+                  "height": 12
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+{
+  "test": "WrappedSentence_StillJoinsInAScreenshot",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "You have items remaining in Temporary Quest",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 24
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Storage and should move them to another one",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 26,
+            "width": 350,
+            "height": 24
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 26,
+            "width": 350,
+            "height": 24
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "You have items remaining in Temporary Quest Storage and should move them to another one",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 50
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 0,
+              "y": 0,
+              "width": 350,
+              "height": 24
+            },
+            {
+              "empty": false,
+              "x": 0,
+              "y": 26,
+              "width": 350,
+              "height": 24
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 0,
+            "width": 350,
+            "height": 50
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "You have items remaining in Temporary Quest",
+          "current": "Storage and should move them to another one",
+          "previousScript": "Unknown",
+          "currentScript": "Unknown",
+          "verticalGap": 0.08333333333333333,
+          "leftDelta": 0,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 1,
+          "widthRatio": 1,
+          "lineAdvance": 1.0833333333333333,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 24,
+          "currentSizeValue": 24,
+          "advancePixels": 26,
+          "advanceDenominator": 24
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "You have items remaining in Temporary Quest",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Storage and should move them to another one",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 26,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "You have items remaining in Temporary Quest",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 0,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Storage and should move them to another one",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Unknown",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 26,
+                "width": 350,
+                "height": 24
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 26,
+                  "width": 350,
+                  "height": 24
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

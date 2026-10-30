@@ -23,17 +23,46 @@ pub enum LayoutScript {
 pub struct Line {
     pub text: String,
     pub bounds: RectF,
+    #[serde(alias = "sourceLineBounds")]
     pub source_line_bounds: Option<Vec<RectF>>,
+    #[serde(alias = "renderGlyphHeight")]
     pub render_glyph_height: Option<f64>,
     pub confidence: Option<f64>,
+    #[serde(alias = "layoutScript")]
     pub layout_script: LayoutScript,
+    #[serde(alias = "layoutBounds")]
     pub layout_bounds: RectF,
+    #[serde(alias = "layoutGlyphHeight")]
     pub layout_glyph_height: Option<f64>,
+    #[serde(alias = "layoutInkHeight")]
     pub layout_ink_height: Option<f64>,
+    #[serde(alias = "fontGlyphHeight")]
     pub font_glyph_height: Option<f64>,
+    #[serde(alias = "lineGeometry")]
     pub line_geometry: Option<LineGeometry>,
+    #[serde(alias = "uprightLayoutBounds")]
     pub upright_layout_bounds: Option<RectF>,
+    #[serde(default, alias = "tiltedLines")]
+    pub tilted_lines: Option<Vec<TiltedLine>>,
+    #[serde(default, alias = "runsAcross")]
     pub runs_across: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct TiltedLine {
+    pub cluster: i32,
+    pub sheared: bool,
+    pub degrees: f64,
+    pub weight: f64,
+    pub centre: PointF,
+    pub level: SizeF,
+    pub quad: Vec<PointF>,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
+pub struct SizeF {
+    pub width: f64,
+    pub height: f64,
 }
 
 impl Line {
@@ -370,7 +399,7 @@ pub fn normalize_automatic_blocks(blocks: Vec<Line>) -> Vec<Line> {
         .collect()
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub enum TextSizeBasis {
     None,
     Glyph,

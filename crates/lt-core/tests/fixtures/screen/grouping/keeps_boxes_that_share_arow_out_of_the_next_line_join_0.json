@@ -1,0 +1,360 @@
+{
+  "test": "KeepsBoxesThatShareARowOutOfTheNextLineJoin",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "PICK UP",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 360,
+            "width": 67,
+            "height": 25
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 360,
+            "width": 67,
+            "height": 25
+          },
+          "layoutGlyphHeight": 14.516666666666666,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "HOLD TO SALVAGE",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 361,
+            "width": 160,
+            "height": 25
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 361,
+            "width": 160,
+            "height": 25
+          },
+          "layoutGlyphHeight": 16,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "PICK UP",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 360,
+            "width": 67,
+            "height": 25
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 360,
+            "width": 67,
+            "height": 25
+          },
+          "layoutGlyphHeight": 14.516666666666666,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "HOLD TO SALVAGE",
+          "bounds": {
+            "empty": false,
+            "x": 20,
+            "y": 361,
+            "width": 160,
+            "height": 25
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 20,
+            "y": 361,
+            "width": 160,
+            "height": 25
+          },
+          "layoutGlyphHeight": 16,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "PICK UP",
+          "current": "HOLD TO SALVAGE",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -2.28,
+          "leftDelta": 0.96,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.41875,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": false,
+          "rule": "overlaps too far",
+          "previousId": "b0",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "next",
+          "previous": "PICK UP",
+          "current": "HOLD TO SALVAGE",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.96,
+          "leftDelta": 0.4,
+          "centerDelta": 2.26,
+          "rightDelta": 4.12,
+          "alignmentDelta": 0.4,
+          "textSizeRatio": 0.9072916666666666,
+          "widthRatio": 0.41875,
+          "lineAdvance": 0.04,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "vertical gap",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 14.516666666666666,
+          "currentSizeValue": 16,
+          "advancePixels": 1,
+          "advanceDenominator": 25
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "PICK UP",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 360,
+                "width": 67,
+                "height": 25
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 360,
+                "width": 67,
+                "height": 25
+              },
+              "layoutGlyphHeight": 14.516666666666666,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 360,
+                  "width": 67,
+                  "height": 25
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "HOLD TO SALVAGE",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 361,
+                "width": 160,
+                "height": 25
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 361,
+                "width": 160,
+                "height": 25
+              },
+              "layoutGlyphHeight": 16,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 361,
+                  "width": 160,
+                  "height": 25
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "PICK UP",
+              "bounds": {
+                "empty": false,
+                "x": 10,
+                "y": 360,
+                "width": 67,
+                "height": 25
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 10,
+                "y": 360,
+                "width": 67,
+                "height": 25
+              },
+              "layoutGlyphHeight": 14.516666666666666,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 10,
+                  "y": 360,
+                  "width": 67,
+                  "height": 25
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "HOLD TO SALVAGE",
+              "bounds": {
+                "empty": false,
+                "x": 20,
+                "y": 361,
+                "width": 160,
+                "height": 25
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 20,
+                "y": 361,
+                "width": 160,
+                "height": 25
+              },
+              "layoutGlyphHeight": 16,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 20,
+                  "y": 361,
+                  "width": 160,
+                  "height": 25
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,4170 @@
+{
+  "test": "BiggerOrIndependentWarningAfterEstablishedParagraphStaysSeparate",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 17.085714285714285,
+          "confidence": 0.9862015247344971,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "layoutGlyphHeight": 17.085714285714285,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.929545454545455,
+          "confidence": 0.9861864447593689,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "layoutGlyphHeight": 16.929545454545455,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.694202898550724,
+          "confidence": 0.9964686036109924,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "layoutGlyphHeight": 15.694202898550724,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.892028985507247,
+          "confidence": 0.9947612285614014,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "layoutGlyphHeight": 15.892028985507247,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "bounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.995705783367157,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.129285714285714,
+          "confidence": 0.9964966177940369,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "layoutGlyphHeight": 16.129285714285714,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 148,
+              "y": 418,
+              "width": 1748,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 455,
+              "width": 1719,
+              "height": 31
+            },
+            {
+              "empty": false,
+              "x": 148,
+              "y": 496,
+              "width": 1666,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 533,
+              "width": 1687,
+              "height": 29
+            },
+            {
+              "empty": false,
+              "x": 146,
+              "y": 569,
+              "width": 1732,
+              "height": 34
+            },
+            {
+              "empty": false,
+              "x": 145,
+              "y": 607,
+              "width": 1737,
+              "height": 33
+            }
+          ],
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.9926995398019544,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "current": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3050847457627119,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.5254237288135594,
+          "rightDelta": 1.0169491525423728,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.9908596837944664,
+          "widthRatio": 1.016870273414776,
+          "lineAdvance": 1.2542372881355932,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 17.085714285714285,
+          "currentSizeValue": 16.929545454545455,
+          "advancePixels": 37,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "current": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3389830508474576,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.864406779661017,
+          "rightDelta": 1.7627118644067796,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.927030376609252,
+          "widthRatio": 1.031812725090036,
+          "lineAdvance": 1.3898305084745763,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.929545454545455,
+          "currentSizeValue": 15.694202898550724,
+          "advancePixels": 41,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "current": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3157894736842105,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 0.3333333333333333,
+          "rightDelta": 0.7017543859649122,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.987551867219917,
+          "widthRatio": 0.9875518672199171,
+          "lineAdvance": 1.2982456140350878,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.694202898550724,
+          "currentSizeValue": 15.892028985507247,
+          "advancePixels": 37,
+          "advanceDenominator": 28.5
+        },
+        {
+          "kind": "next",
+          "previous": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "current": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.2222222222222222,
+          "leftDelta": 0.031746031746031744,
+          "centerDelta": 0.6825396825396826,
+          "rightDelta": 1.3968253968253967,
+          "alignmentDelta": 0.031746031746031744,
+          "textSizeRatio": 0.9740184757505774,
+          "widthRatio": 0.9740184757505773,
+          "lineAdvance": 1.1428571428571428,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.892028985507247,
+          "currentSizeValue": 16.315942028985507,
+          "advancePixels": 36,
+          "advanceDenominator": 31.5
+        },
+        {
+          "kind": "next",
+          "previous": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "current": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.11940298507462686,
+          "leftDelta": 0.029850746268656716,
+          "centerDelta": 0.04477611940298507,
+          "rightDelta": 0.11940298507462686,
+          "alignmentDelta": 0.029850746268656716,
+          "textSizeRatio": 0.9885598812273177,
+          "widthRatio": 0.9971214738054116,
+          "lineAdvance": 1.1343283582089552,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L4",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.315942028985507,
+          "currentSizeValue": 16.129285714285714,
+          "advancePixels": 38,
+          "advanceDenominator": 33.5
+        },
+        {
+          "kind": "next",
+          "previous": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "current": "Warning.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.25,
+          "leftDelta": 0,
+          "centerDelta": 26.171875,
+          "rightDelta": 52.34375,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.6345116331347646,
+          "widthRatio": 28.016129032258064,
+          "lineAdvance": 1.28125,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L5",
+          "currentId": "L6",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.129285714285714,
+          "currentSizeValue": 25.419999999999998,
+          "advancePixels": 41,
+          "advanceDenominator": 32
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b6",
+            "block": {
+              "text": "Warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          },
+          {
+            "id": "L5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b5"
+            ]
+          },
+          {
+            "id": "L6",
+            "block": {
+              "text": "Warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b6"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1",
+            "L2",
+            "L3",
+            "L4",
+            "L5"
+          ],
+          [
+            "L6"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 17.085714285714285,
+          "confidence": 0.9862015247344971,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "layoutGlyphHeight": 17.085714285714285,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.929545454545455,
+          "confidence": 0.9861864447593689,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "layoutGlyphHeight": 16.929545454545455,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.694202898550724,
+          "confidence": 0.9964686036109924,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "layoutGlyphHeight": 15.694202898550724,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.892028985507247,
+          "confidence": 0.9947612285614014,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "layoutGlyphHeight": 15.892028985507247,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "bounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.995705783367157,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.129285714285714,
+          "confidence": 0.9964966177940369,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "layoutGlyphHeight": 16.129285714285714,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 148,
+              "y": 418,
+              "width": 1748,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 455,
+              "width": 1719,
+              "height": 31
+            },
+            {
+              "empty": false,
+              "x": 148,
+              "y": 496,
+              "width": 1666,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 533,
+              "width": 1687,
+              "height": 29
+            },
+            {
+              "empty": false,
+              "x": 146,
+              "y": 569,
+              "width": 1732,
+              "height": 34
+            },
+            {
+              "empty": false,
+              "x": 145,
+              "y": 607,
+              "width": 1737,
+              "height": 33
+            }
+          ],
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.9926995398019544,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "current": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3050847457627119,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.5254237288135594,
+          "rightDelta": 1.0169491525423728,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.9908596837944664,
+          "widthRatio": 1.016870273414776,
+          "lineAdvance": 1.2542372881355932,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 17.085714285714285,
+          "currentSizeValue": 16.929545454545455,
+          "advancePixels": 37,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "current": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3389830508474576,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.864406779661017,
+          "rightDelta": 1.7627118644067796,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.927030376609252,
+          "widthRatio": 1.031812725090036,
+          "lineAdvance": 1.3898305084745763,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.929545454545455,
+          "currentSizeValue": 15.694202898550724,
+          "advancePixels": 41,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "current": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3157894736842105,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 0.3333333333333333,
+          "rightDelta": 0.7017543859649122,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.987551867219917,
+          "widthRatio": 0.9875518672199171,
+          "lineAdvance": 1.2982456140350878,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.694202898550724,
+          "currentSizeValue": 15.892028985507247,
+          "advancePixels": 37,
+          "advanceDenominator": 28.5
+        },
+        {
+          "kind": "next",
+          "previous": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "current": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.2222222222222222,
+          "leftDelta": 0.031746031746031744,
+          "centerDelta": 0.6825396825396826,
+          "rightDelta": 1.3968253968253967,
+          "alignmentDelta": 0.031746031746031744,
+          "textSizeRatio": 0.9740184757505774,
+          "widthRatio": 0.9740184757505773,
+          "lineAdvance": 1.1428571428571428,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.892028985507247,
+          "currentSizeValue": 16.315942028985507,
+          "advancePixels": 36,
+          "advanceDenominator": 31.5
+        },
+        {
+          "kind": "next",
+          "previous": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "current": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.11940298507462686,
+          "leftDelta": 0.029850746268656716,
+          "centerDelta": 0.04477611940298507,
+          "rightDelta": 0.11940298507462686,
+          "alignmentDelta": 0.029850746268656716,
+          "textSizeRatio": 0.9885598812273177,
+          "widthRatio": 0.9971214738054116,
+          "lineAdvance": 1.1343283582089552,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L4",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.315942028985507,
+          "currentSizeValue": 16.129285714285714,
+          "advancePixels": 38,
+          "advanceDenominator": 33.5
+        },
+        {
+          "kind": "next",
+          "previous": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "current": "Warning.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.25,
+          "leftDelta": 0,
+          "centerDelta": 26.171875,
+          "rightDelta": 52.34375,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.6345116331347646,
+          "widthRatio": 28.016129032258064,
+          "lineAdvance": 1.28125,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L5",
+          "currentId": "L6",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.129285714285714,
+          "currentSizeValue": 25.419999999999998,
+          "advancePixels": 41,
+          "advanceDenominator": 32
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b6",
+            "block": {
+              "text": "Warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          },
+          {
+            "id": "L5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b5"
+            ]
+          },
+          {
+            "id": "L6",
+            "block": {
+              "text": "Warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b6"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1",
+            "L2",
+            "L3",
+            "L4",
+            "L5"
+          ],
+          [
+            "L6"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 17.085714285714285,
+          "confidence": 0.9862015247344971,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "layoutGlyphHeight": 17.085714285714285,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.929545454545455,
+          "confidence": 0.9861864447593689,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "layoutGlyphHeight": 16.929545454545455,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.694202898550724,
+          "confidence": 0.9964686036109924,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "layoutGlyphHeight": 15.694202898550724,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.892028985507247,
+          "confidence": 0.9947612285614014,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "layoutGlyphHeight": 15.892028985507247,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "bounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.995705783367157,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.129285714285714,
+          "confidence": 0.9964966177940369,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "layoutGlyphHeight": 16.129285714285714,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 130,
+            "height": 48
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 148,
+              "y": 418,
+              "width": 1748,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 455,
+              "width": 1719,
+              "height": 31
+            },
+            {
+              "empty": false,
+              "x": 148,
+              "y": 496,
+              "width": 1666,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 533,
+              "width": 1687,
+              "height": 29
+            },
+            {
+              "empty": false,
+              "x": 146,
+              "y": 569,
+              "width": 1732,
+              "height": 34
+            },
+            {
+              "empty": false,
+              "x": 145,
+              "y": 607,
+              "width": 1737,
+              "height": 33
+            }
+          ],
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.9926995398019544,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 130,
+            "height": 48
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "current": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3050847457627119,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.5254237288135594,
+          "rightDelta": 1.0169491525423728,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.9908596837944664,
+          "widthRatio": 1.016870273414776,
+          "lineAdvance": 1.2542372881355932,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 17.085714285714285,
+          "currentSizeValue": 16.929545454545455,
+          "advancePixels": 37,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "current": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3389830508474576,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.864406779661017,
+          "rightDelta": 1.7627118644067796,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.927030376609252,
+          "widthRatio": 1.031812725090036,
+          "lineAdvance": 1.3898305084745763,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.929545454545455,
+          "currentSizeValue": 15.694202898550724,
+          "advancePixels": 41,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "current": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3157894736842105,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 0.3333333333333333,
+          "rightDelta": 0.7017543859649122,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.987551867219917,
+          "widthRatio": 0.9875518672199171,
+          "lineAdvance": 1.2982456140350878,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.694202898550724,
+          "currentSizeValue": 15.892028985507247,
+          "advancePixels": 37,
+          "advanceDenominator": 28.5
+        },
+        {
+          "kind": "next",
+          "previous": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "current": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.2222222222222222,
+          "leftDelta": 0.031746031746031744,
+          "centerDelta": 0.6825396825396826,
+          "rightDelta": 1.3968253968253967,
+          "alignmentDelta": 0.031746031746031744,
+          "textSizeRatio": 0.9740184757505774,
+          "widthRatio": 0.9740184757505773,
+          "lineAdvance": 1.1428571428571428,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.892028985507247,
+          "currentSizeValue": 16.315942028985507,
+          "advancePixels": 36,
+          "advanceDenominator": 31.5
+        },
+        {
+          "kind": "next",
+          "previous": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "current": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.11940298507462686,
+          "leftDelta": 0.029850746268656716,
+          "centerDelta": 0.04477611940298507,
+          "rightDelta": 0.11940298507462686,
+          "alignmentDelta": 0.029850746268656716,
+          "textSizeRatio": 0.9885598812273177,
+          "widthRatio": 0.9971214738054116,
+          "lineAdvance": 1.1343283582089552,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L4",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.315942028985507,
+          "currentSizeValue": 16.129285714285714,
+          "advancePixels": 38,
+          "advanceDenominator": 33.5
+        },
+        {
+          "kind": "next",
+          "previous": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "current": "warning.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.19753086419753085,
+          "leftDelta": 0,
+          "centerDelta": 19.839506172839506,
+          "rightDelta": 39.67901234567901,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.6345116331347646,
+          "widthRatio": 13.361538461538462,
+          "lineAdvance": 1.0123456790123457,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L5",
+          "currentId": "L6",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.129285714285714,
+          "currentSizeValue": 25.419999999999998,
+          "advancePixels": 41,
+          "advanceDenominator": 40.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b6",
+            "block": {
+              "text": "warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 130,
+                "height": 48
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          },
+          {
+            "id": "L5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b5"
+            ]
+          },
+          {
+            "id": "L6",
+            "block": {
+              "text": "warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 130,
+                "height": 48
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b6"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1",
+            "L2",
+            "L3",
+            "L4",
+            "L5"
+          ],
+          [
+            "L6"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 17.085714285714285,
+          "confidence": 0.9862015247344971,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 418,
+            "width": 1748,
+            "height": 28
+          },
+          "layoutGlyphHeight": 17.085714285714285,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.929545454545455,
+          "confidence": 0.9861864447593689,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 455,
+            "width": 1719,
+            "height": 31
+          },
+          "layoutGlyphHeight": 16.929545454545455,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "bounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.694202898550724,
+          "confidence": 0.9964686036109924,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 148,
+            "y": 496,
+            "width": 1666,
+            "height": 28
+          },
+          "layoutGlyphHeight": 15.694202898550724,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "bounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 15.892028985507247,
+          "confidence": 0.9947612285614014,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 147,
+            "y": 533,
+            "width": 1687,
+            "height": 29
+          },
+          "layoutGlyphHeight": 15.892028985507247,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "bounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.995705783367157,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 146,
+            "y": 569,
+            "width": 1732,
+            "height": 34
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 16.129285714285714,
+          "confidence": 0.9964966177940369,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 607,
+            "width": 1737,
+            "height": 33
+          },
+          "layoutGlyphHeight": 16.129285714285714,
+          "layoutInkHeight": 17,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 130,
+            "height": 48
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 148,
+              "y": 418,
+              "width": 1748,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 455,
+              "width": 1719,
+              "height": 31
+            },
+            {
+              "empty": false,
+              "x": 148,
+              "y": 496,
+              "width": 1666,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 147,
+              "y": 533,
+              "width": 1687,
+              "height": 29
+            },
+            {
+              "empty": false,
+              "x": 146,
+              "y": 569,
+              "width": 1732,
+              "height": 34
+            },
+            {
+              "empty": false,
+              "x": 145,
+              "y": 607,
+              "width": 1737,
+              "height": 33
+            }
+          ],
+          "renderGlyphHeight": 16.315942028985507,
+          "confidence": 0.9926995398019544,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 418,
+            "width": 1751,
+            "height": 222
+          },
+          "layoutGlyphHeight": 16.315942028985507,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "warning.",
+          "bounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 62,
+            "height": 31
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 25.419999999999998,
+          "confidence": 0.999947190284729,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 145,
+            "y": 648,
+            "width": 130,
+            "height": 48
+          },
+          "layoutGlyphHeight": 25.419999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+          "current": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3050847457627119,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.5254237288135594,
+          "rightDelta": 1.0169491525423728,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.9908596837944664,
+          "widthRatio": 1.016870273414776,
+          "lineAdvance": 1.2542372881355932,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 17.085714285714285,
+          "currentSizeValue": 16.929545454545455,
+          "advancePixels": 37,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+          "current": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3389830508474576,
+          "leftDelta": 0.03389830508474576,
+          "centerDelta": 0.864406779661017,
+          "rightDelta": 1.7627118644067796,
+          "alignmentDelta": 0.03389830508474576,
+          "textSizeRatio": 0.927030376609252,
+          "widthRatio": 1.031812725090036,
+          "lineAdvance": 1.3898305084745763,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.929545454545455,
+          "currentSizeValue": 15.694202898550724,
+          "advancePixels": 41,
+          "advanceDenominator": 29.5
+        },
+        {
+          "kind": "next",
+          "previous": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+          "current": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3157894736842105,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 0.3333333333333333,
+          "rightDelta": 0.7017543859649122,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.987551867219917,
+          "widthRatio": 0.9875518672199171,
+          "lineAdvance": 1.2982456140350878,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.694202898550724,
+          "currentSizeValue": 15.892028985507247,
+          "advancePixels": 37,
+          "advanceDenominator": 28.5
+        },
+        {
+          "kind": "next",
+          "previous": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+          "current": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.2222222222222222,
+          "leftDelta": 0.031746031746031744,
+          "centerDelta": 0.6825396825396826,
+          "rightDelta": 1.3968253968253967,
+          "alignmentDelta": 0.031746031746031744,
+          "textSizeRatio": 0.9740184757505774,
+          "widthRatio": 0.9740184757505773,
+          "lineAdvance": 1.1428571428571428,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 15.892028985507247,
+          "currentSizeValue": 16.315942028985507,
+          "advancePixels": 36,
+          "advanceDenominator": 31.5
+        },
+        {
+          "kind": "next",
+          "previous": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+          "current": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.11940298507462686,
+          "leftDelta": 0.029850746268656716,
+          "centerDelta": 0.04477611940298507,
+          "rightDelta": 0.11940298507462686,
+          "alignmentDelta": 0.029850746268656716,
+          "textSizeRatio": 0.9885598812273177,
+          "widthRatio": 0.9971214738054116,
+          "lineAdvance": 1.1343283582089552,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L4",
+          "currentId": "L5",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.315942028985507,
+          "currentSizeValue": 16.129285714285714,
+          "advancePixels": 38,
+          "advanceDenominator": 33.5
+        },
+        {
+          "kind": "next",
+          "previous": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+          "current": "warning.",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.19753086419753085,
+          "leftDelta": 0,
+          "centerDelta": 19.839506172839506,
+          "rightDelta": 39.67901234567901,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.6345116331347646,
+          "widthRatio": 13.361538461538462,
+          "lineAdvance": 1.0123456790123457,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L5",
+          "currentId": "L6",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 16.129285714285714,
+          "currentSizeValue": 25.419999999999998,
+          "advancePixels": 41,
+          "advanceDenominator": 40.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b6",
+            "block": {
+              "text": "warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 130,
+                "height": 48
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "On May 28, 2026, PaddleOCR open-sourced PaddleOCR-VL-1.6, the latest version in the PaddleOCR-VL series. With an accuracy of 96.3%, PaddleOCR-VL-1.6 once",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 17.085714285714285,
+              "confidence": 0.9862015247344971,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 418,
+                "width": 1748,
+                "height": 28
+              },
+              "layoutGlyphHeight": 17.085714285714285,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 418,
+                  "width": 1748,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "again set a new benchmark on OmniDocBench v1.6, while also achieving new state-of-the-art (SOTA) results on OmniDocBench v1.5 and Real5-OmniDocBench. It",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.929545454545455,
+              "confidence": 0.9861864447593689,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 455,
+                "width": 1719,
+                "height": 31
+              },
+              "layoutGlyphHeight": 16.929545454545455,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 455,
+                  "width": 1719,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "delivers industry-leading performance in text, formula, and table recognition across both open-source and proprietary solutions. In addition, the model shows",
+              "bounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.694202898550724,
+              "confidence": 0.9964686036109924,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 148,
+                "y": 496,
+                "width": 1666,
+                "height": 28
+              },
+              "layoutGlyphHeight": 15.694202898550724,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 148,
+                  "y": 496,
+                  "width": 1666,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "substantial improvements in ancient document and rare character recognition, as well as significantly enhanced capabilities in multiple scenarios such as seal",
+              "bounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 15.892028985507247,
+              "confidence": 0.9947612285614014,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 147,
+                "y": 533,
+                "width": 1687,
+                "height": 29
+              },
+              "layoutGlyphHeight": 15.892028985507247,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 147,
+                  "y": 533,
+                  "width": 1687,
+                  "height": 29
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "recognition, spotting, and chart understanding. PaddleOCR-VL-1.6 further upgrades the VLM component (PaddleOCR-VL-1.6-0.9B) on top of PaddleOCR-VL-1.5 and",
+              "bounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.315942028985507,
+              "confidence": 0.995705783367157,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 146,
+                "y": 569,
+                "width": 1732,
+                "height": 34
+              },
+              "layoutGlyphHeight": 16.315942028985507,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 146,
+                  "y": 569,
+                  "width": 1732,
+                  "height": 34
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          },
+          {
+            "id": "L5",
+            "block": {
+              "text": "continues to use PP-DocLayoutV3 for layout analysis. The model architecture remains fully consistent with PaddleOCR-VL-1.5, enabling seamless migration at zero",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 16.129285714285714,
+              "confidence": 0.9964966177940369,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 607,
+                "width": 1737,
+                "height": 33
+              },
+              "layoutGlyphHeight": 16.129285714285714,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 607,
+                  "width": 1737,
+                  "height": 33
+                }
+              ],
+              "layoutInkHeight": 17,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b5"
+            ]
+          },
+          {
+            "id": "L6",
+            "block": {
+              "text": "warning.",
+              "bounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 62,
+                "height": 31
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 25.419999999999998,
+              "confidence": 0.999947190284729,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 145,
+                "y": 648,
+                "width": 130,
+                "height": 48
+              },
+              "layoutGlyphHeight": 25.419999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 145,
+                  "y": 648,
+                  "width": 62,
+                  "height": 31
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b6"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1",
+            "L2",
+            "L3",
+            "L4",
+            "L5"
+          ],
+          [
+            "L6"
+          ]
+        ]
+      }
+    }
+  ]
+}

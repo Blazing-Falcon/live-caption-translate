@@ -1,0 +1,1015 @@
+{
+  "test": "MergesPerWordBoxesOnOneLineWhenBoxTopsVaryFromAscendersAndDescenders",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Send",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 32,
+            "width": 132,
+            "height": 59
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 32,
+            "width": 132,
+            "height": 59
+          },
+          "layoutGlyphHeight": 42.9,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "and",
+          "bounds": {
+            "empty": false,
+            "x": 1082,
+            "y": 34,
+            "width": 100,
+            "height": 59
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1082,
+            "y": 34,
+            "width": 100,
+            "height": 59
+          },
+          "layoutGlyphHeight": 29.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "terminal",
+          "bounds": {
+            "empty": false,
+            "x": 1475,
+            "y": 34,
+            "width": 246,
+            "height": 57
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1475,
+            "y": 34,
+            "width": 246,
+            "height": 57
+          },
+          "layoutGlyphHeight": 39.975,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "this",
+          "bounds": {
+            "empty": false,
+            "x": 150,
+            "y": 35,
+            "width": 134,
+            "height": 57
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 150,
+            "y": 35,
+            "width": 134,
+            "height": 57
+          },
+          "layoutGlyphHeight": 43.550000000000004,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "the",
+          "bounds": {
+            "empty": false,
+            "x": 632,
+            "y": 35,
+            "width": 101,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 632,
+            "y": 35,
+            "width": 101,
+            "height": 56
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "background",
+          "bounds": {
+            "empty": false,
+            "x": 753,
+            "y": 35,
+            "width": 309,
+            "height": 58
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 753,
+            "y": 35,
+            "width": 309,
+            "height": 58
+          },
+          "layoutGlyphHeight": 40.17,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "free",
+          "bounds": {
+            "empty": false,
+            "x": 1203,
+            "y": 35,
+            "width": 130,
+            "height": 58
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1203,
+            "y": 35,
+            "width": 130,
+            "height": 58
+          },
+          "layoutGlyphHeight": 42.25,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "the",
+          "bounds": {
+            "empty": false,
+            "x": 1353,
+            "y": 35,
+            "width": 101,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 1353,
+            "y": 35,
+            "width": 101,
+            "height": 56
+          },
+          "layoutGlyphHeight": 28,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "session",
+          "bounds": {
+            "empty": false,
+            "x": 302,
+            "y": 36,
+            "width": 221,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 302,
+            "y": 36,
+            "width": 221,
+            "height": 54
+          },
+          "layoutGlyphHeight": 41.042857142857144,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "to",
+          "bounds": {
+            "empty": false,
+            "x": 539,
+            "y": 37,
+            "width": 72,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 539,
+            "y": 37,
+            "width": 72,
+            "height": 54
+          },
+          "layoutGlyphHeight": 27,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Send this session to the background and free the terminal",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 32,
+            "width": 1721,
+            "height": 61
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 32,
+            "width": 1721,
+            "height": 61
+          },
+          "layoutGlyphHeight": 43.550000000000004,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "row",
+          "previous": "Send",
+          "current": "this",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3103448275862069,
+          "leftDelta": 0.9824561403508771,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.9850746268656716,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b0",
+          "currentId": "b3",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "this",
+          "current": "session",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.32432432432432434,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.6063348416289592,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b3",
+          "currentId": "b8",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "session",
+          "current": "to",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.2962962962962963,
+          "leftDelta": 0.9814814814814815,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 3.0694444444444446,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b8",
+          "currentId": "b9",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "to",
+          "current": "the",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.38181818181818183,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7128712871287128,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b9",
+          "currentId": "b4",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "the",
+          "current": "background",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3508771929824561,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.3268608414239482,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b4",
+          "currentId": "b5",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "background",
+          "current": "and",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3418803418803419,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 3.09,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b5",
+          "currentId": "b1",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "and",
+          "current": "free",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.358974358974359,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.7692307692307693,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b1",
+          "currentId": "b6",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "free",
+          "current": "the",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.3508771929824561,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 1.2871287128712872,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b6",
+          "currentId": "b7",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        },
+        {
+          "kind": "row",
+          "previous": "the",
+          "current": "terminal",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.37168141592920356,
+          "leftDelta": 1,
+          "centerDelta": 0,
+          "rightDelta": 0,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0,
+          "widthRatio": 0.4105691056910569,
+          "lineAdvance": 0,
+          "leadingBar": 0,
+          "solidBar": 0,
+          "joined": true,
+          "rule": "same row",
+          "previousId": "b7",
+          "currentId": "b2",
+          "sizeBasis": "None",
+          "previousSizeValue": 0,
+          "currentSizeValue": 0,
+          "advancePixels": 0,
+          "advanceDenominator": 0
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Send",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 32,
+                "width": 132,
+                "height": 59
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 32,
+                "width": 132,
+                "height": 59
+              },
+              "layoutGlyphHeight": 42.9,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 32,
+                  "width": 132,
+                  "height": 59
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "and",
+              "bounds": {
+                "empty": false,
+                "x": 1082,
+                "y": 34,
+                "width": 100,
+                "height": 59
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1082,
+                "y": 34,
+                "width": 100,
+                "height": 59
+              },
+              "layoutGlyphHeight": 29.5,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1082,
+                  "y": 34,
+                  "width": 100,
+                  "height": 59
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "terminal",
+              "bounds": {
+                "empty": false,
+                "x": 1475,
+                "y": 34,
+                "width": 246,
+                "height": 57
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1475,
+                "y": 34,
+                "width": 246,
+                "height": 57
+              },
+              "layoutGlyphHeight": 39.975,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1475,
+                  "y": 34,
+                  "width": 246,
+                  "height": 57
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "this",
+              "bounds": {
+                "empty": false,
+                "x": 150,
+                "y": 35,
+                "width": 134,
+                "height": 57
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 150,
+                "y": 35,
+                "width": 134,
+                "height": 57
+              },
+              "layoutGlyphHeight": 43.550000000000004,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 150,
+                  "y": 35,
+                  "width": 134,
+                  "height": 57
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "the",
+              "bounds": {
+                "empty": false,
+                "x": 632,
+                "y": 35,
+                "width": 101,
+                "height": 56
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 632,
+                "y": 35,
+                "width": 101,
+                "height": 56
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 632,
+                  "y": 35,
+                  "width": 101,
+                  "height": 56
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b5",
+            "block": {
+              "text": "background",
+              "bounds": {
+                "empty": false,
+                "x": 753,
+                "y": 35,
+                "width": 309,
+                "height": 58
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 753,
+                "y": 35,
+                "width": 309,
+                "height": 58
+              },
+              "layoutGlyphHeight": 40.17,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 753,
+                  "y": 35,
+                  "width": 309,
+                  "height": 58
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b6",
+            "block": {
+              "text": "free",
+              "bounds": {
+                "empty": false,
+                "x": 1203,
+                "y": 35,
+                "width": 130,
+                "height": 58
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1203,
+                "y": 35,
+                "width": 130,
+                "height": 58
+              },
+              "layoutGlyphHeight": 42.25,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1203,
+                  "y": 35,
+                  "width": 130,
+                  "height": 58
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b7",
+            "block": {
+              "text": "the",
+              "bounds": {
+                "empty": false,
+                "x": 1353,
+                "y": 35,
+                "width": 101,
+                "height": 56
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 1353,
+                "y": 35,
+                "width": 101,
+                "height": 56
+              },
+              "layoutGlyphHeight": 28,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 1353,
+                  "y": 35,
+                  "width": 101,
+                  "height": 56
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b8",
+            "block": {
+              "text": "session",
+              "bounds": {
+                "empty": false,
+                "x": 302,
+                "y": 36,
+                "width": 221,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 302,
+                "y": 36,
+                "width": 221,
+                "height": 54
+              },
+              "layoutGlyphHeight": 41.042857142857144,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 302,
+                  "y": 36,
+                  "width": 221,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b9",
+            "block": {
+              "text": "to",
+              "bounds": {
+                "empty": false,
+                "x": 539,
+                "y": 37,
+                "width": 72,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 539,
+                "y": 37,
+                "width": 72,
+                "height": 54
+              },
+              "layoutGlyphHeight": 27,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 539,
+                  "y": 37,
+                  "width": 72,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Send this session to the background and free the terminal",
+              "bounds": {
+                "empty": false,
+                "x": 0,
+                "y": 32,
+                "width": 1721,
+                "height": 61
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 0,
+                "y": 32,
+                "width": 1721,
+                "height": 61
+              },
+              "layoutGlyphHeight": 43.550000000000004,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 0,
+                  "y": 32,
+                  "width": 1721,
+                  "height": 61
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0",
+              "b3",
+              "b8",
+              "b9",
+              "b4",
+              "b5",
+              "b1",
+              "b6",
+              "b7",
+              "b2"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ]
+        ]
+      }
+    }
+  ]
+}

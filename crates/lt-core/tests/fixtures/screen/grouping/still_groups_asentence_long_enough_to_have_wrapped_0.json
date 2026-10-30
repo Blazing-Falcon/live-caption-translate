@@ -1,0 +1,318 @@
+{
+  "test": "StillGroupsASentenceLongEnoughToHaveWrapped",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "그랑 사이퍼의 갑판에 있는 연습용 더미를 조사하면",
+          "bounds": {
+            "empty": false,
+            "x": 355,
+            "y": 429,
+            "width": 563,
+            "height": 32.9
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 355,
+            "y": 429,
+            "width": 563,
+            "height": 32.9
+          },
+          "layoutGlyphHeight": 26.977999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "플레이할 수 있습니다",
+          "bounds": {
+            "empty": false,
+            "x": 355,
+            "y": 475.4,
+            "width": 248,
+            "height": 37
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 355,
+            "y": 475.4,
+            "width": 248,
+            "height": 37
+          },
+          "layoutGlyphHeight": 30.34,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "그랑 사이퍼의 갑판에 있는 연습용 더미를 조사하면 플레이할 수 있습니다",
+          "bounds": {
+            "empty": false,
+            "x": 355,
+            "y": 429,
+            "width": 563,
+            "height": 83.39999999999998
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 355,
+              "y": 429,
+              "width": 563,
+              "height": 32.9
+            },
+            {
+              "empty": false,
+              "x": 355,
+              "y": 475.4,
+              "width": 248,
+              "height": 37
+            }
+          ],
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 355,
+            "y": 429,
+            "width": 563,
+            "height": 83.39999999999998
+          },
+          "layoutGlyphHeight": 30.34,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "그랑 사이퍼의 갑판에 있는 연습용 더미를 조사하면",
+          "current": "플레이할 수 있습니다",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": 0.38626609442060084,
+          "leftDelta": 0,
+          "centerDelta": 4.506437768240343,
+          "rightDelta": 9.012875536480687,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.8891891891891891,
+          "widthRatio": 2.2701612903225805,
+          "lineAdvance": 1.3276108726752496,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": true,
+          "rule": "shorter final line",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 26.977999999999998,
+          "currentSizeValue": 30.34,
+          "advancePixels": 46.39999999999998,
+          "advanceDenominator": 34.95
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "그랑 사이퍼의 갑판에 있는 연습용 더미를 조사하면",
+              "bounds": {
+                "empty": false,
+                "x": 355,
+                "y": 429,
+                "width": 563,
+                "height": 32.9
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 355,
+                "y": 429,
+                "width": 563,
+                "height": 32.9
+              },
+              "layoutGlyphHeight": 26.977999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 355,
+                  "y": 429,
+                  "width": 563,
+                  "height": 32.9
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "플레이할 수 있습니다",
+              "bounds": {
+                "empty": false,
+                "x": 355,
+                "y": 475.4,
+                "width": 248,
+                "height": 37
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 355,
+                "y": 475.4,
+                "width": 248,
+                "height": 37
+              },
+              "layoutGlyphHeight": 30.34,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 355,
+                  "y": 475.4,
+                  "width": 248,
+                  "height": 37
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "그랑 사이퍼의 갑판에 있는 연습용 더미를 조사하면",
+              "bounds": {
+                "empty": false,
+                "x": 355,
+                "y": 429,
+                "width": 563,
+                "height": 32.9
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 355,
+                "y": 429,
+                "width": 563,
+                "height": 32.9
+              },
+              "layoutGlyphHeight": 26.977999999999998,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 355,
+                  "y": 429,
+                  "width": 563,
+                  "height": 32.9
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "플레이할 수 있습니다",
+              "bounds": {
+                "empty": false,
+                "x": 355,
+                "y": 475.4,
+                "width": 248,
+                "height": 37
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 355,
+                "y": 475.4,
+                "width": 248,
+                "height": 37
+              },
+              "layoutGlyphHeight": 30.34,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 355,
+                  "y": 475.4,
+                  "width": 248,
+                  "height": 37
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0",
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}

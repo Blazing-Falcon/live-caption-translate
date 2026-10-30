@@ -200,6 +200,7 @@ export interface ScreenBlock {
   id: number;
   rect: Rect;
   lines: Rect[];
+  intent: "single" | "group_reflow";
   line_height: number;
   source: string;
   background: Rgb;

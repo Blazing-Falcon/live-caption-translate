@@ -1,0 +1,73 @@
+{
+  "test": "MixedScriptBlock_UsesLayoutBoundsForSizeComparison",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "size_ratio",
+      "input": [
+        {
+          "text": "甲Glossaries",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 240,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 10,
+            "width": 240,
+            "height": 30
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Glossaries",
+          "bounds": {
+            "empty": false,
+            "x": 10,
+            "y": 50,
+            "width": 200,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 10,
+            "y": 50,
+            "width": 200,
+            "height": 30
+          },
+          "layoutGlyphHeight": 24.599999999999998,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "ratio": 1,
+      "basis": "BoxDifferentScript",
+      "previousCompared": 30,
+      "currentCompared": 30
+    }
+  ]
+}

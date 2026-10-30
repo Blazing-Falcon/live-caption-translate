@@ -1,0 +1,4848 @@
+{
+  "test": "GeneralMatchesMarkedParagraphMembers",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 6.546428571428572,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "layoutGlyphHeight": 6.546428571428572,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 5.9905405405405405,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 6.5,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 10.09047619047619,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "layoutGlyphHeight": 10.09047619047619,
+          "layoutInkHeight": 10,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "bounds": {
+            "empty": false,
+            "x": 15.5,
+            "y": 54,
+            "width": 401.5,
+            "height": 13.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.069999999999999,
+          "confidence": 0.9976244568824768,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 15.5,
+            "y": 54,
+            "width": 401.5,
+            "height": 13.5
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 8,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 67.5,
+            "width": 258.5,
+            "height": 13.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 9.883823529411764,
+          "confidence": 0.9552562236785889,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 67.5,
+            "width": 258.5,
+            "height": 13.5
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 8,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 6.546428571428572,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "layoutGlyphHeight": 6.546428571428572,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 5.9905405405405405,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 6.5,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 10.09047619047619,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "layoutGlyphHeight": 10.09047619047619,
+          "layoutInkHeight": 10,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 54,
+            "width": 402.5,
+            "height": 27
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 15.5,
+              "y": 54,
+              "width": 401.5,
+              "height": 13.5
+            },
+            {
+              "empty": false,
+              "x": 14.5,
+              "y": 67.5,
+              "width": 258.5,
+              "height": 13.5
+            }
+          ],
+          "renderGlyphHeight": 11.069999999999999,
+          "confidence": 0.9793171956215376,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 54,
+            "width": 402.5,
+            "height": 27
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "bang-dream.com",
+          "current": "https://bang-dream.com>english·翻譯這個網頁",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": -0.11764705882352941,
+          "leftDelta": 0.0784313725490196,
+          "centerDelta": 3.843137254901961,
+          "rightDelta": 7.764705882352941,
+          "alignmentDelta": 0.0784313725490196,
+          "textSizeRatio": 0.8214285714285714,
+          "widthRatio": 0.41348973607038125,
+          "lineAdvance": 0.7843137254901961,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 11.5,
+          "currentSizeValue": 14,
+          "advancePixels": 10,
+          "advanceDenominator": 12.75
+        },
+        {
+          "kind": "next",
+          "previous": "https://bang-dream.com>english·翻譯這個網頁",
+          "current": "BanG Dream! English Site",
+          "previousScript": "Mixed",
+          "currentScript": "Latin",
+          "verticalGap": 0.2413793103448276,
+          "leftDelta": 1.5517241379310345,
+          "centerDelta": 1.8103448275862069,
+          "rightDelta": 2.0689655172413794,
+          "alignmentDelta": 1.5517241379310345,
+          "textSizeRatio": 0.9333333333333333,
+          "widthRatio": 1.0460122699386503,
+          "lineAdvance": 1.206896551724138,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 14,
+          "currentSizeValue": 15,
+          "advancePixels": 17.5,
+          "advanceDenominator": 14.5
+        },
+        {
+          "kind": "next",
+          "previous": "BanG Dream! English Site",
+          "current": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": 0.21052631578947367,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 8.403508771929825,
+          "rightDelta": 16.771929824561404,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.9,
+          "widthRatio": 0.40597758405977585,
+          "lineAdvance": 1.263157894736842,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "visible heading size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 15,
+          "currentSizeValue": 13.5,
+          "advancePixels": 18,
+          "advanceDenominator": 14.25
+        },
+        {
+          "kind": "next",
+          "previous": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "current": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "previousScript": "Mixed",
+          "currentScript": "Mixed",
+          "verticalGap": 0,
+          "leftDelta": 0.07407407407407407,
+          "centerDelta": 5.37037037037037,
+          "rightDelta": 10.666666666666666,
+          "alignmentDelta": 0.07407407407407407,
+          "textSizeRatio": 1,
+          "widthRatio": 1.553191489361702,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 13.5,
+          "currentSizeValue": 13.5,
+          "advancePixels": 13.5,
+          "advanceDenominator": 13.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 6.546428571428572,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "layoutGlyphHeight": 6.546428571428572,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 38.5,
+                  "y": 8.5,
+                  "width": 70.5,
+                  "height": 11.5
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 5.9905405405405405,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 37.5,
+                  "y": 18.5,
+                  "width": 170.5,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": 6.5,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 10.09047619047619,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "layoutGlyphHeight": 10.09047619047619,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15,
+                  "y": 36,
+                  "width": 163,
+                  "height": 15
+                }
+              ],
+              "layoutInkHeight": 10,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.069999999999999,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15.5,
+                  "y": 54,
+                  "width": 401.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 9.883823529411764,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 14.5,
+                  "y": 67.5,
+                  "width": 258.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 6.546428571428572,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "layoutGlyphHeight": 6.546428571428572,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 38.5,
+                  "y": 8.5,
+                  "width": 70.5,
+                  "height": 11.5
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 5.9905405405405405,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 37.5,
+                  "y": 18.5,
+                  "width": 170.5,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": 6.5,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 10.09047619047619,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "layoutGlyphHeight": 10.09047619047619,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15,
+                  "y": 36,
+                  "width": 163,
+                  "height": 15
+                }
+              ],
+              "layoutInkHeight": 10,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.069999999999999,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15.5,
+                  "y": 54,
+                  "width": 401.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 9.883823529411764,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 14.5,
+                  "y": 67.5,
+                  "width": 258.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3",
+            "L4"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 6.546428571428572,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "layoutGlyphHeight": 6.546428571428572,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 5.9905405405405405,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 6.5,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 10.09047619047619,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "layoutGlyphHeight": 10.09047619047619,
+          "layoutInkHeight": 10,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "bounds": {
+            "empty": false,
+            "x": 15.5,
+            "y": 54,
+            "width": 401.5,
+            "height": 13.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.069999999999999,
+          "confidence": 0.9976244568824768,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 15.5,
+            "y": 54,
+            "width": 401.5,
+            "height": 13.5
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 8,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 67.5,
+            "width": 258.5,
+            "height": 13.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 9.883823529411764,
+          "confidence": 0.9552562236785889,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 67.5,
+            "width": 258.5,
+            "height": 13.5
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 8,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 6.546428571428572,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 38.5,
+            "y": 8.5,
+            "width": 70.5,
+            "height": 11.5
+          },
+          "layoutGlyphHeight": 6.546428571428572,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 5.9905405405405405,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 37.5,
+            "y": 18.5,
+            "width": 170.5,
+            "height": 14
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 6.5,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 10.09047619047619,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 15,
+            "y": 36,
+            "width": 163,
+            "height": 15
+          },
+          "layoutGlyphHeight": 10.09047619047619,
+          "layoutInkHeight": 10,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 54,
+            "width": 402.5,
+            "height": 27
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 15.5,
+              "y": 54,
+              "width": 401.5,
+              "height": 13.5
+            },
+            {
+              "empty": false,
+              "x": 14.5,
+              "y": 67.5,
+              "width": 258.5,
+              "height": 13.5
+            }
+          ],
+          "renderGlyphHeight": 11.069999999999999,
+          "confidence": 0.9793171956215376,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 14.5,
+            "y": 54,
+            "width": 402.5,
+            "height": 27
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "bang-dream.com",
+          "current": "https://bang-dream.com>english·翻譯這個網頁",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": -0.11764705882352941,
+          "leftDelta": 0.0784313725490196,
+          "centerDelta": 3.843137254901961,
+          "rightDelta": 7.764705882352941,
+          "alignmentDelta": 0.0784313725490196,
+          "textSizeRatio": 0.8214285714285714,
+          "widthRatio": 0.41348973607038125,
+          "lineAdvance": 0.7843137254901961,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 11.5,
+          "currentSizeValue": 14,
+          "advancePixels": 10,
+          "advanceDenominator": 12.75
+        },
+        {
+          "kind": "next",
+          "previous": "https://bang-dream.com>english·翻譯這個網頁",
+          "current": "BanG Dream! English Site",
+          "previousScript": "Mixed",
+          "currentScript": "Latin",
+          "verticalGap": 0.2413793103448276,
+          "leftDelta": 1.5517241379310345,
+          "centerDelta": 1.8103448275862069,
+          "rightDelta": 2.0689655172413794,
+          "alignmentDelta": 1.5517241379310345,
+          "textSizeRatio": 0.9333333333333333,
+          "widthRatio": 1.0460122699386503,
+          "lineAdvance": 1.206896551724138,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 14,
+          "currentSizeValue": 15,
+          "advancePixels": 17.5,
+          "advanceDenominator": 14.5
+        },
+        {
+          "kind": "next",
+          "previous": "BanG Dream! English Site",
+          "current": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": 0.21052631578947367,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 8.403508771929825,
+          "rightDelta": 16.771929824561404,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.9,
+          "widthRatio": 0.40597758405977585,
+          "lineAdvance": 1.263157894736842,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "visible heading size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 15,
+          "currentSizeValue": 13.5,
+          "advancePixels": 18,
+          "advanceDenominator": 14.25
+        },
+        {
+          "kind": "next",
+          "previous": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "current": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "previousScript": "Mixed",
+          "currentScript": "Mixed",
+          "verticalGap": 0,
+          "leftDelta": 0.07407407407407407,
+          "centerDelta": 5.37037037037037,
+          "rightDelta": 10.666666666666666,
+          "alignmentDelta": 0.07407407407407407,
+          "textSizeRatio": 1,
+          "widthRatio": 1.553191489361702,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 13.5,
+          "currentSizeValue": 13.5,
+          "advancePixels": 13.5,
+          "advanceDenominator": 13.5
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 6.546428571428572,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "layoutGlyphHeight": 6.546428571428572,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 38.5,
+                  "y": 8.5,
+                  "width": 70.5,
+                  "height": 11.5
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 5.9905405405405405,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 37.5,
+                  "y": 18.5,
+                  "width": 170.5,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": 6.5,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 10.09047619047619,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "layoutGlyphHeight": 10.09047619047619,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15,
+                  "y": 36,
+                  "width": 163,
+                  "height": 15
+                }
+              ],
+              "layoutInkHeight": 10,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.069999999999999,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15.5,
+                  "y": 54,
+                  "width": 401.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 9.883823529411764,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 14.5,
+                  "y": 67.5,
+                  "width": 258.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 6.546428571428572,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 38.5,
+                "y": 8.5,
+                "width": 70.5,
+                "height": 11.5
+              },
+              "layoutGlyphHeight": 6.546428571428572,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 38.5,
+                  "y": 8.5,
+                  "width": 70.5,
+                  "height": 11.5
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 5.9905405405405405,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 37.5,
+                "y": 18.5,
+                "width": 170.5,
+                "height": 14
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 37.5,
+                  "y": 18.5,
+                  "width": 170.5,
+                  "height": 14
+                }
+              ],
+              "layoutInkHeight": 6.5,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 10.09047619047619,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15,
+                "y": 36,
+                "width": 163,
+                "height": 15
+              },
+              "layoutGlyphHeight": 10.09047619047619,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15,
+                  "y": 36,
+                  "width": 163,
+                  "height": 15
+                }
+              ],
+              "layoutInkHeight": 10,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.069999999999999,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 15.5,
+                "y": 54,
+                "width": 401.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 15.5,
+                  "y": 54,
+                  "width": 401.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 9.883823529411764,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 14.5,
+                "y": 67.5,
+                "width": 258.5,
+                "height": 13.5
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 14.5,
+                  "y": 67.5,
+                  "width": 258.5,
+                  "height": 13.5
+                }
+              ],
+              "layoutInkHeight": 8,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3",
+            "L4"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.092857142857143,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "layoutGlyphHeight": 13.092857142857143,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.981081081081081,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 13,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 20.18095238095238,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "layoutGlyphHeight": 20.18095238095238,
+          "layoutInkHeight": 20,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "bounds": {
+            "empty": false,
+            "x": 31,
+            "y": 108,
+            "width": 803,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.139999999999997,
+          "confidence": 0.9976244568824768,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 31,
+            "y": 108,
+            "width": 803,
+            "height": 27
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 16,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 29,
+            "y": 135,
+            "width": 517,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 19.767647058823528,
+          "confidence": 0.9552562236785889,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 29,
+            "y": 135,
+            "width": 517,
+            "height": 27
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 16,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.092857142857143,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "layoutGlyphHeight": 13.092857142857143,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.981081081081081,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 13,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 20.18095238095238,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "layoutGlyphHeight": 20.18095238095238,
+          "layoutInkHeight": 20,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 29,
+            "y": 108,
+            "width": 805,
+            "height": 54
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 31,
+              "y": 108,
+              "width": 803,
+              "height": 27
+            },
+            {
+              "empty": false,
+              "x": 29,
+              "y": 135,
+              "width": 517,
+              "height": 27
+            }
+          ],
+          "renderGlyphHeight": 22.139999999999997,
+          "confidence": 0.9793171956215376,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 29,
+            "y": 108,
+            "width": 805,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "bang-dream.com",
+          "current": "https://bang-dream.com>english·翻譯這個網頁",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": -0.11764705882352941,
+          "leftDelta": 0.0784313725490196,
+          "centerDelta": 3.843137254901961,
+          "rightDelta": 7.764705882352941,
+          "alignmentDelta": 0.0784313725490196,
+          "textSizeRatio": 0.8214285714285714,
+          "widthRatio": 0.41348973607038125,
+          "lineAdvance": 0.7843137254901961,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 23,
+          "currentSizeValue": 28,
+          "advancePixels": 20,
+          "advanceDenominator": 25.5
+        },
+        {
+          "kind": "next",
+          "previous": "https://bang-dream.com>english·翻譯這個網頁",
+          "current": "BanG Dream! English Site",
+          "previousScript": "Mixed",
+          "currentScript": "Latin",
+          "verticalGap": 0.2413793103448276,
+          "leftDelta": 1.5517241379310345,
+          "centerDelta": 1.8103448275862069,
+          "rightDelta": 2.0689655172413794,
+          "alignmentDelta": 1.5517241379310345,
+          "textSizeRatio": 0.9333333333333333,
+          "widthRatio": 1.0460122699386503,
+          "lineAdvance": 1.206896551724138,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 28,
+          "currentSizeValue": 30,
+          "advancePixels": 35,
+          "advanceDenominator": 29
+        },
+        {
+          "kind": "next",
+          "previous": "BanG Dream! English Site",
+          "current": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": 0.21052631578947367,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 8.403508771929825,
+          "rightDelta": 16.771929824561404,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.9,
+          "widthRatio": 0.40597758405977585,
+          "lineAdvance": 1.263157894736842,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "visible heading size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 30,
+          "currentSizeValue": 27,
+          "advancePixels": 36,
+          "advanceDenominator": 28.5
+        },
+        {
+          "kind": "next",
+          "previous": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "current": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "previousScript": "Mixed",
+          "currentScript": "Mixed",
+          "verticalGap": 0,
+          "leftDelta": 0.07407407407407407,
+          "centerDelta": 5.37037037037037,
+          "rightDelta": 10.666666666666666,
+          "alignmentDelta": 0.07407407407407407,
+          "textSizeRatio": 1,
+          "widthRatio": 1.553191489361702,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 27,
+          "currentSizeValue": 27,
+          "advancePixels": 27,
+          "advanceDenominator": 27
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.092857142857143,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "layoutGlyphHeight": 13.092857142857143,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 77,
+                  "y": 17,
+                  "width": 141,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.981081081081081,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 75,
+                  "y": 37,
+                  "width": 341,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 13,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 20.18095238095238,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "layoutGlyphHeight": 20.18095238095238,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 30,
+                  "y": 72,
+                  "width": 326,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": 20,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 22.139999999999997,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 31,
+                  "y": 108,
+                  "width": 803,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 19.767647058823528,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 29,
+                  "y": 135,
+                  "width": 517,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.092857142857143,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "layoutGlyphHeight": 13.092857142857143,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 77,
+                  "y": 17,
+                  "width": 141,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.981081081081081,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 75,
+                  "y": 37,
+                  "width": 341,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 13,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 20.18095238095238,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "layoutGlyphHeight": 20.18095238095238,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 30,
+                  "y": 72,
+                  "width": 326,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": 20,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 22.139999999999997,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 31,
+                  "y": 108,
+                  "width": 803,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 19.767647058823528,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 29,
+                  "y": 135,
+                  "width": 517,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3",
+            "L4"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.092857142857143,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "layoutGlyphHeight": 13.092857142857143,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.981081081081081,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 13,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 20.18095238095238,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "layoutGlyphHeight": 20.18095238095238,
+          "layoutInkHeight": 20,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "bounds": {
+            "empty": false,
+            "x": 31,
+            "y": 108,
+            "width": 803,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.139999999999997,
+          "confidence": 0.9976244568824768,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 31,
+            "y": 108,
+            "width": 803,
+            "height": 27
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 16,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 29,
+            "y": 135,
+            "width": 517,
+            "height": 27
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 19.767647058823528,
+          "confidence": 0.9552562236785889,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 29,
+            "y": 135,
+            "width": 517,
+            "height": 27
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 16,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 13.092857142857143,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 77,
+            "y": 17,
+            "width": 141,
+            "height": 23
+          },
+          "layoutGlyphHeight": 13.092857142857143,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 11.981081081081081,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 75,
+            "y": 37,
+            "width": 341,
+            "height": 28
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 13,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 20.18095238095238,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 30,
+            "y": 72,
+            "width": 326,
+            "height": 30
+          },
+          "layoutGlyphHeight": 20.18095238095238,
+          "layoutInkHeight": 20,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 29,
+            "y": 108,
+            "width": 805,
+            "height": 54
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 31,
+              "y": 108,
+              "width": 803,
+              "height": 27
+            },
+            {
+              "empty": false,
+              "x": 29,
+              "y": 135,
+              "width": 517,
+              "height": 27
+            }
+          ],
+          "renderGlyphHeight": 22.139999999999997,
+          "confidence": 0.9793171956215376,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 29,
+            "y": 108,
+            "width": 805,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "bang-dream.com",
+          "current": "https://bang-dream.com>english·翻譯這個網頁",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": -0.11764705882352941,
+          "leftDelta": 0.0784313725490196,
+          "centerDelta": 3.843137254901961,
+          "rightDelta": 7.764705882352941,
+          "alignmentDelta": 0.0784313725490196,
+          "textSizeRatio": 0.8214285714285714,
+          "widthRatio": 0.41348973607038125,
+          "lineAdvance": 0.7843137254901961,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 23,
+          "currentSizeValue": 28,
+          "advancePixels": 20,
+          "advanceDenominator": 25.5
+        },
+        {
+          "kind": "next",
+          "previous": "https://bang-dream.com>english·翻譯這個網頁",
+          "current": "BanG Dream! English Site",
+          "previousScript": "Mixed",
+          "currentScript": "Latin",
+          "verticalGap": 0.2413793103448276,
+          "leftDelta": 1.5517241379310345,
+          "centerDelta": 1.8103448275862069,
+          "rightDelta": 2.0689655172413794,
+          "alignmentDelta": 1.5517241379310345,
+          "textSizeRatio": 0.9333333333333333,
+          "widthRatio": 1.0460122699386503,
+          "lineAdvance": 1.206896551724138,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 28,
+          "currentSizeValue": 30,
+          "advancePixels": 35,
+          "advanceDenominator": 29
+        },
+        {
+          "kind": "next",
+          "previous": "BanG Dream! English Site",
+          "current": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": 0.21052631578947367,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 8.403508771929825,
+          "rightDelta": 16.771929824561404,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.9,
+          "widthRatio": 0.40597758405977585,
+          "lineAdvance": 1.263157894736842,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "visible heading size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 30,
+          "currentSizeValue": 27,
+          "advancePixels": 36,
+          "advanceDenominator": 28.5
+        },
+        {
+          "kind": "next",
+          "previous": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "current": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "previousScript": "Mixed",
+          "currentScript": "Mixed",
+          "verticalGap": 0,
+          "leftDelta": 0.07407407407407407,
+          "centerDelta": 5.37037037037037,
+          "rightDelta": 10.666666666666666,
+          "alignmentDelta": 0.07407407407407407,
+          "textSizeRatio": 1,
+          "widthRatio": 1.553191489361702,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 27,
+          "currentSizeValue": 27,
+          "advancePixels": 27,
+          "advanceDenominator": 27
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.092857142857143,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "layoutGlyphHeight": 13.092857142857143,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 77,
+                  "y": 17,
+                  "width": 141,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.981081081081081,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 75,
+                  "y": 37,
+                  "width": 341,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 13,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 20.18095238095238,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "layoutGlyphHeight": 20.18095238095238,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 30,
+                  "y": 72,
+                  "width": 326,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": 20,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 22.139999999999997,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 31,
+                  "y": 108,
+                  "width": 803,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 19.767647058823528,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 29,
+                  "y": 135,
+                  "width": 517,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 13.092857142857143,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 77,
+                "y": 17,
+                "width": 141,
+                "height": 23
+              },
+              "layoutGlyphHeight": 13.092857142857143,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 77,
+                  "y": 17,
+                  "width": 141,
+                  "height": 23
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 11.981081081081081,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 75,
+                "y": 37,
+                "width": 341,
+                "height": 28
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 75,
+                  "y": 37,
+                  "width": 341,
+                  "height": 28
+                }
+              ],
+              "layoutInkHeight": 13,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 20.18095238095238,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 30,
+                "y": 72,
+                "width": 326,
+                "height": 30
+              },
+              "layoutGlyphHeight": 20.18095238095238,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 30,
+                  "y": 72,
+                  "width": 326,
+                  "height": 30
+                }
+              ],
+              "layoutInkHeight": 20,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 22.139999999999997,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 31,
+                "y": 108,
+                "width": 803,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 31,
+                  "y": 108,
+                  "width": 803,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 19.767647058823528,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 29,
+                "y": 135,
+                "width": 517,
+                "height": 27
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 29,
+                  "y": 135,
+                  "width": 517,
+                  "height": 27
+                }
+              ],
+              "layoutInkHeight": 16,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3",
+            "L4"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 26.185714285714287,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "layoutGlyphHeight": 26.185714285714287,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 23.962162162162162,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 26,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 40.36190476190476,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "layoutGlyphHeight": 40.36190476190476,
+          "layoutInkHeight": 40,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "bounds": {
+            "empty": false,
+            "x": 62,
+            "y": 216,
+            "width": 1606,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 44.279999999999994,
+          "confidence": 0.9976244568824768,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 62,
+            "y": 216,
+            "width": 1606,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 32,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 270,
+            "width": 1034,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 39.535294117647055,
+          "confidence": 0.9552562236785889,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 270,
+            "width": 1034,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 32,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 26.185714285714287,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "layoutGlyphHeight": 26.185714285714287,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 23.962162162162162,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 26,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 40.36190476190476,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "layoutGlyphHeight": 40.36190476190476,
+          "layoutInkHeight": 40,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 216,
+            "width": 1610,
+            "height": 108
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 62,
+              "y": 216,
+              "width": 1606,
+              "height": 54
+            },
+            {
+              "empty": false,
+              "x": 58,
+              "y": 270,
+              "width": 1034,
+              "height": 54
+            }
+          ],
+          "renderGlyphHeight": 44.279999999999994,
+          "confidence": 0.9793171956215376,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 216,
+            "width": 1610,
+            "height": 108
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "bang-dream.com",
+          "current": "https://bang-dream.com>english·翻譯這個網頁",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": -0.11764705882352941,
+          "leftDelta": 0.0784313725490196,
+          "centerDelta": 3.843137254901961,
+          "rightDelta": 7.764705882352941,
+          "alignmentDelta": 0.0784313725490196,
+          "textSizeRatio": 0.8214285714285714,
+          "widthRatio": 0.41348973607038125,
+          "lineAdvance": 0.7843137254901961,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 46,
+          "currentSizeValue": 56,
+          "advancePixels": 40,
+          "advanceDenominator": 51
+        },
+        {
+          "kind": "next",
+          "previous": "https://bang-dream.com>english·翻譯這個網頁",
+          "current": "BanG Dream! English Site",
+          "previousScript": "Mixed",
+          "currentScript": "Latin",
+          "verticalGap": 0.2413793103448276,
+          "leftDelta": 1.5517241379310345,
+          "centerDelta": 1.8103448275862069,
+          "rightDelta": 2.0689655172413794,
+          "alignmentDelta": 1.5517241379310345,
+          "textSizeRatio": 0.9333333333333333,
+          "widthRatio": 1.0460122699386503,
+          "lineAdvance": 1.206896551724138,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 56,
+          "currentSizeValue": 60,
+          "advancePixels": 70,
+          "advanceDenominator": 58
+        },
+        {
+          "kind": "next",
+          "previous": "BanG Dream! English Site",
+          "current": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": 0.21052631578947367,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 8.403508771929825,
+          "rightDelta": 16.771929824561404,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.9,
+          "widthRatio": 0.40597758405977585,
+          "lineAdvance": 1.263157894736842,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "visible heading size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 60,
+          "currentSizeValue": 54,
+          "advancePixels": 72,
+          "advanceDenominator": 57
+        },
+        {
+          "kind": "next",
+          "previous": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "current": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "previousScript": "Mixed",
+          "currentScript": "Mixed",
+          "verticalGap": 0,
+          "leftDelta": 0.07407407407407407,
+          "centerDelta": 5.37037037037037,
+          "rightDelta": 10.666666666666666,
+          "alignmentDelta": 0.07407407407407407,
+          "textSizeRatio": 1,
+          "widthRatio": 1.553191489361702,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 54,
+          "currentSizeValue": 54,
+          "advancePixels": 54,
+          "advanceDenominator": 54
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 26.185714285714287,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "layoutGlyphHeight": 26.185714285714287,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 154,
+                  "y": 34,
+                  "width": 282,
+                  "height": 46
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 23.962162162162162,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 150,
+                  "y": 74,
+                  "width": 682,
+                  "height": 56
+                }
+              ],
+              "layoutInkHeight": 26,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 40.36190476190476,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "layoutGlyphHeight": 40.36190476190476,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 60,
+                  "y": 144,
+                  "width": 652,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": 40,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 44.279999999999994,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 62,
+                  "y": 216,
+                  "width": 1606,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 39.535294117647055,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 58,
+                  "y": 270,
+                  "width": 1034,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 26.185714285714287,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "layoutGlyphHeight": 26.185714285714287,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 154,
+                  "y": 34,
+                  "width": 282,
+                  "height": 46
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 23.962162162162162,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 150,
+                  "y": 74,
+                  "width": 682,
+                  "height": 56
+                }
+              ],
+              "layoutInkHeight": 26,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 40.36190476190476,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "layoutGlyphHeight": 40.36190476190476,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 60,
+                  "y": 144,
+                  "width": 652,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": 40,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 44.279999999999994,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 62,
+                  "y": 216,
+                  "width": 1606,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 39.535294117647055,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 58,
+                  "y": 270,
+                  "width": 1034,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3",
+            "L4"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 26.185714285714287,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "layoutGlyphHeight": 26.185714285714287,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 23.962162162162162,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 26,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 40.36190476190476,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "layoutGlyphHeight": 40.36190476190476,
+          "layoutInkHeight": 40,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "bounds": {
+            "empty": false,
+            "x": 62,
+            "y": 216,
+            "width": 1606,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 44.279999999999994,
+          "confidence": 0.9976244568824768,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 62,
+            "y": 216,
+            "width": 1606,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 32,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 270,
+            "width": 1034,
+            "height": 54
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 39.535294117647055,
+          "confidence": 0.9552562236785889,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 270,
+            "width": 1034,
+            "height": 54
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 32,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "bang-dream.com",
+          "bounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 26.185714285714287,
+          "confidence": 0.9999318718910217,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 154,
+            "y": 34,
+            "width": 282,
+            "height": 46
+          },
+          "layoutGlyphHeight": 26.185714285714287,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "https://bang-dream.com>english·翻譯這個網頁",
+          "bounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 23.962162162162162,
+          "confidence": 0.9684953093528748,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 150,
+            "y": 74,
+            "width": 682,
+            "height": 56
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": 26,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BanG Dream! English Site",
+          "bounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 40.36190476190476,
+          "confidence": 0.9996904730796814,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 60,
+            "y": 144,
+            "width": 652,
+            "height": 60
+          },
+          "layoutGlyphHeight": 40.36190476190476,
+          "layoutInkHeight": 40,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 216,
+            "width": 1610,
+            "height": 108
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 62,
+              "y": 216,
+              "width": 1606,
+              "height": 54
+            },
+            {
+              "empty": false,
+              "x": 58,
+              "y": 270,
+              "width": 1034,
+              "height": 54
+            }
+          ],
+          "renderGlyphHeight": 44.279999999999994,
+          "confidence": 0.9793171956215376,
+          "layoutScript": "Mixed",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 216,
+            "width": 1610,
+            "height": 108
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "bang-dream.com",
+          "current": "https://bang-dream.com>english·翻譯這個網頁",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": -0.11764705882352941,
+          "leftDelta": 0.0784313725490196,
+          "centerDelta": 3.843137254901961,
+          "rightDelta": 7.764705882352941,
+          "alignmentDelta": 0.0784313725490196,
+          "textSizeRatio": 0.8214285714285714,
+          "widthRatio": 0.41348973607038125,
+          "lineAdvance": 0.7843137254901961,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 46,
+          "currentSizeValue": 56,
+          "advancePixels": 40,
+          "advanceDenominator": 51
+        },
+        {
+          "kind": "next",
+          "previous": "https://bang-dream.com>english·翻譯這個網頁",
+          "current": "BanG Dream! English Site",
+          "previousScript": "Mixed",
+          "currentScript": "Latin",
+          "verticalGap": 0.2413793103448276,
+          "leftDelta": 1.5517241379310345,
+          "centerDelta": 1.8103448275862069,
+          "rightDelta": 2.0689655172413794,
+          "alignmentDelta": 1.5517241379310345,
+          "textSizeRatio": 0.9333333333333333,
+          "widthRatio": 1.0460122699386503,
+          "lineAdvance": 1.206896551724138,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "alignment",
+          "previousId": "L1",
+          "currentId": "L2",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 56,
+          "currentSizeValue": 60,
+          "advancePixels": 70,
+          "advanceDenominator": 58
+        },
+        {
+          "kind": "next",
+          "previous": "BanG Dream! English Site",
+          "current": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "previousScript": "Latin",
+          "currentScript": "Mixed",
+          "verticalGap": 0.21052631578947367,
+          "leftDelta": 0.03508771929824561,
+          "centerDelta": 8.403508771929825,
+          "rightDelta": 16.771929824561404,
+          "alignmentDelta": 0.03508771929824561,
+          "textSizeRatio": 0.9,
+          "widthRatio": 0.40597758405977585,
+          "lineAdvance": 1.263157894736842,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": false,
+          "rule": "visible heading size",
+          "previousId": "L2",
+          "currentId": "L3",
+          "sizeBasis": "BoxDifferentScript",
+          "previousSizeValue": 60,
+          "currentSizeValue": 54,
+          "advancePixels": 72,
+          "advanceDenominator": 57
+        },
+        {
+          "kind": "next",
+          "previous": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+          "current": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+          "previousScript": "Mixed",
+          "currentScript": "Mixed",
+          "verticalGap": 0,
+          "leftDelta": 0.07407407407407407,
+          "centerDelta": 5.37037037037037,
+          "rightDelta": 10.666666666666666,
+          "alignmentDelta": 0.07407407407407407,
+          "textSizeRatio": 1,
+          "widthRatio": 1.553191489361702,
+          "lineAdvance": 1,
+          "leadingBar": 1.38,
+          "solidBar": 1.45,
+          "joined": true,
+          "rule": "set solid",
+          "previousId": "L3",
+          "currentId": "L4",
+          "sizeBasis": "BoxNoGlyphHeight",
+          "previousSizeValue": 54,
+          "currentSizeValue": 54,
+          "advancePixels": 54,
+          "advanceDenominator": 54
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 26.185714285714287,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "layoutGlyphHeight": 26.185714285714287,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 154,
+                  "y": 34,
+                  "width": 282,
+                  "height": 46
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 23.962162162162162,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 150,
+                  "y": 74,
+                  "width": 682,
+                  "height": 56
+                }
+              ],
+              "layoutInkHeight": 26,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 40.36190476190476,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "layoutGlyphHeight": 40.36190476190476,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 60,
+                  "y": 144,
+                  "width": 652,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": 40,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 44.279999999999994,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 62,
+                  "y": 216,
+                  "width": 1606,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 39.535294117647055,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 58,
+                  "y": 270,
+                  "width": 1034,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "bang-dream.com",
+              "bounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 26.185714285714287,
+              "confidence": 0.9999318718910217,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 154,
+                "y": 34,
+                "width": 282,
+                "height": 46
+              },
+              "layoutGlyphHeight": 26.185714285714287,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 154,
+                  "y": 34,
+                  "width": 282,
+                  "height": 46
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "https://bang-dream.com>english·翻譯這個網頁",
+              "bounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 23.962162162162162,
+              "confidence": 0.9684953093528748,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 150,
+                "y": 74,
+                "width": 682,
+                "height": 56
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 150,
+                  "y": 74,
+                  "width": 682,
+                  "height": 56
+                }
+              ],
+              "layoutInkHeight": 26,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          },
+          {
+            "id": "L2",
+            "block": {
+              "text": "BanG Dream! English Site",
+              "bounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 40.36190476190476,
+              "confidence": 0.9996904730796814,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 60,
+                "y": 144,
+                "width": 652,
+                "height": 60
+              },
+              "layoutGlyphHeight": 40.36190476190476,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 60,
+                  "y": 144,
+                  "width": 652,
+                  "height": 60
+                }
+              ],
+              "layoutInkHeight": 40,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b2"
+            ]
+          },
+          {
+            "id": "L3",
+            "block": {
+              "text": "アニメ、ゲーム、コミック、声優によるリアルライブなど様々なメディアミックスを展開する次世代ガ",
+              "bounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 44.279999999999994,
+              "confidence": 0.9976244568824768,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 62,
+                "y": 216,
+                "width": 1606,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 62,
+                  "y": 216,
+                  "width": 1606,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b3"
+            ]
+          },
+          {
+            "id": "L4",
+            "block": {
+              "text": "ルズバンドプロジェクトBanG Dream!(バンドリ！）公式サイト.",
+              "bounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": 39.535294117647055,
+              "confidence": 0.9552562236785889,
+              "layoutScript": "Mixed",
+              "layoutBounds": {
+                "empty": false,
+                "x": 58,
+                "y": 270,
+                "width": 1034,
+                "height": 54
+              },
+              "layoutGlyphHeight": null,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 58,
+                  "y": 270,
+                  "width": 1034,
+                  "height": 54
+                }
+              ],
+              "layoutInkHeight": 32,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b4"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ],
+          [
+            "L2"
+          ],
+          [
+            "L3",
+            "L4"
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,5 +1,4 @@
-//! Grouping of recorded OCR lines against the rendered fixtures' truth: every truth block
-//! becomes exactly one block, and no block holds lines of two truth blocks.
+//! Recorded grouping contracts and the rendered fixtures' truth.
 
 use lt_core::{
     engines::TextLine,
@@ -41,6 +40,18 @@ fn recorded_lines_group_into_the_truth_blocks() {
         .collect();
     names.sort();
     assert!(!names.is_empty());
+    let accepted: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(recorded.join("accepted-grouping.json")).unwrap())
+            .unwrap();
+    assert_eq!(
+        accepted
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<Vec<_>>(),
+        ["article@1", "chat@1", "subtitle@1", "subtitle@1.5"]
+    );
     let mut problems = Vec::new();
     for name in &names {
         let lines: Recorded = serde_json::from_slice(
@@ -54,6 +65,40 @@ fn recorded_lines_group_into_the_truth_blocks() {
         let white = vec![255; lines.width as usize * lines.height as usize * 4];
         let image = ImageView::new(lines.width, lines.height, lines.width * 4, &white).unwrap();
         let found = blocks(&image, &lines.lines);
+        if let Some(expected) = accepted.get(name) {
+            let output: Vec<_> = found
+                .iter()
+                .map(|block| {
+                    serde_json::json!({
+                        "id": block.id, "rect": block.rect, "lines": block.lines,
+                        "intent": block.intent, "source": block.source,
+                    })
+                })
+                .collect();
+            assert_eq!(serde_json::json!(output), expected["blocks"], "{name}");
+            let members: Vec<Vec<_>> = found
+                .iter()
+                .map(|block| {
+                    block
+                        .lines
+                        .iter()
+                        .map(|rect| {
+                            let indices: Vec<_> = lines
+                                .lines
+                                .iter()
+                                .enumerate()
+                                .filter(|(_, line)| line.rect == *rect)
+                                .map(|(index, _)| index)
+                                .collect();
+                            assert_eq!(indices.len(), 1, "{name}: ambiguous source line {rect:?}");
+                            indices[0]
+                        })
+                        .collect()
+                })
+                .collect();
+            assert_eq!(serde_json::json!(members), expected["members"], "{name}");
+            continue;
+        }
         println!(
             "{name}: {} blocks, truth {}",
             found.len(),

@@ -1,0 +1,662 @@
+{
+  "test": "AFlushLeftStack_IsRefusedEvenInTheGeneralMode",
+  "parameterIndex": 0,
+  "calls": [
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Move Camera",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "layoutGlyphHeight": 51.65,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Open Map (Hold)",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "layoutGlyphHeight": 42.98,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.88,
+        "waiveLengthTestWhenSetSolid": false,
+        "solidLineAdvanceWhenWrapped": 1.2,
+        "refuseSpeakerLineStarts": false,
+        "takesProseEvidence": false
+      },
+      "output": [
+        {
+          "text": "Move Camera",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "layoutGlyphHeight": 51.65,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Open Map (Hold)",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "layoutGlyphHeight": 42.98,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Move Camera",
+          "current": "Open Map (Hold)",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.109375,
+          "leftDelta": 0,
+          "centerDelta": 0.71875,
+          "rightDelta": 1.4375,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.8321393998063891,
+          "widthRatio": 0.8260869565217391,
+          "lineAdvance": 0.921875,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 51.65,
+          "currentSizeValue": 42.98,
+          "advancePixels": 59,
+          "advanceDenominator": 64
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Move Camera",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "layoutGlyphHeight": 51.65,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1045,
+                  "width": 437,
+                  "height": 66
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Open Map (Hold)",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "layoutGlyphHeight": 42.98,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1104,
+                  "width": 529,
+                  "height": 62
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Move Camera",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "layoutGlyphHeight": 51.65,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1045,
+                  "width": 437,
+                  "height": 66
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Open Map (Hold)",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "layoutGlyphHeight": 42.98,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1104,
+                  "width": 529,
+                  "height": 62
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    },
+    {
+      "kind": "group",
+      "input": [
+        {
+          "text": "Move Camera",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "layoutGlyphHeight": 51.65,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Open Map (Hold)",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "layoutGlyphHeight": 42.98,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "profile": {
+        "tightlySetMinTextSizeRatio": 0.8,
+        "waiveLengthTestWhenSetSolid": true,
+        "solidLineAdvanceWhenWrapped": 1.45,
+        "refuseSpeakerLineStarts": true,
+        "takesProseEvidence": true
+      },
+      "output": [
+        {
+          "text": "Move Camera",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1045,
+            "width": 437,
+            "height": 66
+          },
+          "layoutGlyphHeight": 51.65,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Open Map (Hold)",
+          "bounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 305,
+            "y": 1104,
+            "width": 529,
+            "height": 62
+          },
+          "layoutGlyphHeight": 42.98,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "decisions": [
+        {
+          "kind": "next",
+          "previous": "Move Camera",
+          "current": "Open Map (Hold)",
+          "previousScript": "Latin",
+          "currentScript": "Latin",
+          "verticalGap": -0.109375,
+          "leftDelta": 0,
+          "centerDelta": 0.71875,
+          "rightDelta": 1.4375,
+          "alignmentDelta": 0,
+          "textSizeRatio": 0.8321393998063891,
+          "widthRatio": 0.8260869565217391,
+          "lineAdvance": 0.921875,
+          "leadingBar": 1.38,
+          "solidBar": 1.2,
+          "joined": false,
+          "rule": "text size",
+          "previousId": "L0",
+          "currentId": "L1",
+          "sizeBasis": "Glyph",
+          "previousSizeValue": 51.65,
+          "currentSizeValue": 42.98,
+          "advancePixels": 59,
+          "advanceDenominator": 64
+        }
+      ],
+      "trace": {
+        "blocks": [
+          {
+            "id": "b0",
+            "block": {
+              "text": "Move Camera",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "layoutGlyphHeight": 51.65,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1045,
+                  "width": 437,
+                  "height": 66
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          },
+          {
+            "id": "b1",
+            "block": {
+              "text": "Open Map (Hold)",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "layoutGlyphHeight": 42.98,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1104,
+                  "width": 529,
+                  "height": 62
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": []
+          }
+        ],
+        "lines": [
+          {
+            "id": "L0",
+            "block": {
+              "text": "Move Camera",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1045,
+                "width": 437,
+                "height": 66
+              },
+              "layoutGlyphHeight": 51.65,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1045,
+                  "width": 437,
+                  "height": 66
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b0"
+            ]
+          },
+          {
+            "id": "L1",
+            "block": {
+              "text": "Open Map (Hold)",
+              "bounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "sourceLineBounds": null,
+              "renderGlyphHeight": null,
+              "confidence": null,
+              "layoutScript": "Latin",
+              "layoutBounds": {
+                "empty": false,
+                "x": 305,
+                "y": 1104,
+                "width": 529,
+                "height": 62
+              },
+              "layoutGlyphHeight": 42.98,
+              "lines": [
+                {
+                  "empty": false,
+                  "x": 305,
+                  "y": 1104,
+                  "width": 529,
+                  "height": 62
+                }
+              ],
+              "layoutInkHeight": null,
+              "fontGlyphHeight": null,
+              "runsAcross": false
+            },
+            "sourceIds": [
+              "b1"
+            ]
+          }
+        ],
+        "groups": [
+          [
+            "L0"
+          ],
+          [
+            "L1"
+          ]
+        ]
+      }
+    }
+  ]
+}
