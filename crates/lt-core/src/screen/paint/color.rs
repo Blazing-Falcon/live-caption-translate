@@ -1,4 +1,35 @@
 pub const MINIMUM_CONTRAST: f64 = 3.0;
+pub fn tune(text: [u8; 3], background: [u8; 3]) -> [u8; 3] {
+    let bg_lum = perceived_luminance(background);
+    let text_lum = perceived_luminance(text);
+    let (h, s, l) = rgb_to_hsl(text);
+    if s < 0.18 {
+        if text_lum < 0.16 {
+            return text;
+        }
+        if bg_lum >= 0.55 {
+            let max_allowed_lum = 0.08f64.max(bg_lum - 0.24);
+            let boosted_lum = max_allowed_lum.min(text_lum + 0.12);
+            let boosted_lightness = 0.74f64.min(l + 0.1);
+            return hsl_to_rgb(h, 0.22f64.min(s * 1.08), boosted_lightness.max(boosted_lum));
+        }
+        let min_allowed_lum = 0.92f64.min(bg_lum + 0.3);
+        let lifted_lum = min_allowed_lum.max(text_lum + 0.08);
+        let lifted_lightness = l.max(0.9f64.min(l + 0.08));
+        return hsl_to_rgb(h, 0.22f64.min(s * 1.08), lifted_lightness.max(lifted_lum));
+    }
+    let target_saturation = 1.0f64.min((s + 0.08).max(s * 1.12));
+    if bg_lum >= 0.55 {
+        let max_allowed_lum = 0.08f64.max(bg_lum - 0.24);
+        let adjusted_lum = max_allowed_lum.min(text_lum + 0.01);
+        let adjusted_lightness = 0.64f64.min(l.max(l + 0.01));
+        return hsl_to_rgb(h, target_saturation, adjusted_lightness.max(adjusted_lum));
+    }
+    let min_allowed_color_lum = 0.9f64.min(bg_lum + 0.22);
+    let color_lum = min_allowed_color_lum.max(text_lum + 0.01);
+    let color_lightness = l.max(0.8f64.min(l + 0.01));
+    hsl_to_rgb(h, target_saturation, color_lightness.max(color_lum))
+}
 fn linear(channel: u8) -> f64 {
     let c = f64::from(channel) / 255.0;
     if c <= 0.03928 {

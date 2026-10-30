@@ -1,0 +1,29 @@
+{
+  "test": "Sample_HasNoTextColourWhenNothingInsideStandsOutFromTheBackground",
+  "calls": [
+    {
+      "op": "sample",
+      "input": {
+        "image": "3ada9f1aa04cfa49e2960f29ebb18e956b0cb16996f73e69a27fff2a32dbf1f0.png",
+        "bounds": {
+          "empty": false,
+          "x": 20,
+          "y": 12,
+          "width": 40,
+          "height": 12
+        },
+        "backgroundOverride": null,
+        "ringReference": null
+      },
+      "expected": {
+        "surface": [
+          120,
+          120,
+          120
+        ],
+        "body": null,
+        "outline": null
+      }
+    }
+  ]
+}

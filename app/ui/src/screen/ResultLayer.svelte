@@ -1,15 +1,18 @@
 <script lang="ts">
-  import { cssColor, fitText, startFontPx, toCssRect, type Outcome } from "../lib/screen";
+  import { toCssRect, type Outcome } from "../lib/screen";
+  import PaintedBlock from "./PaintedBlock.svelte";
   import type { ScreenBlock, ScreenFrame } from "../lib/types";
 
   let {
     frame,
+    job,
     blocks,
     outcomes,
     hidden,
     onhint,
   }: {
     frame: ScreenFrame;
+    job: number;
     blocks: ScreenBlock[];
     outcomes: Record<number, Outcome>;
     /** Invisible but laid out, so a box that arrives meanwhile still fits. */
@@ -18,9 +21,6 @@
     onhint: (message: string | null) => void;
   } = $props();
 
-  function fit(node: HTMLElement, params: { width: number; height: number; start: number }): void {
-    fitText(node, params.width, params.height, params.start);
-  }
 </script>
 
 <div class="layer" style:visibility={hidden ? "hidden" : "visible"} data-testid="results">
@@ -28,17 +28,7 @@
     {@const outcome = outcomes[block.id]}
     {@const css = toCssRect(block.rect, frame.scale)}
     {#if outcome?.state === "translated"}
-      <div
-        class="box"
-        data-block={block.id}
-        style:left="{css.x}px"
-        style:top="{css.y}px"
-        style:--block-bg={cssColor(block.background)}
-        style:--block-fg={cssColor(block.foreground)}
-        use:fit={{ width: css.w, height: css.h, start: startFontPx(block, frame.scale) }}
-      >
-        {outcome.text}
-      </div>
+      <PaintedBlock {frame} {job} {block} text={outcome.text} />
     {:else if outcome?.state === "failed"}
       <div
         class="mark"
@@ -63,16 +53,6 @@
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-  }
-
-  .box {
-    position: absolute;
-    overflow: hidden;
-    padding: 1px;
-    background: var(--block-bg);
-    color: var(--block-fg);
-    font-family: var(--font-ui);
-    line-height: 1.15;
   }
 
   .mark {

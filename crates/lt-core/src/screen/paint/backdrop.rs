@@ -55,6 +55,47 @@ fn round(area: RectF) -> Area {
     )
 }
 impl Backdrop {
+    pub fn create(
+        image: crate::screen::ImageView<'_>,
+        blocks: &[crate::screen::erase::RemovalBlock],
+        cancel: &std::sync::atomic::AtomicBool,
+    ) -> crate::error::Result<Option<Self>> {
+        if image.width == 0 || image.height == 0 || blocks.is_empty() {
+            return Ok(None);
+        }
+        let pixels = crate::screen::erase::erase_text_cancellable(&image, blocks, cancel)?;
+        let repaired =
+            ImageBuffer::new(image.width as usize, image.height as usize, PixelType::U8C3);
+        for y in 0..image.height as usize {
+            for x in 0..image.width as usize {
+                for c in 0..3 {
+                    repaired.set_byte(y, x * 3 + c, pixels[(y * image.width as usize + x) * 4 + c]);
+                }
+            }
+        }
+        Ok(Self::from_repaired(&repaired))
+    }
+
+    pub fn card(&self, bubble: RectF, text: [u8; 3]) -> Option<([u8; 3], [u8; 3])> {
+        let r = self.clip(round(bubble));
+        if r.2 < 2 || r.3 < 2 {
+            return None;
+        }
+        let mut vote = DominantColorVote::default();
+        let step = ((f64::from(r.2) * f64::from(r.3) / 4096.0).sqrt().ceil() as usize).max(1);
+        for y in (r.1..r.1 + r.3).step_by(step) {
+            for x in (r.0..r.0 + r.2).step_by(step) {
+                let i = (y as usize * self.width + x as usize) * 3;
+                vote.add([self.bgr[i + 2], self.bgr[i + 1], self.bgr[i]]);
+            }
+        }
+        let background = vote.dominant()?;
+        Some((
+            background,
+            legible(&[background], text, color::MINIMUM_CONTRAST),
+        ))
+    }
+
     pub fn from_repaired(image: &ImageBuffer) -> Option<Self> {
         assert_eq!(image.pixel_type, PixelType::U8C3);
         if image.is_empty() {

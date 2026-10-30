@@ -1,0 +1,21 @@
+{
+  "test": "Sample_IsNullForABoxOutsideTheFrame",
+  "calls": [
+    {
+      "op": "sample",
+      "input": {
+        "image": "4a76c1f231f7e58dc16ae92573c2b56e494dadc18ebac2dc4dcaa0213f479825.png",
+        "bounds": {
+          "empty": false,
+          "x": 100,
+          "y": 50,
+          "width": 20,
+          "height": 10
+        },
+        "backgroundOverride": null,
+        "ringReference": null
+      },
+      "expected": null
+    }
+  ]
+}

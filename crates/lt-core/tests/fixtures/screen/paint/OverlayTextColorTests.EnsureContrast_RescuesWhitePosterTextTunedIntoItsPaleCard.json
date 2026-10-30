@@ -1,0 +1,46 @@
+{
+  "test": "EnsureContrast_RescuesWhitePosterTextTunedIntoItsPaleCard",
+  "calls": [
+    {
+      "op": "tune",
+      "input": {
+        "text": [
+          255,
+          255,
+          255
+        ],
+        "background": [
+          200,
+          200,
+          200
+        ]
+      },
+      "expected": [
+        189,
+        189,
+        189
+      ]
+    },
+    {
+      "op": "contrast",
+      "input": {
+        "text": [
+          189,
+          189,
+          189
+        ],
+        "background": [
+          200,
+          200,
+          200
+        ],
+        "minRatio": 3
+      },
+      "expected": [
+        111,
+        111,
+        111
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "test": "BetweenLines_IsNullWhenTheGapsHoldNoSingleColour",
+  "calls": [
+    {
+      "op": "between",
+      "input": {
+        "image": "c23853306dba30e32805cda8709274689b748d800ab7e30c28e43a4c0294922d.png",
+        "lines": [
+          {
+            "empty": false,
+            "x": 60,
+            "y": 55,
+            "width": 280,
+            "height": 20
+          },
+          {
+            "empty": false,
+            "x": 60,
+            "y": 95,
+            "width": 280,
+            "height": 20
+          },
+          {
+            "empty": false,
+            "x": 60,
+            "y": 135,
+            "width": 280,
+            "height": 20
+          }
+        ],
+        "vertical": false
+      },
+      "expected": null
+    }
+  ]
+}

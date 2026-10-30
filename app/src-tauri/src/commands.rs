@@ -146,6 +146,15 @@ pub fn screen_close(shared: Shell) {
     crate::screen::close(&shared);
 }
 
+#[tauri::command]
+pub async fn screen_plate(
+    shared: Shell<'_>,
+    request: crate::screen::PlateRequest,
+) -> Reply<crate::screen::PlateReply> {
+    let shared = shared.inner().clone();
+    blocking(move || shared.screen.plate(request)).await
+}
+
 /// Stops listening and the server, then exits.
 #[tauri::command]
 pub fn quit(shared: Shell) {

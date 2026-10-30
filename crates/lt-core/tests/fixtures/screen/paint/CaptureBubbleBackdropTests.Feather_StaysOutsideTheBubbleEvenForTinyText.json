@@ -1,0 +1,19 @@
+{
+  "test": "Feather_StaysOutsideTheBubbleEvenForTinyText",
+  "calls": [
+    {
+      "op": "feather",
+      "input": {
+        "height": 1
+      },
+      "expected": 3
+    },
+    {
+      "op": "feather",
+      "input": {
+        "height": 10000
+      },
+      "expected": 12
+    }
+  ]
+}

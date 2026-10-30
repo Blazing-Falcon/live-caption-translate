@@ -2,7 +2,7 @@ use super::{
     geom::{LineGeometry, RectF},
     ink,
     line::{layout_glyph_height_for, layout_script_for, Line},
-    paint, placement, Block, ImageView, Rect,
+    paint, placement, Block, ImageView, PaintFacts, Rect,
 };
 use crate::engines::TextLine;
 
@@ -53,14 +53,17 @@ pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> 
                 .collect()
         })
         .collect();
-    let every_line: Vec<_> = lines.iter().flatten().copied().collect();
-    let surface = paint::Surface::new(image, &every_line);
     groups
         .iter()
         .zip(lines)
         .enumerate()
         .map(|(id, (group, lines))| {
-            let background = surface.background(&lines);
+            let (background, foreground) = paint::sampling::for_capture_overlay(
+                *image,
+                group.bounds,
+                group.source_line_bounds.as_deref(),
+                false,
+            );
             let mut heights: Vec<_> = lines.iter().map(|line| line.h).collect();
             heights.sort_unstable();
             Block {
@@ -68,11 +71,17 @@ pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> 
                 rect: group.bounds.outward(),
                 line_height: heights[heights.len() / 2],
                 translate: group.text.chars().any(is_han),
-                foreground: paint::foreground(background),
+                foreground,
                 background,
                 intent: placement::intent_for(group),
                 lines,
                 source: group.text.clone(),
+                paint: Some(PaintFacts {
+                    bounds: group.bounds,
+                    source_lines: group.lines().to_vec(),
+                    render_glyph_height: group.render_glyph_height,
+                    font_glyph_height: group.font_glyph_height,
+                }),
             }
         })
         .collect()

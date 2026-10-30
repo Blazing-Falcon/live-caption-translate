@@ -1,0 +1,59 @@
+{
+  "test": "Capture_WritesAnOutlinedSourceInWhicheverOfItsColoursReadsOnTheCard",
+  "calls": [
+    {
+      "op": "capture",
+      "input": {
+        "image": "1a4051b71da5b46f74422a62bef3e1ab482a98fe4476c10a49c9925dcd8a0184.png",
+        "bounds": {
+          "empty": false,
+          "x": 18,
+          "y": 22,
+          "width": 222,
+          "height": 42
+        },
+        "sourceLines": null,
+        "vertical": false
+      },
+      "expected": {
+        "background": [
+          245,
+          248,
+          250
+        ],
+        "text": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "op": "capture",
+      "input": {
+        "image": "95d076f47d91d8929c17fee4c8f04f443e48f50d38364efd477a1ec25686710d.png",
+        "bounds": {
+          "empty": false,
+          "x": 18,
+          "y": 22,
+          "width": 222,
+          "height": 42
+        },
+        "sourceLines": null,
+        "vertical": false
+      },
+      "expected": {
+        "background": [
+          40,
+          70,
+          120
+        ],
+        "text": [
+          255,
+          255,
+          255
+        ]
+      }
+    }
+  ]
+}

@@ -64,6 +64,48 @@ async function send(page: Page, events: ScreenEvent[]): Promise<void> {
 const AREA = { from: { x: 40, y: 30 }, to: { x: 760, y: 440 } };
 
 test.describe("screenshot window (frame and events recorded by lt-cli at scale 1.5)", () => {
+  test("requests a plate after English layout and rejects an older job response", async ({ page }) => {
+    await start(page);
+    await page.evaluate(() => {
+      const backend = window.__lt.backend;
+      const reply = backend.plateReply;
+      backend.plateReply = (request) => {
+        if (request.job !== 1) return reply(request);
+        return new Promise((resolve) => {
+          const previous = (window as unknown as { releaseOldPlate?: () => void }).releaseOldPlate;
+          Object.assign(window, { releaseOldPlate: () => {
+            previous?.();
+            resolve({ rect: request.rect, foreground: [200, 10, 10], url: `http://ltshot.localhost/7/plate/1/${request.block}?v=1` });
+          } });
+        });
+      };
+    });
+    const withPaint = (id: number): ScreenEvent[] => job(id).map((event) => event.type === "blocks" ? {
+      ...event,
+      blocks: event.blocks.map((block) => ({ ...block, paint: {
+        bounds: { x: block.rect.x, y: block.rect.y, width: block.rect.w, height: block.rect.h },
+        source_lines: block.lines.map((r) => ({ x: r.x, y: r.y, width: r.w, height: r.h })),
+        render_glyph_height: null, font_glyph_height: null,
+      } })),
+    } : event);
+    await drag(page, AREA.from, AREA.to);
+    await send(page, withPaint(1));
+    await expect.poll(async () => (await calls(page, "screen_plate")).length).toBe(2);
+    const requests = await calls(page, "screen_plate");
+    expect(requests[0]?.args).toMatchObject({ request: { frame: FRAME.id, job: 1, block: 0 } });
+    const geometry = requests[0]?.args.request as { rect: { width: number; height: number }; written_height: number };
+    expect(geometry.rect.width).toBeGreaterThan(0);
+    expect(geometry.rect.height).toBeGreaterThan(0);
+    expect(geometry.written_height).toBeGreaterThan(0);
+    await drag(page, { x: 2, y: 2 }, { x: 750, y: 435 });
+    await send(page, withPaint(2));
+    await expect(page.locator("[data-plate]")).toHaveCount(2);
+    await expect(page.locator('[data-block="0"]')).toHaveCSS("color", "rgb(12, 34, 56)");
+    await page.evaluate(() => (window as unknown as { releaseOldPlate: () => void }).releaseOldPlate());
+    await expect(page.locator('[data-block="0"]')).toHaveCSS("color", "rgb(12, 34, 56)");
+    expect(await page.locator('[data-plate="0"]').getAttribute("src")).toMatch(/^data:/);
+  });
+
   test("selects in frame pixels and paints each block at rect / scale once it is translated", async ({ page }) => {
     await start(page);
     const box = await page.locator(".frame").boundingBox();

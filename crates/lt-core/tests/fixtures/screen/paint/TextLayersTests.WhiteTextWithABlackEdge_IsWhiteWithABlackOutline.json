@@ -1,0 +1,37 @@
+{
+  "test": "WhiteTextWithABlackEdge_IsWhiteWithABlackOutline",
+  "calls": [
+    {
+      "op": "sample",
+      "input": {
+        "image": "68b57cb7ea7163d68b7ff73a6288e9806225275f3301994bc84ea3e41f38df4f.png",
+        "bounds": {
+          "empty": false,
+          "x": 18,
+          "y": 22,
+          "width": 222,
+          "height": 42
+        },
+        "backgroundOverride": null,
+        "ringReference": null
+      },
+      "expected": {
+        "surface": [
+          150,
+          120,
+          90
+        ],
+        "body": [
+          254,
+          254,
+          254
+        ],
+        "outline": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ]
+}

@@ -8,7 +8,9 @@ use lt_core::{
     config::logical_cpus,
     error::{Error, Result},
     events::FailReason,
-    screen::{piece_translator, run_job, ImageView, ScreenEvent, TranslationCache},
+    screen::{
+        piece_translator, run_job_with_output, ImageView, JobOutput, ScreenEvent, TranslationCache,
+    },
 };
 use lt_llm::{models::ModelState, OpenAiCompatTranslator};
 use lt_ocr::{OcrEngine, OCR_MODEL};
@@ -42,6 +44,7 @@ pub enum Work {
 
 /// The sending side. The channel holds one waiting item; a new job replaces a waiting one.
 pub struct Jobs {
+    pub plates: super::plates::Plates,
     sender: Sender<Work>,
     waiting: Receiver<Work>,
     current: Mutex<Arc<AtomicBool>>,
@@ -52,6 +55,7 @@ impl Jobs {
     pub fn new() -> (Self, Receiver<Work>) {
         let (sender, receiver) = bounded(1);
         let jobs = Self {
+            plates: super::plates::Plates::default(),
             sender,
             waiting: receiver.clone(),
             current: Mutex::default(),
@@ -66,12 +70,20 @@ impl Jobs {
     }
 
     /// Cancels the previous job and queues this one.
-    pub fn start(&self, crop: Vec<u8>, width: u32, height: u32, origin: (i32, i32)) -> u64 {
+    pub fn start(
+        &self,
+        frame: u64,
+        crop: Vec<u8>,
+        width: u32,
+        height: u32,
+        origin: (i32, i32),
+    ) -> u64 {
         let mut current = lock(&self.current);
         current.store(true, Ordering::Release);
         let cancel = Arc::new(AtomicBool::new(false));
         *current = cancel.clone();
         let id = self.next.fetch_add(1, Ordering::Relaxed);
+        self.plates.begin(frame, id, origin, cancel.clone());
         let mut work = Work::Run(Job {
             id,
             crop,
@@ -94,6 +106,7 @@ impl Jobs {
 
     pub fn cancel(&self) {
         lock(&self.current).store(true, Ordering::Release);
+        self.plates.clear();
     }
 }
 
@@ -211,14 +224,23 @@ impl Worker {
         server.failed = None;
         let cancel = &job.cancel;
         let mut translate = |piece: &str| server.translate(piece, cancel);
-        run_job(
+        let plates = &self.shared.screen.jobs.plates;
+        let mut prepare = |image: &ImageView<'_>,
+                           groups: &[lt_core::screen::line::Line],
+                           blocks: &[lt_core::screen::Block]| {
+            plates.prepare(job.id, image, groups, blocks, cancel)
+        };
+        run_job_with_output(
             job.id,
             &image,
             engine,
             &mut translate,
             cancel,
             cache,
-            &mut emit,
+            JobOutput {
+                emit: &mut emit,
+                prepare: Some(&mut prepare),
+            },
         );
     }
 }
@@ -227,6 +249,12 @@ impl Worker {
 fn to_frame(event: &mut ScreenEvent, (x, y): (i32, i32)) {
     if let ScreenEvent::Blocks { blocks, .. } = event {
         for block in blocks {
+            if let Some(paint) = &mut block.paint {
+                paint.bounds = paint.bounds.offset(f64::from(x), f64::from(y));
+                for line in &mut paint.source_lines {
+                    *line = line.offset(f64::from(x), f64::from(y));
+                }
+            }
             for rect in std::iter::once(&mut block.rect).chain(&mut block.lines) {
                 rect.x += x;
                 rect.y += y;

@@ -1,6 +1,6 @@
 //! The colors a translation is painted with over the text it replaces.
 
-use super::{ImageView, Rect};
+use crate::screen::{ImageView, Rect};
 
 /// How far outside a line the background is sampled.
 const RING: i32 = 3;
@@ -151,6 +151,3 @@ mod tests {
         assert_eq!(foreground([10, 10, 10]), [245, 245, 245]);
     }
 }
-pub mod backdrop;
-pub mod color;
-pub mod vote;

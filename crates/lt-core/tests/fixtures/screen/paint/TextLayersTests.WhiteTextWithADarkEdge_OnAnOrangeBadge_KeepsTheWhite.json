@@ -1,0 +1,33 @@
+{
+  "test": "WhiteTextWithADarkEdge_OnAnOrangeBadge_KeepsTheWhite",
+  "calls": [
+    {
+      "op": "sample",
+      "input": {
+        "image": "8f75e5ceb5df690e1f0f42e390a4227896fc5e63fa571ebe34684ffc1fff8d99.png",
+        "bounds": {
+          "empty": false,
+          "x": 18,
+          "y": 22,
+          "width": 222,
+          "height": 42
+        },
+        "backgroundOverride": null,
+        "ringReference": null
+      },
+      "expected": {
+        "surface": [
+          240,
+          140,
+          30
+        ],
+        "body": [
+          254,
+          254,
+          254
+        ],
+        "outline": null
+      }
+    }
+  ]
+}

@@ -55,7 +55,7 @@
       onselect={(rect) => screen.select(rect)}
       onclose={() => screen.close()}
     />
-    <ResultLayer frame={$view.frame} blocks={$view.blocks} outcomes={$view.outcomes} hidden={$view.original} onhint={(message) => (hint = message)} />
+    <ResultLayer frame={$view.frame} job={$view.job} blocks={$view.blocks} outcomes={$view.outcomes} hidden={$view.original} onhint={(message) => (hint = message)} />
     {#if $view.selection}
       <Toolbar
         view={$view}

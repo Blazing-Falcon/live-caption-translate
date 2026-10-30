@@ -1,0 +1,14 @@
+{
+  "test": "Create_IsNullWithNoBlocksToRepair",
+  "calls": [
+    {
+      "op": "create",
+      "input": {
+        "image": "a1ef66ac179a6c51b3782191e44fa1c843f85c62e7a4427260c07365c4aef9bb.png",
+        "id": 0,
+        "blocks": []
+      },
+      "expected": false
+    }
+  ]
+}

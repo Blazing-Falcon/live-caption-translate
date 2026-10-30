@@ -1,0 +1,33 @@
+{
+  "test": "Sample_ReadsTheRingAroundTheBoxAsBackgroundAndTheMajorityGlyphColourInside",
+  "calls": [
+    {
+      "op": "sample",
+      "input": {
+        "image": "b5c27656a077e1bffbeb89b822caa8ad21255eac7dee7426ef726dabdfd0d85e.png",
+        "bounds": {
+          "empty": false,
+          "x": 20,
+          "y": 12,
+          "width": 40,
+          "height": 12
+        },
+        "backgroundOverride": null,
+        "ringReference": null
+      },
+      "expected": {
+        "surface": [
+          24,
+          28,
+          34
+        ],
+        "body": [
+          255,
+          255,
+          255
+        ],
+        "outline": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "test": "Card_AnswersATextColourThatCanBeReadOnIt",
+  "calls": [
+    {
+      "op": "create",
+      "input": {
+        "image": "0cc910cdda789614e26769474158e23295ce235261962bce322253698597fd8b.png",
+        "id": 0,
+        "blocks": [
+          {
+            "translatedText": "譯文",
+            "bounds": {
+              "empty": false,
+              "x": 40,
+              "y": 40,
+              "width": 200,
+              "height": 24
+            },
+            "sourceLineBounds": [
+              {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 200,
+                "height": 24
+              }
+            ],
+            "glyphHeight": null,
+            "within": null
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "op": "card",
+      "input": {
+        "id": 0,
+        "bubble": {
+          "empty": false,
+          "x": 40,
+          "y": 40,
+          "width": 200,
+          "height": 24
+        },
+        "text": [
+          228,
+          228,
+          228
+        ]
+      },
+      "expected": {
+        "background": [
+          232,
+          232,
+          232
+        ],
+        "text": [
+          133,
+          133,
+          133
+        ]
+      }
+    }
+  ]
+}

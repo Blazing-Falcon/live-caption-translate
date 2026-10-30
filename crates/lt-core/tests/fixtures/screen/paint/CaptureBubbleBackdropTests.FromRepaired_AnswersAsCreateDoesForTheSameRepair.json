@@ -1,0 +1,134 @@
+{
+  "test": "FromRepaired_AnswersAsCreateDoesForTheSameRepair",
+  "calls": [
+    {
+      "op": "create",
+      "input": {
+        "image": "8ed1cc000e3c386e0b298c946a9121ce3d240808ab39dbd8a9194ee0f7d653f0.png",
+        "id": 0,
+        "blocks": [
+          {
+            "translatedText": "譯文",
+            "bounds": {
+              "empty": false,
+              "x": 40,
+              "y": 40,
+              "width": 200,
+              "height": 24
+            },
+            "sourceLineBounds": [
+              {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 200,
+                "height": 24
+              }
+            ],
+            "glyphHeight": null,
+            "within": null
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "op": "from_repaired",
+      "input": {
+        "image": "7f2ab5b2a101b39f1d59cbaf021f4c3d6c51df51f3d0e47abbf5697fd10e9e02.png",
+        "id": 1
+      },
+      "expected": true
+    },
+    {
+      "op": "card",
+      "input": {
+        "id": 0,
+        "bubble": {
+          "empty": false,
+          "x": 30,
+          "y": 30,
+          "width": 220,
+          "height": 44
+        },
+        "text": [
+          0,
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "background": [
+          200,
+          120,
+          40
+        ],
+        "text": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "op": "card",
+      "input": {
+        "id": 1,
+        "bubble": {
+          "empty": false,
+          "x": 30,
+          "y": 30,
+          "width": 220,
+          "height": 44
+        },
+        "text": [
+          0,
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "background": [
+          200,
+          120,
+          40
+        ],
+        "text": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "op": "uniformity",
+      "input": {
+        "id": 0,
+        "area": {
+          "empty": false,
+          "x": 30,
+          "y": 30,
+          "width": 220,
+          "height": 44
+        },
+        "glyphHeight": 24
+      },
+      "expected": 1
+    },
+    {
+      "op": "uniformity",
+      "input": {
+        "id": 1,
+        "area": {
+          "empty": false,
+          "x": 30,
+          "y": 30,
+          "width": 220,
+          "height": 44
+        },
+        "glyphHeight": 24
+      },
+      "expected": 1
+    }
+  ]
+}

@@ -187,6 +187,27 @@ export interface Rect {
 
 export type Rgb = [number, number, number];
 
+export interface RectF {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface ScreenPlateRequest {
+  frame: number;
+  job: number;
+  block: number;
+  rect: RectF;
+  written_height: number;
+}
+
+export interface ScreenPlate {
+  rect: RectF;
+  foreground: Rgb;
+  url: string;
+}
+
 /** Payload of `screen://frame`. `width` and `height` are frame pixels; `scale` is the monitor's DPI / 96. */
 export interface ScreenFrame {
   id: number;
@@ -206,6 +227,12 @@ export interface ScreenBlock {
   background: Rgb;
   foreground: Rgb;
   translate: boolean;
+  paint?: {
+    bounds: RectF;
+    source_lines: RectF[];
+    render_glyph_height: number | null;
+    font_glyph_height: number | null;
+  };
 }
 
 export type ScreenEvent =

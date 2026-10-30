@@ -1,0 +1,12 @@
+{
+  "test": "Dominant_IsNullWhenNothingWasAdded",
+  "calls": [
+    {
+      "op": "vote",
+      "input": {
+        "pixels": []
+      },
+      "expected": null
+    }
+  ]
+}

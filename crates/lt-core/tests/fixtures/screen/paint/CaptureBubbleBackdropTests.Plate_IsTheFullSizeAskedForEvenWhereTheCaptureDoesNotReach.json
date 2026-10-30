@@ -1,0 +1,71 @@
+{
+  "test": "Plate_IsTheFullSizeAskedForEvenWhereTheCaptureDoesNotReach",
+  "calls": [
+    {
+      "op": "create",
+      "input": {
+        "image": "6c91b07c541b058c8d7245c6f18e3dcc13e703b86144911058c8538999bf7ce2.png",
+        "id": 0,
+        "blocks": [
+          {
+            "translatedText": "譯文",
+            "bounds": {
+              "empty": false,
+              "x": 40,
+              "y": 40,
+              "width": 200,
+              "height": 24
+            },
+            "sourceLineBounds": [
+              {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 200,
+                "height": 24
+              }
+            ],
+            "glyphHeight": null,
+            "within": null
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "op": "plate",
+      "input": {
+        "id": 0,
+        "area": {
+          "empty": false,
+          "x": -12,
+          "y": -9,
+          "width": 120,
+          "height": 40
+        },
+        "wash": [
+          128,
+          144,
+          112
+        ],
+        "text": [
+          0,
+          0,
+          0
+        ],
+        "glyphHeight": 20,
+        "writtenHeight": 20
+      },
+      "expected": {
+        "width": 120,
+        "height": 40,
+        "text": [
+          255,
+          255,
+          255
+        ],
+        "sha256": "18aa6fdf4b2a2819801c91ecefaa43fcbb7b78e4e2765024329187bb6e7cc5a6"
+      }
+    }
+  ]
+}

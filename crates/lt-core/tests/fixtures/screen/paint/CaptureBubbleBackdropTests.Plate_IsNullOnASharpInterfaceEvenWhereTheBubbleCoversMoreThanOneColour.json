@@ -1,0 +1,69 @@
+{
+  "test": "Plate_IsNullOnASharpInterfaceEvenWhereTheBubbleCoversMoreThanOneColour",
+  "calls": [
+    {
+      "op": "create",
+      "input": {
+        "image": "74292d4909454b5ef547afbe1b3ae3bbe63f293d414a18043c467b09caf52f7f.png",
+        "id": 0,
+        "blocks": [
+          {
+            "translatedText": "譯文",
+            "bounds": {
+              "empty": false,
+              "x": 40,
+              "y": 40,
+              "width": 200,
+              "height": 24
+            },
+            "sourceLineBounds": [
+              {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 200,
+                "height": 24
+              }
+            ],
+            "glyphHeight": null,
+            "within": null
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "op": "feather",
+      "input": {
+        "height": 24
+      },
+      "expected": 8.399999999999999
+    },
+    {
+      "op": "plate",
+      "input": {
+        "id": 0,
+        "area": {
+          "empty": false,
+          "x": 31.6,
+          "y": 31.6,
+          "width": 216.8,
+          "height": 40.8
+        },
+        "wash": [
+          128,
+          144,
+          112
+        ],
+        "text": [
+          224,
+          224,
+          224
+        ],
+        "glyphHeight": 24,
+        "writtenHeight": 24
+      },
+      "expected": null
+    }
+  ]
+}

@@ -4,7 +4,9 @@ use lt_core::{
     engines::{TextLine, TextRecognizer},
     error::{Error, Result},
     events::FailReason,
-    screen::{run_job, ImageView, Rect, ScreenEvent, TranslationCache},
+    screen::{
+        run_job, run_job_with_output, ImageView, JobOutput, Rect, ScreenEvent, TranslationCache,
+    },
 };
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -136,6 +138,35 @@ fn events_follow_the_order_contract() {
         | ScreenEvent::Done { job, .. }
         | ScreenEvent::Error { job, .. } => *job == 7,
     }));
+}
+
+#[test]
+fn cancelling_during_paint_preparation_emits_no_blocks_or_translation() {
+    let pixels = vec![255; 300 * 400 * 4];
+    let image = ImageView::new(300, 400, 1200, &pixels).unwrap();
+    let cancel = AtomicBool::new(false);
+    let mut events = Vec::new();
+    let mut prepared = false;
+    run_job_with_output(
+        7,
+        &image,
+        &mut FakeReader(Some(vec![line(10, "你好")])),
+        &mut |_| panic!("cancelled paint must not translate"),
+        &cancel,
+        &mut TranslationCache::default(),
+        JobOutput {
+            emit: &mut |event| events.push(event),
+            prepare: Some(&mut |_, groups, blocks| {
+                assert_eq!(groups.len(), 1);
+                assert_eq!(blocks.len(), 1);
+                prepared = true;
+                cancel.store(true, Ordering::Release);
+                Ok(())
+            }),
+        },
+    );
+    assert!(prepared);
+    assert_eq!(described(&events), ["reading"]);
 }
 
 #[test]

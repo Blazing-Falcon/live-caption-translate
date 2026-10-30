@@ -155,6 +155,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
 | `screen_select` | `frame`, `rect` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |
 | `screen_close` | | | Cancel the screen job, hide the `screen` window and drop the frame |
+| `screen_plate` | `request: { frame, job, block, rect, written_height }` | `{ rect, foreground, url }` | Build a background image and choose its text color after English layout; geometry is in frame pixels |
 | `quit` | | | Stop the pipeline and the translation server, then exit |
 
 `AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible` and `logical_cpus` (the most threads a setting can use).
@@ -172,7 +173,7 @@ Each `screen_select` starts a job with a new, larger id. A new job or `screen_cl
 | `type` | Fields | Sent when |
 |---|---|---|
 | `reading` | `job` | The job starts |
-| `blocks` | `job`, `blocks[]`, `ocr_ms` | The text is read and grouped |
+| `blocks` | `job`, `blocks[]`, `ocr_ms` | The text is read and grouped, source colors sampled, and the repaired frame retained |
 | `translated` | `job`, `id`, `text` | One block's English |
 | `failed` | `job`, `id`, `message` | One block could not be translated |
 | `done` | `job`, `total_ms` | Every block is answered |
@@ -199,6 +200,19 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 | `source` | Same-row fragments joined at their text boundary; consecutive lines of a group joined with one space |
 | `background`, `foreground` | `[r, g, b]` of the surface behind the text and of text that reads on it |
 | `translate` | `false` when `source` has no Han character; such a block gets no translation events |
+| `paint` | Source paint facts: `bounds` and `source_lines` use floating `{ x, y, width, height }` frame pixels; `render_glyph_height` and `font_glyph_height` are nullable pixel heights. Older recorded jobs may omit this field. |
+
+After English layout, `screen_plate` accepts `request.rect` as a floating rectangle
+in frame pixels and `written_height` as the actual drawn text height in frame pixels.
+It returns a floating rectangle, RGB `foreground`, and an alpha PNG URL such as
+`http://ltshot.localhost/<frame>/plate/<job>/<block>?v=<revision>`. The returned
+rectangle includes the plate's feathered border when needed; a flat card uses the
+bubble rectangle. The page draws the image below the text and uses its returned
+foreground once the image loads. A failed request retains the source colors.
+Changing layout requests a fresh image; the page discards responses from older
+layouts. Frame/job/block identities and revision must match the current request.
+Replacement or cancellation invalidates requests and URLs; stale URLs return 404.
+The protocol sends `Cache-Control: no-store`. Plate requests emit no screen events.
 
 `app/ui/src/lib/__fixtures__/screen-events.json` has one example of each event. A Rust test and `app/ui/tests/screen.test.ts` read it.
 

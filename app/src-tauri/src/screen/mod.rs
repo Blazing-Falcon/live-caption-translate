@@ -2,7 +2,9 @@
 //! the user drags. Every rect that leaves this module is in frame pixels.
 mod bmp;
 mod capture;
+mod plates;
 mod worker;
+pub use plates::{PlateReply, PlateRequest};
 
 use crate::app::{lock, Shared};
 use capture::Frame;
@@ -46,7 +48,11 @@ impl Screen {
             .filter(|frame| frame.id == id)
             .ok_or("This screenshot is closed.")?;
         let (crop, area) = crop(&frame, rect).ok_or("The selection is outside the screenshot.")?;
-        Ok(self.jobs.start(crop, area.w, area.h, (area.x, area.y)))
+        Ok(self.jobs.start(id, crop, area.w, area.h, (area.x, area.y)))
+    }
+
+    pub fn plate(&self, request: PlateRequest) -> Result<PlateReply, String> {
+        self.jobs.plates.request(request)
     }
 }
 
@@ -146,6 +152,20 @@ pub fn close(shared: &Shared) {
 pub fn frame_response(shared: Option<&Shared>, path: &str) -> tauri::http::Response<Vec<u8>> {
     let frame = shared.and_then(|shared| shared.screen.frame());
     bmp::response(frame.as_deref(), path)
+}
+
+pub fn plate_response(
+    shared: Option<&Shared>,
+    path: &str,
+    query: Option<&str>,
+) -> tauri::http::Response<Vec<u8>> {
+    use tauri::http::{header, Response, StatusCode};
+    let builder = Response::builder().header(header::CACHE_CONTROL, "no-store");
+    match shared.and_then(|s| s.screen.jobs.plates.image(path, query)) {
+        Some(png) => builder.header(header::CONTENT_TYPE, "image/png").body(png),
+        None => builder.status(StatusCode::NOT_FOUND).body(Vec::new()),
+    }
+    .expect("static headers are valid")
 }
 
 #[cfg(test)]

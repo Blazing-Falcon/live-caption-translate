@@ -2,7 +2,7 @@ import { get, writable, type Readable } from "svelte/store";
 import * as api from "./api";
 import { EVENTS, subscribe, type Disposer } from "./events";
 import { formatBytes, modelsPercent } from "./format";
-import type { ModelStatus, Rect, Rgb, ScreenBlock, ScreenEvent, ScreenFrame } from "./types";
+import type { ModelStatus, Rect, RectF, Rgb, ScreenBlock, ScreenEvent, ScreenFrame } from "./types";
 
 /** The text recognizer in `models/manifest.json`. */
 export const OCR_MODEL_ID = "pp-ocrv6-det-tiny-rec-small";
@@ -35,6 +35,18 @@ export function toCssRect(rect: Rect, scale: number): Rect {
 
 export function toCssPx(framePx: number, scale: number): number {
   return framePx / scale;
+}
+
+export function toCssFloatRect(rect: RectF, scale: number): Rect {
+  return { x: rect.x / scale, y: rect.y / scale, w: rect.width / scale, h: rect.height / scale };
+}
+
+export function toFrameFloatRect(rect: Rect, scale: number): RectF {
+  return { x: rect.x * scale, y: rect.y * scale, width: rect.w * scale, height: rect.h * scale };
+}
+
+export function toFramePx(cssPx: number, scale: number): number {
+  return cssPx * scale;
 }
 
 /** Frame pixels of a CSS rect, rounded outward so the whole selection is read. */

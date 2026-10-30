@@ -103,9 +103,14 @@ pub fn run() {
                 .try_state::<Arc<Shared>>()
                 .map(|shared| shared.inner().clone());
             let path = request.uri().path().to_owned();
+            let query = request.uri().query().map(str::to_owned);
             // A 4K frame is tens of megabytes; building it stays off the UI thread.
             std::thread::spawn(move || {
-                responder.respond(screen::frame_response(shared.as_deref(), &path));
+                responder.respond(if path.contains("/plate/") {
+                    screen::plate_response(shared.as_deref(), &path, query.as_deref())
+                } else {
+                    screen::frame_response(shared.as_deref(), &path)
+                });
             });
         })
         .setup(|app| {
@@ -229,6 +234,7 @@ pub fn run() {
             commands::set_overlay_visible,
             commands::open_folder,
             commands::screen_select,
+            commands::screen_plate,
             commands::screen_close,
             commands::quit,
         ])

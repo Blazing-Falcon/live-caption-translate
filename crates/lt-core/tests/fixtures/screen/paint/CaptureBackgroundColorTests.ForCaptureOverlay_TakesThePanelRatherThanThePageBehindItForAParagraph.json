@@ -1,0 +1,81 @@
+{
+  "test": "ForCaptureOverlay_TakesThePanelRatherThanThePageBehindItForAParagraph",
+  "calls": [
+    {
+      "op": "capture",
+      "input": {
+        "image": "f42754835fd8588ba3f00383d5ef7af056e210887c46de4c49a4e71c3253ee5b.png",
+        "bounds": {
+          "empty": false,
+          "x": 60,
+          "y": 55,
+          "width": 280,
+          "height": 100
+        },
+        "sourceLines": null,
+        "vertical": false
+      },
+      "expected": {
+        "background": [
+          242,
+          242,
+          242
+        ],
+        "text": [
+          38,
+          62,
+          94
+        ]
+      }
+    },
+    {
+      "op": "capture",
+      "input": {
+        "image": "f42754835fd8588ba3f00383d5ef7af056e210887c46de4c49a4e71c3253ee5b.png",
+        "bounds": {
+          "empty": false,
+          "x": 60,
+          "y": 55,
+          "width": 280,
+          "height": 100
+        },
+        "sourceLines": [
+          {
+            "empty": false,
+            "x": 60,
+            "y": 55,
+            "width": 280,
+            "height": 20
+          },
+          {
+            "empty": false,
+            "x": 60,
+            "y": 95,
+            "width": 280,
+            "height": 20
+          },
+          {
+            "empty": false,
+            "x": 60,
+            "y": 135,
+            "width": 280,
+            "height": 20
+          }
+        ],
+        "vertical": false
+      },
+      "expected": {
+        "background": [
+          42,
+          60,
+          85
+        ],
+        "text": [
+          255,
+          255,
+          255
+        ]
+      }
+    }
+  ]
+}

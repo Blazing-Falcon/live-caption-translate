@@ -1,0 +1,40 @@
+{
+  "test": "BetweenLines_ReadsTheGapsBesideTheColumnsWhenTheTextIsVertical",
+  "calls": [
+    {
+      "op": "between",
+      "input": {
+        "image": "920ed1c0f285e5a35b94f03dad671ca61b65e2be43c95a6fabc4e1bf6ae374b8.png",
+        "lines": [
+          {
+            "empty": false,
+            "x": 55,
+            "y": 60,
+            "width": 20,
+            "height": 280
+          },
+          {
+            "empty": false,
+            "x": 95,
+            "y": 60,
+            "width": 20,
+            "height": 280
+          },
+          {
+            "empty": false,
+            "x": 135,
+            "y": 60,
+            "width": 20,
+            "height": 280
+          }
+        ],
+        "vertical": true
+      },
+      "expected": [
+        42,
+        60,
+        85
+      ]
+    }
+  ]
+}

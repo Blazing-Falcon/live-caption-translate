@@ -1,0 +1,96 @@
+{
+  "test": "Card_FollowsWhatTheBubbleCoversRatherThanWhatTheSourceLineSatOn",
+  "calls": [
+    {
+      "op": "create",
+      "input": {
+        "image": "f289bd15f39e2f4b617d8e5dfaab2c32192ac80aae1653b12d382db26fc29040.png",
+        "id": 0,
+        "blocks": [
+          {
+            "translatedText": "譯文",
+            "bounds": {
+              "empty": false,
+              "x": 40,
+              "y": 40,
+              "width": 200,
+              "height": 24
+            },
+            "sourceLineBounds": [
+              {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 200,
+                "height": 24
+              }
+            ],
+            "glyphHeight": null,
+            "within": null
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "op": "card",
+      "input": {
+        "id": 0,
+        "bubble": {
+          "empty": false,
+          "x": 38,
+          "y": 38,
+          "width": 86,
+          "height": 28
+        },
+        "text": [
+          255,
+          255,
+          255
+        ]
+      },
+      "expected": {
+        "background": [
+          230,
+          22,
+          93
+        ],
+        "text": [
+          255,
+          255,
+          255
+        ]
+      }
+    },
+    {
+      "op": "card",
+      "input": {
+        "id": 0,
+        "bubble": {
+          "empty": false,
+          "x": 38,
+          "y": 38,
+          "width": 250,
+          "height": 28
+        },
+        "text": [
+          255,
+          255,
+          255
+        ]
+      },
+      "expected": {
+        "background": [
+          246,
+          244,
+          247
+        ],
+        "text": [
+          141,
+          141,
+          141
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "test": "PlainWhiteTextOnBlack_HasNoOutline_ItsCountersAreNotABody",
+  "calls": [
+    {
+      "op": "sample",
+      "input": {
+        "image": "e1612d005051ec26a5d06793fb6385b9a336179330485dfcb969fa0fd37de0f2.png",
+        "bounds": {
+          "empty": false,
+          "x": 18,
+          "y": 22,
+          "width": 222,
+          "height": 42
+        },
+        "backgroundOverride": null,
+        "ringReference": null
+      },
+      "expected": {
+        "surface": [
+          0,
+          0,
+          0
+        ],
+        "body": [
+          254,
+          254,
+          254
+        ],
+        "outline": null
+      }
+    }
+  ]
+}

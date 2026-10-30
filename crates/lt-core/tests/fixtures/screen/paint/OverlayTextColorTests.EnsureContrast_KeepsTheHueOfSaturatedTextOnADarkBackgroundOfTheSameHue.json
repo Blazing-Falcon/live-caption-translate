@@ -1,0 +1,46 @@
+{
+  "test": "EnsureContrast_KeepsTheHueOfSaturatedTextOnADarkBackgroundOfTheSameHue",
+  "calls": [
+    {
+      "op": "tune",
+      "input": {
+        "text": [
+          200,
+          30,
+          30
+        ],
+        "background": [
+          90,
+          20,
+          20
+        ]
+      },
+      "expected": [
+        215,
+        20,
+        20
+      ]
+    },
+    {
+      "op": "contrast",
+      "input": {
+        "text": [
+          215,
+          20,
+          20
+        ],
+        "background": [
+          90,
+          20,
+          20
+        ],
+        "minRatio": 3
+      },
+      "expected": [
+        234,
+        24,
+        24
+      ]
+    }
+  ]
+}

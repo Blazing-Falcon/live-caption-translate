@@ -1,0 +1,33 @@
+{
+  "test": "BlackTextInAWhiteBalloon_OverABlackPanel_IsBlackOnWhite",
+  "calls": [
+    {
+      "op": "sample",
+      "input": {
+        "image": "e074fbbac236705c0241ef7afb825d85a9ce90782d2786d469f802a7acc93ce3.png",
+        "bounds": {
+          "empty": false,
+          "x": 12,
+          "y": 16,
+          "width": 236,
+          "height": 56
+        },
+        "backgroundOverride": null,
+        "ringReference": null
+      },
+      "expected": {
+        "surface": [
+          255,
+          255,
+          255
+        ],
+        "body": [
+          0,
+          0,
+          0
+        ],
+        "outline": null
+      }
+    }
+  ]
+}

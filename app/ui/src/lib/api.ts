@@ -9,6 +9,8 @@ import type {
   ModelStatus,
   PipelineStats,
   Rect,
+  ScreenPlate,
+  ScreenPlateRequest,
 } from "./types";
 
 export const COMMANDS = {
@@ -28,6 +30,7 @@ export const COMMANDS = {
   modelsPause: "models_pause",
   modelsUseExisting: "models_use_existing",
   screenSelect: "screen_select",
+  screenPlate: "screen_plate",
   screenClose: "screen_close",
   setOverlayMoving: "set_overlay_moving",
   setOverlayVisible: "set_overlay_visible",
@@ -87,6 +90,8 @@ export const modelsDownloadOptional = (id: string): Promise<void> => call<void>(
 export const screenSelect = (frame: number, rect: Rect): Promise<number> =>
   call<number>(COMMANDS.screenSelect, { frame, rect });
 export const screenClose = (): Promise<void> => call<void>(COMMANDS.screenClose);
+export const screenPlate = (request: ScreenPlateRequest): Promise<ScreenPlate> =>
+  call<ScreenPlate>(COMMANDS.screenPlate, { request });
 export const modelsPause = (): Promise<void> => call<void>(COMMANDS.modelsPause);
 export const modelsUseExisting = (folder: string): Promise<ModelStatus[]> =>
   call<ModelStatus[]>(COMMANDS.modelsUseExisting, { folder });

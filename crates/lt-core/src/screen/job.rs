@@ -1,6 +1,10 @@
 //! One screen job: read the text, group it, translate each block.
 
-use super::{filters, group, ink, line::RawLine, ImageView, ScreenEvent};
+use super::{
+    filters, group, ink,
+    line::{Line, RawLine},
+    ImageView, ScreenEvent,
+};
 use crate::{
     engines::{TextRecognizer, TranslateRequest, TranslationControl, Translator, REQUEST_TIMEOUT},
     error::Result,
@@ -51,6 +55,36 @@ pub fn run_job(
     cache: &mut TranslationCache,
     emit: &mut dyn FnMut(ScreenEvent),
 ) {
+    run_job_with_output(
+        job,
+        image,
+        recognizer,
+        translator,
+        cancel,
+        cache,
+        JobOutput {
+            emit,
+            prepare: None,
+        },
+    );
+}
+
+pub type PreparePaint<'a> = dyn FnMut(&ImageView<'_>, &[Line], &[super::Block]) -> Result<()> + 'a;
+pub struct JobOutput<'a> {
+    pub emit: &'a mut dyn FnMut(ScreenEvent),
+    pub prepare: Option<&'a mut PreparePaint<'a>>,
+}
+
+pub fn run_job_with_output(
+    job: u64,
+    image: &ImageView<'_>,
+    recognizer: &mut dyn TextRecognizer,
+    translator: &mut dyn FnMut(&str) -> Result<String>,
+    cancel: &AtomicBool,
+    cache: &mut TranslationCache,
+    output: JobOutput<'_>,
+) {
+    let JobOutput { emit, prepare } = output;
     let started = Instant::now();
     let cancelled = || cancel.load(Ordering::Acquire);
     emit(ScreenEvent::Reading { job });
@@ -74,6 +108,17 @@ pub fn run_job(
     ink::annotate(image, &mut facts);
     let groups = group::group(&facts);
     let blocks = group::blocks_from_groups(image, &groups);
+    if let Some(prepare) = prepare {
+        if let Err(error) = prepare(image, &groups, &blocks) {
+            if !cancelled() {
+                emit(ScreenEvent::Error {
+                    job,
+                    message: error.to_string(),
+                });
+            }
+            return;
+        }
+    }
     if cancelled() {
         return;
     }

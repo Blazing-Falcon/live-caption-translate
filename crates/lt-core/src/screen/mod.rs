@@ -16,7 +16,10 @@ pub mod raster;
 pub mod repair;
 
 pub use group::blocks;
-pub use job::{piece_translator, pieces, run_job, TranslationCache, PIECE_CHARS};
+pub use job::{
+    piece_translator, pieces, run_job, run_job_with_output, JobOutput, TranslationCache,
+    PIECE_CHARS,
+};
 
 use crate::error::{Error, Result};
 use serde::{Deserialize, Serialize};
@@ -78,7 +81,7 @@ impl<'a> ImageView<'a> {
 }
 
 /// A paragraph or label: the text lines that read as one unit, and how to cover them.
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Block {
     /// Reading order, from 0.
     pub id: u32,
@@ -96,6 +99,16 @@ pub struct Block {
     pub foreground: [u8; 3],
     /// False when `source` has no Han character: there is nothing to translate.
     pub translate: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub paint: Option<PaintFacts>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct PaintFacts {
+    pub bounds: geom::RectF,
+    pub source_lines: Vec<geom::RectF>,
+    pub render_glyph_height: Option<f64>,
+    pub font_glyph_height: Option<f64>,
 }
 
 /// What a screen job reports, in this order: `Reading`, `Blocks`, one `Translated` or `Failed`
@@ -151,6 +164,12 @@ mod tests {
             background: if dark { [32, 34, 40] } else { [250, 248, 243] },
             foreground: if dark { [245, 245, 245] } else { [24, 24, 24] },
             translate,
+            paint: Some(PaintFacts {
+                bounds: rect.into(),
+                source_lines: vec![rect.into()],
+                render_glyph_height: None,
+                font_glyph_height: None,
+            }),
         }
     }
 
@@ -170,6 +189,12 @@ mod tests {
             background: [250, 248, 243],
             foreground: [24, 24, 24],
             translate: true,
+            paint: Some(PaintFacts {
+                bounds: rect(80, 44, 640, 56).into(),
+                source_lines: vec![rect(80, 44, 640, 24).into(), rect(80, 76, 400, 24).into()],
+                render_glyph_height: None,
+                font_glyph_height: None,
+            }),
         };
         let events = vec![
             ScreenEvent::Reading { job: 3 },

@@ -1,6 +1,6 @@
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { applyPatch, type AppliedKind, type Config, type ConfigPatch, type SetConfigResult } from "../src/lib/settings";
-import type { AppState, AudioAppList, AudioDevice, ModelStatus, PipelineStats } from "../src/lib/types";
+import type { AppState, AudioAppList, AudioDevice, ModelStatus, PipelineStats, ScreenPlate, ScreenPlateRequest } from "../src/lib/types";
 import { STATS, testConfig, testState } from "./helpers";
 
 export interface Call {
@@ -44,6 +44,11 @@ export class FakeBackend {
   dialogResult: string | null = "D:\\existing-models";
   /** Id of the last screen job `screen_select` started. */
   screenJob = 0;
+  plateReply: (request: ScreenPlateRequest) => ScreenPlate | Promise<ScreenPlate> = (request) => ({
+    rect: request.rect,
+    foreground: [12, 34, 56],
+    url: `data:image/png;base64,${PNG_PIXEL}`,
+  });
 
   install(): this {
     mockIPC((cmd, args) => this.handle(cmd, (args ?? {}) as Record<string, unknown>), { shouldMockEvents: true });
@@ -86,6 +91,8 @@ export class FakeBackend {
       case "screen_select":
         this.screenJob += 1;
         return this.screenJob;
+      case "screen_plate":
+        return this.plateReply(args.request as ScreenPlateRequest);
       case "plugin:dialog|open":
         return this.dialogResult;
       default:

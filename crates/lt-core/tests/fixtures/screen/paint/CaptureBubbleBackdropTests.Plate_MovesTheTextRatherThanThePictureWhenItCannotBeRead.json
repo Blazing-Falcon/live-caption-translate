@@ -1,0 +1,78 @@
+{
+  "test": "Plate_MovesTheTextRatherThanThePictureWhenItCannotBeRead",
+  "calls": [
+    {
+      "op": "create",
+      "input": {
+        "image": "c7400a19431630a9c72d6190e918d016af4ad66e19a44c0e7f818660afdc4225.png",
+        "id": 0,
+        "blocks": [
+          {
+            "translatedText": "譯文",
+            "bounds": {
+              "empty": false,
+              "x": 40,
+              "y": 40,
+              "width": 200,
+              "height": 24
+            },
+            "sourceLineBounds": [
+              {
+                "empty": false,
+                "x": 40,
+                "y": 40,
+                "width": 200,
+                "height": 24
+              }
+            ],
+            "glyphHeight": null,
+            "within": null
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "op": "feather",
+      "input": {
+        "height": 24
+      },
+      "expected": 8.399999999999999
+    },
+    {
+      "op": "plate",
+      "input": {
+        "id": 0,
+        "area": {
+          "empty": false,
+          "x": 31.6,
+          "y": 31.6,
+          "width": 216.8,
+          "height": 40.8
+        },
+        "wash": [
+          125,
+          137,
+          107
+        ],
+        "text": [
+          122,
+          134,
+          104
+        ],
+        "glyphHeight": 24,
+        "writtenHeight": 24
+      },
+      "expected": {
+        "width": 218,
+        "height": 42,
+        "text": [
+          0,
+          0,
+          0
+        ],
+        "sha256": "702115e549f369738540b209c170ccf1db3dc13a71b1274159e196ce11efd2ad"
+      }
+    }
+  ]
+}
