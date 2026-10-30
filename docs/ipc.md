@@ -146,10 +146,10 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `list_audio_devices` | | `{ id, name, is_default }[]` | Output devices |
 | `list_audio_apps` | | `{ supported, reason, apps[] }` | Apps with audio, and recent selections |
 | `models_status` | | `ModelStatus[]` | State of each model |
-| `models_download` | | | Download every required model that is missing. Optional models are skipped. |
+| `models_download` | | | Download every required model that is missing. Optional models are skipped. Does nothing while this download runs; fails while a `models_download_optional` download runs |
 | `models_pause` | | | Pause downloads. Partial files stay. |
 | `models_use_existing` | `folder` | `ModelStatus[]` | Find, verify and copy model files from a folder |
-| `models_download_optional` | `id` | | Download one model, also an optional one (the screen text recognizer) |
+| `models_download_optional` | `id` | | Download one model, also an optional one (the screen text recognizer). Fails while any download runs |
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
 | `set_overlay_visible` | `visible` | | Show or hide the overlay |
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |

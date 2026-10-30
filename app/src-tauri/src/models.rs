@@ -53,6 +53,8 @@ pub struct Models {
     live: Mutex<Vec<ModelStatus>>,
     cancel: Arc<AtomicBool>,
     busy: AtomicBool,
+    /// The running download is one model, not the required set.
+    busy_one: AtomicBool,
 }
 
 fn merge(disk: Vec<ModelStatus>, live: &[ModelStatus]) -> Vec<ModelStatus> {
@@ -120,13 +122,13 @@ impl Models {
     /// model `only` names.
     pub fn download(&self, shared: &Arc<Shared>, only: Option<String>) -> Result<(), String> {
         if self.busy.swap(true, Ordering::AcqRel) {
-            return match only {
-                None => Ok(()),
-                Some(_) => {
-                    Err("A model download is already running. Try again when it ends.".into())
-                }
+            return if only.is_none() && !self.busy_one.load(Ordering::Acquire) {
+                Ok(())
+            } else {
+                Err("A model download is already running. Try again when it ends.".into())
             };
         }
+        self.busy_one.store(only.is_some(), Ordering::Release);
         self.cancel.store(false, Ordering::Release);
         let shared = shared.clone();
         let spawned = thread::Builder::new()
