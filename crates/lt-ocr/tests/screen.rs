@@ -9,8 +9,8 @@ use lt_ocr::{OcrEngine, OCR_MODEL};
 use serde::Deserialize;
 use std::{path::PathBuf, time::Instant};
 
-/// The reference pipeline reads the fixtures with 0.40% character errors; the margin allows
-/// for small differences in boxes and resampling.
+/// The reference pipeline's error rate on these fixtures, plus a margin for small differences in
+/// boxes and resampling.
 const MAX_CER: f64 = 0.0040 + 0.02;
 
 #[derive(Deserialize)]
