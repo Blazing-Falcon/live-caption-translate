@@ -79,6 +79,9 @@ pub enum ModelCommands {
     Fetch {
         #[arg(long, env = "LT_MODELS_DIR")]
         dir: Option<PathBuf>,
+        /// Also download the optional models (the screen text recognition model).
+        #[arg(long)]
+        optional: bool,
     },
 }
 

@@ -77,6 +77,16 @@ impl ModelManager {
         self.fetch_where(dir, |model| !model.optional, cancelled, on_progress)
     }
 
+    /// Download every model, optional ones included.
+    pub fn fetch_all(
+        &self,
+        dir: impl AsRef<Path>,
+        cancelled: &AtomicBool,
+        on_progress: &mut dyn FnMut(ModelStatus),
+    ) -> Result<Vec<ModelStatus>> {
+        self.fetch_where(dir, |_| true, cancelled, on_progress)
+    }
+
     /// Download one model, required or optional.
     pub fn fetch_id(
         &self,
@@ -454,10 +464,16 @@ pub fn status(dir: impl AsRef<Path>) -> Result<Vec<ModelStatus>> {
 
 pub fn fetch(
     dir: impl AsRef<Path>,
+    optional: bool,
     cancelled: &AtomicBool,
     on_progress: &mut dyn FnMut(ModelStatus),
 ) -> Result<Vec<ModelStatus>> {
-    ModelManager::new()?.fetch(dir, cancelled, on_progress)
+    let manager = ModelManager::new()?;
+    if optional {
+        manager.fetch_all(dir, cancelled, on_progress)
+    } else {
+        manager.fetch(dir, cancelled, on_progress)
+    }
 }
 
 pub fn use_existing(

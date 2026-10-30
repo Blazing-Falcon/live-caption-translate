@@ -86,7 +86,7 @@ These tests skip if their variables are not set. `check.ps1` shows the skipped t
 
 Cargo runs each test in its crate's folder, so `LT_MODELS_DIR` must be an absolute path. A relative `models` finds nothing from `crates/lt-ocr`.
 
-The text recognition model is optional, so `setup.ps1 -Models` and `lt-cli models fetch` do not download it. Download it with the app (Performance page, Screen translation, **Download**) and set `LT_MODELS_DIR` to the models folder the app uses, or copy its `pp-ocrv6-det-tiny-rec-small` folder into `models/`.
+The text recognition model is optional. `setup.ps1 -Models` downloads it with the required models (`lt-cli models fetch --optional`); `lt-cli models fetch` without `--optional` skips it.
 
 ```powershell
 . ./scripts/env.ps1

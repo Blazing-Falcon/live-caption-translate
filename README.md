@@ -32,7 +32,7 @@ cargo run -p live-translation    # the app
 
 ## Models
 
-The repository does not contain models. The app downloads the speech and translation models at first run, and the 23 MB screen text model when you first use screenshot translation. Developers use `scripts/setup.ps1 -Models` for the first group. See [docs/models.md](docs/models.md).
+The repository does not contain models. The app downloads the speech and translation models at first run, and the 23 MB screen text model when you first use screenshot translation. Developers use `scripts/setup.ps1 -Models`, which downloads all of them. See [docs/models.md](docs/models.md).
 
 ## Documents
 

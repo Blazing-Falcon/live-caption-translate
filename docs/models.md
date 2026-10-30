@@ -3,7 +3,8 @@
 `models/manifest.json` is the source of truth. The app embeds it at build time. The repository and
 the package do not contain models. The app downloads the three required models at first run and the
 optional one when the user first asks for screenshot translation. Developers use
-`scripts/setup.ps1 -Models` or `lt-cli models fetch` for the required models.
+`scripts/setup.ps1 -Models` (every model) or `lt-cli models fetch` (the required models; add
+`--optional` for the text recognition model).
 
 ## Models
 
@@ -32,7 +33,8 @@ Sizes and SHA-256 hashes are in the manifest. The text recognition model is 23 M
 - The first-run download takes the three required models. Listening does not start while one is
   missing.
 - The text recognition model is optional (`"optional": true` in the manifest). The first-run
-  download, `models_download` and `lt-cli models fetch` skip it. The app downloads it when the user
+  download, `models_download` and `lt-cli models fetch` skip it; `lt-cli models fetch --optional` and
+  `scripts/setup.ps1 -Models` include it. The app downloads it when the user
   chooses **Download**: on the Performance page of the control window, or in the screenshot window,
   which offers it when a screenshot finds the model missing and then reads the same box again. Listening
   never needs it.

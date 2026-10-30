@@ -1,6 +1,6 @@
 # One-time setup for a fresh clone: checks prerequisites, then downloads and verifies the pinned
 # native libraries, llama-server, npm packages and Playwright's browser into .deps/ (or LT_DEPS_DIR).
-#   -Models     also download the models into models/ (lt-cli models fetch)
+#   -Models     also download the models into models/ (lt-cli models fetch --optional)
 #   -TestAudio  also fetch the public test clips into testdata/fetched/ (needs an ~850 MB archive)
 [CmdletBinding()]
 param([switch]$Models, [switch]$TestAudio)
@@ -75,7 +75,7 @@ try {
     if ($Models) {
         Write-Host '== Models' -ForegroundColor Cyan
         . "$PSScriptRoot/env.ps1"
-        cargo run -p lt-cli --features llm -- models fetch --dir models
+        cargo run -p lt-cli --features llm -- models fetch --dir models --optional
         if ($LASTEXITCODE -ne 0) { throw 'Model download failed' }
     }
     if ($TestAudio) {
