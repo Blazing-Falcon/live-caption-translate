@@ -153,6 +153,27 @@ The real-model horizontal OCR baseline covers `article`, `chat`, `dense`, `mixed
 
 The screenshot toolbar remembers Horizontal/Vertical in `screen.direction` and reads the same area again when it changes. English is fitted across a column group. Tilted blocks retain their level layout and use rotation or shear for drawing. Direction layout fixtures in `app/ui/e2e/fixtures/directions` record native geometry and English; `recorded-vertical.screen.json` is a real `lt-cli screen --direction vertical` job checked at 150% display scale.
 
+### Validate Direction And Drawing
+
+Run `npm --prefix app/ui run e2e -- screen-directions` for column fitting, rotation,
+shear, plate alignment and the recorded vertical job at 150% display scale. The
+real-model OCR test runs through `scripts/check.ps1`; set absolute
+`LT_MODELS_DIR` and `LT_LLAMA_SERVER` paths so model tests run from crate folders.
+
+For a native comparison, display the same PNG at the same size in both builds,
+capture it with the screenshot shortcut and drag the same area. Use Vertical for
+vertical pages and Horizontal for tilted cards and ordinary screenshots. Change
+the picker with a result visible to check that it reads the same area again, then
+close and reopen the screenshot window to check the saved direction. Wait for
+English and all background images before saving a comparison image.
+
+Record pointer-up to blocks, first English and done separately. Keep raw events,
+display dimensions and the chosen direction with each result. State whether the
+process and translation cache are fresh; changing direction invalidates OCR reuse
+but can reuse translations. Sample main-process private memory while OCR remains
+loaded and identify excluded child processes. A native capture can contain cursor
+effects and display resampling, so use the canonical PNG tests for numeric parity.
+
 ## Package
 
 ```powershell
