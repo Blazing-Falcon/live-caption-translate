@@ -4,6 +4,3 @@ pub mod layers;
 pub mod sampling;
 pub mod vote;
 pub mod window;
-
-#[cfg(test)]
-mod legacy;
