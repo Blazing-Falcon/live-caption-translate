@@ -92,9 +92,30 @@ for (const fixture of fixtures) {
       await testInfo.attach("clipped", { body: clipped, contentType: "image/png" });
       await testInfo.attach("whole", { body: whole, contentType: "image/png" });
     }
-    expect(clipped.equals(whole), "all glyph pixels remain visible with clipping enabled").toBe(true);
+    expect(clipped.equals(whole), "rendered English preserves every glyph pixel").toBe(true);
   });
 }
+
+test("keeps large descenders whole without changing the bubble or font", async ({ page }) => {
+  const source = fixtures.find(f => f.name === "article@1")!;
+  const bounds = { x: 368, y: 39.97, width: 50, height: 27.06 };
+  const block: ScreenBlock = { ...source.blocks[0]!, id: 0, source: "规格", intent: "single",
+    rect: { x: 368, y: 39, w: 50, h: 29 }, lines: [{ x: 368, y: 39, w: 50, h: 29 }], line_height: 29,
+    paint: { bounds, source_lines: [bounds], render_glyph_height: null, font_glyph_height: null } };
+  await render(page, { ...source, name: "descender", frame: { id: 99, width: 1020, height: 480, scale: 1 },
+    selection: { x: 0, y: 0, w: 1020, h: 480 }, blocks: [block], translations: ["Specifications"], expected: [] });
+  const node = page.locator("[data-block]");
+  expect(await node.evaluate(n => parseFloat(getComputedStyle(n).fontSize))).toBeCloseTo(28.6836, 3);
+  const request = (await calls(page, "screen_plate"))[0]!.args.request as { rect: RectF };
+  expect(request.rect.height).toBeCloseTo(34.6836, 8);
+  expect(Math.abs(request.rect.width - 185.04666666666668)).toBeLessThanOrEqual(1);
+  await page.locator(".bar").evaluate(n => { (n as HTMLElement).style.visibility = "hidden"; });
+  const drawn = await page.screenshot();
+  await node.evaluate(n => { (n as HTMLElement).style.overflow = "visible"; });
+  expect(drawn.equals(await page.screenshot()), "all descender pixels are drawn").toBe(true);
+  await node.evaluate(n => { (n as HTMLElement).style.overflow = "hidden"; });
+  expect(drawn.equals(await page.screenshot()), "the scene exposes clipped descender pixels").toBe(false);
+});
 
 test("measures unbreakable English and explicit newlines as actually drawn", async ({ page }) => {
   const source = fixtures.find(f => f.name === "article@1")!;

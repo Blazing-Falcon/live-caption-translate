@@ -20,7 +20,7 @@
 </div>
 
 <style>
-  .debug { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
+  .debug { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
   .line, .group { position: absolute; border: 1px solid; }
   .line { border-color: var(--screen-line-box); }
   .group { border-color: var(--screen-group-box); }

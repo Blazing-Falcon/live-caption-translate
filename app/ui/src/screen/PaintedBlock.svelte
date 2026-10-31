@@ -92,13 +92,14 @@
     overflow: hidden;
     padding: 1px;
     line-height: 1.15;
-    z-index: 1;
+    z-index: 2;
   }
 
   .modern {
     display: flex;
     align-items: center;
     padding: 2px 3px;
+    overflow: visible;
   }
 
   .written {

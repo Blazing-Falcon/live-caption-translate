@@ -63,7 +63,7 @@
   }
 
   .mark {
-    z-index: 2;
+    z-index: 3;
     position: absolute;
     display: grid;
     place-items: center;
