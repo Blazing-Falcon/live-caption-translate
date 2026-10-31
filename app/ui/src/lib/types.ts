@@ -239,7 +239,7 @@ export interface ScreenBlock {
   translate: boolean;
   tilt?: ScreenTilt;
   runs_across?: boolean;
-  paint?: {
+  paint: {
     bounds: RectF;
     source_lines: RectF[];
     render_glyph_height: number | null;

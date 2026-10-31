@@ -210,7 +210,7 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 | `background`, `foreground` | `[r, g, b]` of the surface behind the text and of text that reads on it |
 | `translate` | `false` when `source` has no Han character; such a block gets no translation events |
 | `tilt` | Optional card geometry: `degrees`, `sheared`, `centre: { x, y }`, level `box: { x, y, width, height }`, `line_quads` (point arrays) and `column`. All positions are frame pixels; omitted for level groups. |
-| `paint` | Source paint facts: `bounds` and `source_lines` use floating `{ x, y, width, height }` frame pixels; `render_glyph_height` and `font_glyph_height` are nullable pixel heights. Older recorded jobs may omit this field. |
+| `paint` | Source paint facts: `bounds` and `source_lines` use floating `{ x, y, width, height }` frame pixels; `render_glyph_height` and `font_glyph_height` are nullable pixel heights. |
 
 After English layout, `screen_plate` accepts `request.rect` as a floating rectangle
 in frame pixels and `written_height` as the layout's written-height budget in frame

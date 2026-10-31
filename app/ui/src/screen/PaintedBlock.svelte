@@ -1,7 +1,7 @@
 <script lang="ts">
   import { tick, untrack } from "svelte";
   import { screenPlate } from "../lib/api";
-  import { cssColor, fitText, startFontPx, toCssFloatRect, toCssRect, toCssPx } from "../lib/screen";
+  import { cssColor, toCssFloatRect, toCssRect, toCssPx } from "../lib/screen";
   import { ENGLISH_FONT, ENGLISH_FONT_WEIGHT, ENGLISH_LINE_SPACING, blockLayout, tiltTransform, type LayoutContext, type TextLayout } from "../lib/screen-layout";
   import { DomMeasurer } from "../lib/screen-measure";
   import type { ScreenBlock, ScreenFrame, ScreenPlate } from "../lib/types";
@@ -13,8 +13,8 @@
   let result = $state<TextLayout | null>(null);
   const css = $derived(result ? toCssFloatRect(result.bubble, frame.scale) : toCssRect(block.rect, frame.scale));
   const plateCss = $derived(plate ? toCssFloatRect(plate.rect, frame.scale) : null);
-  const layoutKey = $derived(JSON.stringify([frame.id, frame.scale, job, block, blocks.map(b => b.paint?.bounds ?? b.rect), context, text,
-    block.intent === "across_in_columns" ? neighbours.map(b => b.paint?.bounds ?? b.rect) : null]));
+  const layoutKey = $derived(JSON.stringify([frame.id, frame.scale, job, block, blocks.map(b => b.paint.bounds), context, text,
+    block.intent === "across_in_columns" ? neighbours.map(b => b.paint.bounds) : null]));
   const textCss = $derived(result ? toCssFloatRect(result.text, frame.scale) : null);
   const turn = $derived(result?.tilt ? tiltTransform(result.tilt) : undefined);
   const origin = (x: number, y: number): string | undefined => result?.tilt ?
@@ -32,11 +32,6 @@
     const layout = async (): Promise<void> => {
       await document.fonts.ready;
       if (!active) return;
-      if (!current.block.paint) {
-        const old = toCssRect(current.block.rect, current.frame.scale);
-        fitText(element, old.w, old.h, startFontPx(current.block, current.frame.scale));
-        return;
-      }
       const measurer = new DomMeasurer(current.frame.scale);
       let final: TextLayout;
       try { final = blockLayout(current.block, current.text, current.blocks, current.context, measurer, current.neighbours); }
@@ -87,7 +82,7 @@
   style:height={result ? `${css.h}px` : undefined}
   style:font-size={result ? `${toCssPx(result.fontSize, frame.scale)}px` : undefined}
   style:line-height={result ? String(ENGLISH_LINE_SPACING) : undefined}
-  style:visibility={block.paint && !result ? "hidden" : "visible"}
+  style:visibility={!result ? "hidden" : "visible"}
   style:background={loaded ? "transparent" : cssColor(block.background)}
   style:color={cssColor(loaded && plate ? plate.foreground : block.foreground)}
   style:font-family={ENGLISH_FONT}

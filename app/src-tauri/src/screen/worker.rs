@@ -291,11 +291,9 @@ fn to_frame(event: &mut ScreenEvent, (x, y): (i32, i32)) {
             if let Some(tilt) = &block.tilt {
                 block.tilt = Some(tilt.offset(f64::from(x), f64::from(y)));
             }
-            if let Some(paint) = &mut block.paint {
-                paint.bounds = paint.bounds.offset(f64::from(x), f64::from(y));
-                for line in &mut paint.source_lines {
-                    *line = line.offset(f64::from(x), f64::from(y));
-                }
+            block.paint.bounds = block.paint.bounds.offset(f64::from(x), f64::from(y));
+            for line in &mut block.paint.source_lines {
+                *line = line.offset(f64::from(x), f64::from(y));
             }
             for rect in std::iter::once(&mut block.rect).chain(&mut block.lines) {
                 rect.x += x;

@@ -109,12 +109,12 @@ pub fn blocks_from_groups_direction(
                 source: group.text.clone(),
                 tilt: group.tilt.clone(),
                 runs_across: group.runs_across,
-                paint: Some(PaintFacts {
+                paint: PaintFacts {
                     bounds: group.bounds,
                     source_lines: group.lines().to_vec(),
                     render_glyph_height: group.render_glyph_height,
                     font_glyph_height: group.font_glyph_height,
-                }),
+                },
             }
         })
         .collect()

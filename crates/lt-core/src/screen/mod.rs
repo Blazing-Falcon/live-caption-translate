@@ -113,8 +113,7 @@ pub struct Block {
     pub foreground: [u8; 3],
     /// False when `source` has no Han character: there is nothing to translate.
     pub translate: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub paint: Option<PaintFacts>,
+    pub paint: PaintFacts,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tilt: Option<tilt::TiltedText>,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
@@ -198,12 +197,12 @@ mod tests {
                 ]],
                 column: false,
             }),
-            paint: Some(PaintFacts {
+            paint: PaintFacts {
                 bounds: rect.into(),
                 source_lines: vec![rect.into()],
                 render_glyph_height: None,
                 font_glyph_height: None,
-            }),
+            },
         }
     }
 
@@ -225,12 +224,12 @@ mod tests {
             translate: true,
             runs_across: false,
             tilt: None,
-            paint: Some(PaintFacts {
+            paint: PaintFacts {
                 bounds: rect(80, 44, 640, 56).into(),
                 source_lines: vec![rect(80, 44, 640, 24).into(), rect(80, 76, 400, 24).into()],
                 render_glyph_height: None,
                 font_glyph_height: None,
-            }),
+            },
         };
         let events = vec![
             ScreenEvent::Reading { job: 3 },
@@ -246,11 +245,11 @@ mod tests {
                         intent: placement::LayoutIntent::AcrossInColumns,
                         line_height: 30,
                         lines: (0..4).map(|i|rect(740,44+i*30,20,30)).collect(),
-                        paint: Some(PaintFacts {
+                        paint: PaintFacts {
                             bounds: rect(740,44,20,120).into(),
                             source_lines: (0..4).map(|i|rect(740,44+i*30,20,30).into()).collect(),
                             render_glyph_height: Some(20.0),font_glyph_height: None,
-                        }),
+                        },
                         ..single_line(3,rect(740,44,20,120),"BOOK",false,false)
                     },
                 ],

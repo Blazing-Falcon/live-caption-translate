@@ -3,7 +3,9 @@ import { GROUP_OUTSET, groupBoxes, lineBoxes } from "../src/lib/screen-debug";
 import type { Rect, ScreenBlock } from "../src/lib/types";
 
 function block(source: string, rect: Rect, lines = [rect]): ScreenBlock {
-  return { id: 0, source, rect, lines, line_height: rect.h, intent: "single", background: [255, 255, 255], foreground: [0, 0, 0], translate: false };
+  const float = (r: Rect) => ({ x: r.x, y: r.y, width: r.w, height: r.h });
+  return { id: 0, source, rect, lines, line_height: rect.h, intent: "single", background: [255, 255, 255], foreground: [0, 0, 0], translate: false,
+    paint: { bounds: float(rect), source_lines: lines.map(float), render_glyph_height: null, font_glyph_height: null } };
 }
 
 it("draws a box for every recognized line", () => {

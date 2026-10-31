@@ -9,9 +9,6 @@ import type { ModelStatus, Rect, RectF, Rgb, ScreenBlock, ScreenEvent, ScreenFra
 export const OCR_MODEL_ID = "pp-ocrv6-det-tiny-rec-small";
 /** A drag smaller than this, in CSS px and in either direction, is a click and not a selection. */
 export const MIN_SELECTION = 8;
-export const MIN_FONT = 10;
-/** Share of the Chinese line height that a translated box starts with as its font size. */
-const FONT_SHARE = 0.8;
 const BAR_GAP = 8;
 
 export const frameUrl = (id: number): string => `http://ltshot.localhost/${id}`;
@@ -83,30 +80,6 @@ export function placeBar(selection: Rect, bar: Size, viewport: Size): { left: nu
 }
 
 export const cssColor = (color: Rgb): string => `rgb(${color[0]} ${color[1]} ${color[2]})`;
-
-export const startFontPx = (block: ScreenBlock, scale: number): number => toCssPx(block.line_height, scale) * FONT_SHARE;
-
-/**
- * Sets the largest font size from `start` down to `MIN_FONT` at which the text fits the box. A word that
- * is still wider than the box at `MIN_FONT` widens it, and a box that is still too tall grows downward.
- */
-export function fitText(node: HTMLElement, width: number, height: number, start: number): void {
-  const overflows = (): boolean => node.scrollHeight > node.clientHeight || node.scrollWidth > node.clientWidth;
-  node.style.width = `${width}px`;
-  node.style.height = `${height}px`;
-  node.style.minHeight = "";
-  let size = start;
-  node.style.fontSize = `${size}px`;
-  while (overflows() && size > MIN_FONT) {
-    size = Math.max(MIN_FONT, size - 1);
-    node.style.fontSize = `${size}px`;
-  }
-  if (node.scrollWidth > node.clientWidth) node.style.width = `${node.scrollWidth}px`;
-  if (node.scrollHeight > node.clientHeight) {
-    node.style.height = "auto";
-    node.style.minHeight = `${height}px`;
-  }
-}
 
 // Job state.
 

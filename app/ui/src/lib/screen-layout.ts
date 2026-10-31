@@ -202,18 +202,18 @@ export function acrossInColumnsFit(text: string, sourceWidth: number, sourceHeig
   return { fontSize: fit.size, left, top: fit.height <= sourceHeight ? (sourceHeight - fit.height) / 2 : 0, width: fit.width, height: fit.height };
 }
 
-const bounds = (block: ScreenBlock): RectF => block.paint?.bounds ?? { x: block.rect.x, y: block.rect.y, width: block.rect.w, height: block.rect.h };
-const sourceLines = (block: ScreenBlock): RectF[] => block.paint?.source_lines ?? block.lines.map(r => ({ x: r.x, y: r.y, width: r.w, height: r.h }));
+const bounds = (block: ScreenBlock): RectF => block.paint.bounds;
+const sourceLines = (block: ScreenBlock): RectF[] => block.paint.source_lines;
 
 export function sourceFontReferenceHeight(block: ScreenBlock, fallbackHeight: number): number {
-  const glyph = block.paint?.render_glyph_height;
+  const glyph = block.paint.render_glyph_height;
   if (glyph !== null && glyph !== undefined && glyph > 0) return glyph;
   const heights = sourceLines(block).map(r => r.height).sort((a, b) => a - b);
   return heights.length ? heights[Math.floor(heights.length / 2)]! : fallbackHeight;
 }
 
 export function sourceFontSizingHeight(block: ScreenBlock, fallbackHeight: number): number {
-  const glyph = block.paint?.font_glyph_height;
+  const glyph = block.paint.font_glyph_height;
   return glyph !== null && glyph !== undefined && glyph > 0 ? glyph : sourceFontReferenceHeight(block, fallbackHeight);
 }
 
