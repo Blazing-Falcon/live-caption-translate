@@ -1,3 +1,5 @@
+//! Pixel type conversion with scaling and saturation.
+
 use super::parallel_rows;
 use super::{saturate, ImageBuffer, PixelType};
 pub fn convert(source: &ImageBuffer, pixel_type: PixelType, scale: f64) -> ImageBuffer {

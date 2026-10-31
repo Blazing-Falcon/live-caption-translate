@@ -1,4 +1,8 @@
+//! Splits independent row work across scoped threads.
+
 use std::{cell::Cell, thread};
+/// Work (rows times work per row) below this runs on the calling thread, where spawning costs more
+/// than it saves.
 const THRESHOLD: usize = 1 << 17;
 thread_local! {static THREADS:Cell<Option<usize>>=const{Cell::new(None)};}
 pub fn with_threads<T>(threads: usize, body: impl FnOnce() -> T) -> T {

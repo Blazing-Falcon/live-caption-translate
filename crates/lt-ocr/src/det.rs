@@ -8,9 +8,11 @@ use lt_core::screen::{
 };
 use lt_core::screen::{ImageView, Rect};
 
+/// Longest side the detector sees; larger frames are scaled down to this.
 const MAX_SIDE: u32 = 2048;
 /// White outer padding keeps edge text inside the detector frame.
 const BORDER: u32 = 8;
+/// The detector input sides are rounded up to a multiple of this, the stride of its network.
 const ALIGN: u32 = 32;
 
 /// How the source image maps onto the detector input.
@@ -121,6 +123,7 @@ pub(crate) fn input(frame: &Raster) -> Vec<f32> {
     let resized = Raster::resize(&frame.view(), frame.width, frame.height);
     let plane = frame.width as usize * frame.height as usize;
     let mut tensor = vec![0.0; 3 * plane];
+    /// Maps bytes to the range the detector was trained on, centred on zero.
     const NORM: f32 = 1.0 / 127.5;
     for (i, pixel) in resized.bgra.as_chunks::<4>().0.iter().enumerate() {
         for channel in 0..3 {

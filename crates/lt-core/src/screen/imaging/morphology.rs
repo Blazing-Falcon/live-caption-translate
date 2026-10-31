@@ -1,3 +1,5 @@
+//! Dilation, erosion, top-hat and black-hat with rectangle and ellipse elements.
+
 use super::parallel_rows;
 use super::{
     arithmetic::{self, Operation},

@@ -1,3 +1,5 @@
+//! Shared pixel buffer with views, used by every imaging pass.
+
 use super::{pixel_storage::PixelStorage, saturate};
 use std::sync::{atomic::Ordering, Arc};
 

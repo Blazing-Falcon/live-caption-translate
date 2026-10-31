@@ -1,3 +1,5 @@
+//! Rounding conversions that clamp to the target type.
+
 pub fn to_byte(value: f64) -> u8 {
     if value.is_nan() || value <= -1.0 {
         return 0;

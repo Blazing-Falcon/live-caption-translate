@@ -1,5 +1,8 @@
+//! Fills a masked region from its surroundings, fast marching from the hole boundary inwards.
+
 use super::{saturate, ImageBuffer, PixelType};
 use std::{cmp::Ordering, collections::BinaryHeap};
+/// Fast-marching states: pixels with a value, the advancing band, and the hole not yet reached.
 const KNOWN: u8 = 0;
 const BAND: u8 = 1;
 const INSIDE: u8 = 2;

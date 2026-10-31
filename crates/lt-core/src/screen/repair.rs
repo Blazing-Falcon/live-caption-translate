@@ -1,5 +1,10 @@
+//! Finds glyphs the detector stopped short of at the ends of a box and widens the box to cover
+//! them.
+
 use super::ImageView;
 
+/// How far past the outermost box a row may reach, in line heights. It is a budget for a glyph or
+/// two, so a row does not walk into a nearby picture.
 const REACH_LIMIT: f64 = 1.5;
 
 #[derive(Clone, Copy, Debug, Default)]

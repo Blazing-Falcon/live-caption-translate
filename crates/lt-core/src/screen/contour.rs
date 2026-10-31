@@ -1,3 +1,5 @@
+//! Outlines and minimum rectangles of detector masks, and the rounded offset that grows a box.
+
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Point {
     pub x: f32,
@@ -305,6 +307,7 @@ pub fn unclip(box_points: &[Point; 4], ratio: f32) -> Option<Vec<Point>> {
         let inverse = 1.0 / (dx * dx + dy * dy).sqrt();
         normals[i] = (dy * inverse, -dx * inverse);
     }
+    /// Arc tolerance of the rounded offset corners, as a share of the offset distance.
     const ARC_CONST: f64 = 0.002;
     let arc_tolerance = delta.abs() * ARC_CONST;
     let steps_per_circle = std::f64::consts::PI / (1.0 - arc_tolerance / delta.abs()).acos();

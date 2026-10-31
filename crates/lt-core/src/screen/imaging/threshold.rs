@@ -1,4 +1,7 @@
+//! Binary threshold and Otsu threshold selection.
+
 use super::{saturate, ImageBuffer, PixelType};
+/// A split where either class is this close to empty is skipped when scoring Otsu splits.
 const EPSILON: f64 = 1.1920928955078125e-7;
 pub fn binary(source: &ImageBuffer, target: &ImageBuffer, threshold: f64, maximum: f64) {
     source.same_shape(target);

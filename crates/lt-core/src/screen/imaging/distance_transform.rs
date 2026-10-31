@@ -1,4 +1,7 @@
+//! Two-pass chamfer distance to the nearest zero pixel.
+
 use super::{ImageBuffer, PixelType};
+/// Step costs along an axis and across a diagonal; they approximate Euclidean distance closely.
 const STRAIGHT: f32 = 0.955;
 const DIAGONAL: f32 = 1.3693;
 pub fn chamfer3(mask: &ImageBuffer) -> ImageBuffer {

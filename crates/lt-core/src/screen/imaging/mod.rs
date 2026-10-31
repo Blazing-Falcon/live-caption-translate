@@ -1,3 +1,5 @@
+//! Pixel operations on byte and float images that the erase and repair stages are built from.
+
 pub mod arithmetic;
 pub mod channels;
 pub mod color_conversion;

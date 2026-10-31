@@ -1,10 +1,18 @@
+//! Turns the detector's probability map into scored quadrilaterals in reading order.
+
 use super::contour::{mini_box, outlines, unclip, Point};
 
+/// Probability above which a map pixel counts as text.
 pub const BINARY: f32 = 0.2;
+/// Boxes whose mean probability is lower are dropped as noise.
 pub const BOX_SCORE: f32 = 0.4;
+/// The detector is trained on shrunken text areas, so each box is grown by this ratio.
 pub const UNCLIP: f32 = 1.4;
+/// Boxes with a side shorter than this are specks, not text.
 const MIN_SIDE: f32 = 3.0;
+/// The mask is dilated by this many pixels before outlining, which joins characters of one word.
 const DILATE_RADIUS: usize = 1;
+/// Boxes whose tops differ by less than this many pixels are on one row when ordering.
 const LINE_SORT_Y_THRESHOLD: i32 = 10;
 
 #[derive(Clone, Debug)]

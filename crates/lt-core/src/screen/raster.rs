@@ -1,3 +1,5 @@
+//! Cubic sampling, and cropping a quadrilateral from a frame warped to an upright rectangle.
+
 use super::ImageView;
 
 #[derive(Clone)]

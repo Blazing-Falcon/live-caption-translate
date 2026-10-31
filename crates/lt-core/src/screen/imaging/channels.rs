@@ -1,3 +1,5 @@
+//! Channel merging, tiling, edge-replicating padding and cropping.
+
 use super::parallel_rows;
 use super::{ImageBuffer, PixelType};
 pub fn merge(first: &ImageBuffer, second: &ImageBuffer, third: &ImageBuffer) -> ImageBuffer {

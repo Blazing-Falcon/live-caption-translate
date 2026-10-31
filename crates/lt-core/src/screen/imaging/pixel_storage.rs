@@ -1,3 +1,5 @@
+//! Backing store for image buffers.
+
 use std::sync::atomic::{AtomicU32, AtomicU8};
 
 // Scoped row writers use relaxed cells; each pass joins before the next reads its output.

@@ -1,3 +1,5 @@
+//! Per-pixel arithmetic between images or with a scalar; byte results saturate.
+
 use super::parallel_rows;
 use super::{saturate, ImageBuffer};
 

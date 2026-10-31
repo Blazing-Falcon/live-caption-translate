@@ -1,3 +1,5 @@
+//! Non-zero count, bounding rectangle, minimum, maximum and mean, optionally under a mask.
+
 use super::{ImageBuffer, PixelType};
 pub fn count_non_zero(image: &ImageBuffer) -> usize {
     assert_eq!(image.channels(), 1);

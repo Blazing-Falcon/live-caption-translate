@@ -1,3 +1,5 @@
+//! Box and Gaussian blur, Laplacian and neighbourhood extraction with the usual border rules.
+
 use super::parallel_rows;
 use super::{saturate, ImageBuffer, PixelType};
 

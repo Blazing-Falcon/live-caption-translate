@@ -1,9 +1,14 @@
+//! Gray conversion from BGR pixels.
+
 use super::parallel_rows;
 use super::{ImageBuffer, PixelType};
+/// Luma weights for bytes in fixed point (15 fractional bits), so byte results round the same way
+/// on every machine.
 const BLUE_WEIGHT: i32 = 3735;
 const GREEN_WEIGHT: i32 = 19235;
 const RED_WEIGHT: i32 = 9798;
 const SHIFT: i32 = 15;
+/// The same luma weights for float images.
 const BLUE_WEIGHT_F: f32 = 0.114;
 const GREEN_WEIGHT_F: f32 = 0.587;
 const RED_WEIGHT_F: f32 = 0.299;

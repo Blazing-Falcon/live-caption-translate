@@ -1,7 +1,11 @@
+//! Area and linear resampling.
+
 use super::parallel_rows;
 use super::{saturate, ImageBuffer};
+/// Linear interpolation on bytes uses integer coefficients with this many fractional bits.
 const COEFFICIENT_BITS: i32 = 11;
 const COEFFICIENT_SCALE: i32 = 1 << COEFFICIENT_BITS;
+/// Tolerance for deciding that a scale factor is a whole number.
 const DOUBLE_EPSILON: f64 = 2.220446049250313e-16;
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub enum Interpolation {

@@ -1,3 +1,6 @@
+//! Removes source text from a frame so the English can be drawn over a clean background: a text
+//! mask from the glyph and its fade, then an adaptive fill.
+
 use super::{
     geom::{PointF, RectF},
     imaging::{
@@ -15,26 +18,56 @@ use std::sync::{
     OnceLock,
 };
 
+/// Picture taken in around a recognition box, as a share of glyph height. It is both the context
+/// the thresholds are computed over and the room the mask can grow into.
 const BOX_PADDING: f64 = 0.09;
+/// Contrast a pixel needs to continue the text's fade outward from the glyph body.
 const OUTLINE_TAIL: f64 = 10.0;
+/// How far the mask may follow the fade past the glyph body, as a share of glyph height.
 const REACH: f64 = 0.20;
+/// The most the mask may reach in any case. Each extra pixel erases less of the outline and
+/// disturbs more picture.
 const FURTHEST: i32 = 7;
+/// The most of that reach spent on the blind margin around the box rather than on the fade.
 const FURTHEST_HALO: i32 = 2;
+/// The widest structuring element the hat filters use, in pixels.
 const WIDEST_KERNEL: usize = 25;
+/// A glyph asking for an element this wide is measured on a scaled-down copy. Normal text is well
+/// inside the element it already gets; only display type outgrows it.
 const SCALED_FROM: usize = 41;
+/// How far around a pixel the inpainting that fills a tile reads.
 const FILL_RADIUS: f64 = 3.0;
+/// Departure from a local slope, in levels, at which the smooth fill is fully trusted.
 const SLOPE_DEPARTURE: f64 = 8.0;
+/// Departure at which the smooth fill is not used at all.
 const STRUCTURE_DEPARTURE: f64 = 30.0;
+/// How much picture around a place is asked whether it is a slope.
 const DEPARTURE_WINDOW: usize = 97;
+/// The square the structured fill is computed in, one at a time.
 const TILE: usize = 96;
+/// How far outside the mask the fills are computed, so a hole has context on every side. A tile
+/// holding the outermost masked pixel can reach most of a tile past it.
 const MARGIN: usize = TILE;
+/// The window the surrounding grain is measured over, in pixels: wide enough to describe the panel,
+/// narrow enough to tell a smooth sky from a rough wall.
 const GRAIN_WINDOW: usize = 33;
+/// The most any one pixel may add to the grain reading. Without the bound a strong edge nearby
+/// makes a smooth area look rough and it gets speckled.
 const GRAIN_QUIET: f64 = 12.0;
+/// The most grain that may be invented, in levels of standard deviation. Matching a violent
+/// surrounding exactly would invent that much contrast from nothing.
 const GRAIN_CEILING: f64 = 9.0;
+/// Mean absolute value of a standard normal, which is what the grain window measures.
 const GRAIN_EXPECTATION: f64 = 0.7979;
+/// The divisor the picture is judged a slope at. Coarser than the fill, so the sliver of picture
+/// between glyphs and what they cover can still testify.
 const SLOPE_SCALE: usize = 2;
+/// Width of the ring outside the mask that is left out of the fill's evidence.
 const DONOR_GUARD: usize = 2;
+/// How far down the smooth fill is computed, as a divisor of the frame. It is smooth by
+/// construction, so there is nothing at full size for it to carry.
 const SMOOTH_SCALE: usize = 4;
+/// Side of the square the speckle texture is tiled from.
 const SPECKLE_SIDE: usize = 256;
 
 pub struct TextRegion {
