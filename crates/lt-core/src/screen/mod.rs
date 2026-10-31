@@ -14,6 +14,7 @@ pub mod paint;
 pub mod placement;
 pub mod raster;
 pub mod repair;
+pub mod tilt;
 
 pub use group::blocks;
 pub use job::{
@@ -101,6 +102,8 @@ pub struct Block {
     pub translate: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paint: Option<PaintFacts>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tilt: Option<tilt::TiltedText>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -166,6 +169,19 @@ mod tests {
             background: if dark { [32, 34, 40] } else { [250, 248, 243] },
             foreground: if dark { [245, 245, 245] } else { [24, 24, 24] },
             translate,
+            tilt: (id == 2).then(|| tilt::TiltedText {
+                degrees: 8.0,
+                sheared: false,
+                centre: geom::PointF::new(128.0, 181.0),
+                box_rect: geom::RectF::new(88.0, 176.0, 80.0, 10.0),
+                line_quads: vec![vec![
+                    geom::PointF::new(89.0, 171.0),
+                    geom::PointF::new(168.0, 182.0),
+                    geom::PointF::new(167.0, 192.0),
+                    geom::PointF::new(88.0, 181.0),
+                ]],
+                column: false,
+            }),
             paint: Some(PaintFacts {
                 bounds: rect.into(),
                 source_lines: vec![rect.into()],
@@ -191,6 +207,7 @@ mod tests {
             background: [250, 248, 243],
             foreground: [24, 24, 24],
             translate: true,
+            tilt: None,
             paint: Some(PaintFacts {
                 bounds: rect(80, 44, 640, 56).into(),
                 source_lines: vec![rect(80, 44, 640, 24).into(), rect(80, 76, 400, 24).into()],

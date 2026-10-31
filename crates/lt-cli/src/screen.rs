@@ -151,7 +151,7 @@ mod run {
             let raw: Vec<RawLine> = lines.iter().map(RawLine::from).collect();
             let mut facts = filters::prepare(&raw);
             ink::annotate(&image, &mut facts);
-            let grouping = group::group_with_profile(&facts, &group::profile::GENERAL, true);
+            let grouping = group::report_screenshot(&facts, &group::profile::GENERAL, true);
             output["decisions"] = serde_json::to_value(grouping.decisions)?;
             output["grouping_trace"] = serde_json::to_value(grouping.trace)?;
         }

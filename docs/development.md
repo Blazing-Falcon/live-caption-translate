@@ -116,6 +116,8 @@ Pass `--explain` to include `decisions` and `grouping_trace` in the output JSON.
 Each verdict names its source lines, rule, join/refusal and geometry. Row verdicts
 use `vertical_gap` for horizontal spacing and `left_delta` for vertical overlap;
 next-line verdicts use those fields for their vertical gap and left alignment.
+Tilted cards are straightened only for grouping and restored afterward; blocks carry optional card geometry. `--explain` uses the same grouping path as the job.
+
 Trace IDs distinguish detected boxes (`b0`, ...) from merged lines (`L0`, ...).
 
 ```powershell

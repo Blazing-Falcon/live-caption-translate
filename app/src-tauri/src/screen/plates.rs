@@ -116,7 +116,7 @@ impl Plates {
                 bounds: line.bounds,
                 source_line_bounds: line.source_line_bounds.clone(),
                 glyph_height: line.render_glyph_height,
-                within: None,
+                within: line.tilt.as_ref().map(|tilt| tilt.erase_quads()),
             })
             .collect();
         let backdrop = Backdrop::create(*image, &removal, cancel)?;

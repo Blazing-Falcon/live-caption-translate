@@ -1,0 +1,229 @@
+{
+  "test": "ATiltedParagraphThatRunsIntoTheLevelLineAboveIsDrawnLevel",
+  "calls": [
+    {
+      "op": "level",
+      "input": [
+        {
+          "text": "above",
+          "bounds": {
+            "empty": false,
+            "x": 348,
+            "y": 326,
+            "width": 390,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 348,
+            "y": 326,
+            "width": 390,
+            "height": 30
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "paragraph",
+          "bounds": {
+            "empty": false,
+            "x": 345,
+            "y": 351,
+            "width": 395,
+            "height": 43
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 345,
+            "y": 351,
+            "width": 395,
+            "height": 43
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 3.1,
+            "sheared": true,
+            "centre": {
+              "x": 545,
+              "y": 373
+            },
+            "box": {
+              "empty": false,
+              "x": 350,
+              "y": 346,
+              "width": 390,
+              "height": 54
+            },
+            "lineQuads": [],
+            "column": false,
+            "outline": [
+              {
+                "x": 350,
+                "y": 335.4391775030294
+              },
+              {
+                "x": 740,
+                "y": 356.5608224969706
+              },
+              {
+                "x": 740,
+                "y": 410.5608224969706
+              },
+              {
+                "x": 350,
+                "y": 389.4391775030294
+              }
+            ],
+            "eraseQuads": [],
+            "sampleArea": {
+              "empty": false,
+              "x": 350,
+              "y": 359.5,
+              "width": 390,
+              "height": 27
+            }
+          },
+          "runsAcross": false
+        },
+        {
+          "text": "below",
+          "bounds": {
+            "empty": false,
+            "x": 339,
+            "y": 407,
+            "width": 398,
+            "height": 50
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 339,
+            "y": 407,
+            "width": 398,
+            "height": 50
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "above",
+          "bounds": {
+            "empty": false,
+            "x": 348,
+            "y": 326,
+            "width": 390,
+            "height": 30
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 348,
+            "y": 326,
+            "width": 390,
+            "height": 30
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "paragraph",
+          "bounds": {
+            "empty": false,
+            "x": 345,
+            "y": 351,
+            "width": 395,
+            "height": 43
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 345,
+            "y": 351,
+            "width": 395,
+            "height": 43
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "below",
+          "bounds": {
+            "empty": false,
+            "x": 339,
+            "y": 407,
+            "width": 398,
+            "height": 50
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 339,
+            "y": 407,
+            "width": 398,
+            "height": 50
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "borrowed": false
+    }
+  ]
+}

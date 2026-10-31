@@ -278,6 +278,9 @@ fn to_frame(event: &mut ScreenEvent, (x, y): (i32, i32)) {
             }
         }
         for block in blocks {
+            if let Some(tilt) = &block.tilt {
+                block.tilt = Some(tilt.offset(f64::from(x), f64::from(y)));
+            }
             if let Some(paint) = &mut block.paint {
                 paint.bounds = paint.bounds.offset(f64::from(x), f64::from(y));
                 for line in &mut paint.source_lines {
@@ -332,6 +335,38 @@ impl Server {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn tilted_card_geometry_receives_the_crop_origin_once() {
+        let events: Vec<ScreenEvent> = serde_json::from_str(include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../ui/src/lib/__fixtures__/screen-events.json"
+        )))
+        .unwrap();
+        let mut event = events
+            .into_iter()
+            .find(|e| matches!(e, ScreenEvent::Blocks { .. }))
+            .unwrap();
+        to_frame(&mut event, (100, 200));
+        let ScreenEvent::Blocks { blocks, .. } = event else {
+            unreachable!()
+        };
+        let shape = blocks[2].tilt.as_ref().unwrap();
+        assert_eq!(
+            shape.centre,
+            lt_core::screen::geom::PointF::new(228.0, 381.0)
+        );
+        assert_eq!(
+            shape.box_rect,
+            lt_core::screen::geom::RectF::new(188.0, 376.0, 80.0, 10.0)
+        );
+        assert_eq!(
+            shape.line_quads[0][0],
+            lt_core::screen::geom::PointF::new(189.0, 371.0)
+        );
+        assert_eq!(shape.degrees, 8.0);
+        assert!(blocks[0].tilt.is_none());
+    }
 
     #[test]
     fn raw_debug_boxes_receive_the_crop_origin_once() {

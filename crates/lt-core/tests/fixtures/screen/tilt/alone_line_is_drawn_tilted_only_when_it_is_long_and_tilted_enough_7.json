@@ -1,0 +1,157 @@
+{
+  "test": "ALoneLineIsDrawnTiltedOnlyWhenItIsLongAndTiltedEnough",
+  "calls": [
+    {
+      "op": "straighten",
+      "input": [
+        {
+          "text": "A LINE ON ITS OWN",
+          "bounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 52.3118264616337,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "layoutGlyphHeight": 52.3118264616337,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 52.3118264616337,
+          "lineGeometry": {
+            "length": 196,
+            "thickness": 40,
+            "angleDegrees": 20,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "A LINE ON ITS OWN",
+          "bounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 52.3118264616337,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "layoutGlyphHeight": 52.3118264616337,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 52.3118264616337,
+          "lineGeometry": {
+            "length": 196,
+            "thickness": 40,
+            "angleDegrees": 20,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "borrowed": true
+    },
+    {
+      "op": "restore",
+      "input": [
+        {
+          "text": "A LINE ON ITS OWN",
+          "bounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 52.3118264616337,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "layoutGlyphHeight": 52.3118264616337,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 52.3118264616337,
+          "lineGeometry": {
+            "length": 196,
+            "thickness": 40,
+            "angleDegrees": 20,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "A LINE ON ITS OWN",
+          "bounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 52.3118264616337,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 301.0697202964676,
+            "y": 347.6881735383663,
+            "width": 197.86055940706478,
+            "height": 104.6236529232674
+          },
+          "layoutGlyphHeight": 52.3118264616337,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 52.3118264616337,
+          "lineGeometry": {
+            "length": 196,
+            "thickness": 40,
+            "angleDegrees": 20,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "borrowed": true
+    }
+  ]
+}

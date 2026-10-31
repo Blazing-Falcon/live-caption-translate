@@ -1,0 +1,1223 @@
+{
+  "test": "ARotatedParagraphIsOneGroupOfItsLinesAndKeepsTheSoundEffectOut",
+  "calls": [
+    {
+      "op": "straighten",
+      "input": [
+        {
+          "text": "E",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 148.5,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "layoutGlyphHeight": 148.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 148.5,
+          "lineGeometry": {
+            "length": 371,
+            "thickness": 297,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BLING0_0*** NOPE, NOT LEAVING. THE ONE",
+          "bounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 544.3781925277048,
+            "height": 129.46210804756993
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 21.445201523818675,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 544.3781925277048,
+            "height": 129.46210804756993
+          },
+          "layoutGlyphHeight": 21.445201523818675,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 21.445201523818675,
+          "lineGeometry": {
+            "length": 545,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "LEAVING WILL BE YOUR FUTURE WIFE. NO MATTER",
+          "bounds": {
+            "empty": false,
+            "x": 127.04157452802028,
+            "y": 349.43679580786505,
+            "width": 628.2368262642972,
+            "height": 143.34481483810782
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.686329837321843,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 127.04157452802028,
+            "y": 349.43679580786505,
+            "width": 628.2368262642972,
+            "height": 143.34481483810782
+          },
+          "layoutGlyphHeight": 22.686329837321843,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.686329837321843,
+          "lineGeometry": {
+            "length": 630,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "HOW NICE SHE IS, SHE WON'T ENDURE THAT AND",
+          "bounds": {
+            "empty": false,
+            "x": 132.4313312819938,
+            "y": 387.87341178159346,
+            "width": 592.7202284464463,
+            "height": 137.46508019740935
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.66283226412883,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 132.4313312819938,
+            "y": 387.87341178159346,
+            "width": 592.7202284464463,
+            "height": 137.46508019740935
+          },
+          "layoutGlyphHeight": 22.66283226412883,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.66283226412883,
+          "lineGeometry": {
+            "length": 594,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "SHE'LL RUN AWAY. SO EVEN AS A NOBLE, YOU",
+          "bounds": {
+            "empty": false,
+            "x": 137.82108803596734,
+            "y": 425.4933979441137,
+            "width": 562.1364914366302,
+            "height": 132.40197536791908
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.8367949646131,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 137.82108803596734,
+            "y": 425.4933979441137,
+            "width": 562.1364914366302,
+            "height": 132.40197536791908
+          },
+          "layoutGlyphHeight": 22.8367949646131,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.8367949646131,
+          "lineGeometry": {
+            "length": 563,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "WON'T BE ABLE TO KEEP A SINGLE MISTRESS.",
+          "bounds": {
+            "empty": false,
+            "x": 143.21084478994086,
+            "y": 457.72362735266046,
+            "width": 564.1096357598442,
+            "height": 132.72862729240234
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.22250080266053,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 143.21084478994086,
+            "y": 457.72362735266046,
+            "width": 564.1096357598442,
+            "height": 132.72862729240234
+          },
+          "layoutGlyphHeight": 22.22250080266053,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.22250080266053,
+          "lineGeometry": {
+            "length": 565,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "E",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 148.5,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "layoutGlyphHeight": 148.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 148.5,
+          "lineGeometry": {
+            "length": 371,
+            "thickness": 297,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BLING0_0*** NOPE, NOT LEAVING. THE ONE",
+          "bounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 544.3781925277048,
+            "height": 129.46210804756993
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 21.445201523818675,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 131.88946872548604,
+            "y": 375.29823140466203,
+            "width": 545,
+            "height": 33
+          },
+          "layoutGlyphHeight": 21.469696969696972,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 21.445201523818675,
+          "lineGeometry": {
+            "length": 545,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 544.3781925277048,
+            "height": 129.46210804756993
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.399999999999999,
+              "weight": 545,
+              "centre": {
+                "x": 393.8409140378991,
+                "y": 395.4936752891579
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 545,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 121.65181777404669,
+                  "y": 419.7752706870571
+                },
+                {
+                  "x": 659.333645849845,
+                  "y": 330.76262126537296
+                },
+                {
+                  "x": 666.0300103017514,
+                  "y": 371.2120798912587
+                },
+                {
+                  "x": 128.3481822259532,
+                  "y": 460.2247293129429
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "LEAVING WILL BE YOUR FUTURE WIFE. NO MATTER",
+          "bounds": {
+            "empty": false,
+            "x": 127.04157452802028,
+            "y": 349.43679580786505,
+            "width": 628.2368262642972,
+            "height": 143.34481483810782
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.686329837321843,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 131.8894687254861,
+            "y": 408.29823140466203,
+            "width": 630,
+            "height": 33
+          },
+          "layoutGlyphHeight": 22.75,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.686329837321843,
+          "lineGeometry": {
+            "length": 630,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 127.04157452802028,
+            "y": 349.43679580786505,
+            "width": 628.2368262642972,
+            "height": 143.34481483810782
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.399999999999999,
+              "weight": 630,
+              "centre": {
+                "x": 441.1599876601689,
+                "y": 421.10920322691896
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 630,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 127.04157452802028,
+                  "y": 452.3321520200871
+                },
+                {
+                  "x": 748.582036340411,
+                  "y": 349.43679580786505
+                },
+                {
+                  "x": 755.2784007923175,
+                  "y": 389.8862544337508
+                },
+                {
+                  "x": 133.73793897992678,
+                  "y": 492.7816106459729
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "HOW NICE SHE IS, SHE WON'T ENDURE THAT AND",
+          "bounds": {
+            "empty": false,
+            "x": 132.4313312819938,
+            "y": 387.87341178159346,
+            "width": 592.7202284464463,
+            "height": 137.46508019740935
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.66283226412883,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 131.88946872548615,
+            "y": 441.2982314046619,
+            "width": 594,
+            "height": 33
+          },
+          "layoutGlyphHeight": 22.711764705882352,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.66283226412883,
+          "lineGeometry": {
+            "length": 594,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 132.4313312819938,
+            "y": 387.87341178159346,
+            "width": 592.7202284464463,
+            "height": 137.46508019740935
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.4,
+              "weight": 594,
+              "centre": {
+                "x": 428.791445505217,
+                "y": 456.6059518802981
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 594,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 132.4313312819938,
+                  "y": 484.88903335311704
+                },
+                {
+                  "x": 718.4551952765337,
+                  "y": 387.8734117815934
+                },
+                {
+                  "x": 725.1515597284401,
+                  "y": 428.3228704074792
+                },
+                {
+                  "x": 139.1276957339003,
+                  "y": 525.3384919790028
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "SHE'LL RUN AWAY. SO EVEN AS A NOBLE, YOU",
+          "bounds": {
+            "empty": false,
+            "x": 137.82108803596734,
+            "y": 425.4933979441137,
+            "width": 562.1364914366302,
+            "height": 132.40197536791908
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.8367949646131,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 131.88946872548604,
+            "y": 474.29823140466203,
+            "width": 563,
+            "height": 33
+          },
+          "layoutGlyphHeight": 22.871875,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.8367949646131,
+          "lineGeometry": {
+            "length": 563,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 137.82108803596734,
+            "y": 425.4933979441137,
+            "width": 562.1364914366302,
+            "height": 132.40197536791908
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.4,
+              "weight": 563,
+              "centre": {
+                "x": 418.88933375428246,
+                "y": 491.6943856280733
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 563,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 137.82108803596734,
+                  "y": 517.4459146861471
+                },
+                {
+                  "x": 693.2612150206911,
+                  "y": 425.4933979441137
+                },
+                {
+                  "x": 699.9575794725976,
+                  "y": 465.9428565699995
+                },
+                {
+                  "x": 144.51745248787384,
+                  "y": 557.8953733120328
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "WON'T BE ABLE TO KEEP A SINGLE MISTRESS.",
+          "bounds": {
+            "empty": false,
+            "x": 143.21084478994086,
+            "y": 457.72362735266046,
+            "width": 564.1096357598442,
+            "height": 132.72862729240234
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 22.22250080266053,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 131.8894687254861,
+            "y": 507.29823140466203,
+            "width": 565,
+            "height": 33
+          },
+          "layoutGlyphHeight": 22.257575757575758,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.22250080266053,
+          "lineGeometry": {
+            "length": 565,
+            "thickness": 41,
+            "angleDegrees": -9.4,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 143.21084478994086,
+            "y": 457.72362735266046,
+            "width": 564.1096357598442,
+            "height": 132.72862729240234
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.4,
+              "weight": 565,
+              "centre": {
+                "x": 425.265662669863,
+                "y": 524.0879409988617
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 565,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 143.21084478994086,
+                  "y": 550.0027960191771
+                },
+                {
+                  "x": 700.6241160978786,
+                  "y": 457.72362735266046
+                },
+                {
+                  "x": 707.3204805497851,
+                  "y": 498.1730859785462
+                },
+                {
+                  "x": 149.90720924184737,
+                  "y": 590.4522546450628
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "borrowed": false
+    },
+    {
+      "op": "restore",
+      "input": [
+        {
+          "text": "E",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 148.5,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "layoutGlyphHeight": 148.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 148.5,
+          "lineGeometry": {
+            "length": 371,
+            "thickness": 297,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BLING0_0*** NOPE, NOT LEAVING. THE ONE LEAVING WILL BE YOUR FUTURE WIFE. NO MATTER HOW NICE SHE IS, SHE WON'T ENDURE THAT AND SHE'LL RUN AWAY. SO EVEN AS A NOBLE, YOU WON'T BE ABLE TO KEEP A SINGLE MISTRESS.",
+          "bounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 633.6265830182707,
+            "height": 259.68963337968984
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 121.65181777404675,
+              "y": 330.76262126537296,
+              "width": 544.3781925277048,
+              "height": 129.46210804756993
+            },
+            {
+              "empty": false,
+              "x": 127.04157452802028,
+              "y": 349.43679580786505,
+              "width": 628.2368262642972,
+              "height": 143.34481483810782
+            },
+            {
+              "empty": false,
+              "x": 132.4313312819938,
+              "y": 387.87341178159346,
+              "width": 592.7202284464463,
+              "height": 137.46508019740935
+            },
+            {
+              "empty": false,
+              "x": 137.82108803596734,
+              "y": 425.4933979441137,
+              "width": 562.1364914366302,
+              "height": 132.40197536791908
+            },
+            {
+              "empty": false,
+              "x": 143.21084478994086,
+              "y": 457.72362735266046,
+              "width": 564.1096357598442,
+              "height": 132.72862729240234
+            }
+          ],
+          "renderGlyphHeight": 22.66283226412883,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 131.88946872548604,
+            "y": 375.29823140466203,
+            "width": 630,
+            "height": 165
+          },
+          "layoutGlyphHeight": 22.711764705882352,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.66283226412883,
+          "lineGeometry": null,
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 633.6265830182707,
+            "height": 259.68963337968984
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.399999999999999,
+              "weight": 545,
+              "centre": {
+                "x": 393.8409140378991,
+                "y": 395.4936752891579
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 545,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 121.65181777404669,
+                  "y": 419.7752706870571
+                },
+                {
+                  "x": 659.333645849845,
+                  "y": 330.76262126537296
+                },
+                {
+                  "x": 666.0300103017514,
+                  "y": 371.2120798912587
+                },
+                {
+                  "x": 128.3481822259532,
+                  "y": 460.2247293129429
+                }
+              ]
+            },
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.399999999999999,
+              "weight": 630,
+              "centre": {
+                "x": 441.1599876601689,
+                "y": 421.10920322691896
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 630,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 127.04157452802028,
+                  "y": 452.3321520200871
+                },
+                {
+                  "x": 748.582036340411,
+                  "y": 349.43679580786505
+                },
+                {
+                  "x": 755.2784007923175,
+                  "y": 389.8862544337508
+                },
+                {
+                  "x": 133.73793897992678,
+                  "y": 492.7816106459729
+                }
+              ]
+            },
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.4,
+              "weight": 594,
+              "centre": {
+                "x": 428.791445505217,
+                "y": 456.6059518802981
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 594,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 132.4313312819938,
+                  "y": 484.88903335311704
+                },
+                {
+                  "x": 718.4551952765337,
+                  "y": 387.8734117815934
+                },
+                {
+                  "x": 725.1515597284401,
+                  "y": 428.3228704074792
+                },
+                {
+                  "x": 139.1276957339003,
+                  "y": 525.3384919790028
+                }
+              ]
+            },
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.4,
+              "weight": 563,
+              "centre": {
+                "x": 418.88933375428246,
+                "y": 491.6943856280733
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 563,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 137.82108803596734,
+                  "y": 517.4459146861471
+                },
+                {
+                  "x": 693.2612150206911,
+                  "y": 425.4933979441137
+                },
+                {
+                  "x": 699.9575794725976,
+                  "y": 465.9428565699995
+                },
+                {
+                  "x": 144.51745248787384,
+                  "y": 557.8953733120328
+                }
+              ]
+            },
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": -9.4,
+              "weight": 565,
+              "centre": {
+                "x": 425.265662669863,
+                "y": 524.0879409988617
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 565,
+                "height": 33
+              },
+              "quad": [
+                {
+                  "x": 143.21084478994086,
+                  "y": 550.0027960191771
+                },
+                {
+                  "x": 700.6241160978786,
+                  "y": 457.72362735266046
+                },
+                {
+                  "x": 707.3204805497851,
+                  "y": 498.1730859785462
+                },
+                {
+                  "x": 149.90720924184737,
+                  "y": 590.4522546450628
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "E",
+          "bounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 148.5,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 0,
+            "y": 40,
+            "width": 371,
+            "height": 297
+          },
+          "layoutGlyphHeight": 148.5,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 148.5,
+          "lineGeometry": {
+            "length": 371,
+            "thickness": 297,
+            "angleDegrees": 0,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "BLING0_0*** NOPE, NOT LEAVING. THE ONE LEAVING WILL BE YOUR FUTURE WIFE. NO MATTER HOW NICE SHE IS, SHE WON'T ENDURE THAT AND SHE'LL RUN AWAY. SO EVEN AS A NOBLE, YOU WON'T BE ABLE TO KEEP A SINGLE MISTRESS.",
+          "bounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 633.6265830182707,
+            "height": 259.68963337968984
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 121.65181777404675,
+              "y": 330.76262126537296,
+              "width": 544.3781925277048,
+              "height": 129.46210804756993
+            },
+            {
+              "empty": false,
+              "x": 127.04157452802028,
+              "y": 349.43679580786505,
+              "width": 628.2368262642972,
+              "height": 143.34481483810782
+            },
+            {
+              "empty": false,
+              "x": 132.4313312819938,
+              "y": 387.87341178159346,
+              "width": 592.7202284464463,
+              "height": 137.46508019740935
+            },
+            {
+              "empty": false,
+              "x": 137.82108803596734,
+              "y": 425.4933979441137,
+              "width": 562.1364914366302,
+              "height": 132.40197536791908
+            },
+            {
+              "empty": false,
+              "x": 143.21084478994086,
+              "y": 457.72362735266046,
+              "width": 564.1096357598442,
+              "height": 132.72862729240234
+            }
+          ],
+          "renderGlyphHeight": 22.66283226412883,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 121.65181777404675,
+            "y": 330.76262126537296,
+            "width": 633.6265830182707,
+            "height": 259.68963337968984
+          },
+          "layoutGlyphHeight": 22.711764705882352,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 22.66283226412883,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": -9.4,
+            "sheared": false,
+            "centre": {
+              "x": 421.58946872548603,
+              "y": 457.798231404662
+            },
+            "box": {
+              "empty": false,
+              "x": 131.8894687254861,
+              "y": 375.298231404662,
+              "width": 630,
+              "height": 165.00000000000006
+            },
+            "lineQuads": [
+              [
+                {
+                  "x": 121.65181777404669,
+                  "y": 419.7752706870571
+                },
+                {
+                  "x": 659.333645849845,
+                  "y": 330.76262126537296
+                },
+                {
+                  "x": 666.0300103017514,
+                  "y": 371.2120798912587
+                },
+                {
+                  "x": 128.3481822259532,
+                  "y": 460.2247293129429
+                }
+              ],
+              [
+                {
+                  "x": 127.04157452802028,
+                  "y": 452.3321520200871
+                },
+                {
+                  "x": 748.582036340411,
+                  "y": 349.43679580786505
+                },
+                {
+                  "x": 755.2784007923175,
+                  "y": 389.8862544337508
+                },
+                {
+                  "x": 133.73793897992678,
+                  "y": 492.7816106459729
+                }
+              ],
+              [
+                {
+                  "x": 132.4313312819938,
+                  "y": 484.88903335311704
+                },
+                {
+                  "x": 718.4551952765337,
+                  "y": 387.8734117815934
+                },
+                {
+                  "x": 725.1515597284401,
+                  "y": 428.3228704074792
+                },
+                {
+                  "x": 139.1276957339003,
+                  "y": 525.3384919790028
+                }
+              ],
+              [
+                {
+                  "x": 137.82108803596734,
+                  "y": 517.4459146861471
+                },
+                {
+                  "x": 693.2612150206911,
+                  "y": 425.4933979441137
+                },
+                {
+                  "x": 699.9575794725976,
+                  "y": 465.9428565699995
+                },
+                {
+                  "x": 144.51745248787384,
+                  "y": 557.8953733120328
+                }
+              ],
+              [
+                {
+                  "x": 143.21084478994086,
+                  "y": 550.0027960191771
+                },
+                {
+                  "x": 700.6241160978786,
+                  "y": 457.72362735266046
+                },
+                {
+                  "x": 707.3204805497851,
+                  "y": 498.1730859785462
+                },
+                {
+                  "x": 149.90720924184737,
+                  "y": 590.4522546450628
+                }
+              ]
+            ],
+            "column": false,
+            "outline": [
+              {
+                "x": 122.30512162301322,
+                "y": 423.72155933348495
+              },
+              {
+                "x": 743.8455834354039,
+                "y": 320.82620312126295
+              },
+              {
+                "x": 770.7943672052717,
+                "y": 483.61060978641297
+              },
+              {
+                "x": 149.2539053928809,
+                "y": 586.5059659986349
+              }
+            ],
+            "eraseQuads": [
+              [
+                {
+                  "x": 125.90308000848145,
+                  "y": 415.33125567649864
+                },
+                {
+                  "x": 666.0118756018328,
+                  "y": 325.91682438770005
+                },
+                {
+                  "x": 673.9135856550824,
+                  "y": 373.64718556624524
+                },
+                {
+                  "x": 133.80479006173115,
+                  "y": 463.06161685504384
+                }
+              ],
+              [
+                {
+                  "x": 131.292836762455,
+                  "y": 447.8881370095287
+                },
+                {
+                  "x": 755.2602660923989,
+                  "y": 344.59099893019214
+                },
+                {
+                  "x": 763.1619761456485,
+                  "y": 392.32136010873734
+                },
+                {
+                  "x": 139.19454681570468,
+                  "y": 495.61849818807383
+                }
+              ],
+              [
+                {
+                  "x": 136.6825935164285,
+                  "y": 480.44501834255857
+                },
+                {
+                  "x": 725.1334250285215,
+                  "y": 383.02761490392055
+                },
+                {
+                  "x": 733.0351350817712,
+                  "y": 430.7579760824657
+                },
+                {
+                  "x": 144.5843035696782,
+                  "y": 528.1753795211038
+                }
+              ],
+              [
+                {
+                  "x": 142.072350270402,
+                  "y": 513.0018996755887
+                },
+                {
+                  "x": 699.9394447726789,
+                  "y": 420.64760106644087
+                },
+                {
+                  "x": 707.8411548259286,
+                  "y": 468.377962244986
+                },
+                {
+                  "x": 149.97406032365168,
+                  "y": 560.7322608541338
+                }
+              ],
+              [
+                {
+                  "x": 147.46210702437554,
+                  "y": 545.5587810086187
+                },
+                {
+                  "x": 707.3023458498665,
+                  "y": 452.8778304749876
+                },
+                {
+                  "x": 715.204055903116,
+                  "y": 500.60819165353263
+                },
+                {
+                  "x": 155.3638170776252,
+                  "y": 593.2891421871637
+                }
+              ]
+            ],
+            "sampleArea": {
+              "empty": false,
+              "x": 191.39974441414242,
+              "y": 412.41608455994896,
+              "width": 510.3,
+              "height": 82.50000000000003
+            }
+          },
+          "runsAcross": false
+        }
+      ],
+      "borrowed": false
+    }
+  ]
+}

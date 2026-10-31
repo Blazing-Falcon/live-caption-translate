@@ -108,7 +108,7 @@ describe("wire fixture", () => {
   it("has blocks in the shape of the Block type", () => {
     for (const block of blocks.blocks) {
       expect(Object.keys(block).sort()).toEqual(
-        ["background", "foreground", "id", "intent", "line_height", "lines", "paint", "rect", "source", "translate"],
+        ["background", "foreground", "id", "intent", "line_height", "lines", "paint", "rect", "source", "translate", ...(block.tilt ? ["tilt"] : [])].sort(),
       );
       expect(Object.keys(block.rect).sort()).toEqual(["h", "w", "x", "y"]);
       for (const line of block.lines) expect(Object.keys(line).sort()).toEqual(["h", "w", "x", "y"]);

@@ -1,0 +1,297 @@
+{
+  "test": "TiltedGroupsThatMeetNothingAreLeftAsTheyAre",
+  "calls": [
+    {
+      "op": "level",
+      "input": [
+        {
+          "text": "first",
+          "bounds": {
+            "empty": false,
+            "x": 110.0961894323342,
+            "y": 27.67949192431124,
+            "width": 279.8076211353316,
+            "height": 184.64101615137753
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 110.0961894323342,
+            "y": 27.67949192431124,
+            "width": 279.8076211353316,
+            "height": 184.64101615137753
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 30,
+            "sheared": false,
+            "centre": {
+              "x": 250,
+              "y": 120
+            },
+            "box": {
+              "empty": false,
+              "x": 100,
+              "y": 100,
+              "width": 300,
+              "height": 40
+            },
+            "lineQuads": [],
+            "column": false,
+            "outline": [
+              {
+                "x": 130.0961894323342,
+                "y": 27.67949192431124
+              },
+              {
+                "x": 389.9038105676658,
+                "y": 177.67949192431124
+              },
+              {
+                "x": 369.9038105676658,
+                "y": 212.32050807568876
+              },
+              {
+                "x": 110.0961894323342,
+                "y": 62.32050807568879
+              }
+            ],
+            "eraseQuads": [],
+            "sampleArea": {
+              "empty": false,
+              "x": 227.4858047054501,
+              "y": 110,
+              "width": 45.028390589099764,
+              "height": 20
+            }
+          },
+          "runsAcross": false
+        },
+        {
+          "text": "second",
+          "bounds": {
+            "empty": false,
+            "x": 80.0961894323342,
+            "y": 79.64101615137756,
+            "width": 279.8076211353316,
+            "height": 184.64101615137756
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 80.0961894323342,
+            "y": 79.64101615137756,
+            "width": 279.8076211353316,
+            "height": 184.64101615137756
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 30,
+            "sheared": false,
+            "centre": {
+              "x": 220,
+              "y": 171.96152422706632
+            },
+            "box": {
+              "empty": false,
+              "x": 70,
+              "y": 151.96152422706632,
+              "width": 300,
+              "height": 40
+            },
+            "lineQuads": [],
+            "column": false,
+            "outline": [
+              {
+                "x": 100.0961894323342,
+                "y": 79.64101615137756
+              },
+              {
+                "x": 359.9038105676658,
+                "y": 229.64101615137756
+              },
+              {
+                "x": 339.9038105676658,
+                "y": 264.2820323027551
+              },
+              {
+                "x": 80.0961894323342,
+                "y": 114.28203230275511
+              }
+            ],
+            "eraseQuads": [],
+            "sampleArea": {
+              "empty": false,
+              "x": 197.4858047054501,
+              "y": 161.96152422706632,
+              "width": 45.028390589099764,
+              "height": 20
+            }
+          },
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "first",
+          "bounds": {
+            "empty": false,
+            "x": 110.0961894323342,
+            "y": 27.67949192431124,
+            "width": 279.8076211353316,
+            "height": 184.64101615137753
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 110.0961894323342,
+            "y": 27.67949192431124,
+            "width": 279.8076211353316,
+            "height": 184.64101615137753
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 30,
+            "sheared": false,
+            "centre": {
+              "x": 250,
+              "y": 120
+            },
+            "box": {
+              "empty": false,
+              "x": 100,
+              "y": 100,
+              "width": 300,
+              "height": 40
+            },
+            "lineQuads": [],
+            "column": false,
+            "outline": [
+              {
+                "x": 130.0961894323342,
+                "y": 27.67949192431124
+              },
+              {
+                "x": 389.9038105676658,
+                "y": 177.67949192431124
+              },
+              {
+                "x": 369.9038105676658,
+                "y": 212.32050807568876
+              },
+              {
+                "x": 110.0961894323342,
+                "y": 62.32050807568879
+              }
+            ],
+            "eraseQuads": [],
+            "sampleArea": {
+              "empty": false,
+              "x": 227.4858047054501,
+              "y": 110,
+              "width": 45.028390589099764,
+              "height": 20
+            }
+          },
+          "runsAcross": false
+        },
+        {
+          "text": "second",
+          "bounds": {
+            "empty": false,
+            "x": 80.0961894323342,
+            "y": 79.64101615137756,
+            "width": 279.8076211353316,
+            "height": 184.64101615137756
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 80.0961894323342,
+            "y": 79.64101615137756,
+            "width": 279.8076211353316,
+            "height": 184.64101615137756
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 30,
+            "sheared": false,
+            "centre": {
+              "x": 220,
+              "y": 171.96152422706632
+            },
+            "box": {
+              "empty": false,
+              "x": 70,
+              "y": 151.96152422706632,
+              "width": 300,
+              "height": 40
+            },
+            "lineQuads": [],
+            "column": false,
+            "outline": [
+              {
+                "x": 100.0961894323342,
+                "y": 79.64101615137756
+              },
+              {
+                "x": 359.9038105676658,
+                "y": 229.64101615137756
+              },
+              {
+                "x": 339.9038105676658,
+                "y": 264.2820323027551
+              },
+              {
+                "x": 80.0961894323342,
+                "y": 114.28203230275511
+              }
+            ],
+            "eraseQuads": [],
+            "sampleArea": {
+              "empty": false,
+              "x": 197.4858047054501,
+              "y": 161.96152422706632,
+              "width": 45.028390589099764,
+              "height": 20
+            }
+          },
+          "runsAcross": false
+        }
+      ],
+      "borrowed": true
+    }
+  ]
+}

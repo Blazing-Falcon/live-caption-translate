@@ -1,0 +1,1514 @@
+{
+  "test": "TheBoxStartsAtTheCardsMarginRatherThanAtALineThatOvershootsIt",
+  "calls": [
+    {
+      "op": "straighten",
+      "input": [
+        {
+          "text": "arolf52'5",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 86.14359353944899,
+            "width": 125.11920087683927,
+            "height": 90.71281292110204
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 45.35640646055102,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 86.14359353944899,
+            "width": 125.11920087683927,
+            "height": 90.71281292110204
+          },
+          "layoutGlyphHeight": 45.35640646055102,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 45.35640646055102,
+          "lineGeometry": {
+            "length": 126,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "IF YOU'D SEEN HIM IN PERSON EVEN",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 110.5308689100188,
+            "width": 330.36722157375124,
+            "height": 209.212812921102
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 104.606406460551,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 110.5308689100188,
+            "width": 330.36722157375124,
+            "height": 209.212812921102
+          },
+          "layoutGlyphHeight": 104.606406460551,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 104.606406460551,
+          "lineGeometry": {
+            "length": 363,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ONCE, YOU'D NEVER SAY THAT LOL",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 98.85640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "layoutGlyphHeight": 98.85640646055101,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 98.85640646055101,
+          "lineGeometry": {
+            "length": 340,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Ykbell",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 145.9038105676658,
+            "height": 102.71281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 51.356406460551014,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 145.9038105676658,
+            "height": 102.71281292110203
+          },
+          "layoutGlyphHeight": 51.356406460551014,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 51.356406460551014,
+          "lineGeometry": {
+            "length": 150,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "WHEN HE SCREAMED WHILE STEPPING ON THAT",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 197.73385356841985,
+            "width": 351.15183126457777,
+            "height": 221.21281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 110.60640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 197.73385356841985,
+            "width": 351.15183126457777,
+            "height": 221.21281292110203
+          },
+          "layoutGlyphHeight": 110.60640646055101,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 110.60640646055101,
+          "lineGeometry": {
+            "length": 387,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ABYSS GOBLIN TRAP, IT GOT MY BLOOD PUMPING",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 218.05658304389468,
+            "width": 361.54413610999103,
+            "height": 227.21281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 113.60640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 218.05658304389468,
+            "width": 361.54413610999103,
+            "height": 227.21281292110203
+          },
+          "layoutGlyphHeight": 113.60640646055101,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 113.60640646055101,
+          "lineGeometry": {
+            "length": 399,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "arolf52'5",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 86.14359353944899,
+            "width": 125.11920087683927,
+            "height": 90.71281292110204
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 45.35640646055102,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 162.03315130082012,
+            "width": 125.11920087683927,
+            "height": 20.32272947547483
+          },
+          "layoutGlyphHeight": 16.66463816988936,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 45.35640646055102,
+          "lineGeometry": {
+            "length": 126,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 86.14359353944899,
+            "width": 125.11920087683927,
+            "height": 90.71281292110204
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 126,
+              "centre": {
+                "x": 134.55960043841964,
+                "y": 131.5
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 109.11920087683927,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 86.14359353944899
+                },
+                {
+                  "x": 197.11920087683927,
+                  "y": 149.14359353944897
+                },
+                {
+                  "x": 181.11920087683927,
+                  "y": 176.85640646055103
+                },
+                {
+                  "x": 72,
+                  "y": 113.85640646055101
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "IF YOU'D SEEN HIM IN PERSON EVEN",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 110.5308689100188,
+            "width": 330.36722157375124,
+            "height": 209.212812921102
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 104.606406460551,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 194.5033304400447,
+            "width": 330.36722157375124,
+            "height": 20.32272947547483
+          },
+          "layoutGlyphHeight": 16.518361078687562,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 104.606406460551,
+          "lineGeometry": {
+            "length": 363,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 110.5308689100188,
+            "width": 330.36722157375124,
+            "height": 209.212812921102
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 363,
+              "centre": {
+                "x": 223.18361078687562,
+                "y": 215.1372753705698
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 314.36722157375124,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 74,
+                  "y": 110.5308689100188
+                },
+                {
+                  "x": 388.36722157375124,
+                  "y": 292.0308689100188
+                },
+                {
+                  "x": 372.36722157375124,
+                  "y": 319.7436818311208
+                },
+                {
+                  "x": 58,
+                  "y": 138.24368183112082
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ONCE, YOU'D NEVER SAY THAT LOL",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 98.85640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 206.74315614686475,
+            "width": 310.4486372867092,
+            "height": 20.32272947547483
+          },
+          "layoutGlyphHeight": 16.14332913890888,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 98.85640646055101,
+          "lineGeometry": {
+            "length": 340,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 340,
+              "centre": {
+                "x": 227.2243186433546,
+                "y": 229.71000484604463
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 294.4486372867092,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 130.8535983854936
+                },
+                {
+                  "x": 382.4486372867092,
+                  "y": 300.8535983854936
+                },
+                {
+                  "x": 366.4486372867092,
+                  "y": 328.5664113065956
+                },
+                {
+                  "x": 72,
+                  "y": 158.56641130659565
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Ykbell",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 145.9038105676658,
+            "height": 102.71281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 51.356406460551014,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 249.2361359592212,
+            "width": 145.9038105676658,
+            "height": 20.32272947547483
+          },
+          "layoutGlyphHeight": 16.66463816988936,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 51.356406460551014,
+          "lineGeometry": {
+            "length": 150,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 145.9038105676658,
+            "height": 102.71281292110203
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 150,
+              "centre": {
+                "x": 144.9519052838329,
+                "y": 224.70298465840108
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 129.9038105676658,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 173.34657819785005
+                },
+                {
+                  "x": 217.9038105676658,
+                  "y": 248.34657819785005
+                },
+                {
+                  "x": 201.9038105676658,
+                  "y": 276.0593911189521
+                },
+                {
+                  "x": 72,
+                  "y": 201.0593911189521
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "WHEN HE SCREAMED WHILE STEPPING ON THAT",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 197.73385356841985,
+            "width": 351.15183126457777,
+            "height": 221.21281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 110.60640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 273.623411329791,
+            "width": 351.15183126457777,
+            "height": 20.32272947547483
+          },
+          "layoutGlyphHeight": 13.833253958907608,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 110.60640646055101,
+          "lineGeometry": {
+            "length": 387,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 197.73385356841985,
+            "width": 351.15183126457777,
+            "height": 221.21281292110203
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 387,
+              "centre": {
+                "x": 247.57591563228888,
+                "y": 308.3402600289709
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 335.15183126457777,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 197.73385356841985
+                },
+                {
+                  "x": 423.15183126457777,
+                  "y": 391.2338535684199
+                },
+                {
+                  "x": 407.15183126457777,
+                  "y": 418.9466664895219
+                },
+                {
+                  "x": 72,
+                  "y": 225.4466664895219
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ABYSS GOBLIN TRAP, IT GOT MY BLOOD PUMPING",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 218.05658304389468,
+            "width": 361.54413610999103,
+            "height": 227.21281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 113.60640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 293.9461408052658,
+            "width": 361.54413610999103,
+            "height": 20.32272947547483
+          },
+          "layoutGlyphHeight": 13.428782198371096,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 113.60640646055101,
+          "lineGeometry": {
+            "length": 399,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 218.05658304389468,
+            "width": 361.54413610999103,
+            "height": 227.21281292110203
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 399,
+              "centre": {
+                "x": 252.77206805499551,
+                "y": 331.6629895044457
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 345.54413610999103,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 218.05658304389468
+                },
+                {
+                  "x": 433.54413610999103,
+                  "y": 417.5565830438947
+                },
+                {
+                  "x": 417.54413610999103,
+                  "y": 445.2693959649967
+                },
+                {
+                  "x": 72,
+                  "y": 245.76939596499673
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "borrowed": false
+    },
+    {
+      "op": "restore",
+      "input": [
+        {
+          "text": "arolf52'5 IF YOU'D SEEN HIM IN PERSON EVEN",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 86.14359353944899,
+            "width": 330.36722157375124,
+            "height": 233.6000882916718
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 72,
+              "y": 86.14359353944899,
+              "width": 125.11920087683927,
+              "height": 90.71281292110204
+            },
+            {
+              "empty": false,
+              "x": 58,
+              "y": 110.5308689100188,
+              "width": 330.36722157375124,
+              "height": 209.212812921102
+            }
+          ],
+          "renderGlyphHeight": 104.606406460551,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 162.03315130082012,
+            "width": 330.36722157375124,
+            "height": 52.7929086146994
+          },
+          "layoutGlyphHeight": 16.66463816988936,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 104.606406460551,
+          "lineGeometry": null,
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 86.14359353944899,
+            "width": 330.36722157375124,
+            "height": 233.6000882916718
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 126,
+              "centre": {
+                "x": 134.55960043841964,
+                "y": 131.5
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 109.11920087683927,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 86.14359353944899
+                },
+                {
+                  "x": 197.11920087683927,
+                  "y": 149.14359353944897
+                },
+                {
+                  "x": 181.11920087683927,
+                  "y": 176.85640646055103
+                },
+                {
+                  "x": 72,
+                  "y": 113.85640646055101
+                }
+              ]
+            },
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 363,
+              "centre": {
+                "x": 223.18361078687562,
+                "y": 215.1372753705698
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 314.36722157375124,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 74,
+                  "y": 110.5308689100188
+                },
+                {
+                  "x": 388.36722157375124,
+                  "y": 292.0308689100188
+                },
+                {
+                  "x": 372.36722157375124,
+                  "y": 319.7436818311208
+                },
+                {
+                  "x": 58,
+                  "y": 138.24368183112082
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ONCE, YOU'D NEVER SAY THAT LOL",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 98.85640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 206.74315614686475,
+            "width": 310.4486372867092,
+            "height": 20.32272947547483
+          },
+          "layoutGlyphHeight": 16.14332913890888,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 98.85640646055101,
+          "lineGeometry": {
+            "length": 340,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 340,
+              "centre": {
+                "x": 227.2243186433546,
+                "y": 229.71000484604463
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 294.4486372867092,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 130.8535983854936
+                },
+                {
+                  "x": 382.4486372867092,
+                  "y": 300.8535983854936
+                },
+                {
+                  "x": 366.4486372867092,
+                  "y": 328.5664113065956
+                },
+                {
+                  "x": 72,
+                  "y": 158.56641130659565
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "Ykbell WHEN HE SCREAMED WHILE STEPPING ON THAT ABYSS GOBLIN TRAP, IT GOT MY BLOOD PUMPING",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 361.54413610999103,
+            "height": 271.9228177671466
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 72,
+              "y": 173.34657819785005,
+              "width": 145.9038105676658,
+              "height": 102.71281292110203
+            },
+            {
+              "empty": false,
+              "x": 72,
+              "y": 197.73385356841985,
+              "width": 351.15183126457777,
+              "height": 221.21281292110203
+            },
+            {
+              "empty": false,
+              "x": 72,
+              "y": 218.05658304389468,
+              "width": 361.54413610999103,
+              "height": 227.21281292110203
+            }
+          ],
+          "renderGlyphHeight": 110.60640646055101,
+          "confidence": 0.9799999999999999,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 249.2361359592212,
+            "width": 361.54413610999103,
+            "height": 65.03273432151946
+          },
+          "layoutGlyphHeight": 13.833253958907608,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 110.60640646055101,
+          "lineGeometry": null,
+          "uprightLayoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 361.54413610999103,
+            "height": 271.9228177671466
+          },
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 150,
+              "centre": {
+                "x": 144.9519052838329,
+                "y": 224.70298465840108
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 129.9038105676658,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 173.34657819785005
+                },
+                {
+                  "x": 217.9038105676658,
+                  "y": 248.34657819785005
+                },
+                {
+                  "x": 201.9038105676658,
+                  "y": 276.0593911189521
+                },
+                {
+                  "x": 72,
+                  "y": 201.0593911189521
+                }
+              ]
+            },
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 387,
+              "centre": {
+                "x": 247.57591563228888,
+                "y": 308.3402600289709
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 335.15183126457777,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 197.73385356841985
+                },
+                {
+                  "x": 423.15183126457777,
+                  "y": 391.2338535684199
+                },
+                {
+                  "x": 407.15183126457777,
+                  "y": 418.9466664895219
+                },
+                {
+                  "x": 72,
+                  "y": 225.4466664895219
+                }
+              ]
+            },
+            {
+              "cluster": 0,
+              "sheared": true,
+              "degrees": 30,
+              "weight": 399,
+              "centre": {
+                "x": 252.77206805499551,
+                "y": 331.6629895044457
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 345.54413610999103,
+                "height": 20.32272947547483
+              },
+              "quad": [
+                {
+                  "x": 88,
+                  "y": 218.05658304389468
+                },
+                {
+                  "x": 433.54413610999103,
+                  "y": 417.5565830438947
+                },
+                {
+                  "x": 417.54413610999103,
+                  "y": 445.2693959649967
+                },
+                {
+                  "x": 72,
+                  "y": 245.76939596499673
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "arolf52'5 IF YOU'D SEEN HIM IN PERSON EVEN",
+          "bounds": {
+            "empty": false,
+            "x": 58,
+            "y": 86.14359353944899,
+            "width": 330.36722157375124,
+            "height": 233.6000882916718
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 72,
+              "y": 86.14359353944899,
+              "width": 125.11920087683927,
+              "height": 90.71281292110204
+            },
+            {
+              "empty": false,
+              "x": 58,
+              "y": 110.5308689100188,
+              "width": 330.36722157375124,
+              "height": 209.212812921102
+            }
+          ],
+          "renderGlyphHeight": 104.606406460551,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 58,
+            "y": 86.14359353944899,
+            "width": 330.36722157375124,
+            "height": 233.6000882916718
+          },
+          "layoutGlyphHeight": 16.66463816988936,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 104.606406460551,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 30,
+            "sheared": true,
+            "centre": {
+              "x": 178.8716056126476,
+              "y": 173.3186376852849
+            },
+            "box": {
+              "empty": false,
+              "x": 80,
+              "y": 146.9221833779352,
+              "width": 300.36722157375124,
+              "height": 52.7929086146994
+            },
+            "lineQuads": [
+              [
+                {
+                  "x": 88,
+                  "y": 86.14359353944899
+                },
+                {
+                  "x": 197.11920087683927,
+                  "y": 149.14359353944897
+                },
+                {
+                  "x": 181.11920087683927,
+                  "y": 176.85640646055103
+                },
+                {
+                  "x": 72,
+                  "y": 113.85640646055101
+                }
+              ],
+              [
+                {
+                  "x": 74,
+                  "y": 110.5308689100188
+                },
+                {
+                  "x": 388.36722157375124,
+                  "y": 292.0308689100188
+                },
+                {
+                  "x": 372.36722157375124,
+                  "y": 319.7436818311208
+                },
+                {
+                  "x": 58,
+                  "y": 138.24368183112082
+                }
+              ]
+            ],
+            "column": false,
+            "outline": [
+              {
+                "x": 80,
+                "y": 89.83863526226259
+              },
+              {
+                "x": 380.36722157375124,
+                "y": 263.2557314936078
+              },
+              {
+                "x": 380.36722157375124,
+                "y": 316.0486401083072
+              },
+              {
+                "x": 80,
+                "y": 142.63154387696198
+              }
+            ],
+            "eraseQuads": [
+              [
+                {
+                  "x": 84.45169367420164,
+                  "y": 80.7694403765498
+                },
+                {
+                  "x": 203.54750720263763,
+                  "y": 149.52944037654981
+                },
+                {
+                  "x": 184.66750720263764,
+                  "y": 182.23055962345018
+                },
+                {
+                  "x": 83.84,
+                  "y": 124.01777119828841
+                },
+                {
+                  "x": 83.84,
+                  "y": 81.82892489893553
+                }
+              ],
+              [
+                {
+                  "x": 83.84,
+                  "y": 112.8864580083125
+                },
+                {
+                  "x": 394.79552789954954,
+                  "y": 292.4167157471196
+                },
+                {
+                  "x": 375.91552789954955,
+                  "y": 325.11783499402
+                },
+                {
+                  "x": 83.84,
+                  "y": 156.487950337513
+                }
+              ]
+            ],
+            "sampleArea": {
+              "empty": false,
+              "x": 207.64185649823304,
+              "y": 189.74541053161005,
+              "width": 45.083508577285144,
+              "height": 26.3964543073497
+            }
+          },
+          "runsAcross": false
+        },
+        {
+          "text": "ONCE, YOU'D NEVER SAY THAT LOL",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 98.85640646055101,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 130.8535983854936,
+            "width": 310.4486372867092,
+            "height": 197.71281292110203
+          },
+          "layoutGlyphHeight": 16.14332913890888,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 98.85640646055101,
+          "lineGeometry": {
+            "length": 340,
+            "thickness": 32,
+            "angleDegrees": 30,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 30,
+            "sheared": true,
+            "centre": {
+              "x": 227.2243186433546,
+              "y": 229.71000484604463
+            },
+            "box": {
+              "empty": false,
+              "x": 80,
+              "y": 219.5486401083072,
+              "width": 294.4486372867092,
+              "height": 20.32272947547483
+            },
+            "lineQuads": [
+              [
+                {
+                  "x": 88,
+                  "y": 130.8535983854936
+                },
+                {
+                  "x": 382.4486372867092,
+                  "y": 300.8535983854936
+                },
+                {
+                  "x": 366.4486372867092,
+                  "y": 328.5664113065956
+                },
+                {
+                  "x": 72,
+                  "y": 158.56641130659565
+                }
+              ]
+            ],
+            "column": false,
+            "outline": [
+              {
+                "x": 80,
+                "y": 134.5486401083072
+              },
+              {
+                "x": 374.4486372867092,
+                "y": 304.5486401083072
+              },
+              {
+                "x": 374.4486372867092,
+                "y": 324.87136958378204
+              },
+              {
+                "x": 80,
+                "y": 154.87136958378204
+              }
+            ],
+            "eraseQuads": [
+              [
+                {
+                  "x": 84.45169367420164,
+                  "y": 125.47944522259442
+                },
+                {
+                  "x": 388.87694361250755,
+                  "y": 301.2394452225944
+                },
+                {
+                  "x": 369.99694361250755,
+                  "y": 333.94056446949486
+                },
+                {
+                  "x": 83.84,
+                  "y": 168.7277760443331
+                },
+                {
+                  "x": 83.84,
+                  "y": 126.53892974498014
+                }
+              ]
+            ],
+            "sampleArea": {
+              "empty": false,
+              "x": 217.71203485495144,
+              "y": 224.62932247717592,
+              "width": 19.024567576806323,
+              "height": 10.161364737737415
+            }
+          },
+          "runsAcross": false
+        },
+        {
+          "text": "Ykbell WHEN HE SCREAMED WHILE STEPPING ON THAT ABYSS GOBLIN TRAP, IT GOT MY BLOOD PUMPING",
+          "bounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 361.54413610999103,
+            "height": 271.9228177671466
+          },
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 72,
+              "y": 173.34657819785005,
+              "width": 145.9038105676658,
+              "height": 102.71281292110203
+            },
+            {
+              "empty": false,
+              "x": 72,
+              "y": 197.73385356841985,
+              "width": 351.15183126457777,
+              "height": 221.21281292110203
+            },
+            {
+              "empty": false,
+              "x": 72,
+              "y": 218.05658304389468,
+              "width": 361.54413610999103,
+              "height": 227.21281292110203
+            }
+          ],
+          "renderGlyphHeight": 110.60640646055101,
+          "confidence": 0.9799999999999999,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 72,
+            "y": 173.34657819785005,
+            "width": 361.54413610999103,
+            "height": 271.9228177671466
+          },
+          "layoutGlyphHeight": 13.833253958907608,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 110.60640646055101,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 30,
+            "sheared": true,
+            "centre": {
+              "x": 215.09996299037243,
+              "y": 288.23541139727257
+            },
+            "box": {
+              "empty": false,
+              "x": 80,
+              "y": 255.04161992066366,
+              "width": 345.54413610999103,
+              "height": 65.03273432151946
+            },
+            "lineQuads": [
+              [
+                {
+                  "x": 88,
+                  "y": 173.34657819785005
+                },
+                {
+                  "x": 217.9038105676658,
+                  "y": 248.34657819785005
+                },
+                {
+                  "x": 201.9038105676658,
+                  "y": 276.0593911189521
+                },
+                {
+                  "x": 72,
+                  "y": 201.0593911189521
+                }
+              ],
+              [
+                {
+                  "x": 88,
+                  "y": 197.73385356841985
+                },
+                {
+                  "x": 423.15183126457777,
+                  "y": 391.2338535684199
+                },
+                {
+                  "x": 407.15183126457777,
+                  "y": 418.9466664895219
+                },
+                {
+                  "x": 72,
+                  "y": 225.4466664895219
+                }
+              ],
+              [
+                {
+                  "x": 88,
+                  "y": 218.05658304389468
+                },
+                {
+                  "x": 433.54413610999103,
+                  "y": 417.5565830438947
+                },
+                {
+                  "x": 417.54413610999103,
+                  "y": 445.2693959649967
+                },
+                {
+                  "x": 72,
+                  "y": 245.76939596499673
+                }
+              ]
+            ],
+            "column": false,
+            "outline": [
+              {
+                "x": 80,
+                "y": 177.04161992066366
+              },
+              {
+                "x": 425.54413610999103,
+                "y": 376.54161992066366
+              },
+              {
+                "x": 425.54413610999103,
+                "y": 441.5743542421831
+              },
+              {
+                "x": 80,
+                "y": 242.07435424218312
+              }
+            ],
+            "eraseQuads": [
+              [
+                {
+                  "x": 84.45169367420164,
+                  "y": 167.97242503495087
+                },
+                {
+                  "x": 224.33211689346416,
+                  "y": 248.73242503495086
+                },
+                {
+                  "x": 205.45211689346417,
+                  "y": 281.4335442818513
+                },
+                {
+                  "x": 83.84,
+                  "y": 211.2207558566895
+                },
+                {
+                  "x": 83.84,
+                  "y": 169.0319095573366
+                }
+              ],
+              [
+                {
+                  "x": 84.45169367420166,
+                  "y": 192.35970040552067
+                },
+                {
+                  "x": 429.58013759037607,
+                  "y": 391.6197004055207
+                },
+                {
+                  "x": 410.7001375903761,
+                  "y": 424.3208196524211
+                },
+                {
+                  "x": 83.84,
+                  "y": 235.6080312272593
+                },
+                {
+                  "x": 83.84,
+                  "y": 193.41918492790643
+                }
+              ],
+              [
+                {
+                  "x": 84.45169367420166,
+                  "y": 212.6824298809955
+                },
+                {
+                  "x": 439.97244243578945,
+                  "y": 417.9424298809954
+                },
+                {
+                  "x": 421.09244243578945,
+                  "y": 450.6435491278959
+                },
+                {
+                  "x": 83.84,
+                  "y": 255.93076070273412
+                },
+                {
+                  "x": 83.84,
+                  "y": 213.74191440338126
+                }
+              ]
+            ],
+            "sampleArea": {
+              "empty": false,
+              "x": 223.9585563391923,
+              "y": 293.0498035010435,
+              "width": 57.62702343160639,
+              "height": 32.51636716075973
+            }
+          },
+          "runsAcross": false
+        }
+      ],
+      "borrowed": false
+    }
+  ]
+}

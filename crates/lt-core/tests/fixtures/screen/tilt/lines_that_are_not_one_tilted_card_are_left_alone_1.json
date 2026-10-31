@@ -1,0 +1,217 @@
+{
+  "test": "LinesThatAreNotOneTiltedCardAreLeftAlone",
+  "calls": [
+    {
+      "op": "straighten",
+      "input": [
+        {
+          "text": "A SLANTED CAPTION ON THE WALL",
+          "bounds": {
+            "empty": false,
+            "x": 100.62806941851919,
+            "y": 240.81100502323963,
+            "width": 398.7438611629616,
+            "height": 118.37798995352071
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 21.598625812993753,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100.62806941851919,
+            "y": 240.81100502323963,
+            "width": 398.7438611629616,
+            "height": 118.37798995352071
+          },
+          "layoutGlyphHeight": 21.598625812993753,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 21.598625812993753,
+          "lineGeometry": {
+            "length": 400,
+            "thickness": 36,
+            "angleDegrees": 12,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ANOTHER ONE TURNED THE OTHER WAY",
+          "bounds": {
+            "empty": false,
+            "x": 109.96964889611543,
+            "y": 232.20885314727315,
+            "width": 380.06070220776917,
+            "height": 195.58229370545365
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 97.79114685272683,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 109.96964889611543,
+            "y": 232.20885314727315,
+            "width": 380.06070220776917,
+            "height": 195.58229370545365
+          },
+          "layoutGlyphHeight": 97.79114685272683,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 97.79114685272683,
+          "lineGeometry": {
+            "length": 400,
+            "thickness": 36,
+            "angleDegrees": 24,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "A SLANTED CAPTION ON THE WALL",
+          "bounds": {
+            "empty": false,
+            "x": 100.62806941851919,
+            "y": 240.81100502323963,
+            "width": 398.7438611629616,
+            "height": 118.37798995352071
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 21.598625812993753,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 100.62806941851919,
+            "y": 240.81100502323963,
+            "width": 398.7438611629616,
+            "height": 118.37798995352071
+          },
+          "layoutGlyphHeight": 21.598625812993753,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 21.598625812993753,
+          "lineGeometry": {
+            "length": 400,
+            "thickness": 36,
+            "angleDegrees": 12,
+            "isTilted": false
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": [
+            {
+              "cluster": 0,
+              "sheared": false,
+              "degrees": 12,
+              "weight": 400,
+              "centre": {
+                "x": 300,
+                "y": 300
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 400,
+                "height": 36
+              },
+              "quad": [
+                {
+                  "x": 108.11289028795854,
+                  "y": 240.81100502323963
+                },
+                {
+                  "x": 499.3719305814808,
+                  "y": 323.9756813503434
+                },
+                {
+                  "x": 491.8871097120415,
+                  "y": 359.18899497676034
+                },
+                {
+                  "x": 100.62806941851919,
+                  "y": 276.0243186496566
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        },
+        {
+          "text": "ANOTHER ONE TURNED THE OTHER WAY",
+          "bounds": {
+            "empty": false,
+            "x": 109.96964889611543,
+            "y": 232.20885314727315,
+            "width": 380.06070220776917,
+            "height": 195.58229370545365
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": 97.79114685272683,
+          "confidence": 0.98,
+          "layoutScript": "Latin",
+          "layoutBounds": {
+            "empty": false,
+            "x": 109.96964889611543,
+            "y": 232.20885314727315,
+            "width": 380.06070220776917,
+            "height": 195.58229370545365
+          },
+          "layoutGlyphHeight": 97.79114685272683,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": 97.79114685272683,
+          "lineGeometry": {
+            "length": 400,
+            "thickness": 36,
+            "angleDegrees": 24,
+            "isTilted": true
+          },
+          "uprightLayoutBounds": null,
+          "tiltedLines": [
+            {
+              "cluster": 1,
+              "sheared": false,
+              "degrees": 24,
+              "weight": 400,
+              "centre": {
+                "x": 300,
+                "y": 330
+              },
+              "level": {
+                "isEmpty": false,
+                "width": 400,
+                "height": 36
+              },
+              "quad": [
+                {
+                  "x": 124.61216804684425,
+                  "y": 232.20885314727315
+                },
+                {
+                  "x": 490.0303511038846,
+                  "y": 394.9035103775932
+                },
+                {
+                  "x": 475.38783195315574,
+                  "y": 427.7911468527268
+                },
+                {
+                  "x": 109.96964889611543,
+                  "y": 265.0964896224068
+                }
+              ]
+            }
+          ],
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "borrowed": false
+    }
+  ]
+}

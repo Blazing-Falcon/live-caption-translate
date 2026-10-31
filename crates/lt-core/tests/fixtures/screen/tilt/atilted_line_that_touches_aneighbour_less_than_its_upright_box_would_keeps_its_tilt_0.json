@@ -1,0 +1,213 @@
+{
+  "test": "ATiltedLineThatTouchesANeighbourLessThanItsUprightBoxWouldKeepsItsTilt",
+  "calls": [
+    {
+      "op": "level",
+      "input": [
+        {
+          "text": "line",
+          "bounds": {
+            "empty": false,
+            "x": 47,
+            "y": 888,
+            "width": 503,
+            "height": 115
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 47,
+            "y": 888,
+            "width": 503,
+            "height": 115
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 7.2,
+            "sheared": false,
+            "centre": {
+              "x": 298.5,
+              "y": 945
+            },
+            "box": {
+              "empty": false,
+              "x": 48,
+              "y": 919,
+              "width": 501,
+              "height": 52
+            },
+            "lineQuads": [],
+            "column": false,
+            "outline": [
+              {
+                "x": 53.23393139339522,
+                "y": 887.8090427579654
+              },
+              {
+                "x": 550.2833967519485,
+                "y": 950.6009927736817
+              },
+              {
+                "x": 543.7660686066048,
+                "y": 1002.1909572420346
+              },
+              {
+                "x": 46.71660324805139,
+                "y": 939.3990072263183
+              }
+            ],
+            "eraseQuads": [],
+            "sampleArea": {
+              "empty": false,
+              "x": 190.66796389499996,
+              "y": 932,
+              "width": 215.66407221000006,
+              "height": 26
+            }
+          },
+          "runsAcross": false
+        },
+        {
+          "text": "neighbour",
+          "bounds": {
+            "empty": false,
+            "x": 470,
+            "y": 860,
+            "width": 120,
+            "height": 85
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 470,
+            "y": 860,
+            "width": 120,
+            "height": 85
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "output": [
+        {
+          "text": "line",
+          "bounds": {
+            "empty": false,
+            "x": 47,
+            "y": 888,
+            "width": 503,
+            "height": 115
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 47,
+            "y": 888,
+            "width": 503,
+            "height": 115
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": {
+            "degrees": 7.2,
+            "sheared": false,
+            "centre": {
+              "x": 298.5,
+              "y": 945
+            },
+            "box": {
+              "empty": false,
+              "x": 48,
+              "y": 919,
+              "width": 501,
+              "height": 52
+            },
+            "lineQuads": [],
+            "column": false,
+            "outline": [
+              {
+                "x": 53.23393139339522,
+                "y": 887.8090427579654
+              },
+              {
+                "x": 550.2833967519485,
+                "y": 950.6009927736817
+              },
+              {
+                "x": 543.7660686066048,
+                "y": 1002.1909572420346
+              },
+              {
+                "x": 46.71660324805139,
+                "y": 939.3990072263183
+              }
+            ],
+            "eraseQuads": [],
+            "sampleArea": {
+              "empty": false,
+              "x": 190.66796389499996,
+              "y": 932,
+              "width": 215.66407221000006,
+              "height": 26
+            }
+          },
+          "runsAcross": false
+        },
+        {
+          "text": "neighbour",
+          "bounds": {
+            "empty": false,
+            "x": 470,
+            "y": 860,
+            "width": 120,
+            "height": 85
+          },
+          "sourceLineBounds": null,
+          "renderGlyphHeight": null,
+          "confidence": null,
+          "layoutScript": "Unknown",
+          "layoutBounds": {
+            "empty": false,
+            "x": 470,
+            "y": 860,
+            "width": 120,
+            "height": 85
+          },
+          "layoutGlyphHeight": null,
+          "layoutInkHeight": null,
+          "fontGlyphHeight": null,
+          "lineGeometry": null,
+          "uprightLayoutBounds": null,
+          "tiltedLines": null,
+          "tilt": null,
+          "runsAcross": false
+        }
+      ],
+      "borrowed": true
+    }
+  ]
+}

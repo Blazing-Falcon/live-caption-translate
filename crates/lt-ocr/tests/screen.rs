@@ -95,6 +95,7 @@ fn horizontal_baseline_blocks_are_found_and_read() {
     let cer = edits as f64 / chars as f64;
     println!("all fixtures: CER {cer:.4} ({edits}/{chars})");
     assert!(cer <= MAX_CER, "CER {cer:.4} is above {MAX_CER}");
+    tilted_groups(&mut engine, &screens);
 }
 
 fn decode_png(path: &std::path::Path) -> (u32, u32, Vec<u8>) {
@@ -165,4 +166,54 @@ fn distance(a: &[char], b: &[char]) -> usize {
         }
     }
     row[b.len()]
+}
+
+#[derive(Deserialize)]
+struct TiltedCase {
+    name: String,
+    groups: Vec<(Vec<usize>, String, bool)>,
+}
+
+fn tilted_groups(engine: &mut OcrEngine, screens: &std::path::Path) {
+    use lt_core::screen::{filters, group, ink, line::RawLine};
+    use std::collections::HashMap;
+    let cases: Vec<TiltedCase> =
+        serde_json::from_str(include_str!("fixtures/tilted-groups.json")).unwrap();
+    for case in cases {
+        let (w, h, pixels) = decode_png(&screens.join(format!("{}.png", case.name)));
+        let image = ImageView::new(w, h, w * 4, &pixels).unwrap();
+        let lines = engine.recognize(&image).unwrap();
+        let raw: Vec<_> = lines.iter().map(RawLine::from).collect();
+        let mut facts = filters::prepare(&raw);
+        ink::annotate(&image, &mut facts);
+        let report = group::report_screenshot(&facts, &group::profile::GENERAL, true);
+        let sources: HashMap<_, _> = report
+            .trace
+            .lines
+            .iter()
+            .map(|line| (line.id.as_str(), &line.source_ids))
+            .collect();
+        let actual: Vec<_> = report
+            .groups
+            .iter()
+            .zip(&report.trace.groups)
+            .map(|(group, ids)| {
+                let members = ids
+                    .iter()
+                    .flat_map(|id| {
+                        sources[id.as_str()]
+                            .iter()
+                            .map(|id| id[1..].parse::<usize>().unwrap())
+                    })
+                    .collect();
+                (members, group.text.clone(), group.tilt.is_some())
+            })
+            .collect();
+        assert_eq!(actual, case.groups, "{}: recognition/grouping", case.name);
+        println!(
+            "{}: exact membership/text/tilt for {} groups",
+            case.name,
+            actual.len()
+        );
+    }
 }

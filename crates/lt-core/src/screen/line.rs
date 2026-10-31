@@ -44,6 +44,8 @@ pub struct Line {
     pub upright_layout_bounds: Option<RectF>,
     #[serde(default, alias = "tiltedLines")]
     pub tilted_lines: Option<Vec<TiltedLine>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tilt: Option<super::tilt::TiltedText>,
     #[serde(default, alias = "runsAcross")]
     pub runs_across: bool,
 }

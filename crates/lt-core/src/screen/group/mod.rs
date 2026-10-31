@@ -2,7 +2,7 @@ use super::{
     geom::{LineGeometry, RectF},
     ink,
     line::{layout_glyph_height_for, layout_script_for, Line},
-    paint, placement, Block, ImageView, PaintFacts, Rect,
+    paint, placement, tilt, Block, ImageView, PaintFacts, Rect,
 };
 use crate::engines::TextLine;
 
@@ -39,7 +39,23 @@ pub fn blocks(image: &ImageView<'_>, lines: &[TextLine]) -> Vec<Block> {
         })
         .collect();
     ink::annotate(image, &mut facts);
-    blocks_from_groups(image, &group(&facts))
+    blocks_from_groups(image, &group_screenshot(&facts))
+}
+
+pub fn group_screenshot(lines: &[Line]) -> Vec<Line> {
+    report_screenshot(lines, &profile::GENERAL, false).groups
+}
+
+pub fn report_screenshot(
+    lines: &[Line],
+    profile: &profile::GroupingProfile,
+    explain: bool,
+) -> GroupingReport {
+    let straightened = tilt::straighten(lines);
+    let mut report = group_with_profile(&straightened, profile, explain);
+    let restored = tilt::restore(&report.groups);
+    report.groups = tilt::level(&restored).into_owned();
+    report
 }
 
 pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> {
@@ -60,8 +76,15 @@ pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> 
         .map(|(id, (group, lines))| {
             let (background, foreground) = paint::sampling::for_capture_overlay(
                 *image,
-                group.bounds,
-                group.source_line_bounds.as_deref(),
+                group
+                    .tilt
+                    .as_ref()
+                    .map_or(group.bounds, |tilt| tilt.sample_area()),
+                if group.tilt.is_some() {
+                    None
+                } else {
+                    group.source_line_bounds.as_deref()
+                },
                 false,
             );
             let mut heights: Vec<_> = lines.iter().map(|line| line.h).collect();
@@ -76,6 +99,7 @@ pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> 
                 intent: placement::intent_for(group),
                 lines,
                 source: group.text.clone(),
+                tilt: group.tilt.clone(),
                 paint: Some(PaintFacts {
                     bounds: group.bounds,
                     source_lines: group.lines().to_vec(),

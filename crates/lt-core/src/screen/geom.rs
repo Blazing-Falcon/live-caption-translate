@@ -252,6 +252,13 @@ impl LineGeometry {
                 .contains(&self.angle_degrees.abs())
     }
 
+    pub fn turned_back(self) -> Self {
+        Self {
+            angle_degrees: folded_angle(self.angle_degrees + 90.0),
+            ..self
+        }
+    }
+
     pub fn from_quad(points: &[PointF]) -> Option<Self> {
         if points.len() != 4 {
             return None;

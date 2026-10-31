@@ -216,6 +216,15 @@ export interface ScreenFrame {
   scale: number;
 }
 
+export interface ScreenTilt {
+  degrees: number;
+  sheared: boolean;
+  centre: { x: number; y: number };
+  box: RectF;
+  line_quads: { x: number; y: number }[][];
+  column: boolean;
+}
+
 /** One block of text on the screen. Every rect is in frame pixels. */
 export interface ScreenBlock {
   id: number;
@@ -227,6 +236,7 @@ export interface ScreenBlock {
   background: Rgb;
   foreground: Rgb;
   translate: boolean;
+  tilt?: ScreenTilt;
   paint?: {
     bounds: RectF;
     source_lines: RectF[];

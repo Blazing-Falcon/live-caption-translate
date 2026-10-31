@@ -115,7 +115,7 @@ pub fn run_job_with_output(
     let raw: Vec<RawLine> = lines.iter().map(RawLine::from).collect();
     let mut facts = filters::prepare(&raw);
     ink::annotate(image, &mut facts);
-    let groups = group::group(&facts);
+    let groups = group::group_screenshot(&facts);
     let blocks = group::blocks_from_groups(image, &groups);
     if let Some(prepare) = prepare {
         if let Err(error) = prepare(image, &groups, &blocks) {

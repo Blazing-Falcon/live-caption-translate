@@ -1,4 +1,5 @@
 use super::{color, vote::DominantColorVote};
+use crate::screen::tilt::TiltedText;
 use crate::screen::{
     geom::{PointF, RectF},
     imaging::{
@@ -310,30 +311,6 @@ fn palette(plate: &ImageBuffer, inset_x: i32, inset_y: i32) -> Vec<[u8; 3]> {
     }
     colors
 }
-fn depth(polygon: &[PointF], x: f64, y: f64) -> f64 {
-    let mut area = 0.0;
-    for i in 0..polygon.len() {
-        let a = polygon[i];
-        let b = polygon[(i + 1) % polygon.len()];
-        area += a.x * b.y - b.x * a.y;
-    }
-    if area == 0.0 {
-        return f64::NEG_INFINITY;
-    }
-    let turn = area.signum();
-    let mut depth = f64::MAX;
-    for i in 0..polygon.len() {
-        let a = polygon[i];
-        let b = polygon[(i + 1) % polygon.len()];
-        let length = ((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y)).sqrt();
-        if length == 0.0 {
-            continue;
-        }
-        let cross = (b.x - a.x) * (y - a.y) - (b.y - a.y) * (x - a.x);
-        depth = depth.min(turn * cross / length);
-    }
-    depth
-}
 fn shape_palette(plate: &ImageBuffer, left: i32, top: i32, shape: &[Vec<PointF>]) -> Vec<[u8; 3]> {
     let step_x = (plate.width / 48).max(1);
     let step_y = (plate.height / 16).max(1);
@@ -341,7 +318,7 @@ fn shape_palette(plate: &ImageBuffer, left: i32, top: i32, shape: &[Vec<PointF>]
     for y in (step_y / 2..plate.height).step_by(step_y) {
         for x in (step_x / 2..plate.width).step_by(step_x) {
             if !shape.iter().any(|p| {
-                depth(
+                TiltedText::depth(
                     p,
                     f64::from(left) + x as f64 + 0.5,
                     f64::from(top) + y as f64 + 0.5,
@@ -432,7 +409,7 @@ fn fade(
                 let depth = shape
                     .iter()
                     .map(|p| {
-                        depth(
+                        TiltedText::depth(
                             p,
                             f64::from(left) + x as f64 + 0.5,
                             f64::from(top) + y as f64 + 0.5,
