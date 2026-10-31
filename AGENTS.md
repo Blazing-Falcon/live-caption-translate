@@ -52,7 +52,9 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
 | Second pass (trim, refine thread) | `crates/lt-core/src/refine.rs`, `pipeline/refine.rs` |
 | X-ASR streaming and offline | `crates/lt-sherpa/src/` |
 | Screen text recognition (PP-OCRv6 detector and recognizer) | `crates/lt-ocr/src/` |
-| Screen blocks, colors, pieces, job runner, events | `crates/lt-core/src/screen/` |
+| Screen facts, filters, ink, grouping, imaging, repair, paint, job events | `crates/lt-core/src/screen/` |
+| OCR reuse and per-job repaired plates | `app/src-tauri/src/screen/reuse.rs`, `plates.rs`, `worker.rs` |
+| English screenshot layout, DOM ruler, debug outlines | `app/ui/src/lib/screen-layout.ts`, `screen-measure.ts`, `screen-debug.ts`, `app/ui/src/screen/` |
 | Translator client, loopback HTTP | `crates/lt-llm/src/client.rs`, `http.rs` |
 | llama-server, model downloads | `crates/lt-llm/src/supervisor.rs`, `models/` |
 | Windows capture | `crates/lt-audio/src/windows/` |

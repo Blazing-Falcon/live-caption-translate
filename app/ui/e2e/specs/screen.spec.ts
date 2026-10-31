@@ -64,6 +64,31 @@ async function send(page: Page, events: ScreenEvent[]): Promise<void> {
 const AREA = { from: { x: 40, y: 30 }, to: { x: 760, y: 440 } };
 
 test.describe("screenshot window (frame and events recorded by lt-cli at scale 1.5)", () => {
+  test("D requests raw boxes, draws separate line and group edges, and toggles without another read", async ({ page }) => {
+    await start(page);
+    await page.keyboard.press("d");
+    await drag(page, AREA.from, AREA.to);
+    expect((await calls(page, "screen_select"))[0]!.args.debug).toBe(true);
+    const data = blocks();
+    const raw = data.flatMap(block => block.lines);
+    raw.push({ x: 30, y: 15, w: 20, h: 20 });
+    await send(page, [{ type: "reading", job: 1 }, { type: "blocks", job: 1, blocks: data, ocr_ms: 0, ocr_lines: raw }]);
+    await expect(page.locator("[data-debug-line]")).toHaveCount(raw.length);
+    await expect(page.locator("[data-debug-group]")).toHaveCount(data.length);
+    const edge = await page.locator("[data-debug-group]").first().boundingBox();
+    expect(Math.abs(edge!.x - (data[0]!.rect.x - 3) / SCALE)).toBeLessThanOrEqual(1 / 64);
+    const color = await page.locator("[data-debug-line]").first().evaluate(node => getComputedStyle(node).borderColor);
+    expect(color).toBe("rgb(77, 163, 255)");
+    expect(await page.locator("[data-debug-group]").first().evaluate(node => getComputedStyle(node).borderColor)).toBe("rgb(255, 180, 84)");
+    await page.keyboard.press("d");
+    await expect(page.locator("[data-debug-line]")).toHaveCount(0);
+    await page.keyboard.press("d");
+    await expect(page.locator("[data-debug-line]")).toHaveCount(raw.length);
+    expect(await calls(page, "screen_select")).toHaveLength(1);
+    await page.keyboard.press("Escape");
+    await expect(page.locator("[data-debug-line]")).toHaveCount(0);
+  });
+
   test("requests a plate after English layout and rejects an older job response", async ({ page }) => {
     await start(page);
     await page.evaluate(() => {

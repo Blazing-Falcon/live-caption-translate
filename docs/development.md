@@ -128,6 +128,8 @@ It prints a table of block, Chinese, English and milliseconds. The JSON file has
 
 Recognized lines include a `quad` of four source-pixel points and `char_scores` for the kept recognition steps. The job derives script, glyph heights and ink height from these lines, folds Latin accents, removes isolated icon ideographs and rejects misshapen detections before grouping.
 
+D in the screenshot window toggles blue OCR line boxes and orange group boxes. Enable it before dragging to request raw rectangles in the first job; enabling it later reruns the same crop, using the last OCR result when the frame/crop/direction match. Empty reads are not cached. Raw rectangles include detections that the filters reject.
+
 ### Regenerate the screen fixtures
 
 Do these only when the thing they record changes on purpose, in this order, and say so in the commit body. Then run `cargo test -p lt-core --test screen_group` and `npm --prefix app/ui run e2e -- screen`.

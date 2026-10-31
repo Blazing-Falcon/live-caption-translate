@@ -155,6 +155,7 @@ fn cancelling_during_paint_preparation_emits_no_blocks_or_translation() {
         &cancel,
         &mut TranslationCache::default(),
         JobOutput {
+            debug: false,
             emit: &mut |event| events.push(event),
             prepare: Some(&mut |_, groups, blocks| {
                 assert_eq!(groups.len(), 1);
@@ -167,6 +168,46 @@ fn cancelling_during_paint_preparation_emits_no_blocks_or_translation() {
     );
     assert!(prepared);
     assert_eq!(described(&events), ["reading"]);
+}
+
+#[test]
+fn debug_lines_include_detections_rejected_before_grouping_only_when_requested() {
+    let pixels = vec![255; 300 * 400 * 4];
+    let image = ImageView::new(300, 400, 1200, &pixels).unwrap();
+    let mut rejected = line(100, "好");
+    rejected.rect.w = 280;
+    let input = vec![line(10, "你好"), rejected];
+    for debug in [false, true] {
+        let mut events = Vec::new();
+        run_job_with_output(
+            7,
+            &image,
+            &mut FakeReader(Some(input.clone())),
+            &mut |_| Ok("Hello".into()),
+            &AtomicBool::new(false),
+            &mut TranslationCache::default(),
+            JobOutput {
+                debug,
+                emit: &mut |event| events.push(event),
+                prepare: None,
+            },
+        );
+        let ScreenEvent::Blocks {
+            blocks, ocr_lines, ..
+        } = &events[1]
+        else {
+            panic!("missing blocks")
+        };
+        assert_eq!(blocks.len(), 1);
+        assert_eq!(
+            *ocr_lines,
+            debug.then(|| input.iter().map(|line| line.rect).collect())
+        );
+        assert_eq!(
+            described(&events),
+            ["reading", "blocks 1", "translated 0", "done"]
+        );
+    }
 }
 
 #[test]

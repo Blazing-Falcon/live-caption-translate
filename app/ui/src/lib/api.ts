@@ -87,8 +87,8 @@ export const modelsDownload = (): Promise<void> => call<void>(COMMANDS.modelsDow
 /** One model by id, also an optional one such as the screen text recognizer. */
 export const modelsDownloadOptional = (id: string): Promise<void> => call<void>(COMMANDS.modelsDownloadOptional, { id });
 /** Starts a job on `rect` (frame pixels) of frame `frame`; resolves with the job id. */
-export const screenSelect = (frame: number, rect: Rect): Promise<number> =>
-  call<number>(COMMANDS.screenSelect, { frame, rect });
+export const screenSelect = (frame: number, rect: Rect, debug = false): Promise<number> =>
+  call<number>(COMMANDS.screenSelect, { frame, rect, ...(debug ? { debug: true } : {}) });
 export const screenClose = (): Promise<void> => call<void>(COMMANDS.screenClose);
 export const screenPlate = (request: ScreenPlateRequest): Promise<ScreenPlate> =>
   call<ScreenPlate>(COMMANDS.screenPlate, { request });

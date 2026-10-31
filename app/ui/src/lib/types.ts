@@ -237,7 +237,7 @@ export interface ScreenBlock {
 
 export type ScreenEvent =
   | { type: "reading"; job: number }
-  | { type: "blocks"; job: number; blocks: ScreenBlock[]; ocr_ms: number }
+  | { type: "blocks"; job: number; blocks: ScreenBlock[]; ocr_ms: number; ocr_lines?: Rect[] }
   | { type: "translated"; job: number; id: number; text: string }
   | { type: "failed"; job: number; id: number; message: string }
   | { type: "done"; job: number; total_ms: number }

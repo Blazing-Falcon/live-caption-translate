@@ -1,9 +1,11 @@
 //! The `lt-screen` thread: owns the text recognizer and runs one screen job at a time.
+use super::reuse::{RecognitionKey, RecognitionReuse};
 use crate::{
     app::{lock, Shared},
     controller,
 };
 use crossbeam_channel::{bounded, Receiver, RecvTimeoutError, Sender, TrySendError};
+use lt_core::screen::{group::profile::CaptureLayoutMode, Rect};
 use lt_core::{
     config::logical_cpus,
     error::{Error, Result},
@@ -29,6 +31,8 @@ const IDLE: Duration = Duration::from_secs(5 * 60);
 
 pub struct Job {
     pub id: u64,
+    pub frame: u64,
+    pub debug: bool,
     /// BGRA rows of `width * 4` bytes, cut from the frame at `origin`.
     pub crop: Vec<u8>,
     pub width: u32,
@@ -70,25 +74,21 @@ impl Jobs {
     }
 
     /// Cancels the previous job and queues this one.
-    pub fn start(
-        &self,
-        frame: u64,
-        crop: Vec<u8>,
-        width: u32,
-        height: u32,
-        origin: (i32, i32),
-    ) -> u64 {
+    pub fn start(&self, frame: u64, crop: Vec<u8>, area: Rect, debug: bool) -> u64 {
         let mut current = lock(&self.current);
         current.store(true, Ordering::Release);
         let cancel = Arc::new(AtomicBool::new(false));
         *current = cancel.clone();
         let id = self.next.fetch_add(1, Ordering::Relaxed);
+        let origin = (area.x, area.y);
         self.plates.begin(frame, id, origin, cancel.clone());
         let mut work = Work::Run(Job {
             id,
+            frame,
+            debug,
             crop,
-            width,
-            height,
+            width: area.w,
+            height: area.h,
             origin,
             cancel,
         });
@@ -114,6 +114,7 @@ struct Worker {
     shared: Arc<Shared>,
     engine: Option<OcrEngine>,
     cache: TranslationCache,
+    reuse: RecognitionReuse,
     server: Server,
 }
 
@@ -130,6 +131,7 @@ pub fn spawn(shared: Arc<Shared>, work: Receiver<Work>) -> std::io::Result<JoinH
                 shared,
                 engine: None,
                 cache: TranslationCache::default(),
+                reuse: RecognitionReuse::default(),
             }
             .run(work)
         })
@@ -143,6 +145,7 @@ impl Worker {
                     Ok(next) => next,
                     Err(RecvTimeoutError::Timeout) => {
                         self.engine = None;
+                        self.reuse.clear();
                         tracing::debug!("OCR model unloaded after idle time");
                         continue;
                     }
@@ -216,11 +219,27 @@ impl Worker {
         };
         let Self {
             engine,
+            reuse,
             cache,
             server,
             ..
         } = self;
         let engine = engine.as_mut().expect("loaded above");
+        let mut reader = reuse.reader(
+            RecognitionKey {
+                frame: job.frame,
+                region: Rect {
+                    x: job.origin.0,
+                    y: job.origin.1,
+                    w: job.width,
+                    h: job.height,
+                },
+                language: "ZH".into(),
+                vertical: false,
+                layout: CaptureLayoutMode::General,
+            },
+            engine,
+        );
         server.failed = None;
         let cancel = &job.cancel;
         let mut translate = |piece: &str| server.translate(piece, cancel);
@@ -233,13 +252,14 @@ impl Worker {
         run_job_with_output(
             job.id,
             &image,
-            engine,
+            &mut reader,
             &mut translate,
             cancel,
             cache,
             JobOutput {
                 emit: &mut emit,
                 prepare: Some(&mut prepare),
+                debug: job.debug,
             },
         );
     }
@@ -247,7 +267,16 @@ impl Worker {
 
 /// Moves crop rects to frame pixels.
 fn to_frame(event: &mut ScreenEvent, (x, y): (i32, i32)) {
-    if let ScreenEvent::Blocks { blocks, .. } = event {
+    if let ScreenEvent::Blocks {
+        blocks, ocr_lines, ..
+    } = event
+    {
+        if let Some(lines) = ocr_lines {
+            for rect in lines {
+                rect.x += x;
+                rect.y += y;
+            }
+        }
         for block in blocks {
             if let Some(paint) = &mut block.paint {
                 paint.bounds = paint.bounds.offset(f64::from(x), f64::from(y));
@@ -297,5 +326,38 @@ impl Server {
             self.client = Some(OpenAiCompatTranslator::new(&url.map_err(Error::Engine)?)?);
         }
         Ok(self.client.as_mut().expect("connected above"))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn raw_debug_boxes_receive_the_crop_origin_once() {
+        let mut event = ScreenEvent::Blocks {
+            job: 1,
+            blocks: vec![],
+            ocr_ms: 0,
+            ocr_lines: Some(vec![Rect {
+                x: 10,
+                y: 20,
+                w: 30,
+                h: 40,
+            }]),
+        };
+        to_frame(&mut event, (100, 200));
+        let ScreenEvent::Blocks { ocr_lines, .. } = event else {
+            unreachable!()
+        };
+        assert_eq!(
+            ocr_lines.unwrap(),
+            [Rect {
+                x: 110,
+                y: 220,
+                w: 30,
+                h: 40
+            }]
+        );
     }
 }

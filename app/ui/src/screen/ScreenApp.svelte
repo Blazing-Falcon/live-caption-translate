@@ -2,6 +2,7 @@
   import { cssSize, frameUrl, type Screen } from "../lib/screen";
   import ResultLayer from "./ResultLayer.svelte";
   import Selection from "./Selection.svelte";
+  import DebugBoxes from "./DebugBoxes.svelte";
   import Toolbar from "./Toolbar.svelte";
 
   let { screen }: { screen: Screen } = $props();
@@ -22,6 +23,10 @@
 
   function keydown(event: KeyboardEvent): void {
     if (event.key === "Escape") screen.close();
+    else if (event.key.toLowerCase() === "d" && !event.repeat && !event.ctrlKey && !event.altKey && !event.metaKey && $view.frame) {
+      event.preventDefault();
+      screen.toggleDebug();
+    }
     else if (event.key === " " && $view.frame) {
       event.preventDefault();
       screen.setOriginal(true);
@@ -56,6 +61,9 @@
       onclose={() => screen.close()}
     />
     <ResultLayer frame={$view.frame} job={$view.job} selection={$view.selection} blocks={$view.blocks} outcomes={$view.outcomes} hidden={$view.original} onhint={(message) => (hint = message)} />
+    {#if $view.debug && !$view.original}
+      <DebugBoxes frame={$view.frame} blocks={$view.blocks} lines={$view.ocrLines} />
+    {/if}
     {#if $view.selection}
       <Toolbar
         view={$view}
@@ -67,7 +75,7 @@
         onclose={() => screen.close()}
       />
     {:else}
-      <p class="prompt">Drag over the text to translate it. Esc closes.</p>
+      <p class="prompt">Drag over the text to translate it. D shows boxes. Esc closes.</p>
     {/if}
   </main>
 {/if}

@@ -65,12 +65,14 @@ pub fn run_job(
         JobOutput {
             emit,
             prepare: None,
+            debug: false,
         },
     );
 }
 
 pub type PreparePaint<'a> = dyn FnMut(&ImageView<'_>, &[Line], &[super::Block]) -> Result<()> + 'a;
 pub struct JobOutput<'a> {
+    pub debug: bool,
     pub emit: &'a mut dyn FnMut(ScreenEvent),
     pub prepare: Option<&'a mut PreparePaint<'a>>,
 }
@@ -84,7 +86,11 @@ pub fn run_job_with_output(
     cache: &mut TranslationCache,
     output: JobOutput<'_>,
 ) {
-    let JobOutput { emit, prepare } = output;
+    let JobOutput {
+        emit,
+        prepare,
+        debug,
+    } = output;
     let started = Instant::now();
     let cancelled = || cancel.load(Ordering::Acquire);
     emit(ScreenEvent::Reading { job });
@@ -131,6 +137,7 @@ pub fn run_job_with_output(
         job,
         blocks,
         ocr_ms: millis(started),
+        ocr_lines: debug.then(|| lines.iter().map(|line| line.rect).collect()),
     });
     for (id, source) in sources {
         let event = match translate_block(&source, translator, cancel, cache) {

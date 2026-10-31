@@ -153,7 +153,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
 | `set_overlay_visible` | `visible` | | Show or hide the overlay |
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
-| `screen_select` | `frame`, `rect` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |
+| `screen_select` | `frame`, `rect`, `debug?` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |
 | `screen_close` | | | Cancel the screen job, hide the `screen` window and drop the frame |
 | `screen_plate` | `request: { frame, job, block, rect, written_height }` | `{ rect, foreground, url }` | Build a background image and choose its text color after English layout; geometry is in frame pixels |
 | `quit` | | | Stop the pipeline and the translation server, then exit |
@@ -166,6 +166,10 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 
 The `screen_translate` hotkey captures the monitor under the cursor, sends `screen://frame`, and shows the `screen` window over that monitor. The page loads the frame from `http://ltshot.localhost/<id>` (a 32-bit BMP; any other id is 404). The UI converts CSS pixels to frame pixels by multiplying by `scale`, and frame pixels back by dividing; every rect the app sends is in frame pixels.
 
+`screen_select.debug` defaults to `false`. When true, `blocks.ocr_lines` contains every recognized line rectangle before filtering/grouping, in frame pixels; otherwise the field is omitted. D toggles blue line boxes and orange group boxes in the screenshot window. Enabling it after a result requests the same area again if raw lines were not requested. Group outlines extend 3 physical pixels beyond their bounds.
+
+The last nonempty OCR result is reused only for the same frozen frame, clipped crop and direction. A fresh capture or changed crop reads again; empty results are not retained. Reuse preserves normal job events and translations.
+
 Each `screen_select` starts a job with a new, larger id. A new job or `screen_close` cancels the running one, which then sends nothing more. A job's first events can arrive before `screen_select` returns its id.
 
 `ScreenEvent` (`type`):
@@ -173,7 +177,7 @@ Each `screen_select` starts a job with a new, larger id. A new job or `screen_cl
 | `type` | Fields | Sent when |
 |---|---|---|
 | `reading` | `job` | The job starts |
-| `blocks` | `job`, `blocks[]`, `ocr_ms` | The text is read and grouped, source colors sampled, and the repaired frame retained |
+| `blocks` | `job`, `blocks[]`, `ocr_ms`, `ocr_lines?` | The text is read and grouped, source colors sampled, and the repaired frame retained |
 | `translated` | `job`, `id`, `text` | One block's English |
 | `failed` | `job`, `id`, `message` | One block could not be translated |
 | `done` | `job`, `total_ms` | Every block is answered |

@@ -124,6 +124,8 @@ pub enum ScreenEvent {
         job: u64,
         blocks: Vec<Block>,
         ocr_ms: u32,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        ocr_lines: Option<Vec<Rect>>,
     },
     Translated {
         job: u64,
@@ -201,6 +203,7 @@ mod tests {
             ScreenEvent::Blocks {
                 job: 3,
                 ocr_ms: 640,
+                ocr_lines: Some(vec![rect(80, 44, 640, 24), rect(80, 76, 400, 24), rect(80, 126, 220, 22), rect(80, 170, 96, 22)]),
                 blocks: vec![
                     paragraph,
                     single_line(1, rect(80, 126, 220, 22), "Thank you for your patience.", false, false),

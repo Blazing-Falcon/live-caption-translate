@@ -93,7 +93,7 @@ afterEach(() => {
 describe("wire fixture", () => {
   const FIELDS: Record<ScreenEvent["type"], string[]> = {
     reading: ["job", "type"],
-    blocks: ["blocks", "job", "ocr_ms", "type"],
+    blocks: ["blocks", "job", "ocr_lines", "ocr_ms", "type"],
     translated: ["id", "job", "text", "type"],
     failed: ["id", "job", "message", "type"],
     done: ["job", "total_ms", "type"],
@@ -118,6 +118,26 @@ describe("wire fixture", () => {
       }
     }
   });
+});
+
+it("requests raw lines when debug is enabled after a selection and keeps them on later toggles", async () => {
+  const backend = install();
+  const screen = await open();
+  screen.select(AREA);
+  await flush();
+  expect(selects(backend)[0]!.args.debug).toBeUndefined();
+  await send(reading, { ...blocks, ocr_lines: undefined }, done);
+  screen.toggleDebug();
+  await flush();
+  expect(selects(backend)).toHaveLength(2);
+  expect(selects(backend)[1]!.args).toMatchObject({ debug: true });
+  expect(view(screen).blocks).toEqual([]);
+  await send({ ...reading, job: JOB + 1 }, { ...blocks, job: JOB + 1 }, { ...done, job: JOB + 1 });
+  expect(view(screen).ocrLines).toEqual(blocks.ocr_lines);
+  screen.toggleDebug(); screen.toggleDebug();
+  expect(selects(backend)).toHaveLength(2);
+  screen.reset();
+  expect(view(screen)).toMatchObject({ debug: false, ocrLines: null });
 });
 
 describe("a screen job", () => {

@@ -120,6 +120,8 @@ export interface ScreenState {
   job: number;
   phase: Phase;
   blocks: ScreenBlock[];
+  ocrLines: Rect[] | null;
+  debug: boolean;
   outcomes: Record<number, Outcome>;
   message: string | null;
   /** The text recognizer, when the job failed for lack of it. */
@@ -135,6 +137,8 @@ const IDLE: ScreenState = {
   job: 0,
   phase: "idle",
   blocks: [],
+  ocrLines: null,
+  debug: false,
   outcomes: {},
   message: null,
   model: null,
@@ -144,6 +148,7 @@ const IDLE: ScreenState = {
 
 const withoutResults = (state: ScreenState): ScreenState => ({
   ...state,
+  ocrLines: null,
   blocks: [],
   outcomes: {},
   message: null,
@@ -156,7 +161,7 @@ export function applyEvent(state: ScreenState, event: ScreenEvent): ScreenState 
     case "reading":
       return { ...state, phase: "reading", message: null };
     case "blocks":
-      return { ...state, phase: "translating", blocks: event.blocks, outcomes: {} };
+      return { ...state, phase: "translating", blocks: event.blocks, ocrLines: event.ocr_lines ?? null, outcomes: {} };
     case "translated":
     case "failed": {
       if (!state.blocks.some((block) => block.id === event.id && block.translate)) return state;
@@ -241,6 +246,7 @@ export interface Screen {
   /** Forgets the frame and the job, without telling the backend (the window is already hidden). */
   reset(): void;
   setOriginal(on: boolean): void;
+  toggleDebug(): void;
   downloadModel(): Promise<void>;
   copy(kind: "english" | "chinese"): Promise<boolean>;
   dispose(): void;
@@ -261,7 +267,7 @@ export function createScreen(): Screen {
     const mine = drag;
     floor = highest;
     state.update((current) => ({ ...withoutResults(current), selection: css, job: 0, phase: "reading" }));
-    api.screenSelect(frame.id, toFrameRect(css, frame)).then(
+    api.screenSelect(frame.id, toFrameRect(css, frame), get(state).debug).then(
       (id) => {
         highest = Math.max(highest, id);
         if (mine !== drag) {
@@ -351,6 +357,11 @@ export function createScreen(): Screen {
     select,
     close,
     reset,
+    toggleDebug() {
+      const current = get(state), debug = !current.debug;
+      state.update(now => ({ ...now, debug }));
+      if (debug && current.ocrLines === null && current.frame && current.selection) start(current.selection, current.frame);
+    },
     setOriginal: (on) => state.update((current) => (current.original === on ? current : { ...current, original: on })),
     async downloadModel() {
       const { model } = get(state);

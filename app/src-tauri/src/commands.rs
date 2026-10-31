@@ -136,9 +136,14 @@ pub fn open_folder_native(shared: &Shared, which: &str) -> Reply<()> {
 
 /// Starts reading and translating `rect` (frame pixels) of the frozen frame; returns the job id.
 #[tauri::command]
-pub async fn screen_select(shared: Shell<'_>, frame: u64, rect: Rect) -> Reply<u64> {
+pub async fn screen_select(
+    shared: Shell<'_>,
+    frame: u64,
+    rect: Rect,
+    debug: Option<bool>,
+) -> Reply<u64> {
     let shared = shared.inner().clone();
-    blocking(move || shared.screen.select(frame, rect)).await
+    blocking(move || shared.screen.select(frame, rect, debug.unwrap_or(false))).await
 }
 
 #[tauri::command]
