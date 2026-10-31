@@ -1,3 +1,5 @@
+//! The grouping passes: ruby removal, same-row merging, next-line joining and trace collection.
+
 use super::{
     next_line,
     profile::{GroupingProfile, GENERAL},

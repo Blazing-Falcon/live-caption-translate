@@ -1,3 +1,5 @@
+//! Decides whether a line continues the group above it, and records the rule that decided.
+
 use super::{
     engine::{Context, Node},
     profile::{GroupingProfile, MIN_TEXT_SIZE_RATIO, SOLID_LINE_ADVANCE},
@@ -11,22 +13,41 @@ use crate::screen::{
 use std::rc::Rc;
 use unicode_general_category::{get_general_category, GeneralCategory};
 
+/// Alignment figures closer than this are the same; the next tie-break decides instead.
 const ALIGNMENT_TIE_BAND: f64 = 0.01;
+/// The most leading a shorter following line can have and still end the paragraph above it.
 const WRAPPED_FINAL_LINE_ADVANCE: f64 = 1.38;
+/// How far apart, in line heights, the nearest edges of two set-solid lines may be. Much tighter
+/// than the ordinary gate because little else separates a label from the text under it.
 const SET_SOLID_MAX_ALIGNMENT: f64 = 0.35;
+/// How far two centres may sit apart, in line heights, for lines set centred on one another.
 const SET_SOLID_MAX_CENTRE_ALIGNMENT: f64 = 0.25;
+/// Pixel floor for the centre test: detector jitter on small text.
 const SET_SOLID_MIN_CENTRE_PIXELS: f64 = 5.0;
+/// How far the narrower line must sit inside the wider one before the pair counts as centred rather
+/// than stacked.
 const SET_SOLID_MIN_CENTRING_INSET: f64 = 0.20;
+/// Same figure as the inset, for the same reason: both ask how far the pair is from symmetric.
 const SET_SOLID_MAX_CENTRING_OFFSET: f64 = 0.20;
+/// How far two lines may overlap and still be one under the other, in line heights.
 const MAX_LINE_OVERLAP: f64 = 0.5;
+/// How wide the gap between two lines may be, in line heights.
 const MAX_LINE_GAP: f64 = 0.8;
+/// Pixel floor for the line gap, for small text.
 const MAX_LINE_GAP_FLOOR_PIXELS: f64 = 10.0;
+/// The loosest leading a body line may have and still be compared with its column's own leading.
 const LOOSE_PROSE_MAX_ADVANCE: f64 = 1.65;
+/// Steps down a column between these two bounds count as samples of its leading.
 const COLUMN_LEADING_SAMPLE_MIN: f64 = 0.8;
 const COLUMN_LEADING_SAMPLE_MAX: f64 = 1.8;
+/// Fewer samples than this say nothing about the column's leading.
 const MIN_COLUMN_LEADING_SAMPLES: usize = 3;
+/// How far past its column's typical leading a body line may sit and still continue it.
 const COLUMN_LEADING_SLACK: f64 = 1.2;
+/// How much smaller a different-script line's ink may be before the line above is a heading over
+/// it.
 const VISIBLE_HEADING_INK_RATIO: f64 = 0.85;
+/// How close in box height a paragraph's short last line must be to the line above it.
 const PARAGRAPH_FINAL_HEIGHT_RATIO: f64 = 0.85;
 
 pub(super) fn group_this_line_continues(

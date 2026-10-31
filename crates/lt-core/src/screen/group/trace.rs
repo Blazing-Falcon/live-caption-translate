@@ -1,3 +1,5 @@
+//! Records why each pair of lines was joined or kept apart, for `--explain`.
+
 use super::engine::Node;
 use crate::screen::line::{LayoutScript, Line, TextSizeBasis};
 use serde::Serialize;

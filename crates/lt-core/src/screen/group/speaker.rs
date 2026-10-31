@@ -1,3 +1,5 @@
+//! Recognizes chat-style line openers (timestamp, channel, handle, name) that start a new message.
+
 use crate::screen::line::{is_digit, is_letter, is_whitespace};
 use unicode_general_category::{get_general_category, GeneralCategory};
 

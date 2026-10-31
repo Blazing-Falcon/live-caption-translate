@@ -1,3 +1,6 @@
+//! Joins boxes the detector cut out of one visual row, and separates neighbours set at different
+//! sizes.
+
 use super::{
     engine::{self, Context, Node},
     gap::SameLineGapThreshold,
@@ -11,14 +14,26 @@ use crate::screen::{
 };
 use std::rc::Rc;
 
+/// Neighbours closer than this are pieces of one cell (a value and its badge), so a size difference
+/// does not split them.
 const SIZE_BREAK_MIN_GAP: f64 = 0.15;
+/// Neighbours smaller than this fraction of each other are set at different sizes and are not words
+/// of one line.
 const SIZE_BREAK_MAX_RATIO: f64 = 0.7;
+/// A Latin word with fewer letters has no steady size to compare.
 const SIZE_BREAK_MIN_GLYPHS: usize = 4;
+/// One or two CJK characters are often a unit or counter set small beside a number, so they do not
+/// count as a smaller size.
 const SIZE_BREAK_MIN_SMALLER_CHARACTERS: usize = 3;
+/// Two boxes share a visual row only when their heights are at least this close.
 const MINIMUM_ROW_HEIGHT_RATIO: f64 = 0.5;
+/// Two boxes share a visual row only when they overlap this much vertically.
 const MINIMUM_ROW_VERTICAL_OVERLAP: f64 = 0.72;
+/// Floor for the same-row gap test, so small text is not judged on a fraction of a pixel.
 const MINIMUM_ROW_GAP_PIXELS: f64 = 6.0;
+/// The furthest a line spanning both halves of a cut row may sit below it, in line heights.
 const SPANNING_ROW_MAX_ADVANCE: f64 = 1.65;
+/// The widest step between the rows that vouch for a cut row being one line of a paragraph.
 const PARAGRAPH_ROW_MAX_ADVANCE: f64 = 1.45;
 
 pub(super) fn merge_same_line_fragments(

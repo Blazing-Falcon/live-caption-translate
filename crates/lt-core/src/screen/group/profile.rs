@@ -1,6 +1,12 @@
+//! The limits one grouping pass runs on.
+//! A profile is chosen by the caller, never inferred from the text.
+
 use serde::{Deserialize, Serialize};
 
+/// How close in text size two lines must be before one can be the other wrapping.
+/// Named because the interface profile quotes it.
 pub const MIN_TEXT_SIZE_RATIO: f64 = 0.88;
+/// The most leading two lines can have and still read as set solid, one under the other.
 pub const SOLID_LINE_ADVANCE: f64 = 1.20;
 
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
@@ -13,6 +19,8 @@ pub struct GroupingProfile {
     pub takes_prose_evidence: bool,
 }
 
+/// Screenshots: speech bubbles open on one or two words and chat is set tight, so set-solid pairs
+/// get more room and need no length evidence.
 pub static GENERAL: GroupingProfile = GroupingProfile {
     tightly_set_min_text_size_ratio: 0.80,
     waive_length_test_when_set_solid: true,
@@ -21,6 +29,7 @@ pub static GENERAL: GroupingProfile = GroupingProfile {
     takes_prose_evidence: true,
 };
 
+/// Interface text: the strict limits, with no relaxed evidence.
 pub static INTERFACE: GroupingProfile = GroupingProfile {
     tightly_set_min_text_size_ratio: MIN_TEXT_SIZE_RATIO,
     waive_length_test_when_set_solid: false,
@@ -29,6 +38,7 @@ pub static INTERFACE: GroupingProfile = GroupingProfile {
     takes_prose_evidence: false,
 };
 
+/// Strict limits that still refuse speaker line starts. A test control; the app uses GENERAL.
 pub static REALTIME: GroupingProfile = GroupingProfile {
     tightly_set_min_text_size_ratio: MIN_TEXT_SIZE_RATIO,
     waive_length_test_when_set_solid: false,

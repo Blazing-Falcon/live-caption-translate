@@ -1,3 +1,5 @@
+//! Drops furigana-style readings printed above the writing they annotate, before grouping.
+
 use super::engine::Node;
 use crate::screen::{
     geom::{max, min},
@@ -5,8 +7,14 @@ use crate::screen::{
 };
 use std::rc::Rc;
 
+/// How tall a reading's box may be against its base line. The detector grows small boxes
+/// proportionally more, so this is above the nominal half size.
 const SMALLER_THAN_THE_WRITING: f64 = 0.75;
+/// How far into its base line a reading may reach. Ruby overlaps its base line, so a run of kana
+/// that merely sits inside a larger box fails this.
 const AGAINST_THE_WRITING: f64 = 0.45;
+/// How much of the reading must lie within the horizontal span of its base line; this keeps a
+/// reading from being attached to the next column.
 const ALONGSIDE_THE_WRITING: f64 = 0.85;
 
 pub(super) fn drop(lines: Vec<Node>) -> Vec<Node> {

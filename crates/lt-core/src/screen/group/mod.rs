@@ -1,3 +1,5 @@
+//! Turns recognized lines into blocks: grouping, paint facts and layout intent.
+
 use super::{
     geom::{LineGeometry, RectF},
     ink,
@@ -17,6 +19,8 @@ pub mod trace;
 
 pub use engine::{build_group, group, group_with_profile, join_inline_text, GroupingReport};
 
+/// Builds line facts from the recognized lines, groups them with the general profile and makes
+/// blocks.
 pub fn blocks(image: &ImageView<'_>, lines: &[TextLine]) -> Vec<Block> {
     let mut facts: Vec<_> = lines
         .iter()

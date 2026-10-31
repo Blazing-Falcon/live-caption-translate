@@ -1,11 +1,23 @@
+//! Estimates, per screenshot, how wide a gap between two boxes on one row may be before they are
+//! separate items.
+
 use serde::Serialize;
 
+/// Used when the picture cannot supply a better threshold. It sits in the empty band between word
+/// spacing and item spacing.
 pub const FALLBACK: f64 = 0.45;
+/// Gaps outside this range are layout distances, not spacing choices, and would distort the split.
 const SAMPLE_FLOOR: f64 = -1.0;
 const SAMPLE_CEILING: f64 = 2.0;
+/// Fewer gaps than this say nothing reliable about the picture's own spacing.
 const MINIMUM_SAMPLES: usize = 6;
+/// A side with fewer gaps than this is a stray, not a kind of spacing.
 const MINIMUM_HALF_SIZE: usize = 2;
+/// The two halves must be this far apart, in line heights, to be two kinds of space rather than one
+/// unevenly measured.
 const MINIMUM_SEPARATION: f64 = 0.15;
+/// An estimate outside this range is evidence the halves were not word and item spacing; the
+/// fallback is used instead of clamping.
 const MINIMUM_THRESHOLD: f64 = 0.25;
 const MAXIMUM_THRESHOLD: f64 = 0.55;
 
