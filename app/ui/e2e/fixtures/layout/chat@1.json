@@ -1,0 +1,520 @@
+{
+  "name": "chat@1",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 480,
+    "h": 480
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 70,
+        "y": 32,
+        "w": 91,
+        "h": 19
+      },
+      "lines": [
+        {
+          "x": 70,
+          "y": 32,
+          "w": 91,
+          "h": 19
+        }
+      ],
+      "intent": "single",
+      "line_height": 17.22,
+      "source": "晚上有空吗？",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 70,
+          "y": 32.89,
+          "width": 91,
+          "height": 17.22
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 70,
+            "y": 32.89,
+            "width": 91,
+            "height": 17.22
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 1,
+      "rect": {
+        "x": 152,
+        "y": 97,
+        "w": 245,
+        "h": 16
+      },
+      "lines": [
+        {
+          "x": 152,
+          "y": 97,
+          "w": 245,
+          "h": 16
+        }
+      ],
+      "intent": "single",
+      "line_height": 14.76,
+      "source": "有空，不过我六点才下班，可能要晚",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 152,
+          "y": 97.62,
+          "width": 245,
+          "height": 14.76
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 152,
+            "y": 97.62,
+            "width": 245,
+            "height": 14.76
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 2,
+      "rect": {
+        "x": 162,
+        "y": 116,
+        "w": 48,
+        "h": 22
+      },
+      "lines": [
+        {
+          "x": 162,
+          "y": 116,
+          "w": 48,
+          "h": 22
+        }
+      ],
+      "intent": "single",
+      "line_height": 21.32,
+      "source": "点到。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 162,
+          "y": 116.34,
+          "width": 48,
+          "height": 21.32
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 162,
+            "y": 116.34,
+            "width": 48,
+            "height": 21.32
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 3,
+      "rect": {
+        "x": 69,
+        "y": 179,
+        "w": 248,
+        "h": 65
+      },
+      "lines": [
+        {
+          "x": 70,
+          "y": 179,
+          "w": 247,
+          "h": 19
+        },
+        {
+          "x": 73,
+          "y": 204,
+          "w": 244,
+          "h": 16
+        },
+        {
+          "x": 69,
+          "y": 226,
+          "w": 103,
+          "h": 18
+        }
+      ],
+      "intent": "group_reflow",
+      "line_height": 64.28955357142857,
+      "source": "没关系，我先去占位子。听说新开的 那家店要排很久的队，你路上注意安 全，不用着急。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 69,
+          "y": 179.391875,
+          "width": 248,
+          "height": 64.28955357142857
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 70,
+            "y": 179.391875,
+            "width": 247,
+            "height": 18.21625
+          },
+          {
+            "empty": false,
+            "x": 73,
+            "y": 204.62,
+            "width": 244,
+            "height": 14.76
+          },
+          {
+            "empty": false,
+            "x": 69,
+            "y": 226.31857142857143,
+            "width": 103,
+            "height": 17.36285714285714
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 4,
+      "rect": {
+        "x": 148,
+        "y": 288,
+        "w": 235,
+        "h": 42
+      },
+      "lines": [
+        {
+          "x": 150,
+          "y": 288,
+          "w": 233,
+          "h": 19
+        },
+        {
+          "x": 148,
+          "y": 311,
+          "w": 166,
+          "h": 19
+        }
+      ],
+      "intent": "group_reflow",
+      "line_height": 40.51363636363641,
+      "source": "好的，我到了给你发消息，记得带 伞，外面好像要下雨了。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 148,
+          "y": 288.89,
+          "width": 235,
+          "height": 40.51363636363641
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 150,
+            "y": 288.89,
+            "width": 233,
+            "height": 17.22
+          },
+          {
+            "empty": false,
+            "x": 148,
+            "y": 311.59636363636366,
+            "width": 166,
+            "height": 17.80727272727273
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    }
+  ],
+  "translations": [
+    "Do you have time in the evening?",
+    "I have time, but I don’t get off work until six o’clock. It might be late.",
+    "Pointing.",
+    "It’s okay, I’ll go take the place first. I heard that the new store will be in a long queue. Just make sure you’re safe on your way. There’s no need to rush.",
+    "Okay, I’ve arrived to send you a message. Remember to bring an umbrella with you. It seems like it might rain outside."
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "晚上有空吗？",
+      "text": "Do you have time in the evening?",
+      "bubbleRect": {
+        "empty": false,
+        "x": 68,
+        "y": 30.89,
+        "width": 282.98333333333335,
+        "height": 24.2532
+      },
+      "textRect": {
+        "empty": false,
+        "x": 71,
+        "y": 30.87826666666667,
+        "width": 276.98333333333335,
+        "height": 24.276666666666667
+      },
+      "fontSize": 18.2532,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 282.98333333333335,
+        "actualHeight": 24.2532
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 1,
+      "source": "有空，不过我六点才下班，可能要晚",
+      "text": "I have time, but I don’t get off work until six o’clock. It might be late.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 116.47885065738492,
+        "y": 95.62,
+        "width": 316.04229868523015,
+        "height": 18.759999999999998
+      },
+      "textRect": {
+        "empty": false,
+        "x": 119.47885065738492,
+        "y": 98.35000000000001,
+        "width": 310.04229868523015,
+        "height": 13.3
+      },
+      "fontSize": 9.998676657411345,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 316.04229868523015,
+        "actualHeight": 18.759999999999998
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 2,
+      "source": "点到。",
+      "text": "Pointing.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 160,
+        "y": 114.34,
+        "width": 97.35666666666667,
+        "height": 28.5992
+      },
+      "textRect": {
+        "empty": false,
+        "x": 163,
+        "y": 113.6096,
+        "width": 91.35666666666667,
+        "height": 30.060000000000002
+      },
+      "fontSize": 22.5992,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 97.35666666666667,
+        "actualHeight": 28.5992
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 3,
+      "source": "没关系，我先去占位子。听说新开的 那家店要排很久的队，你路上注意安 全，不用着急。",
+      "text": "It’s okay, I’ll go take the place first. I heard that the new store will be in a long queue. Just make sure you’re safe on your way. There’s no need to rush.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 67,
+        "y": 177.391875,
+        "width": 252,
+        "height": 68.28955357142857
+      },
+      "textRect": {
+        "empty": false,
+        "x": 70,
+        "y": 190.77665178571428,
+        "width": 246,
+        "height": 41.52
+      },
+      "fontSize": 10.404628571428571,
+      "wrappedLineCount": 3,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 252,
+        "actualHeight": 68.28955357142857
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 4,
+      "source": "好的，我到了给你发消息，记得带 伞，外面好像要下雨了。",
+      "text": "Okay, I’ve arrived to send you a message. Remember to bring an umbrella with you. It seems like it might rain outside.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 146,
+        "y": 286.89,
+        "width": 239,
+        "height": 55.38
+      },
+      "textRect": {
+        "empty": false,
+        "x": 149,
+        "y": 289.89,
+        "width": 233,
+        "height": 49.38
+      },
+      "fontSize": 12.375709090909094,
+      "wrappedLineCount": 3,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 239,
+        "actualHeight": 55.38
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ]
+}

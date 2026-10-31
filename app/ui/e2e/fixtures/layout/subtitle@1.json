@@ -1,0 +1,205 @@
+{
+  "name": "subtitle@1",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 720
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 509,
+        "y": 571,
+        "w": 244,
+        "h": 29
+      },
+      "lines": [
+        {
+          "x": 509,
+          "y": 571,
+          "w": 244,
+          "h": 29
+        }
+      ],
+      "intent": "single",
+      "line_height": 28.7,
+      "source": "你确定要这样做吗？",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 509,
+          "y": 571.15,
+          "width": 244,
+          "height": 28.7
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 509,
+            "y": 571.15,
+            "width": 244,
+            "height": 28.7
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 1,
+      "rect": {
+        "x": 437,
+        "y": 608,
+        "w": 384,
+        "h": 32
+      },
+      "lines": [
+        {
+          "x": 437,
+          "y": 608,
+          "w": 384,
+          "h": 32
+        }
+      ],
+      "intent": "single",
+      "line_height": 31.159999999999997,
+      "source": "天亮之前，我们必须离开这里。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 437,
+          "y": 608.42,
+          "width": 384,
+          "height": 31.159999999999997
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 437,
+            "y": 608.42,
+            "width": 384,
+            "height": 31.159999999999997
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    }
+  ],
+  "translations": [
+    "Are you sure you want to do this?",
+    "Before dawn, we must leave this place."
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "你确定要这样做吗？",
+      "text": "Are you sure you want to do this?",
+      "bubbleRect": {
+        "empty": false,
+        "x": 507,
+        "y": 569.15,
+        "width": 248,
+        "height": 32.7
+      },
+      "textRect": {
+        "empty": false,
+        "x": 510,
+        "y": 574.9216666666666,
+        "width": 242,
+        "height": 21.156666666666666
+      },
+      "fontSize": 15.906527140603956,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 248,
+        "actualHeight": 32.7
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 1,
+      "source": "天亮之前，我们必须离开这里。",
+      "text": "Before dawn, we must leave this place.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 435,
+        "y": 606.42,
+        "width": 388,
+        "height": 35.16
+      },
+      "textRect": {
+        "empty": false,
+        "x": 438,
+        "y": 609.4649999999999,
+        "width": 382,
+        "height": 29.07
+      },
+      "fontSize": 21.855593881899168,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 388,
+        "actualHeight": 35.16
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ]
+}

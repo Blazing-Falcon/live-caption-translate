@@ -1,0 +1,270 @@
+{
+  "name": "article@1",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 800,
+    "h": 480
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 76,
+        "y": 47,
+        "w": 646,
+        "h": 76
+      },
+      "lines": [
+        {
+          "x": 76,
+          "y": 47,
+          "w": 646,
+          "h": 20
+        },
+        {
+          "x": 76,
+          "y": 77,
+          "w": 645,
+          "h": 18
+        },
+        {
+          "x": 78,
+          "y": 105,
+          "w": 393,
+          "h": 18
+        }
+      ],
+      "intent": "group_reflow",
+      "line_height": 74.21999999999998,
+      "source": "清晨的河边总是很安静。薄雾贴着水面慢慢散开，岸上的老人在练太极，卖早点的小摊刚刚 支起炉子。桥下的水流得很慢，几只白鹭站在浅滩上，一动不动地盯着水里的小鱼。偶尔有 自行车从石板路上驶过，铃声清脆，很快又消失在街角。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 76,
+          "y": 47.980000000000004,
+          "width": 646,
+          "height": 74.21999999999998
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 76,
+            "y": 47.980000000000004,
+            "width": 646,
+            "height": 18.04
+          },
+          {
+            "empty": false,
+            "x": 76,
+            "y": 77.8,
+            "width": 645,
+            "height": 16.4
+          },
+          {
+            "empty": false,
+            "x": 78,
+            "y": 105.8,
+            "width": 393,
+            "height": 16.4
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 1,
+      "rect": {
+        "x": 76,
+        "y": 159,
+        "w": 646,
+        "h": 103
+      },
+      "lines": [
+        {
+          "x": 77,
+          "y": 159,
+          "w": 645,
+          "h": 18
+        },
+        {
+          "x": 77,
+          "y": 187,
+          "w": 629,
+          "h": 18
+        },
+        {
+          "x": 76,
+          "y": 215,
+          "w": 635,
+          "h": 19
+        },
+        {
+          "x": 78,
+          "y": 243,
+          "w": 298,
+          "h": 19
+        }
+      ],
+      "intent": "group_reflow",
+      "line_height": 101.31,
+      "source": "这条河曾经因为污染而被人遗忘。二十多年前，附近的居民自发组织起来清理河岸，种上柳 树和芦苇，后来政府也加入进来，修建了步道和小公园。如今每到周末，孩子们在水边追 逐，年轻人带着相机寻找合适的角度，河水重新成为这里最受欢迎的公共空间。人们常说， 一座城市是否宜居，看看它的河就知道了。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 76,
+          "y": 159.8,
+          "width": 646,
+          "height": 101.31
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 77,
+            "y": 159.8,
+            "width": 645,
+            "height": 16.4
+          },
+          {
+            "empty": false,
+            "x": 77,
+            "y": 187.8,
+            "width": 629,
+            "height": 16.4
+          },
+          {
+            "empty": false,
+            "x": 76,
+            "y": 215.13375,
+            "width": 635,
+            "height": 18.732499999999998
+          },
+          {
+            "empty": false,
+            "x": 78,
+            "y": 243.89,
+            "width": 298,
+            "height": 17.22
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    }
+  ],
+  "translations": [
+    "The riverbank in the early morning is always very quiet. The thin mist slowly spreads across the water’s surface. The old people on the shore are practicing Tai Chi. The small stall that sells breakfast has just set up a stove. The water flow under the bridge is slow. A few white egrets stand still on the shallow waters, staring at the small fish in the water. Occasionally, bicycles pass by on the stone path. The bells ring loudly, but soon they disappear behind the street corners.",
+    "This river was once forgotten due to its pollution. Over twenty years ago, the local residents organized themselves to clean up the riverbank, planting willows and reeds. Later, the government also joined in, building paths and small parks along the river. Now, on weekends, children chase after the river, while young people use their cameras to find the right angle to observe it. The river has once again become one of the most popular public spaces here. People often say that whether a city is livable depends on its rivers."
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "清晨的河边总是很安静。薄雾贴着水面慢慢散开，岸上的老人在练太极，卖早点的小摊刚刚 支起炉子。桥下的水流得很慢，几只白鹭站在浅滩上，一动不动地盯着水里的小鱼。偶尔有 自行车从石板路上驶过，铃声清脆，很快又消失在街角。",
+      "text": "The riverbank in the early morning is always very quiet. The thin mist slowly spreads across the water’s surface. The old people on the shore are practicing Tai Chi. The small stall that sells breakfast has just set up a stove. The water flow under the bridge is slow. A few white egrets stand still on the shallow waters, staring at the small fish in the water. Occasionally, bicycles pass by on the stone path. The bells ring loudly, but soon they disappear behind the street corners.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 74,
+        "y": 45.980000000000004,
+        "width": 650,
+        "height": 78.21999999999998
+      },
+      "textRect": {
+        "empty": false,
+        "x": 77,
+        "y": 67.13499999999999,
+        "width": 644,
+        "height": 35.910000000000004
+      },
+      "fontSize": 9,
+      "wrappedLineCount": 3,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 650,
+        "actualHeight": 78.21999999999998
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 1,
+      "source": "这条河曾经因为污染而被人遗忘。二十多年前，附近的居民自发组织起来清理河岸，种上柳 树和芦苇，后来政府也加入进来，修建了步道和小公园。如今每到周末，孩子们在水边追 逐，年轻人带着相机寻找合适的角度，河水重新成为这里最受欢迎的公共空间。人们常说， 一座城市是否宜居，看看它的河就知道了。",
+      "text": "This river was once forgotten due to its pollution. Over twenty years ago, the local residents organized themselves to clean up the riverbank, planting willows and reeds. Later, the government also joined in, building paths and small parks along the river. Now, on weekends, children chase after the river, while young people use their cameras to find the right angle to observe it. The river has once again become one of the most popular public spaces here. People often say that whether a city is livable depends on its rivers.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 74,
+        "y": 157.8,
+        "width": 650,
+        "height": 105.31
+      },
+      "textRect": {
+        "empty": false,
+        "x": 77,
+        "y": 166.38833333333335,
+        "width": 644,
+        "height": 88.13333333333334
+      },
+      "fontSize": 13.2532,
+      "wrappedLineCount": 5,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 650,
+        "actualHeight": 105.31
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ]
+}

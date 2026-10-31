@@ -203,7 +203,8 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 | `paint` | Source paint facts: `bounds` and `source_lines` use floating `{ x, y, width, height }` frame pixels; `render_glyph_height` and `font_glyph_height` are nullable pixel heights. Older recorded jobs may omit this field. |
 
 After English layout, `screen_plate` accepts `request.rect` as a floating rectangle
-in frame pixels and `written_height` as the actual drawn text height in frame pixels.
+in frame pixels and `written_height` as the layout's written-height budget in frame
+pixels: font size for an unwrapped line, measured text height for wrapped text.
 It returns a floating rectangle, RGB `foreground`, and an alpha PNG URL such as
 `http://ltshot.localhost/<frame>/plate/<job>/<block>?v=<revision>`. The returned
 rectangle includes the plate's feathered border when needed; a flat card uses the

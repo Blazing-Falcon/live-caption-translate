@@ -1,0 +1,1 @@
+Floating geometry and English layout recorded from native screenshot layout on deterministic scale-1 pages. All blocks are enabled as translation test controls. accepted-renderer.json preserves one explicitly accepted browser result and its original geometry.

@@ -1,0 +1,63 @@
+{
+  "case": "ui-panel@1",
+  "id": 19,
+  "layout": {
+    "bubble": {
+      "x": 194.72167072075032,
+      "y": 258.89,
+      "width": 112.55665855849934,
+      "height": 21.22
+    },
+    "text": {
+      "x": 197.72167072075032,
+      "y": 262.8515625,
+      "width": 106.55665855849934,
+      "height": 13.296875
+    },
+    "fontSize": 9.997985849206799,
+    "sourceFontSize": 18.2532,
+    "wrap": false,
+    "writtenHeight": 9.997985849206799,
+    "wrappedLineCount": 1
+  },
+  "original": {
+    "id": 19,
+    "source": "自动保存间隔",
+    "text": "Automatic save interval",
+    "bubbleRect": {
+      "empty": false,
+      "x": 194.71710531121482,
+      "y": 258.89,
+      "width": 112.56578937757033,
+      "height": 38.593333333333334
+    },
+    "textRect": {
+      "empty": false,
+      "x": 197.71710531121482,
+      "y": 261.89,
+      "width": 106.56578937757033,
+      "height": 32.593333333333334
+    },
+    "fontSize": 12.2532,
+    "wrappedLineCount": 2,
+    "textAlignment": "Left",
+    "verticalAlignment": "Center",
+    "localSize": {
+      "actualWidth": 112.56578937757033,
+      "actualHeight": 38.593333333333334
+    },
+    "transform": {
+      "isIdentity": true,
+      "determinant": 1,
+      "hasInverse": true,
+      "m11": 1,
+      "m12": 0,
+      "m21": 0,
+      "m22": 1,
+      "offsetX": 0,
+      "offsetY": 0
+    },
+    "dpiX": 1,
+    "dpiY": 1
+  }
+}

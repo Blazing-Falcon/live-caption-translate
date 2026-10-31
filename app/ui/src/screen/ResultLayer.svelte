@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { toCssRect, type Outcome } from "../lib/screen";
+  import { toCssRect, toFrameRect, type Outcome } from "../lib/screen";
   import PaintedBlock from "./PaintedBlock.svelte";
-  import type { ScreenBlock, ScreenFrame } from "../lib/types";
+  import type { Rect, ScreenBlock, ScreenFrame } from "../lib/types";
 
   let {
     frame,
     job,
+    selection,
     blocks,
     outcomes,
     hidden,
@@ -13,6 +14,7 @@
   }: {
     frame: ScreenFrame;
     job: number;
+    selection: Rect | null;
     blocks: ScreenBlock[];
     outcomes: Record<number, Outcome>;
     /** Invisible but laid out, so a box that arrives meanwhile still fits. */
@@ -21,6 +23,11 @@
     onhint: (message: string | null) => void;
   } = $props();
 
+  const context = $derived.by(() => {
+    const r = selection ? toFrameRect(selection, frame) : { x: 0, y: 0, w: frame.width, h: frame.height };
+    return { width: frame.width, height: frame.height, scale: frame.scale, selection: { x: r.x, y: r.y, width: r.w, height: r.h } };
+  });
+
 </script>
 
 <div class="layer" style:visibility={hidden ? "hidden" : "visible"} data-testid="results">
@@ -28,7 +35,7 @@
     {@const outcome = outcomes[block.id]}
     {@const css = toCssRect(block.rect, frame.scale)}
     {#if outcome?.state === "translated"}
-      <PaintedBlock {frame} {job} {block} text={outcome.text} />
+      <PaintedBlock {frame} {job} {block} {blocks} {context} text={outcome.text} />
     {:else if outcome?.state === "failed"}
       <div
         class="mark"
@@ -56,6 +63,7 @@
   }
 
   .mark {
+    z-index: 2;
     position: absolute;
     display: grid;
     place-items: center;

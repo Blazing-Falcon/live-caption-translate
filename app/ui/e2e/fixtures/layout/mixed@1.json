@@ -1,0 +1,665 @@
+{
+  "name": "mixed@1",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 760,
+    "h": 400
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 37,
+        "y": 35,
+        "w": 324,
+        "h": 17
+      },
+      "lines": [
+        {
+          "x": 37,
+          "y": 35,
+          "w": 324,
+          "h": 17
+        }
+      ],
+      "intent": "single",
+      "line_height": 16.622608695652172,
+      "source": "会议安排：周三下午3:30，B座204 会议室。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 37,
+          "y": 35.18869565217391,
+          "width": 324,
+          "height": 16.622608695652172
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 37,
+            "y": 35.18869565217391,
+            "width": 324,
+            "height": 16.622608695652172
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 1,
+      "rect": {
+        "x": 36,
+        "y": 79,
+        "w": 514,
+        "h": 16
+      },
+      "lines": [
+        {
+          "x": 36,
+          "y": 79,
+          "w": 514,
+          "h": 16
+        }
+      ],
+      "intent": "single",
+      "line_height": 15.162999999999998,
+      "source": "请将文件发送至 support@example.com，主题注明“第三季度报告”。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 36,
+          "y": 79.4185,
+          "width": 514,
+          "height": 15.162999999999998
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 36,
+            "y": 79.4185,
+            "width": 514,
+            "height": 15.162999999999998
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 2,
+      "rect": {
+        "x": 35,
+        "y": 123,
+        "w": 451,
+        "h": 17
+      },
+      "lines": [
+        {
+          "x": 35,
+          "y": 123,
+          "w": 451,
+          "h": 17
+        }
+      ],
+      "intent": "single",
+      "line_height": 15.65235294117647,
+      "source": "新版本v2.4.1已于2026年10月15日发布，修复了17个问题。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 35,
+          "y": 123.67382352941176,
+          "width": 451,
+          "height": 15.65235294117647
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 35,
+            "y": 123.67382352941176,
+            "width": 451,
+            "height": 15.65235294117647
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 3,
+      "rect": {
+        "x": 36,
+        "y": 168,
+        "w": 395,
+        "h": 14
+      },
+      "lines": [
+        {
+          "x": 36,
+          "y": 168,
+          "w": 395,
+          "h": 14
+        }
+      ],
+      "intent": "single",
+      "line_height": 13.708823529411763,
+      "source": "Wi-Fi 名称为Guest-5G，密码 guest2026，请勿外传。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 36,
+          "y": 168.14558823529413,
+          "width": 395,
+          "height": 13.708823529411763
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 36,
+            "y": 168.14558823529413,
+            "width": 395,
+            "height": 13.708823529411763
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 4,
+      "rect": {
+        "x": 36,
+        "y": 212,
+        "w": 310,
+        "h": 16
+      },
+      "lines": [
+        {
+          "x": 36,
+          "y": 212,
+          "w": 310,
+          "h": 16
+        }
+      ],
+      "intent": "single",
+      "line_height": 15.904347826086955,
+      "source": "商品总价¥128.50（含税13%），共3件。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 36,
+          "y": 212.04782608695652,
+          "width": 310,
+          "height": 15.904347826086955
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 36,
+            "y": 212.04782608695652,
+            "width": 310,
+            "height": 15.904347826086955
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 5,
+      "rect": {
+        "x": 39,
+        "y": 259,
+        "w": 222,
+        "h": 11
+      },
+      "lines": [
+        {
+          "x": 39,
+          "y": 259,
+          "w": 222,
+          "h": 11
+        }
+      ],
+      "intent": "single",
+      "line_height": 10.915,
+      "source": "Thank you for your patience.",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 39,
+          "y": 259.0425,
+          "width": 222,
+          "height": 10.915
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 39,
+            "y": 259.0425,
+            "width": 222,
+            "height": 10.915
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 6,
+      "rect": {
+        "x": 36,
+        "y": 300,
+        "w": 351,
+        "h": 14
+      },
+      "lines": [
+        {
+          "x": 36,
+          "y": 300,
+          "w": 351,
+          "h": 14
+        }
+      ],
+      "intent": "single",
+      "line_height": 12.943124999999998,
+      "source": "客服热线：400-000-0000（工作日9:00-18:00)",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 36,
+          "y": 300.5284375,
+          "width": 351,
+          "height": 12.943124999999998
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 36,
+            "y": 300.5284375,
+            "width": 351,
+            "height": 12.943124999999998
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    }
+  ],
+  "translations": [
+    "Meeting schedule: Wednesday afternoon, 3:30 PM, Meeting Room 204, Building B.",
+    "Please send the file to support@example.com, with the subject marked as “Q3 Report”.",
+    "The new version v2.4.1 was released on October 15, 2026. It has fixed 17 issues.",
+    "The Wi-Fi name is Guest-5G, and the password is guest2026. Please do not share this information with others.",
+    "Total price of the product: ¥128.50 (13% tax included), 3 pieces in total.",
+    "Thank you for your patience.",
+    "Customer Service Hotline: 400-000-0000 (9:00–18:00 on weekdays)"
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "会议安排：周三下午3:30，B座204 会议室。",
+      "text": "Meeting schedule: Wednesday afternoon, 3:30 PM, Meeting Room 204, Building B.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 35,
+        "y": 33.18869565217391,
+        "width": 665.6366666666667,
+        "height": 23.619965217391304
+      },
+      "textRect": {
+        "empty": false,
+        "x": 38,
+        "y": 33.280344927536234,
+        "width": 659.6366666666667,
+        "height": 23.436666666666667
+      },
+      "fontSize": 17.619965217391304,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 665.6366666666667,
+        "actualHeight": 23.619965217391304
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 1,
+      "source": "请将文件发送至 support@example.com，主题注明“第三季度报告”。",
+      "text": "Please send the file to support@example.com, with the subject marked as “Q3 Report”.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 34,
+        "y": 77.4185,
+        "width": 654.88,
+        "height": 22.45352293
+      },
+      "textRect": {
+        "empty": false,
+        "x": 37,
+        "y": 77.70359479833333,
+        "width": 648.88,
+        "height": 21.883333333333336
+      },
+      "fontSize": 16.45352293,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 654.88,
+        "actualHeight": 22.45352293
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 2,
+      "source": "新版本v2.4.1已于2026年10月15日发布，修复了17个问题。",
+      "text": "The new version v2.4.1 was released on October 15, 2026. It has fixed 17 issues.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 33,
+        "y": 121.67382352941176,
+        "width": 600.1700000000001,
+        "height": 22.754738951557094
+      },
+      "textRect": {
+        "empty": false,
+        "x": 36,
+        "y": 121.90785967185698,
+        "width": 594.1700000000001,
+        "height": 22.28666666666667
+      },
+      "fontSize": 16.754738951557094,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 600.1700000000001,
+        "actualHeight": 22.754738951557094
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 3,
+      "source": "Wi-Fi 名称为Guest-5G，密码 guest2026，请勿外传。",
+      "text": "The Wi-Fi name is Guest-5G, and the password is guest2026. Please do not share this information with others.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 6,
+        "y": 166.14558823529413,
+        "width": 502.98520620869914,
+        "height": 17.708823529411763
+      },
+      "textRect": {
+        "empty": false,
+        "x": 9,
+        "y": 168.35000000000002,
+        "width": 496.98520620869914,
+        "height": 13.3
+      },
+      "fontSize": 9.99929995188723,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 502.98520620869914,
+        "actualHeight": 17.708823529411763
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 4,
+      "source": "商品总价¥128.50（含税13%），共3件。",
+      "text": "Total price of the product: ¥128.50 (13% tax included), 3 pieces in total.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 34,
+        "y": 210.04782608695652,
+        "width": 545.5500000000001,
+        "height": 22.904247258979204
+      },
+      "textRect": {
+        "empty": false,
+        "x": 37,
+        "y": 210.25828304977946,
+        "width": 539.5500000000001,
+        "height": 22.483333333333334
+      },
+      "fontSize": 16.904247258979204,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 545.5500000000001,
+        "actualHeight": 22.904247258979204
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 5,
+      "source": "Thank you for your patience.",
+      "text": "Thank you for your patience.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 37,
+        "y": 257.0425,
+        "width": 226,
+        "height": 20.5
+      },
+      "textRect": {
+        "empty": false,
+        "x": 40,
+        "y": 257.6491666666667,
+        "width": 220,
+        "height": 19.28666666666667
+      },
+      "fontSize": 14.5,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 226,
+        "actualHeight": 20.5
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 6,
+      "source": "客服热线：400-000-0000（工作日9:00-18:00)",
+      "text": "Customer Service Hotline: 400-000-0000 (9:00–18:00 on weekdays)",
+      "bubbleRect": {
+        "empty": false,
+        "x": 34,
+        "y": 298.5284375,
+        "width": 455.96000000000004,
+        "height": 20.90667795703125
+      },
+      "textRect": {
+        "empty": false,
+        "x": 37,
+        "y": 299.0684431451823,
+        "width": 449.96000000000004,
+        "height": 19.826666666666668
+      },
+      "fontSize": 14.906677957031247,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 455.96000000000004,
+        "actualHeight": 20.90667795703125
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ]
+}
