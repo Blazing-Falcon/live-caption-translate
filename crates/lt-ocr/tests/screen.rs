@@ -96,6 +96,7 @@ fn horizontal_baseline_blocks_are_found_and_read() {
     println!("all fixtures: CER {cer:.4} ({edits}/{chars})");
     assert!(cer <= MAX_CER, "CER {cer:.4} is above {MAX_CER}");
     tilted_groups(&mut engine, &screens);
+    vertical_groups(&mut engine, &screens);
 }
 
 fn decode_png(path: &std::path::Path) -> (u32, u32, Vec<u8>) {
@@ -216,4 +217,88 @@ fn tilted_groups(engine: &mut OcrEngine, screens: &std::path::Path) {
             actual.len()
         );
     }
+}
+
+#[derive(Deserialize)]
+struct VerticalCase {
+    name: String,
+    raw: Vec<TextLine>,
+    groups: Vec<(Vec<usize>, String, bool)>,
+}
+
+fn vertical_groups(engine: &mut OcrEngine, screens: &std::path::Path) {
+    use lt_core::screen::{vertical, Direction};
+    let cases: Vec<VerticalCase> =
+        serde_json::from_str(include_str!("fixtures/vertical-groups.json")).unwrap();
+    let (mut matched, mut texts, mut total) = (0, 0, 0);
+    for case in cases {
+        let (w, h, pixels) = decode_png(&screens.join(format!("{}.png", case.name)));
+        let image = ImageView::new(w, h, w * 4, &pixels).unwrap();
+        let lines = engine
+            .recognize_direction(&image, Direction::Vertical)
+            .unwrap();
+        assert_eq!(lines.len(), case.raw.len(), "{}: box count", case.name);
+        let mut taken = vec![false; lines.len()];
+        for expected in &case.raw {
+            let found = lines.iter().enumerate().find(|(index, line)| {
+                if taken[*index] {
+                    return false;
+                }
+                let shared = overlap(&line.rect, &expected.rect);
+                let union = i64::from(line.rect.w) * i64::from(line.rect.h)
+                    + i64::from(expected.rect.w) * i64::from(expected.rect.h)
+                    - shared;
+                shared as f64 / union as f64 >= 0.9
+            });
+            if let Some((index, line)) = found {
+                taken[index] = true;
+                matched += 1;
+                texts += usize::from(line.text == expected.text);
+            }
+            total += 1;
+        }
+        let facts = vertical::prepare_lines(&lines);
+        let groups = vertical::grouping::group(facts.clone(), Some(&image), Some(true));
+        let actual: Vec<_> = groups
+            .iter()
+            .map(|group| {
+                let mut members: Vec<_> = facts
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, line)| {
+                        group.layout_bounds.contains_rect(line.layout_bounds)
+                            && group.text.contains(&line.text)
+                    })
+                    .map(|(i, _)| i)
+                    .collect();
+                members.sort_by(|a, b| {
+                    let (a, b) = (facts[*a].layout_bounds, facts[*b].layout_bounds);
+                    if group.runs_across {
+                        a.y.total_cmp(&b.y).then_with(|| a.x.total_cmp(&b.x))
+                    } else {
+                        b.x.total_cmp(&a.x).then_with(|| a.y.total_cmp(&b.y))
+                    }
+                });
+                (members, group.text.clone(), group.runs_across)
+            })
+            .collect();
+        assert_eq!(
+            actual, case.groups,
+            "{}: column membership/text/direction",
+            case.name
+        );
+        println!(
+            "{}: exact membership/text/direction for {} groups",
+            case.name,
+            actual.len()
+        );
+    }
+    assert!(
+        matched as f64 / total as f64 >= 0.98,
+        "vertical boxes {matched}/{total}"
+    );
+    assert!(
+        texts as f64 / matched as f64 >= 0.95,
+        "vertical texts {texts}/{matched}"
+    );
 }

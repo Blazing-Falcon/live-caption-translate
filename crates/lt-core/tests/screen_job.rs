@@ -36,6 +36,77 @@ fn line(y: i32, text: &str) -> TextLine {
     }
 }
 
+#[test]
+fn vertical_job_keeps_source_pixels_and_translates_columns_right_to_left() {
+    use lt_core::screen::Direction;
+    struct Columns;
+    impl TextRecognizer for Columns {
+        fn recognize(&mut self, _: &ImageView<'_>) -> lt_core::error::Result<Vec<TextLine>> {
+            panic!("direction was lost")
+        }
+        fn recognize_direction(
+            &mut self,
+            image: &ImageView<'_>,
+            direction: Direction,
+        ) -> lt_core::error::Result<Vec<TextLine>> {
+            assert_eq!(direction, Direction::Vertical);
+            assert_eq!((image.width, image.height), (120, 180));
+            assert_eq!(&image.row(11)[28..32], &[0, 0, 255, 255]);
+            Ok([(36, "世界"), (60, "你好")]
+                .map(|(x, text)| TextLine {
+                    rect: Rect {
+                        x,
+                        y: 20,
+                        w: 20,
+                        h: 60,
+                    },
+                    text: text.into(),
+                    score: 0.99,
+                    ..TextLine::default()
+                })
+                .to_vec())
+        }
+    }
+    let mut pixels = vec![255; 120 * 180 * 4];
+    pixels[(11 * 120 + 7) * 4..][..4].copy_from_slice(&[0, 0, 255, 255]);
+    let image = ImageView::new(120, 180, 480, &pixels).unwrap();
+    let mut events = Vec::new();
+    run_job_with_output(
+        9,
+        &image,
+        &mut Columns,
+        &mut |text| {
+            assert_eq!(text, "你好世界");
+            Ok("Hello world".into())
+        },
+        &AtomicBool::new(false),
+        &mut TranslationCache::default(),
+        JobOutput {
+            direction: Direction::Vertical,
+            debug: false,
+            prepare: None,
+            emit: &mut |event| events.push(event),
+        },
+    );
+    assert_eq!(
+        described(&events),
+        ["reading", "blocks 1", "translated 0", "done"]
+    );
+    let ScreenEvent::Blocks { blocks, .. } = &events[1] else {
+        panic!("missing blocks")
+    };
+    assert_eq!(blocks[0].source, "你好世界");
+    assert_eq!(
+        blocks[0].rect,
+        Rect {
+            x: 36,
+            y: 20,
+            w: 44,
+            h: 60
+        }
+    );
+}
+
 fn translation_failed() -> Error {
     Error::Translation {
         reason: FailReason::Timeout,
@@ -168,6 +239,7 @@ fn cancelling_during_paint_preparation_emits_no_blocks_or_translation() {
         &cancel,
         &mut TranslationCache::default(),
         JobOutput {
+            direction: lt_core::screen::Direction::Horizontal,
             debug: false,
             emit: &mut |event| events.push(event),
             prepare: Some(&mut |_, groups, blocks| {
@@ -200,6 +272,7 @@ fn debug_lines_include_detections_rejected_before_grouping_only_when_requested()
             &AtomicBool::new(false),
             &mut TranslationCache::default(),
             JobOutput {
+                direction: lt_core::screen::Direction::Horizontal,
                 debug,
                 emit: &mut |event| events.push(event),
                 prepare: None,

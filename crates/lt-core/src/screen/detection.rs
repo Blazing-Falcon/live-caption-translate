@@ -1,8 +1,8 @@
 use super::contour::{mini_box, outlines, unclip, Point};
 
-const BINARY: f32 = 0.2;
-const BOX_SCORE: f32 = 0.4;
-const UNCLIP: f32 = 1.4;
+pub const BINARY: f32 = 0.2;
+pub const BOX_SCORE: f32 = 0.4;
+pub const UNCLIP: f32 = 1.4;
 const MIN_SIDE: f32 = 3.0;
 const DILATE_RADIUS: usize = 1;
 const LINE_SORT_Y_THRESHOLD: i32 = 10;

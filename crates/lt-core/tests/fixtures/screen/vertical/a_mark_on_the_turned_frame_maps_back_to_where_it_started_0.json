@@ -1,0 +1,1 @@
+{"test":"A_mark_on_the_turned_frame_maps_back_to_where_it_started","calls":[{"op":"upright_rect","input":{"box":{"empty":false,"x":30,"y":64,"width":9,"height":6},"sourceWidth":80},"output":{"empty":false,"x":10,"y":30,"width":6,"height":9}}]}

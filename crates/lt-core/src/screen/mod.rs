@@ -15,6 +15,7 @@ pub mod placement;
 pub mod raster;
 pub mod repair;
 pub mod tilt;
+pub mod vertical;
 
 pub use group::blocks;
 pub use job::{
@@ -24,6 +25,14 @@ pub use job::{
 
 use crate::error::{Error, Result};
 use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Direction {
+    #[default]
+    Horizontal,
+    Vertical,
+}
 
 /// A rectangle in pixels, origin top-left.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
@@ -104,6 +113,8 @@ pub struct Block {
     pub paint: Option<PaintFacts>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tilt: Option<tilt::TiltedText>,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub runs_across: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -169,6 +180,7 @@ mod tests {
             background: if dark { [32, 34, 40] } else { [250, 248, 243] },
             foreground: if dark { [245, 245, 245] } else { [24, 24, 24] },
             translate,
+            runs_across: id == 2,
             tilt: (id == 2).then(|| tilt::TiltedText {
                 degrees: 8.0,
                 sheared: false,
@@ -207,6 +219,7 @@ mod tests {
             background: [250, 248, 243],
             foreground: [24, 24, 24],
             translate: true,
+            runs_across: false,
             tilt: None,
             paint: Some(PaintFacts {
                 bounds: rect(80, 44, 640, 56).into(),

@@ -153,7 +153,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
 | `set_overlay_visible` | `visible` | | Show or hide the overlay |
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
-| `screen_select` | `frame`, `rect`, `debug?` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |
+| `screen_select` | `frame`, `rect`, `debug?`, `direction?` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |
 | `screen_close` | | | Cancel the screen job, hide the `screen` window and drop the frame |
 | `screen_plate` | `request: { frame, job, block, rect, written_height }` | `{ rect, foreground, url }` | Build a background image and choose its text color after English layout; geometry is in frame pixels |
 | `quit` | | | Stop the pipeline and the translation server, then exit |
@@ -163,6 +163,8 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 `ModelStatus` contains `id`, `name`, `bytes_total`, `bytes_done`, `state` (`missing`, `downloading`, `paused`, `verifying`, `ready`, `corrupt`) and `optional`.
 
 ## Screen jobs
+
+`screen_select.direction` accepts `horizontal` (default) or `vertical`. Direction is part of the OCR reuse key. Vertical jobs preserve source-frame coordinates and mark horizontal captions with optional `Block.runs_across: true`; missing means false. English column layout and the direction picker are handled by the screenshot UI.
 
 The `screen_translate` hotkey captures the monitor under the cursor, sends `screen://frame`, and shows the `screen` window over that monitor. The page loads the frame from `http://ltshot.localhost/<id>` (a 32-bit BMP; any other id is 404). The UI converts CSS pixels to frame pixels by multiplying by `scale`, and frame pixels back by dividing; every rect the app sends is in frame pixels.
 

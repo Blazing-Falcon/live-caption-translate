@@ -72,9 +72,21 @@ impl TextRecognizer for ReusingReader<'_> {
         if let Some(lines) = self.reuse.get(&self.key) {
             return Ok(lines.clone());
         }
-        let lines = self.engine.recognize(image)?;
+        let direction = if self.key.vertical {
+            lt_core::screen::Direction::Vertical
+        } else {
+            lt_core::screen::Direction::Horizontal
+        };
+        let lines = self.engine.recognize_direction(image, direction)?;
         self.reuse.remember(self.key.clone(), lines.clone());
         Ok(lines)
+    }
+    fn recognize_direction(
+        &mut self,
+        image: &ImageView<'_>,
+        _direction: lt_core::screen::Direction,
+    ) -> Result<Vec<TextLine>> {
+        self.recognize(image)
     }
 }
 

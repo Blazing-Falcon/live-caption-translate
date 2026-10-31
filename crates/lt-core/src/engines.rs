@@ -86,12 +86,21 @@ pub struct TextLine {
     pub quad: Option<[crate::screen::geom::PointF; 4]>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub char_scores: Vec<f32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glyph_pitch: Option<f64>,
 }
 
 /// Reads the text in a still image.
 pub trait TextRecognizer: Send {
     /// Lines of text in `image`, rects in its pixels, in no particular order.
     fn recognize(&mut self, image: &ImageView<'_>) -> Result<Vec<TextLine>>;
+    fn recognize_direction(
+        &mut self,
+        image: &ImageView<'_>,
+        _direction: crate::screen::Direction,
+    ) -> Result<Vec<TextLine>> {
+        self.recognize(image)
+    }
 }
 
 #[derive(Clone, Debug)]

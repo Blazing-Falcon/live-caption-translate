@@ -147,7 +147,9 @@ The renderer uses the fonts of the PC it runs on, so another PC renders differen
 
 Pass page names to render only selected fixtures, for example `node app/ui/scripts/render-screen-fixtures.mjs tilted-card tilted-sign`. An element with explicit `[data-line]` children records each child's bounds as one source line or vertical column. Other elements use character boxes to find horizontal lines.
 
-The real-model horizontal OCR baseline covers `article`, `chat`, `dense`, `mixed`, `subtitle` and `ui-panel` at both scales, with a maximum character error rate of 2.4%. Vertical and tilted fixtures record geometry separately from that baseline.
+The real-model horizontal OCR baseline covers `article`, `chat`, `dense`, `mixed`, `subtitle` and `ui-panel` at both scales, with a maximum character error rate of 2.4%. The same test then checks four tilted fixtures and four vertical fixtures for exact group membership and text. Vertical box matching requires IoU 0.9 on 98% of boxes and exact text on 95% of matches.
+
+`lt-cli screen --direction vertical` reads columns down the page and groups them right to left. The default is `horizontal`. Output records `direction`; vertical raw lines also carry `glyph_pitch`, preserving metrics from the orientation in which each crop was read. `--explain` reports horizontal grouping decisions; vertical output includes its final groups in the usual events.
 
 ## Package
 

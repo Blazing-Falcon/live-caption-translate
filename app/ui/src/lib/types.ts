@@ -237,6 +237,7 @@ export interface ScreenBlock {
   foreground: Rgb;
   translate: boolean;
   tilt?: ScreenTilt;
+  runs_across?: boolean;
   paint?: {
     bounds: RectF;
     source_lines: RectF[];
@@ -252,3 +253,4 @@ export type ScreenEvent =
   | { type: "failed"; job: number; id: number; message: string }
   | { type: "done"; job: number; total_ms: number }
   | { type: "error"; job: number; message: string };
+export type ScreenDirection = "horizontal" | "vertical";

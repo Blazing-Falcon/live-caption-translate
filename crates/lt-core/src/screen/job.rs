@@ -3,7 +3,7 @@
 use super::{
     filters, group, ink,
     line::{Line, RawLine},
-    ImageView, ScreenEvent,
+    Direction, ImageView, ScreenEvent,
 };
 use crate::{
     engines::{TextRecognizer, TranslateRequest, TranslationControl, Translator, REQUEST_TIMEOUT},
@@ -66,12 +66,14 @@ pub fn run_job(
             emit,
             prepare: None,
             debug: false,
+            direction: Direction::Horizontal,
         },
     );
 }
 
 pub type PreparePaint<'a> = dyn FnMut(&ImageView<'_>, &[Line], &[super::Block]) -> Result<()> + 'a;
 pub struct JobOutput<'a> {
+    pub direction: Direction,
     pub debug: bool,
     pub emit: &'a mut dyn FnMut(ScreenEvent),
     pub prepare: Option<&'a mut PreparePaint<'a>>,
@@ -90,6 +92,7 @@ pub fn run_job_with_output(
         emit,
         prepare,
         debug,
+        direction,
     } = output;
     let started = Instant::now();
     let cancelled = || cancel.load(Ordering::Acquire);
@@ -97,7 +100,7 @@ pub fn run_job_with_output(
         return;
     }
     emit(ScreenEvent::Reading { job });
-    let lines = match recognizer.recognize(image) {
+    let lines = match recognizer.recognize_direction(image, direction) {
         Ok(lines) => lines,
         Err(error) => {
             if !cancelled() {
@@ -113,10 +116,19 @@ pub fn run_job_with_output(
         return;
     }
     let raw: Vec<RawLine> = lines.iter().map(RawLine::from).collect();
-    let mut facts = filters::prepare(&raw);
-    ink::annotate(image, &mut facts);
-    let groups = group::group_screenshot(&facts);
-    let blocks = group::blocks_from_groups(image, &groups);
+    let groups = match direction {
+        Direction::Horizontal => {
+            let mut facts = filters::prepare(&raw);
+            ink::annotate(image, &mut facts);
+            group::group_screenshot(&facts)
+        }
+        Direction::Vertical => {
+            let facts = super::vertical::prepare_lines(&lines);
+            let groups = super::vertical::grouping::group(facts, Some(image), Some(true));
+            super::tilt::level(&groups).into_owned()
+        }
+    };
+    let blocks = group::blocks_from_groups_direction(image, &groups, direction);
     if let Some(prepare) = prepare {
         if let Err(error) = prepare(image, &groups, &blocks) {
             if !cancelled() {

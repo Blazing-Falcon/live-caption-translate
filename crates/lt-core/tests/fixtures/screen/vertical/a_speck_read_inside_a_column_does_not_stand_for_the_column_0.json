@@ -1,0 +1,1 @@
+{"test":"A_speck_read_inside_a_column_does_not_stand_for_the_column","calls":[{"op":"missed","input":{"upright":[{"empty":false,"x":1083,"y":773,"width":19,"height":23}],"turned":[{"empty":false,"x":721,"y":660,"width":294,"height":74}],"sourceWidth":1821},"output":[0]}]}

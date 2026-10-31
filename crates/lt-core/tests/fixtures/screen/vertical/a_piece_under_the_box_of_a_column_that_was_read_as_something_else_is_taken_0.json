@@ -1,0 +1,1 @@
+{"test":"A_piece_under_the_box_of_a_column_that_was_read_as_something_else_is_taken","calls":[{"op":"missed","input":{"upright":[{"empty":false,"x":1024,"y":986,"width":65,"height":177}],"turned":[{"empty":false,"x":995,"y":715,"width":84,"height":36}],"sourceWidth":1820},"output":[0]}]}

@@ -141,9 +141,18 @@ pub async fn screen_select(
     frame: u64,
     rect: Rect,
     debug: Option<bool>,
+    direction: Option<lt_core::screen::Direction>,
 ) -> Reply<u64> {
     let shared = shared.inner().clone();
-    blocking(move || shared.screen.select(frame, rect, debug.unwrap_or(false))).await
+    blocking(move || {
+        shared.screen.select(
+            frame,
+            rect,
+            debug.unwrap_or(false),
+            direction.unwrap_or_default(),
+        )
+    })
+    .await
 }
 
 #[tauri::command]

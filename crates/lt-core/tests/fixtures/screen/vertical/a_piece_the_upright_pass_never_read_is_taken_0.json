@@ -1,0 +1,1 @@
+{"test":"A_piece_the_upright_pass_never_read_is_taken","calls":[{"op":"missed","input":{"upright":[{"empty":false,"x":700,"y":150,"width":36,"height":180}],"turned":[{"empty":false,"x":600,"y":40,"width":190,"height":34}],"sourceWidth":841},"output":[0]}]}

@@ -24,7 +24,10 @@ mod run {
         config::{logical_cpus, Config},
         engines::{TextLine, TextRecognizer, Translator},
         error::Error,
-        screen::{piece_translator, run_job, ImageView, ScreenEvent, TranslationCache},
+        screen::{
+            piece_translator, run_job_with_output, Direction, ImageView, JobOutput, ScreenEvent,
+            TranslationCache,
+        },
     };
     use std::{
         fs::{self, File},
@@ -52,6 +55,14 @@ mod run {
     impl TextRecognizer for Recorder<'_> {
         fn recognize(&mut self, image: &ImageView<'_>) -> lt_core::error::Result<Vec<TextLine>> {
             self.lines = self.engine.recognize(image)?;
+            Ok(self.lines.clone())
+        }
+        fn recognize_direction(
+            &mut self,
+            image: &ImageView<'_>,
+            direction: Direction,
+        ) -> lt_core::error::Result<Vec<TextLine>> {
+            self.lines = self.engine.recognize_direction(image, direction)?;
             Ok(self.lines.clone())
         }
     }
@@ -87,23 +98,33 @@ mod run {
             events.push((millis(started), event));
         };
         match server.as_mut() {
-            Some(server) => run_job(
+            Some(server) => run_job_with_output(
                 1,
                 &image,
                 &mut recorder,
                 &mut piece_translator(&mut *server.translator, &cancelled),
                 &cancelled,
                 &mut cache,
-                &mut emit,
+                JobOutput {
+                    direction: args.direction.into(),
+                    debug: false,
+                    prepare: None,
+                    emit: &mut emit,
+                },
             ),
-            None => run_job(
+            None => run_job_with_output(
                 1,
                 &image,
                 &mut recorder,
                 &mut |_| Err(Error::Stopped),
                 &cancelled,
                 &mut cache,
-                &mut emit,
+                JobOutput {
+                    direction: args.direction.into(),
+                    debug: false,
+                    prepare: None,
+                    emit: &mut emit,
+                },
             ),
         }
         let lines = recorder.lines;
@@ -138,6 +159,7 @@ mod run {
             "image": name,
             "width": width,
             "height": height,
+            "direction": Direction::from(args.direction),
             "ocr_load_ms": ocr_load_ms,
             "server_ms": server_ms,
             "lines": lines,
@@ -146,7 +168,7 @@ mod run {
                 .map(|(t_ms, event)| serde_json::json!({"t_ms": t_ms, "event": event}))
                 .collect::<Vec<_>>(),
         });
-        if args.explain {
+        if args.explain && Direction::from(args.direction) == Direction::Horizontal {
             use lt_core::screen::{filters, group, ink, line::RawLine};
             let raw: Vec<RawLine> = lines.iter().map(RawLine::from).collect();
             let mut facts = filters::prepare(&raw);

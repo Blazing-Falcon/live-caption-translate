@@ -1,0 +1,1 @@
+{"test":"AColumnAloneIsTiltedOnlyWhenLongAndClearlyTurned","calls":[{"op":"angle","input":{"columns":[{"length":196,"thickness":47,"angleDegrees":-82,"isTilted":false}],"trustedLength":2},"output":null}]}

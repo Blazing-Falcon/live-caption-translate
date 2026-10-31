@@ -43,13 +43,19 @@ impl Screen {
     }
 
     /// Cancels the running job and starts one on `rect` of frame `id`.
-    pub fn select(&self, id: u64, rect: Rect, debug: bool) -> Result<u64, String> {
+    pub fn select(
+        &self,
+        id: u64,
+        rect: Rect,
+        debug: bool,
+        direction: lt_core::screen::Direction,
+    ) -> Result<u64, String> {
         let frame = self
             .frame()
             .filter(|frame| frame.id == id)
             .ok_or("This screenshot is closed.")?;
         let (crop, area) = crop(&frame, rect).ok_or("The selection is outside the screenshot.")?;
-        Ok(self.jobs.start(id, crop, area, debug))
+        Ok(self.jobs.start(id, crop, area, debug, direction))
     }
 
     pub fn plate(&self, request: PlateRequest) -> Result<PlateReply, String> {

@@ -52,6 +52,8 @@ pub struct ReplayArgs {
 
 #[derive(Args)]
 pub struct ScreenArgs {
+    #[arg(long, value_enum, default_value = "horizontal")]
+    pub direction: DirectionArg,
     pub png: PathBuf,
     #[arg(long, default_value = "out/screen.json")]
     pub out: PathBuf,
@@ -69,6 +71,21 @@ pub struct ScreenArgs {
     /// Threads for text recognition (default: the app's choice, at most 4).
     #[arg(long, value_parser = clap::value_parser!(u16).range(1..))]
     pub threads: Option<u16>,
+}
+
+#[derive(Clone, Copy, ValueEnum)]
+pub enum DirectionArg {
+    Horizontal,
+    Vertical,
+}
+
+impl From<DirectionArg> for lt_core::screen::Direction {
+    fn from(value: DirectionArg) -> Self {
+        match value {
+            DirectionArg::Horizontal => Self::Horizontal,
+            DirectionArg::Vertical => Self::Vertical,
+        }
+    }
 }
 
 #[derive(Clone, Copy, ValueEnum)]

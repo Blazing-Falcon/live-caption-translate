@@ -30,6 +30,7 @@ use tauri::Emitter;
 const IDLE: Duration = Duration::from_secs(5 * 60);
 
 pub struct Job {
+    pub direction: lt_core::screen::Direction,
     pub id: u64,
     pub frame: u64,
     pub debug: bool,
@@ -74,7 +75,14 @@ impl Jobs {
     }
 
     /// Cancels the previous job and queues this one.
-    pub fn start(&self, frame: u64, crop: Vec<u8>, area: Rect, debug: bool) -> u64 {
+    pub fn start(
+        &self,
+        frame: u64,
+        crop: Vec<u8>,
+        area: Rect,
+        debug: bool,
+        direction: lt_core::screen::Direction,
+    ) -> u64 {
         let mut current = lock(&self.current);
         current.store(true, Ordering::Release);
         let cancel = Arc::new(AtomicBool::new(false));
@@ -83,6 +91,7 @@ impl Jobs {
         let origin = (area.x, area.y);
         self.plates.begin(frame, id, origin, cancel.clone());
         let mut work = Work::Run(Job {
+            direction,
             id,
             frame,
             debug,
@@ -235,7 +244,7 @@ impl Worker {
                     h: job.height,
                 },
                 language: "ZH".into(),
-                vertical: false,
+                vertical: job.direction == lt_core::screen::Direction::Vertical,
                 layout: CaptureLayoutMode::General,
             },
             engine,
@@ -257,6 +266,7 @@ impl Worker {
             cancel,
             cache,
             JobOutput {
+                direction: job.direction,
                 emit: &mut emit,
                 prepare: Some(&mut prepare),
                 debug: job.debug,

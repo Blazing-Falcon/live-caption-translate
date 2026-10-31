@@ -59,6 +59,14 @@ pub fn report_screenshot(
 }
 
 pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> {
+    blocks_from_groups_direction(image, groups, super::Direction::Horizontal)
+}
+
+pub fn blocks_from_groups_direction(
+    image: &ImageView<'_>,
+    groups: &[Line],
+    direction: super::Direction,
+) -> Vec<Block> {
     let lines: Vec<Vec<Rect>> = groups
         .iter()
         .map(|group| {
@@ -85,7 +93,7 @@ pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> 
                 } else {
                     group.source_line_bounds.as_deref()
                 },
-                false,
+                direction == super::Direction::Vertical && !group.runs_across,
             );
             let mut heights: Vec<_> = lines.iter().map(|line| line.h).collect();
             heights.sort_unstable();
@@ -100,6 +108,7 @@ pub fn blocks_from_groups(image: &ImageView<'_>, groups: &[Line]) -> Vec<Block> 
                 lines,
                 source: group.text.clone(),
                 tilt: group.tilt.clone(),
+                runs_across: group.runs_across,
                 paint: Some(PaintFacts {
                     bounds: group.bounds,
                     source_lines: group.lines().to_vec(),

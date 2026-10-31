@@ -58,6 +58,8 @@ Both styles fill from the top of a fixed box and scroll up, never down. Each blo
 
 ## Screenshot translation
 
+Screenshot recognition accepts horizontal or vertical direction. Vertical detection retains and carves the probability map, separates columns and extends clipped column ends for recognition. A quarter-turned detection pass adds only writing the upright pass missed. Pure column geometry, duplicate/ruby removal and right-to-left grouping live in `lt-core/src/screen/vertical`; model calls remain on the single OCR owner thread. Captions running across a vertical page use the horizontal preparation and grouping rules.
+
 The `screen_translate` hotkey starts it. It needs the text recognition model, which downloads the first time (see [models.md](models.md)), and the translation model. It does not need listening to run.
 
 ```

@@ -1,0 +1,1 @@
+{"test":"AShortFitDoesNotCountAndTheLongColumnIsJudgedAlone","calls":[{"op":"angle","input":{"columns":[{"length":452,"thickness":59,"angleDegrees":-82.2,"isTilted":false},{"length":60,"thickness":40,"angleDegrees":70,"isTilted":false}],"trustedLength":2},"output":7.799999999999997}]}

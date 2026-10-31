@@ -1,0 +1,1 @@
+{"test":"TwoColumnsAreTiltedWhenTheyAgree","calls":[{"op":"angle","input":{"columns":[{"length":239,"thickness":57,"angleDegrees":-87.6,"isTilted":false},{"length":181,"thickness":65,"angleDegrees":-86.5,"isTilted":false}],"trustedLength":2},"output":null}]}

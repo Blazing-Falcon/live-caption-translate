@@ -1,0 +1,1 @@
+{"test":"A_column_the_upright_pass_read_in_fragments_is_not_taken_again","calls":[{"op":"missed","input":{"upright":[{"empty":false,"x":1087,"y":721,"width":74,"height":150},{"empty":false,"x":1087,"y":871,"width":74,"height":144}],"turned":[{"empty":false,"x":721,"y":660,"width":294,"height":74}],"sourceWidth":1821},"output":[]}]}
