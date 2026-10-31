@@ -188,136 +188,163 @@ macro_rules! case {
         }
     };
 }
-case!(between_lines_is_null_for_asingle_line_because_there_is_no_interior_to_read, "CaptureBackgroundColorTests.BetweenLines_IsNullForASingleLineBecauseThereIsNoInteriorToRead.json");
+case!(
+    between_lines_is_null_for_a_single_line_because_there_is_no_interior_to_read,
+    "between_lines_is_null_for_a_single_line_because_there_is_no_interior_to_read.json"
+);
 case!(
     between_lines_is_null_when_the_gaps_hold_no_single_colour,
-    "CaptureBackgroundColorTests.BetweenLines_IsNullWhenTheGapsHoldNoSingleColour.json"
+    "between_lines_is_null_when_the_gaps_hold_no_single_colour.json"
 );
-case!(between_lines_reads_the_gaps_beside_the_columns_when_the_text_is_vertical, "CaptureBackgroundColorTests.BetweenLines_ReadsTheGapsBesideTheColumnsWhenTheTextIsVertical.json");
+case!(
+    between_lines_reads_the_gaps_beside_the_columns_when_the_text_is_vertical,
+    "between_lines_reads_the_gaps_beside_the_columns_when_the_text_is_vertical.json"
+);
 case!(
     between_lines_reads_the_panel_the_paragraph_is_printed_on,
-    "CaptureBackgroundColorTests.BetweenLines_ReadsThePanelTheParagraphIsPrintedOn.json"
+    "between_lines_reads_the_panel_the_paragraph_is_printed_on.json"
 );
 case!(
-    for_capture_overlay_leaves_asingle_line_exactly_as_it_was,
-    "CaptureBackgroundColorTests.ForCaptureOverlay_LeavesASingleLineExactlyAsItWas.json"
+    for_capture_overlay_leaves_a_single_line_exactly_as_it_was,
+    "for_capture_overlay_leaves_a_single_line_exactly_as_it_was.json"
 );
-case!(for_capture_overlay_takes_the_panel_rather_than_the_page_behind_it_for_aparagraph, "CaptureBackgroundColorTests.ForCaptureOverlay_TakesThePanelRatherThanThePageBehindItForAParagraph.json");
 case!(
-    card_answers_atext_colour_that_can_be_read_on_it,
-    "CaptureBubbleBackdropTests.Card_AnswersATextColourThatCanBeReadOnIt.json"
+    for_capture_overlay_takes_the_panel_rather_than_the_page_behind_it_for_a_paragraph,
+    "for_capture_overlay_takes_the_panel_rather_than_the_page_behind_it_for_a_paragraph.json"
 );
-case!(card_follows_what_the_bubble_covers_rather_than_what_the_source_line_sat_on, "CaptureBubbleBackdropTests.Card_FollowsWhatTheBubbleCoversRatherThanWhatTheSourceLineSatOn.json");
+case!(
+    card_answers_a_text_colour_that_can_be_read_on_it,
+    "card_answers_a_text_colour_that_can_be_read_on_it.json"
+);
+case!(
+    card_follows_what_the_bubble_covers_rather_than_what_the_source_line_sat_on,
+    "card_follows_what_the_bubble_covers_rather_than_what_the_source_line_sat_on.json"
+);
 case!(
     create_is_null_with_no_blocks_to_repair,
-    "CaptureBubbleBackdropTests.Create_IsNullWithNoBlocksToRepair.json"
+    "create_is_null_with_no_blocks_to_repair.json"
 );
 case!(
     feather_stays_outside_the_bubble_even_for_tiny_text,
-    "CaptureBubbleBackdropTests.Feather_StaysOutsideTheBubbleEvenForTinyText.json"
+    "feather_stays_outside_the_bubble_even_for_tiny_text.json"
 );
 case!(
     from_repaired_answers_as_create_does_for_the_same_repair,
-    "CaptureBubbleBackdropTests.FromRepaired_AnswersAsCreateDoesForTheSameRepair.json"
+    "from_repaired_answers_as_create_does_for_the_same_repair.json"
 );
 case!(
     plate_has_no_trace_of_the_source_text,
-    "CaptureBubbleBackdropTests.Plate_HasNoTraceOfTheSourceText.json"
+    "plate_has_no_trace_of_the_source_text.json"
 );
 case!(
-    plate_is_built_for_aphotographed_surface,
-    "CaptureBubbleBackdropTests.Plate_IsBuiltForAPhotographedSurface.json"
+    plate_is_built_for_a_photographed_surface,
+    "plate_is_built_for_a_photographed_surface.json"
 );
 case!(
     plate_is_null_for_an_area_outside_the_capture,
-    "CaptureBubbleBackdropTests.Plate_IsNullForAnAreaOutsideTheCapture.json"
+    "plate_is_null_for_an_area_outside_the_capture.json"
 );
 case!(
-    plate_is_null_on_aflat_surface_so_the_caller_keeps_its_card,
-    "CaptureBubbleBackdropTests.Plate_IsNullOnAFlatSurfaceSoTheCallerKeepsItsCard.json"
+    plate_is_null_on_a_flat_surface_so_the_caller_keeps_its_card,
+    "plate_is_null_on_a_flat_surface_so_the_caller_keeps_its_card.json"
 );
-case!(plate_is_null_on_asharp_interface_even_where_the_bubble_covers_more_than_one_colour, "CaptureBubbleBackdropTests.Plate_IsNullOnASharpInterfaceEvenWhereTheBubbleCoversMoreThanOneColour.json");
+case!(
+    plate_is_null_on_a_sharp_interface_even_where_the_bubble_covers_more_than_one_colour,
+    "plate_is_null_on_a_sharp_interface_even_where_the_bubble_covers_more_than_one_colour.json"
+);
 case!(
     plate_is_opaque_in_the_middle_and_faded_at_the_edge,
-    "CaptureBubbleBackdropTests.Plate_IsOpaqueInTheMiddleAndFadedAtTheEdge.json"
+    "plate_is_opaque_in_the_middle_and_faded_at_the_edge.json"
 );
 case!(
     plate_is_the_full_size_asked_for_even_where_the_capture_does_not_reach,
-    "CaptureBubbleBackdropTests.Plate_IsTheFullSizeAskedForEvenWhereTheCaptureDoesNotReach.json"
+    "plate_is_the_full_size_asked_for_even_where_the_capture_does_not_reach.json"
 );
 case!(
     plate_keeps_the_gradient_it_was_cut_from_rather_than_flattening_it,
-    "CaptureBubbleBackdropTests.Plate_KeepsTheGradientItWasCutFromRatherThanFlatteningIt.json"
+    "plate_keeps_the_gradient_it_was_cut_from_rather_than_flattening_it.json"
 );
 case!(
     plate_keeps_white_text_white_by_darkening_what_it_crosses,
-    "CaptureBubbleBackdropTests.Plate_KeepsWhiteTextWhiteByDarkeningWhatItCrosses.json"
+    "plate_keeps_white_text_white_by_darkening_what_it_crosses.json"
 );
 case!(
     plate_moves_the_text_rather_than_the_picture_when_it_cannot_be_read,
-    "CaptureBubbleBackdropTests.Plate_MovesTheTextRatherThanThePictureWhenItCannotBeRead.json"
+    "plate_moves_the_text_rather_than_the_picture_when_it_cannot_be_read.json"
 );
 case!(
     plate_takes_the_text_well_past_the_minimum_when_moving_it_is_free,
-    "CaptureBubbleBackdropTests.Plate_TakesTheTextWellPastTheMinimumWhenMovingItIsFree.json"
+    "plate_takes_the_text_well_past_the_minimum_when_moving_it_is_free.json"
 );
 case!(
     dominant_averages_nearby_shades_of_the_same_colour,
-    "DominantColorVoteTests.Dominant_AveragesNearbyShadesOfTheSameColour.json"
+    "dominant_averages_nearby_shades_of_the_same_colour.json"
 );
 case!(
     dominant_is_null_when_nothing_was_added,
-    "DominantColorVoteTests.Dominant_IsNullWhenNothingWasAdded.json"
+    "dominant_is_null_when_nothing_was_added.json"
 );
 case!(
     dominant_keeps_the_majority_colour_instead_of_blending_in_the_minority,
-    "DominantColorVoteTests.Dominant_KeepsTheMajorityColourInsteadOfBlendingInTheMinority.json"
+    "dominant_keeps_the_majority_colour_instead_of_blending_in_the_minority.json"
 );
-case!(ensure_contrast_keeps_the_hue_of_saturated_text_on_adark_background_of_the_same_hue, "OverlayTextColorTests.EnsureContrast_KeepsTheHueOfSaturatedTextOnADarkBackgroundOfTheSameHue.json");
 case!(
-    ensure_contrast_leaves_areadable_pair_untouched,
-    "OverlayTextColorTests.EnsureContrast_LeavesAReadablePairUntouched.json"
+    ensure_contrast_keeps_the_hue_of_saturated_text_on_a_dark_background_of_the_same_hue,
+    "ensure_contrast_keeps_the_hue_of_saturated_text_on_a_dark_background_of_the_same_hue.json"
+);
+case!(
+    ensure_contrast_leaves_a_readable_pair_untouched,
+    "ensure_contrast_leaves_a_readable_pair_untouched.json"
 );
 case!(
     ensure_contrast_rescues_white_poster_text_tuned_into_its_pale_card,
-    "OverlayTextColorTests.EnsureContrast_RescuesWhitePosterTextTunedIntoItsPaleCard.json"
+    "ensure_contrast_rescues_white_poster_text_tuned_into_its_pale_card.json"
 );
-case!(for_capture_overlay_falls_back_to_black_on_white_when_the_box_is_outside_the_frame, "SourceTextColorSamplerTests.ForCaptureOverlay_FallsBackToBlackOnWhiteWhenTheBoxIsOutsideTheFrame.json");
 case!(
-    for_capture_overlay_keeps_white_caption_on_apale_card_legible,
-    "SourceTextColorSamplerTests.ForCaptureOverlay_KeepsWhiteCaptionOnAPaleCardLegible.json"
+    for_capture_overlay_falls_back_to_black_on_white_when_the_box_is_outside_the_frame,
+    "for_capture_overlay_falls_back_to_black_on_white_when_the_box_is_outside_the_frame.json"
 );
-case!(sample_has_no_text_colour_when_nothing_inside_stands_out_from_the_background, "SourceTextColorSamplerTests.Sample_HasNoTextColourWhenNothingInsideStandsOutFromTheBackground.json");
 case!(
-    sample_is_null_for_abox_outside_the_frame,
-    "SourceTextColorSamplerTests.Sample_IsNullForABoxOutsideTheFrame.json"
+    for_capture_overlay_keeps_white_caption_on_a_pale_card_legible,
+    "for_capture_overlay_keeps_white_caption_on_a_pale_card_legible.json"
 );
-case!(sample_reads_the_ring_around_the_box_as_background_and_the_majority_glyph_colour_inside, "SourceTextColorSamplerTests.Sample_ReadsTheRingAroundTheBoxAsBackgroundAndTheMajorityGlyphColourInside.json");
 case!(
-    black_text_in_awhite_balloon_over_ablack_panel_is_black_on_white,
-    "TextLayersTests.BlackTextInAWhiteBalloon_OverABlackPanel_IsBlackOnWhite.json"
+    sample_has_no_text_colour_when_nothing_inside_stands_out_from_the_background,
+    "sample_has_no_text_colour_when_nothing_inside_stands_out_from_the_background.json"
+);
+case!(
+    sample_is_null_for_a_box_outside_the_frame,
+    "sample_is_null_for_a_box_outside_the_frame.json"
+);
+case!(
+    sample_reads_the_ring_around_the_box_as_background_and_the_majority_glyph_colour_inside,
+    "sample_reads_the_ring_around_the_box_as_background_and_the_majority_glyph_colour_inside.json"
+);
+case!(
+    black_text_in_a_white_balloon_over_a_black_panel_is_black_on_white,
+    "black_text_in_a_white_balloon_over_a_black_panel_is_black_on_white.json"
 );
 case!(
     capture_writes_an_outlined_source_in_whichever_of_its_colours_reads_on_the_card,
-    "TextLayersTests.Capture_WritesAnOutlinedSourceInWhicheverOfItsColoursReadsOnTheCard.json"
+    "capture_writes_an_outlined_source_in_whichever_of_its_colours_reads_on_the_card.json"
 );
 case!(
     plain_black_text_has_no_outline,
-    "TextLayersTests.PlainBlackText_HasNoOutline.json"
+    "plain_black_text_has_no_outline.json"
 );
 case!(
-    plain_white_text_on_black_has_no_outline_its_counters_are_not_abody,
-    "TextLayersTests.PlainWhiteTextOnBlack_HasNoOutline_ItsCountersAreNotABody.json"
+    plain_white_text_on_black_has_no_outline_its_counters_are_not_a_body,
+    "plain_white_text_on_black_has_no_outline_its_counters_are_not_a_body.json"
 );
 case!(
-    white_text_with_ablack_edge_is_white_with_ablack_outline,
-    "TextLayersTests.WhiteTextWithABlackEdge_IsWhiteWithABlackOutline.json"
+    white_text_with_a_black_edge_is_white_with_a_black_outline,
+    "white_text_with_a_black_edge_is_white_with_a_black_outline.json"
 );
 case!(
-    white_text_with_ablack_edge_over_awhite_scene_is_still_white_with_ablack_outline,
-    "TextLayersTests.WhiteTextWithABlackEdge_OverAWhiteScene_IsStillWhiteWithABlackOutline.json"
+    white_text_with_a_black_edge_over_a_white_scene_is_still_white_with_a_black_outline,
+    "white_text_with_a_black_edge_over_a_white_scene_is_still_white_with_a_black_outline.json"
 );
 case!(
-    white_text_with_adark_edge_on_an_orange_badge_keeps_the_white,
-    "TextLayersTests.WhiteTextWithADarkEdge_OnAnOrangeBadge_KeepsTheWhite.json"
+    white_text_with_a_dark_edge_on_an_orange_badge_keeps_the_white,
+    "white_text_with_a_dark_edge_on_an_orange_badge_keeps_the_white.json"
 );
