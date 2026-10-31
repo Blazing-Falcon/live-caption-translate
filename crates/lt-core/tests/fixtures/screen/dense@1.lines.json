@@ -1,4 +1,5 @@
 {
+  "direction": "horizontal",
   "events": [
     {
       "event": {
@@ -17,25 +18,46 @@
               245
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 0,
-            "line_height": 24,
+            "intent": "single",
+            "line_height": 21,
             "lines": [
               {
-                "h": 24,
-                "w": 36,
-                "x": 24,
-                "y": 24
+                "h": 21,
+                "w": 37,
+                "x": 23,
+                "y": 25
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 37.0,
+                "x": 23.0,
+                "y": 25.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 37.0,
+                  "x": 23.0,
+                  "y": 25.25
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
-              "w": 36,
-              "x": 24,
-              "y": 24
+              "h": 21,
+              "w": 37,
+              "x": 23,
+              "y": 25
             },
             "source": "编号",
             "translate": true
@@ -47,55 +69,46 @@
               245
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 1,
-            "line_height": 22,
+            "intent": "single",
+            "line_height": 21,
             "lines": [
               {
-                "h": 22,
-                "w": 58,
-                "x": 96,
+                "h": 21,
+                "w": 37,
+                "x": 244,
                 "y": 25
               }
             ],
-            "rect": {
-              "h": 22,
-              "w": 58,
-              "x": 96,
-              "y": 25
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 37.0,
+                "x": 244.0,
+                "y": 25.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 37.0,
+                  "x": 244.0,
+                  "y": 25.25
+                }
+              ]
             },
-            "source": "商品名称",
-            "translate": true
-          },
-          {
-            "background": [
-              238,
-              241,
-              245
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 2,
-            "line_height": 24,
-            "lines": [
-              {
-                "h": 24,
-                "w": 36,
-                "x": 245,
-                "y": 24
-              }
-            ],
             "rect": {
-              "h": 24,
-              "w": 36,
-              "x": 245,
-              "y": 24
+              "h": 21,
+              "w": 37,
+              "x": 244,
+              "y": 25
             },
             "source": "规格",
             "translate": true
@@ -107,25 +120,46 @@
               245
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 3,
-            "line_height": 24,
+            "id": 2,
+            "intent": "single",
+            "line_height": 20,
             "lines": [
               {
-                "h": 24,
-                "w": 35,
-                "x": 375,
-                "y": 24
+                "h": 20,
+                "w": 36,
+                "x": 374,
+                "y": 25
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 36.0,
+                "x": 374.0,
+                "y": 25.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 36.0,
+                  "x": 374.0,
+                  "y": 25.16
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
-              "w": 35,
-              "x": 375,
-              "y": 24
+              "h": 20,
+              "w": 36,
+              "x": 374,
+              "y": 25
             },
             "source": "数量",
             "translate": true
@@ -137,25 +171,46 @@
               245
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 4,
-            "line_height": 24,
+            "id": 3,
+            "intent": "single",
+            "line_height": 20,
             "lines": [
               {
-                "h": 24,
-                "w": 34,
-                "x": 456,
-                "y": 24
+                "h": 20,
+                "w": 35,
+                "x": 455,
+                "y": 25
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 35.0,
+                "x": 455.0,
+                "y": 25.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 35.0,
+                  "x": 455.0,
+                  "y": 25.16
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
-              "w": 34,
-              "x": 456,
-              "y": 24
+              "h": 20,
+              "w": 35,
+              "x": 455,
+              "y": 25
             },
             "source": "单价",
             "translate": true
@@ -167,87 +222,99 @@
               245
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 5,
-            "line_height": 24,
+            "id": 4,
+            "intent": "single",
+            "line_height": 20,
             "lines": [
               {
-                "h": 24,
+                "h": 20,
                 "w": 36,
-                "x": 575,
-                "y": 24
+                "x": 574,
+                "y": 25
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 36.0,
+                "x": 574.0,
+                "y": 25.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 36.0,
+                  "x": 574.0,
+                  "y": 25.16
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
+              "h": 20,
               "w": 36,
-              "x": 575,
-              "y": 24
+              "x": 574,
+              "y": 25
             },
             "source": "状态",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              238,
+              241,
+              245
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 6,
-            "line_height": 23,
+            "id": 5,
+            "intent": "single",
+            "line_height": 19,
             "lines": [
               {
-                "h": 23,
-                "w": 37,
-                "x": 26,
-                "y": 53
+                "h": 19,
+                "w": 59,
+                "x": 95,
+                "y": 26
               }
             ],
-            "rect": {
-              "h": 23,
-              "w": 37,
-              "x": 26,
-              "y": 53
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 17.404999999999998,
+                "width": 59.0,
+                "x": 95.0,
+                "y": 26.7975
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 17.404999999999998,
+                  "width": 59.0,
+                  "x": 95.0,
+                  "y": 26.7975
+                }
+              ]
             },
-            "source": "1001",
-            "translate": false
-          },
-          {
-            "background": [
-              255,
-              255,
-              255
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 7,
-            "line_height": 21,
-            "lines": [
-              {
-                "h": 21,
-                "w": 82,
-                "x": 96,
-                "y": 54
-              }
-            ],
             "rect": {
-              "h": 21,
-              "w": 82,
-              "x": 96,
-              "y": 54
+              "h": 19,
+              "w": 59,
+              "x": 95,
+              "y": 26
             },
-            "source": "不锈钢保温杯",
+            "source": "商品名称",
             "translate": true
           },
           {
@@ -257,55 +324,148 @@
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 8,
-            "line_height": 25,
+            "id": 6,
+            "intent": "single",
+            "line_height": 16,
             "lines": [
               {
-                "h": 25,
-                "w": 61,
-                "x": 245,
-                "y": 52
+                "h": 16,
+                "w": 63,
+                "x": 243,
+                "y": 56
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 14.867999999999999,
+                "width": 63.0,
+                "x": 243.0,
+                "y": 56.566
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 14.867999999999999,
+                  "width": 63.0,
+                  "x": 243.0,
+                  "y": 56.566
+                }
+              ]
+            },
             "rect": {
-              "h": 25,
-              "w": 61,
-              "x": 245,
-              "y": 52
+              "h": 16,
+              "w": 63,
+              "x": 243,
+              "y": 56
             },
             "source": "500 毫升",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              254,
+              254,
+              254
             ],
             "foreground": [
-              24,
-              24,
+              218,
+              125,
               24
             ],
-            "id": 9,
-            "line_height": 24,
+            "id": 7,
+            "intent": "single",
+            "line_height": 21,
             "lines": [
               {
-                "h": 24,
-                "w": 32,
-                "x": 376,
-                "y": 53
+                "h": 21,
+                "w": 38,
+                "x": 25,
+                "y": 54
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 38.0,
+                "x": 25.0,
+                "y": 54.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 38.0,
+                  "x": 25.0,
+                  "y": 54.25
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
-              "w": 32,
-              "x": 376,
-              "y": 53
+              "h": 21,
+              "w": 38,
+              "x": 25,
+              "y": 54
+            },
+            "source": "1001",
+            "translate": false
+          },
+          {
+            "background": [
+              254,
+              254,
+              254
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 8,
+            "intent": "single",
+            "line_height": 21,
+            "lines": [
+              {
+                "h": 21,
+                "w": 33,
+                "x": 375,
+                "y": 54
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 33.0,
+                "x": 375.0,
+                "y": 54.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 33.0,
+                  "x": 375.0,
+                  "y": 54.25
+                }
+              ]
+            },
+            "rect": {
+              "h": 21,
+              "w": 33,
+              "x": 375,
+              "y": 54
             },
             "source": "120",
             "translate": false
@@ -317,28 +477,100 @@
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
+            ],
+            "id": 9,
+            "intent": "single",
+            "line_height": 10,
+            "lines": [
+              {
+                "h": 10,
+                "w": 50,
+                "x": 454,
+                "y": 59
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 9.833333333333334,
+                "width": 50.0,
+                "x": 454.0,
+                "y": 59.083333333333336
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 9.833333333333334,
+                  "width": 50.0,
+                  "x": 454.0,
+                  "y": 59.083333333333336
+                }
+              ]
+            },
+            "rect": {
+              "h": 10,
+              "w": 50,
+              "x": 454,
+              "y": 59
+            },
+            "source": "¥39.90",
+            "translate": false
+          },
+          {
+            "background": [
+              254,
+              254,
+              254
+            ],
+            "foreground": [
+              32,
+              32,
+              32
             ],
             "id": 10,
+            "intent": "single",
             "line_height": 22,
             "lines": [
               {
                 "h": 22,
-                "w": 49,
-                "x": 455,
+                "w": 36,
+                "x": 574,
                 "y": 54
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 21.32,
+                "width": 36.0,
+                "x": 574.0,
+                "y": 54.34
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 21.32,
+                  "width": 36.0,
+                  "x": 574.0,
+                  "y": 54.34
+                }
+              ]
+            },
             "rect": {
               "h": 22,
-              "w": 49,
-              "x": 455,
+              "w": 36,
+              "x": 574,
               "y": 54
             },
-            "source": "¥39.90",
-            "translate": false
+            "source": "有货",
+            "translate": true
           },
           {
             "background": [
@@ -347,27 +579,48 @@
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 11,
-            "line_height": 24,
+            "intent": "single",
+            "line_height": 18,
             "lines": [
               {
-                "h": 24,
-                "w": 36,
-                "x": 575,
-                "y": 53
+                "h": 18,
+                "w": 83,
+                "x": 95,
+                "y": 55
               }
             ],
-            "rect": {
-              "h": 24,
-              "w": 36,
-              "x": 575,
-              "y": 53
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 16.323333333333334,
+                "width": 83.0,
+                "x": 95.0,
+                "y": 55.83833333333333
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 16.323333333333334,
+                  "width": 83.0,
+                  "x": 95.0,
+                  "y": 55.83833333333333
+                }
+              ]
             },
-            "source": "有货",
+            "rect": {
+              "h": 18,
+              "w": 83,
+              "x": 95,
+              "y": 55
+            },
+            "source": "不锈钢保温杯",
             "translate": true
           },
           {
@@ -377,25 +630,250 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 12,
-            "line_height": 23,
+            "intent": "single",
+            "line_height": 17,
             "lines": [
               {
-                "h": 23,
-                "w": 37,
-                "x": 27,
-                "y": 82
+                "h": 17,
+                "w": 86,
+                "x": 93,
+                "y": 83
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 16.913333333333334,
+                "width": 86.0,
+                "x": 93.0,
+                "y": 83.04333333333334
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 16.913333333333334,
+                  "width": 86.0,
+                  "x": 93.0,
+                  "y": 83.04333333333334
+                }
+              ]
+            },
             "rect": {
-              "h": 23,
-              "w": 37,
-              "x": 27,
-              "y": 82
+              "h": 17,
+              "w": 86,
+              "x": 93,
+              "y": 83
+            },
+            "source": "无线蓝牙耳机",
+            "translate": true
+          },
+          {
+            "background": [
+              250,
+              250,
+              252
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 13,
+            "intent": "single",
+            "line_height": 24,
+            "lines": [
+              {
+                "h": 24,
+                "w": 38,
+                "x": 242,
+                "y": 80
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 22.959999999999997,
+                "width": 38.0,
+                "x": 242.0,
+                "y": 80.52
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 22.959999999999997,
+                  "width": 38.0,
+                  "x": 242.0,
+                  "y": 80.52
+                }
+              ]
+            },
+            "rect": {
+              "h": 24,
+              "w": 38,
+              "x": 242,
+              "y": 80
+            },
+            "source": "黑色",
+            "translate": true
+          },
+          {
+            "background": [
+              250,
+              250,
+              252
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 14,
+            "intent": "single",
+            "line_height": 24,
+            "lines": [
+              {
+                "h": 24,
+                "w": 38,
+                "x": 573,
+                "y": 80
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 22.959999999999997,
+                "width": 38.0,
+                "x": 573.0,
+                "y": 80.52
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 22.959999999999997,
+                  "width": 38.0,
+                  "x": 573.0,
+                  "y": 80.52
+                }
+              ]
+            },
+            "rect": {
+              "h": 24,
+              "w": 38,
+              "x": 573,
+              "y": 80
+            },
+            "source": "有货",
+            "translate": true
+          },
+          {
+            "background": [
+              249,
+              250,
+              251
+            ],
+            "foreground": [
+              213,
+              123,
+              24
+            ],
+            "id": 15,
+            "intent": "single",
+            "line_height": 22,
+            "lines": [
+              {
+                "h": 22,
+                "w": 28,
+                "x": 373,
+                "y": 81
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 21.32,
+                "width": 28.0,
+                "x": 373.0,
+                "y": 81.34
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 21.32,
+                  "width": 28.0,
+                  "x": 373.0,
+                  "y": 81.34
+                }
+              ]
+            },
+            "rect": {
+              "h": 22,
+              "w": 28,
+              "x": 373,
+              "y": 81
+            },
+            "source": "45",
+            "translate": false
+          },
+          {
+            "background": [
+              249,
+              249,
+              251
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 16,
+            "intent": "single",
+            "line_height": 20,
+            "lines": [
+              {
+                "h": 20,
+                "w": 40,
+                "x": 25,
+                "y": 83
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 40.0,
+                "x": 25.0,
+                "y": 83.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 40.0,
+                  "x": 25.0,
+                  "y": 83.16
+                }
+              ]
+            },
+            "rect": {
+              "h": 20,
+              "w": 40,
+              "x": 25,
+              "y": 83
             },
             "source": "1002",
             "translate": false
@@ -407,265 +885,250 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 13,
-            "line_height": 24,
+            "id": 17,
+            "intent": "single",
+            "line_height": 11,
             "lines": [
               {
-                "h": 24,
-                "w": 84,
-                "x": 95,
-                "y": 81
-              }
-            ],
-            "rect": {
-              "h": 24,
-              "w": 84,
-              "x": 95,
-              "y": 81
-            },
-            "source": "无线蓝牙耳机",
-            "translate": true
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 14,
-            "line_height": 25,
-            "lines": [
-              {
-                "h": 25,
-                "w": 36,
-                "x": 244,
-                "y": 81
-              }
-            ],
-            "rect": {
-              "h": 25,
-              "w": 36,
-              "x": 244,
-              "y": 81
-            },
-            "source": "黑色",
-            "translate": true
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 15,
-            "line_height": 25,
-            "lines": [
-              {
-                "h": 25,
-                "w": 28,
-                "x": 374,
-                "y": 81
-              }
-            ],
-            "rect": {
-              "h": 25,
-              "w": 28,
-              "x": 374,
-              "y": 81
-            },
-            "source": "45",
-            "translate": false
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 16,
-            "line_height": 21,
-            "lines": [
-              {
-                "h": 21,
+                "h": 11,
                 "w": 54,
                 "x": 456,
-                "y": 83
+                "y": 87
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 9.102857142857143,
+                "width": 54.0,
+                "x": 456.0,
+                "y": 87.94857142857143
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 9.102857142857143,
+                  "width": 54.0,
+                  "x": 456.0,
+                  "y": 87.94857142857143
+                }
+              ]
+            },
             "rect": {
-              "h": 21,
+              "h": 11,
               "w": 54,
               "x": 456,
-              "y": 83
+              "y": 87
             },
             "source": "¥129.00",
             "translate": false
           },
           {
             "background": [
-              248,
-              249,
-              251
+              254,
+              254,
+              254
             ],
             "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 17,
-            "line_height": 25,
-            "lines": [
-              {
-                "h": 25,
-                "w": 36,
-                "x": 575,
-                "y": 81
-              }
-            ],
-            "rect": {
-              "h": 25,
-              "w": 36,
-              "x": 575,
-              "y": 81
-            },
-            "source": "有货",
-            "translate": true
-          },
-          {
-            "background": [
-              255,
-              255,
-              255
-            ],
-            "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 18,
-            "line_height": 23,
+            "intent": "single",
+            "line_height": 20,
             "lines": [
               {
-                "h": 23,
-                "w": 38,
-                "x": 26,
+                "h": 20,
+                "w": 63,
+                "x": 92,
                 "y": 111
               }
             ],
-            "rect": {
-              "h": 23,
-              "w": 38,
-              "x": 26,
-              "y": 111
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 18.584999999999997,
+                "width": 63.0,
+                "x": 92.0,
+                "y": 111.7075
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 18.584999999999997,
+                  "width": 63.0,
+                  "x": 92.0,
+                  "y": 111.7075
+                }
+              ]
             },
-            "source": "1003",
-            "translate": false
-          },
-          {
-            "background": [
-              255,
-              255,
-              255
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 19,
-            "line_height": 22,
-            "lines": [
-              {
-                "h": 22,
-                "w": 59,
-                "x": 95,
-                "y": 112
-              }
-            ],
             "rect": {
-              "h": 22,
-              "w": 59,
-              "x": 95,
-              "y": 112
+              "h": 20,
+              "w": 63,
+              "x": 92,
+              "y": 111
             },
             "source": "纯棉毛巾",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              253,
+              253,
+              254
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 20,
-            "line_height": 26,
+            "id": 19,
+            "intent": "single",
+            "line_height": 22,
             "lines": [
               {
-                "h": 26,
-                "w": 49,
-                "x": 245,
+                "h": 22,
+                "w": 39,
+                "x": 25,
                 "y": 110
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 21.32,
+                "width": 39.0,
+                "x": 25.0,
+                "y": 110.34
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 21.32,
+                  "width": 39.0,
+                  "x": 25.0,
+                  "y": 110.34
+                }
+              ]
+            },
             "rect": {
-              "h": 26,
-              "w": 49,
-              "x": 245,
+              "h": 22,
+              "w": 39,
+              "x": 25,
               "y": 110
+            },
+            "source": "1003",
+            "translate": false
+          },
+          {
+            "background": [
+              254,
+              254,
+              254
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 20,
+            "intent": "single",
+            "line_height": 20,
+            "lines": [
+              {
+                "h": 20,
+                "w": 48,
+                "x": 245,
+                "y": 112
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 48.0,
+                "x": 245.0,
+                "y": 112.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 48.0,
+                  "x": 245.0,
+                  "y": 112.16
+                }
+              ]
+            },
+            "rect": {
+              "h": 20,
+              "w": 48,
+              "x": 245,
+              "y": 112
             },
             "source": "三条装",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              254,
+              254,
+              254
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 21,
-            "line_height": 23,
+            "intent": "single",
+            "line_height": 21,
             "lines": [
               {
-                "h": 23,
-                "w": 33,
-                "x": 375,
-                "y": 111
+                "h": 21,
+                "w": 34,
+                "x": 374,
+                "y": 112
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 34.0,
+                "x": 374.0,
+                "y": 112.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 34.0,
+                  "x": 374.0,
+                  "y": 112.25
+                }
+              ]
+            },
             "rect": {
-              "h": 23,
-              "w": 33,
-              "x": 375,
-              "y": 111
+              "h": 21,
+              "w": 34,
+              "x": 374,
+              "y": 112
             },
             "source": "300",
             "translate": false
@@ -677,55 +1140,97 @@
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 22,
-            "line_height": 22,
+            "intent": "single",
+            "line_height": 11,
             "lines": [
               {
-                "h": 22,
-                "w": 48,
-                "x": 456,
-                "y": 112
+                "h": 11,
+                "w": 49,
+                "x": 455,
+                "y": 116
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 9.636666666666665,
+                "width": 49.0,
+                "x": 455.0,
+                "y": 116.68166666666667
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 9.636666666666665,
+                  "width": 49.0,
+                  "x": 455.0,
+                  "y": 116.68166666666667
+                }
+              ]
+            },
             "rect": {
-              "h": 22,
-              "w": 48,
-              "x": 456,
-              "y": 112
+              "h": 11,
+              "w": 49,
+              "x": 455,
+              "y": 116
             },
             "source": "¥24.50",
             "translate": false
           },
           {
             "background": [
-              255,
-              255,
-              255
+              254,
+              254,
+              254
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 23,
-            "line_height": 24,
+            "intent": "single",
+            "line_height": 21,
             "lines": [
               {
-                "h": 24,
+                "h": 21,
                 "w": 36,
-                "x": 575,
-                "y": 111
+                "x": 574,
+                "y": 112
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 36.0,
+                "x": 574.0,
+                "y": 112.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 36.0,
+                  "x": 574.0,
+                  "y": 112.25
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
+              "h": 21,
               "w": 36,
-              "x": 575,
-              "y": 111
+              "x": 574,
+              "y": 112
             },
             "source": "有货",
             "translate": true
@@ -737,25 +1242,97 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 24,
-            "line_height": 23,
+            "intent": "single",
+            "line_height": 14,
             "lines": [
               {
-                "h": 23,
-                "w": 38,
-                "x": 26,
-                "y": 140
+                "h": 14,
+                "w": 75,
+                "x": 244,
+                "y": 143
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 12.64285714285714,
+                "width": 75.0,
+                "x": 244.0,
+                "y": 143.67857142857142
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 12.64285714285714,
+                  "width": 75.0,
+                  "x": 244.0,
+                  "y": 143.67857142857142
+                }
+              ]
+            },
             "rect": {
-              "h": 23,
-              "w": 38,
+              "h": 14,
+              "w": 75,
+              "x": 244,
+              "y": 143
+            },
+            "source": "10000 毫安",
+            "translate": true
+          },
+          {
+            "background": [
+              249,
+              250,
+              251
+            ],
+            "foreground": [
+              213,
+              123,
+              24
+            ],
+            "id": 25,
+            "intent": "single",
+            "line_height": 21,
+            "lines": [
+              {
+                "h": 21,
+                "w": 39,
+                "x": 26,
+                "y": 141
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 39.0,
+                "x": 26.0,
+                "y": 141.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 39.0,
+                  "x": 26.0,
+                  "y": 141.25
+                }
+              ]
+            },
+            "rect": {
+              "h": 21,
+              "w": 39,
               "x": 26,
-              "y": 140
+              "y": 141
             },
             "source": "1004",
             "translate": false
@@ -767,115 +1344,46 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 25,
-            "line_height": 21,
-            "lines": [
-              {
-                "h": 21,
-                "w": 69,
-                "x": 97,
-                "y": 142
-              }
-            ],
-            "rect": {
-              "h": 21,
-              "w": 69,
-              "x": 97,
-              "y": 142
-            },
-            "source": "便携充电宝",
-            "translate": true
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 26,
-            "line_height": 25,
+            "intent": "single",
+            "line_height": 12,
             "lines": [
               {
-                "h": 25,
-                "w": 73,
-                "x": 246,
-                "y": 139
+                "h": 12,
+                "w": 51,
+                "x": 454,
+                "y": 145
               }
             ],
-            "rect": {
-              "h": 25,
-              "w": 73,
-              "x": 246,
-              "y": 139
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 10.03,
+                "width": 51.0,
+                "x": 454.0,
+                "y": 145.985
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 10.03,
+                  "width": 51.0,
+                  "x": 454.0,
+                  "y": 145.985
+                }
+              ]
             },
-            "source": "10000 毫安",
-            "translate": true
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 27,
-            "line_height": 20,
-            "lines": [
-              {
-                "h": 20,
-                "w": 17,
-                "x": 376,
-                "y": 142
-              }
-            ],
             "rect": {
-              "h": 20,
-              "w": 17,
-              "x": 376,
-              "y": 142
-            },
-            "source": "0",
-            "translate": false
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 28,
-            "line_height": 23,
-            "lines": [
-              {
-                "h": 23,
-                "w": 49,
-                "x": 455,
-                "y": 140
-              }
-            ],
-            "rect": {
-              "h": 23,
-              "w": 49,
-              "x": 455,
-              "y": 140
+              "h": 12,
+              "w": 51,
+              "x": 454,
+              "y": 145
             },
             "source": "¥89.00",
             "translate": false
@@ -887,114 +1395,198 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 29,
-            "line_height": 24,
+            "id": 27,
+            "intent": "single",
+            "line_height": 20,
             "lines": [
               {
-                "h": 24,
+                "h": 20,
                 "w": 37,
-                "x": 574,
-                "y": 140
+                "x": 573,
+                "y": 141
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 37.0,
+                "x": 573.0,
+                "y": 141.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 37.0,
+                  "x": 573.0,
+                  "y": 141.16
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
+              "h": 20,
               "w": 37,
-              "x": 574,
-              "y": 140
+              "x": 573,
+              "y": 141
             },
             "source": "缺货",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              248,
+              249,
+              251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 30,
-            "line_height": 22,
+            "id": 28,
+            "intent": "single",
+            "line_height": 17,
             "lines": [
               {
-                "h": 22,
-                "w": 38,
-                "x": 26,
-                "y": 170
+                "h": 17,
+                "w": 69,
+                "x": 97,
+                "y": 143
               }
             ],
-            "rect": {
-              "h": 22,
-              "w": 38,
-              "x": 26,
-              "y": 170
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 16.284,
+                "width": 69.0,
+                "x": 97.0,
+                "y": 143.358
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 16.284,
+                  "width": 69.0,
+                  "x": 97.0,
+                  "y": 143.358
+                }
+              ]
             },
-            "source": "1005",
-            "translate": false
-          },
-          {
-            "background": [
-              255,
-              255,
-              255
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 31,
-            "line_height": 22,
-            "lines": [
-              {
-                "h": 22,
-                "w": 58,
-                "x": 96,
-                "y": 170
-              }
-            ],
             "rect": {
-              "h": 22,
-              "w": 58,
-              "x": 96,
-              "y": 170
+              "h": 17,
+              "w": 69,
+              "x": 97,
+              "y": 143
             },
-            "source": "木质书架",
+            "source": "便携充电宝",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              248,
+              249,
+              251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              29,
+              29,
+              81
             ],
-            "id": 32,
-            "line_height": 24,
+            "id": 29,
+            "intent": "single",
+            "line_height": 19,
             "lines": [
               {
-                "h": 24,
-                "w": 37,
-                "x": 244,
+                "h": 19,
+                "w": 18,
+                "x": 375,
+                "y": 142
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 17.22,
+                "width": 18.0,
+                "x": 375.0,
+                "y": 142.89
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 17.22,
+                  "width": 18.0,
+                  "x": 375.0,
+                  "y": 142.89
+                }
+              ]
+            },
+            "rect": {
+              "h": 19,
+              "w": 18,
+              "x": 375,
+              "y": 142
+            },
+            "source": "0",
+            "translate": false
+          },
+          {
+            "background": [
+              253,
+              253,
+              253
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 30,
+            "intent": "single",
+            "line_height": 23,
+            "lines": [
+              {
+                "h": 23,
+                "w": 39,
+                "x": 242,
                 "y": 169
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 22.139999999999997,
+                "width": 39.0,
+                "x": 242.0,
+                "y": 169.43
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 22.139999999999997,
+                  "width": 39.0,
+                  "x": 242.0,
+                  "y": 169.43
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
-              "w": 37,
-              "x": 244,
+              "h": 23,
+              "w": 39,
+              "x": 242,
               "y": 169
             },
             "source": "五层",
@@ -1002,30 +1594,204 @@
           },
           {
             "background": [
+              254,
+              254,
+              254
+            ],
+            "foreground": [
+              169,
+              72,
+              25
+            ],
+            "id": 31,
+            "intent": "single",
+            "line_height": 21,
+            "lines": [
+              {
+                "h": 21,
+                "w": 39,
+                "x": 25,
+                "y": 170
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 39.0,
+                "x": 25.0,
+                "y": 170.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 39.0,
+                  "x": 25.0,
+                  "y": 170.25
+                }
+              ]
+            },
+            "rect": {
+              "h": 21,
+              "w": 39,
+              "x": 25,
+              "y": 170
+            },
+            "source": "1005",
+            "translate": false
+          },
+          {
+            "background": [
+              253,
+              253,
+              254
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 32,
+            "intent": "single",
+            "line_height": 22,
+            "lines": [
+              {
+                "h": 22,
+                "w": 37,
+                "x": 573,
+                "y": 170
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 21.32,
+                "width": 37.0,
+                "x": 573.0,
+                "y": 170.34
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 21.32,
+                  "width": 37.0,
+                  "x": 573.0,
+                  "y": 170.34
+                }
+              ]
+            },
+            "rect": {
+              "h": 22,
+              "w": 37,
+              "x": 573,
+              "y": 170
+            },
+            "source": "预订",
+            "translate": true
+          },
+          {
+            "background": [
               255,
               255,
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 33,
-            "line_height": 23,
+            "intent": "single",
+            "line_height": 19,
             "lines": [
               {
-                "h": 23,
-                "w": 24,
-                "x": 377,
-                "y": 170
+                "h": 19,
+                "w": 59,
+                "x": 95,
+                "y": 171
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 17.404999999999998,
+                "width": 59.0,
+                "x": 95.0,
+                "y": 171.7975
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 17.404999999999998,
+                  "width": 59.0,
+                  "x": 95.0,
+                  "y": 171.7975
+                }
+              ]
+            },
             "rect": {
-              "h": 23,
-              "w": 24,
-              "x": 377,
-              "y": 170
+              "h": 19,
+              "w": 59,
+              "x": 95,
+              "y": 171
+            },
+            "source": "木质书架",
+            "translate": true
+          },
+          {
+            "background": [
+              254,
+              254,
+              254
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 34,
+            "intent": "single",
+            "line_height": 20,
+            "lines": [
+              {
+                "h": 20,
+                "w": 26,
+                "x": 375,
+                "y": 171
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 26.0,
+                "x": 375.0,
+                "y": 171.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 26.0,
+                  "x": 375.0,
+                  "y": 171.16
+                }
+              ]
+            },
+            "rect": {
+              "h": 20,
+              "w": 26,
+              "x": 375,
+              "y": 171
             },
             "source": "18",
             "translate": false
@@ -1037,58 +1803,49 @@
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 34,
-            "line_height": 22,
+            "id": 35,
+            "intent": "single",
+            "line_height": 11,
             "lines": [
               {
-                "h": 22,
-                "w": 55,
-                "x": 456,
-                "y": 170
+                "h": 11,
+                "w": 56,
+                "x": 455,
+                "y": 175
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 9.44,
+                "width": 56.0,
+                "x": 455.0,
+                "y": 175.78
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 9.44,
+                  "width": 56.0,
+                  "x": 455.0,
+                  "y": 175.78
+                }
+              ]
+            },
             "rect": {
-              "h": 22,
-              "w": 55,
-              "x": 456,
-              "y": 170
+              "h": 11,
+              "w": 56,
+              "x": 455,
+              "y": 175
             },
             "source": "¥259.00",
             "translate": false
-          },
-          {
-            "background": [
-              255,
-              255,
-              255
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 35,
-            "line_height": 25,
-            "lines": [
-              {
-                "h": 25,
-                "w": 36,
-                "x": 574,
-                "y": 169
-              }
-            ],
-            "rect": {
-              "h": 25,
-              "w": 36,
-              "x": 574,
-              "y": 169
-            },
-            "source": "预订",
-            "translate": true
           },
           {
             "background": [
@@ -1097,25 +1854,148 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 36,
-            "line_height": 24,
+            "intent": "single",
+            "line_height": 18,
             "lines": [
               {
-                "h": 24,
-                "w": 38,
-                "x": 27,
+                "h": 18,
+                "w": 59,
+                "x": 242,
+                "y": 199
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 17.404999999999998,
+                "width": 59.0,
+                "x": 242.0,
+                "y": 199.2975
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 17.404999999999998,
+                  "width": 59.0,
+                  "x": 242.0,
+                  "y": 199.2975
+                }
+              ]
+            },
+            "rect": {
+              "h": 18,
+              "w": 59,
+              "x": 242,
+              "y": 199
+            },
+            "source": "A5 横线",
+            "translate": true
+          },
+          {
+            "background": [
+              249,
+              250,
+              252
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 37,
+            "intent": "single",
+            "line_height": 23,
+            "lines": [
+              {
+                "h": 23,
+                "w": 49,
+                "x": 95,
                 "y": 198
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 22.139999999999997,
+                "width": 49.0,
+                "x": 95.0,
+                "y": 198.43
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 22.139999999999997,
+                  "width": 49.0,
+                  "x": 95.0,
+                  "y": 198.43
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
-              "w": 38,
-              "x": 27,
+              "h": 23,
+              "w": 49,
+              "x": 95,
               "y": 198
+            },
+            "source": "记事本",
+            "translate": true
+          },
+          {
+            "background": [
+              249,
+              250,
+              251
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 38,
+            "intent": "single",
+            "line_height": 21,
+            "lines": [
+              {
+                "h": 21,
+                "w": 40,
+                "x": 25,
+                "y": 199
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 40.0,
+                "x": 25.0,
+                "y": 199.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 40.0,
+                  "x": 25.0,
+                  "y": 199.25
+                }
+              ]
+            },
+            "rect": {
+              "h": 21,
+              "w": 40,
+              "x": 25,
+              "y": 199
             },
             "source": "1006",
             "translate": false
@@ -1127,85 +2007,46 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 37,
-            "line_height": 23,
-            "lines": [
-              {
-                "h": 23,
-                "w": 46,
-                "x": 96,
-                "y": 198
-              }
-            ],
-            "rect": {
-              "h": 23,
-              "w": 46,
-              "x": 96,
-              "y": 198
-            },
-            "source": "记事本",
-            "translate": true
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 38,
-            "line_height": 25,
-            "lines": [
-              {
-                "h": 25,
-                "w": 57,
-                "x": 244,
-                "y": 197
-              }
-            ],
-            "rect": {
-              "h": 25,
-              "w": 57,
-              "x": 244,
-              "y": 197
-            },
-            "source": "A5 横线",
-            "translate": true
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 39,
-            "line_height": 24,
+            "intent": "single",
+            "line_height": 21,
             "lines": [
               {
-                "h": 24,
+                "h": 21,
                 "w": 33,
-                "x": 375,
-                "y": 198
+                "x": 374,
+                "y": 199
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 33.0,
+                "x": 374.0,
+                "y": 199.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 33.0,
+                  "x": 374.0,
+                  "y": 199.25
+                }
+              ]
+            },
             "rect": {
-              "h": 24,
+              "h": 21,
               "w": 33,
-              "x": 375,
-              "y": 198
+              "x": 374,
+              "y": 199
             },
             "source": "560",
             "translate": false
@@ -1217,25 +2058,46 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 40,
-            "line_height": 23,
+            "intent": "single",
+            "line_height": 20,
             "lines": [
               {
-                "h": 23,
-                "w": 43,
-                "x": 455,
-                "y": 198
+                "h": 20,
+                "w": 44,
+                "x": 454,
+                "y": 199
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 44.0,
+                "x": 454.0,
+                "y": 199.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 44.0,
+                  "x": 454.0,
+                  "y": 199.16
+                }
+              ]
+            },
             "rect": {
-              "h": 23,
-              "w": 43,
-              "x": 455,
-              "y": 198
+              "h": 20,
+              "w": 44,
+              "x": 454,
+              "y": 199
             },
             "source": "¥6.80",
             "translate": false
@@ -1247,25 +2109,97 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 41,
+            "intent": "single",
+            "line_height": 21,
+            "lines": [
+              {
+                "h": 21,
+                "w": 35,
+                "x": 575,
+                "y": 199
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 35.0,
+                "x": 575.0,
+                "y": 199.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 35.0,
+                  "x": 575.0,
+                  "y": 199.25
+                }
+              ]
+            },
+            "rect": {
+              "h": 21,
+              "w": 35,
+              "x": 575,
+              "y": 199
+            },
+            "source": "有货",
+            "translate": true
+          },
+          {
+            "background": [
+              252,
+              253,
+              253
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 42,
+            "intent": "single",
             "line_height": 24,
             "lines": [
               {
                 "h": 24,
-                "w": 36,
-                "x": 575,
-                "y": 198
+                "w": 39,
+                "x": 572,
+                "y": 226
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 22.959999999999997,
+                "width": 39.0,
+                "x": 572.0,
+                "y": 226.52
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 22.959999999999997,
+                  "width": 39.0,
+                  "x": 572.0,
+                  "y": 226.52
+                }
+              ]
+            },
             "rect": {
               "h": 24,
-              "w": 36,
-              "x": 575,
-              "y": 198
+              "w": 39,
+              "x": 572,
+              "y": 226
             },
             "source": "有货",
             "translate": true
@@ -1277,114 +2211,198 @@
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 42,
-            "line_height": 23,
-            "lines": [
-              {
-                "h": 23,
-                "w": 38,
-                "x": 26,
-                "y": 227
-              }
-            ],
-            "rect": {
-              "h": 23,
-              "w": 38,
-              "x": 26,
-              "y": 227
-            },
-            "source": "1007",
-            "translate": false
-          },
-          {
-            "background": [
-              255,
-              255,
-              255
-            ],
-            "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 43,
-            "line_height": 25,
+            "intent": "single",
+            "line_height": 18,
             "lines": [
               {
-                "h": 25,
-                "w": 60,
-                "x": 94,
-                "y": 226
+                "h": 18,
+                "w": 61,
+                "x": 93,
+                "y": 229
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 17.994999999999997,
+                "width": 61.0,
+                "x": 93.0,
+                "y": 229.0025
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 17.994999999999997,
+                  "width": 61.0,
+                  "x": 93.0,
+                  "y": 229.0025
+                }
+              ]
+            },
             "rect": {
-              "h": 25,
-              "w": 60,
-              "x": 94,
-              "y": 226
+              "h": 18,
+              "w": 61,
+              "x": 93,
+              "y": 229
             },
             "source": "护眼台灯",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              253,
+              253,
+              253
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 44,
-            "line_height": 26,
+            "intent": "single",
+            "line_height": 23,
             "lines": [
               {
-                "h": 26,
-                "w": 49,
-                "x": 245,
-                "y": 226
+                "h": 23,
+                "w": 51,
+                "x": 243,
+                "y": 227
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 22.139999999999997,
+                "width": 51.0,
+                "x": 243.0,
+                "y": 227.43
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 22.139999999999997,
+                  "width": 51.0,
+                  "x": 243.0,
+                  "y": 227.43
+                }
+              ]
+            },
             "rect": {
-              "h": 26,
-              "w": 49,
-              "x": 245,
-              "y": 226
+              "h": 23,
+              "w": 51,
+              "x": 243,
+              "y": 227
             },
             "source": "可调光",
             "translate": true
           },
           {
             "background": [
-              255,
-              255,
-              255
+              254,
+              254,
+              254
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 45,
-            "line_height": 23,
+            "intent": "single",
+            "line_height": 20,
             "lines": [
               {
-                "h": 23,
-                "w": 24,
-                "x": 376,
+                "h": 20,
+                "w": 39,
+                "x": 25,
                 "y": 228
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 19.68,
+                "width": 39.0,
+                "x": 25.0,
+                "y": 228.16
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 19.68,
+                  "width": 39.0,
+                  "x": 25.0,
+                  "y": 228.16
+                }
+              ]
+            },
             "rect": {
-              "h": 23,
-              "w": 24,
-              "x": 376,
+              "h": 20,
+              "w": 39,
+              "x": 25,
+              "y": 228
+            },
+            "source": "1007",
+            "translate": false
+          },
+          {
+            "background": [
+              253,
+              253,
+              254
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 46,
+            "intent": "single",
+            "line_height": 22,
+            "lines": [
+              {
+                "h": 22,
+                "w": 27,
+                "x": 373,
+                "y": 228
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 21.32,
+                "width": 27.0,
+                "x": 373.0,
+                "y": 228.34
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 21.32,
+                  "width": 27.0,
+                  "x": 373.0,
+                  "y": 228.34
+                }
+              ]
+            },
+            "rect": {
+              "h": 22,
+              "w": 27,
+              "x": 373,
               "y": 228
             },
             "source": "72",
@@ -1397,84 +2415,147 @@
               255
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 46,
-            "line_height": 22,
+            "id": 47,
+            "intent": "single",
+            "line_height": 11,
             "lines": [
               {
-                "h": 22,
-                "w": 49,
-                "x": 455,
-                "y": 228
+                "h": 11,
+                "w": 51,
+                "x": 454,
+                "y": 233
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 10.03,
+                "width": 51.0,
+                "x": 454.0,
+                "y": 233.485
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 10.03,
+                  "width": 51.0,
+                  "x": 454.0,
+                  "y": 233.485
+                }
+              ]
+            },
             "rect": {
-              "h": 22,
-              "w": 49,
-              "x": 455,
-              "y": 228
+              "h": 11,
+              "w": 51,
+              "x": 454,
+              "y": 233
             },
             "source": "¥58.00",
             "translate": false
           },
           {
             "background": [
-              255,
-              255,
-              255
+              251,
+              251,
+              252
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 47,
-            "line_height": 24,
+            "id": 48,
+            "intent": "single",
+            "line_height": 25,
             "lines": [
               {
-                "h": 24,
-                "w": 35,
-                "x": 575,
-                "y": 227
+                "h": 25,
+                "w": 52,
+                "x": 242,
+                "y": 255
               }
             ],
-            "rect": {
-              "h": 24,
-              "w": 35,
-              "x": 575,
-              "y": 227
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 23.779999999999998,
+                "width": 52.0,
+                "x": 242.0,
+                "y": 255.61
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 23.779999999999998,
+                  "width": 52.0,
+                  "x": 242.0,
+                  "y": 255.61
+                }
+              ]
             },
-            "source": "有货",
+            "rect": {
+              "h": 25,
+              "w": 52,
+              "x": 242,
+              "y": 255
+            },
+            "source": "六件套",
             "translate": true
           },
           {
             "background": [
-              248,
-              249,
-              251
+              251,
+              252,
+              253
             ],
             "foreground": [
-              24,
-              24,
-              24
+              215,
+              124,
+              25
             ],
-            "id": 48,
+            "id": 49,
+            "intent": "single",
             "line_height": 24,
             "lines": [
               {
                 "h": 24,
-                "w": 38,
-                "x": 26,
+                "w": 43,
+                "x": 22,
                 "y": 256
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 22.959999999999997,
+                "width": 43.0,
+                "x": 22.0,
+                "y": 256.52
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 22.959999999999997,
+                  "width": 43.0,
+                  "x": 22.0,
+                  "y": 256.52
+                }
+              ]
+            },
             "rect": {
               "h": 24,
-              "w": 38,
-              "x": 26,
+              "w": 43,
+              "x": 22,
               "y": 256
             },
             "source": "1008",
@@ -1487,25 +2568,97 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
-            "id": 49,
-            "line_height": 22,
+            "id": 50,
+            "intent": "single",
+            "line_height": 21,
             "lines": [
               {
-                "h": 22,
-                "w": 68,
-                "x": 97,
+                "h": 21,
+                "w": 37,
+                "x": 573,
                 "y": 257
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 20.5,
+                "width": 37.0,
+                "x": 573.0,
+                "y": 257.25
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 20.5,
+                  "width": 37.0,
+                  "x": 573.0,
+                  "y": 257.25
+                }
+              ]
+            },
             "rect": {
-              "h": 22,
-              "w": 68,
-              "x": 97,
+              "h": 21,
+              "w": 37,
+              "x": 573,
               "y": 257
+            },
+            "source": "缺货",
+            "translate": true
+          },
+          {
+            "background": [
+              248,
+              249,
+              251
+            ],
+            "foreground": [
+              32,
+              32,
+              32
+            ],
+            "id": 51,
+            "intent": "single",
+            "line_height": 17,
+            "lines": [
+              {
+                "h": 17,
+                "w": 70,
+                "x": 96,
+                "y": 259
+              }
+            ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 16.52,
+                "width": 70.0,
+                "x": 96.0,
+                "y": 259.24
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 16.52,
+                  "width": 70.0,
+                  "x": 96.0,
+                  "y": 259.24
+                }
+              ]
+            },
+            "rect": {
+              "h": 17,
+              "w": 70,
+              "x": 96,
+              "y": 259
             },
             "source": "保鲜盒套装",
             "translate": true
@@ -1517,85 +2670,46 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 50,
-            "line_height": 26,
-            "lines": [
-              {
-                "h": 26,
-                "w": 51,
-                "x": 243,
-                "y": 255
-              }
-            ],
-            "rect": {
-              "h": 26,
-              "w": 51,
-              "x": 243,
-              "y": 255
-            },
-            "source": "六件套",
-            "translate": true
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
-            ],
-            "id": 51,
-            "line_height": 19,
-            "lines": [
-              {
-                "h": 19,
-                "w": 16,
-                "x": 376,
-                "y": 259
-              }
-            ],
-            "rect": {
-              "h": 19,
-              "w": 16,
-              "x": 376,
-              "y": 259
-            },
-            "source": "0",
-            "translate": false
-          },
-          {
-            "background": [
-              248,
-              249,
-              251
-            ],
-            "foreground": [
-              24,
-              24,
-              24
+              32,
+              32,
+              32
             ],
             "id": 52,
-            "line_height": 22,
+            "intent": "single",
+            "line_height": 11,
             "lines": [
               {
-                "h": 22,
+                "h": 11,
                 "w": 49,
                 "x": 455,
-                "y": 257
+                "y": 262
               }
             ],
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 9.636666666666665,
+                "width": 49.0,
+                "x": 455.0,
+                "y": 262.6816666666667
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 9.636666666666665,
+                  "width": 49.0,
+                  "x": 455.0,
+                  "y": 262.6816666666667
+                }
+              ]
+            },
             "rect": {
-              "h": 22,
+              "h": 11,
               "w": 49,
               "x": 455,
-              "y": 257
+              "y": 262
             },
             "source": "¥35.00",
             "translate": false
@@ -1607,582 +2721,1880 @@
               251
             ],
             "foreground": [
-              24,
-              24,
-              24
+              29,
+              29,
+              81
             ],
             "id": 53,
-            "line_height": 24,
+            "intent": "single",
+            "line_height": 18,
             "lines": [
               {
-                "h": 24,
-                "w": 37,
-                "x": 574,
-                "y": 256
+                "h": 18,
+                "w": 17,
+                "x": 375,
+                "y": 259
               }
             ],
-            "rect": {
-              "h": 24,
-              "w": 37,
-              "x": 574,
-              "y": 256
+            "paint": {
+              "bounds": {
+                "empty": false,
+                "height": 16.4,
+                "width": 17.0,
+                "x": 375.0,
+                "y": 259.8
+              },
+              "font_glyph_height": null,
+              "render_glyph_height": null,
+              "source_lines": [
+                {
+                  "empty": false,
+                  "height": 16.4,
+                  "width": 17.0,
+                  "x": 375.0,
+                  "y": 259.8
+                }
+              ]
             },
-            "source": "缺货",
-            "translate": true
+            "rect": {
+              "h": 18,
+              "w": 17,
+              "x": 375,
+              "y": 259
+            },
+            "source": "0",
+            "translate": false
           }
         ],
         "job": 1,
-        "ocr_ms": 134,
+        "ocr_ms": 250,
         "type": "blocks"
       },
-      "t_ms": 134
+      "t_ms": 250
     }
   ],
   "height": 330,
   "image": "dense@1.png",
   "lines": [
     {
-      "rect": {
-        "h": 20,
-        "w": 17,
-        "x": 376,
-        "y": 142
-      },
-      "score": 0.9978394508361816,
-      "text": "0"
-    },
-    {
-      "rect": {
-        "h": 19,
-        "w": 16,
-        "x": 376,
-        "y": 259
-      },
-      "score": 0.9983065128326416,
-      "text": "0"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 24,
-        "x": 377,
-        "y": 170
-      },
-      "score": 0.9999926686286926,
-      "text": "18"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 24,
-        "x": 376,
-        "y": 228
-      },
-      "score": 0.9999772310256958,
-      "text": "72"
-    },
-    {
+      "char_scores": [
+        0.9928815364837646,
+        0.9996381998062134
+      ],
+      "quad": [
+        {
+          "x": 23.0,
+          "y": 23.0
+        },
+        {
+          "x": 60.0,
+          "y": 23.0
+        },
+        {
+          "x": 60.0,
+          "y": 48.0
+        },
+        {
+          "x": 23.0,
+          "y": 48.0
+        }
+      ],
       "rect": {
         "h": 25,
-        "w": 28,
-        "x": 374,
-        "y": 81
+        "w": 37,
+        "x": 23,
+        "y": 23
       },
-      "score": 0.9999968409538269,
-      "text": "45"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 32,
-        "x": 376,
-        "y": 53
-      },
-      "score": 0.9999949336051941,
-      "text": "120"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 33,
-        "x": 375,
-        "y": 198
-      },
-      "score": 0.9999926686286926,
-      "text": "560"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 34,
-        "x": 456,
-        "y": 24
-      },
-      "score": 0.9996805191040039,
-      "text": "单价"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 33,
-        "x": 375,
-        "y": 111
-      },
-      "score": 0.9999812245368958,
-      "text": "300"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 35,
-        "x": 375,
-        "y": 24
-      },
-      "score": 0.999804675579071,
-      "text": "数量"
-    },
-    {
-      "rect": {
-        "h": 25,
-        "w": 36,
-        "x": 244,
-        "y": 81
-      },
-      "score": 0.9999847412109375,
-      "text": "黑色"
-    },
-    {
-      "rect": {
-        "h": 25,
-        "w": 36,
-        "x": 575,
-        "y": 81
-      },
-      "score": 0.9861122369766235,
-      "text": "有货"
-    },
-    {
-      "rect": {
-        "h": 25,
-        "w": 36,
-        "x": 574,
-        "y": 169
-      },
-      "score": 0.9998676776885986,
-      "text": "预订"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 35,
-        "x": 575,
-        "y": 227
-      },
-      "score": 0.9961134195327759,
-      "text": "有货"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 36,
-        "x": 24,
-        "y": 24
-      },
-      "score": 0.9937891960144043,
+      "score": 0.996259868144989,
       "text": "编号"
     },
     {
+      "char_scores": [
+        0.9999819993972778,
+        0.9999822378158569,
+        0.999785840511322,
+        0.9999352693557739
+      ],
+      "quad": [
+        {
+          "x": 95.0,
+          "y": 24.0
+        },
+        {
+          "x": 154.0,
+          "y": 24.0
+        },
+        {
+          "x": 154.0,
+          "y": 47.0
+        },
+        {
+          "x": 95.0,
+          "y": 47.0
+        }
+      ],
       "rect": {
-        "h": 24,
-        "w": 36,
-        "x": 245,
+        "h": 23,
+        "w": 59,
+        "x": 95,
         "y": 24
       },
-      "score": 0.9999829530715942,
-      "text": "规格"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 36,
-        "x": 575,
-        "y": 24
-      },
-      "score": 0.9996702671051025,
-      "text": "状态"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 36,
-        "x": 575,
-        "y": 53
-      },
-      "score": 0.9937061667442322,
-      "text": "有货"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 36,
-        "x": 575,
-        "y": 111
-      },
-      "score": 0.9937061667442322,
-      "text": "有货"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 36,
-        "x": 575,
-        "y": 198
-      },
-      "score": 0.9938351511955261,
-      "text": "有货"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 37,
-        "x": 574,
-        "y": 140
-      },
-      "score": 0.9986394643783569,
-      "text": "缺货"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 37,
-        "x": 244,
-        "y": 169
-      },
-      "score": 0.9999685883522034,
-      "text": "五层"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 37,
-        "x": 574,
-        "y": 256
-      },
-      "score": 0.9986394643783569,
-      "text": "缺货"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 38,
-        "x": 27,
-        "y": 198
-      },
-      "score": 0.9999920129776001,
-      "text": "1006"
-    },
-    {
-      "rect": {
-        "h": 24,
-        "w": 38,
-        "x": 26,
-        "y": 256
-      },
-      "score": 0.9999654293060303,
-      "text": "1008"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 37,
-        "x": 26,
-        "y": 53
-      },
-      "score": 0.9999819993972778,
-      "text": "1001"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 37,
-        "x": 27,
-        "y": 82
-      },
-      "score": 0.9999889135360718,
-      "text": "1002"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 38,
-        "x": 26,
-        "y": 111
-      },
-      "score": 0.9999803304672241,
-      "text": "1003"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 38,
-        "x": 26,
-        "y": 140
-      },
-      "score": 0.9999877214431763,
-      "text": "1004"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 38,
-        "x": 26,
-        "y": 227
-      },
-      "score": 0.9999672174453735,
-      "text": "1007"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 38,
-        "x": 26,
-        "y": 170
-      },
-      "score": 0.9999901056289673,
-      "text": "1005"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 43,
-        "x": 455,
-        "y": 198
-      },
-      "score": 0.9859641194343567,
-      "text": "¥6.80"
-    },
-    {
-      "rect": {
-        "h": 26,
-        "w": 49,
-        "x": 245,
-        "y": 110
-      },
-      "score": 0.9979892373085022,
-      "text": "三条装"
-    },
-    {
-      "rect": {
-        "h": 26,
-        "w": 49,
-        "x": 245,
-        "y": 226
-      },
-      "score": 0.9999549388885498,
-      "text": "可调光"
-    },
-    {
-      "rect": {
-        "h": 26,
-        "w": 51,
-        "x": 243,
-        "y": 255
-      },
-      "score": 0.9999660849571228,
-      "text": "六件套"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 46,
-        "x": 96,
-        "y": 198
-      },
-      "score": 0.9999816417694092,
-      "text": "记事本"
-    },
-    {
-      "rect": {
-        "h": 23,
-        "w": 49,
-        "x": 455,
-        "y": 140
-      },
-      "score": 0.9919092655181885,
-      "text": "¥89.00"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 48,
-        "x": 456,
-        "y": 112
-      },
-      "score": 0.9906005263328552,
-      "text": "¥24.50"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 49,
-        "x": 455,
-        "y": 54
-      },
-      "score": 0.9779371619224548,
-      "text": "¥39.90"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 49,
-        "x": 455,
-        "y": 228
-      },
-      "score": 0.9700189232826233,
-      "text": "¥58.00"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 49,
-        "x": 455,
-        "y": 257
-      },
-      "score": 0.960910975933075,
-      "text": "¥35.00"
-    },
-    {
-      "rect": {
-        "h": 25,
-        "w": 57,
-        "x": 244,
-        "y": 197
-      },
-      "score": 0.8904076814651489,
-      "text": "A5 横线"
-    },
-    {
-      "rect": {
-        "h": 25,
-        "w": 60,
-        "x": 94,
-        "y": 226
-      },
-      "score": 0.999920129776001,
-      "text": "护眼台灯"
-    },
-    {
-      "rect": {
-        "h": 25,
-        "w": 61,
-        "x": 245,
-        "y": 52
-      },
-      "score": 0.9948630928993225,
-      "text": "500 毫升"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 55,
-        "x": 456,
-        "y": 170
-      },
-      "score": 0.9878336787223816,
-      "text": "¥259.00"
-    },
-    {
-      "rect": {
-        "h": 21,
-        "w": 54,
-        "x": 456,
-        "y": 83
-      },
-      "score": 0.9930311441421509,
-      "text": "¥129.00"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 58,
-        "x": 96,
-        "y": 25
-      },
-      "score": 0.9999327063560486,
+      "score": 0.9999213218688965,
       "text": "商品名称"
     },
     {
-      "rect": {
-        "h": 22,
-        "w": 58,
-        "x": 96,
-        "y": 170
-      },
-      "score": 0.9999479055404663,
-      "text": "木质书架"
-    },
-    {
-      "rect": {
-        "h": 22,
-        "w": 59,
-        "x": 95,
-        "y": 112
-      },
-      "score": 0.9998162984848022,
-      "text": "纯棉毛巾"
-    },
-    {
+      "char_scores": [
+        0.9999959468841553,
+        0.9999754428863525
+      ],
+      "quad": [
+        {
+          "x": 244.0,
+          "y": 23.0
+        },
+        {
+          "x": 281.0,
+          "y": 23.0
+        },
+        {
+          "x": 281.0,
+          "y": 48.0
+        },
+        {
+          "x": 244.0,
+          "y": 48.0
+        }
+      ],
       "rect": {
         "h": 25,
-        "w": 73,
-        "x": 246,
-        "y": 139
+        "w": 37,
+        "x": 244,
+        "y": 23
       },
-      "score": 0.8732517957687378,
-      "text": "10000 毫安"
+      "score": 0.9999856948852539,
+      "text": "规格"
     },
     {
-      "rect": {
-        "h": 22,
-        "w": 68,
-        "x": 97,
-        "y": 257
-      },
-      "score": 0.9929946660995483,
-      "text": "保鲜盒套装"
-    },
-    {
-      "rect": {
-        "h": 21,
-        "w": 69,
-        "x": 97,
-        "y": 142
-      },
-      "score": 0.9999602437019348,
-      "text": "便携充电宝"
-    },
-    {
+      "char_scores": [
+        0.9990795850753784,
+        0.9998880624771118
+      ],
+      "quad": [
+        {
+          "x": 374.0,
+          "y": 23.0
+        },
+        {
+          "x": 410.0,
+          "y": 23.0
+        },
+        {
+          "x": 410.0,
+          "y": 47.0
+        },
+        {
+          "x": 374.0,
+          "y": 47.0
+        }
+      ],
       "rect": {
         "h": 24,
-        "w": 84,
+        "w": 36,
+        "x": 374,
+        "y": 23
+      },
+      "score": 0.9994838237762451,
+      "text": "数量"
+    },
+    {
+      "char_scores": [
+        0.9965068697929382,
+        0.9999079704284668
+      ],
+      "quad": [
+        {
+          "x": 455.0,
+          "y": 23.0
+        },
+        {
+          "x": 490.0,
+          "y": 23.0
+        },
+        {
+          "x": 490.0,
+          "y": 47.0
+        },
+        {
+          "x": 455.0,
+          "y": 47.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 35,
+        "x": 455,
+        "y": 23
+      },
+      "score": 0.9982074499130249,
+      "text": "单价"
+    },
+    {
+      "char_scores": [
+        0.9997509121894836,
+        0.9996211528778076
+      ],
+      "quad": [
+        {
+          "x": 574.0,
+          "y": 23.0
+        },
+        {
+          "x": 610.0,
+          "y": 23.0
+        },
+        {
+          "x": 610.0,
+          "y": 47.0
+        },
+        {
+          "x": 574.0,
+          "y": 47.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 36,
+        "x": 574,
+        "y": 23
+      },
+      "score": 0.9996860027313232,
+      "text": "状态"
+    },
+    {
+      "char_scores": [
+        0.9999920129776001,
+        0.9999701976776123,
+        0.9999665021896362,
+        0.9999940395355225
+      ],
+      "quad": [
+        {
+          "x": 25.0,
+          "y": 52.0
+        },
+        {
+          "x": 63.0,
+          "y": 52.0
+        },
+        {
+          "x": 63.0,
+          "y": 77.0
+        },
+        {
+          "x": 25.0,
+          "y": 77.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 38,
+        "x": 25,
+        "y": 52
+      },
+      "score": 0.9999806880950928,
+      "text": "1001"
+    },
+    {
+      "char_scores": [
+        0.9999783039093018,
+        0.9998070597648621,
+        0.9999866485595703,
+        0.9995375871658325,
+        0.9988092184066772,
+        0.9995135068893433
+      ],
+      "quad": [
+        {
+          "x": 95.0,
+          "y": 53.0
+        },
+        {
+          "x": 178.0,
+          "y": 53.0
+        },
+        {
+          "x": 178.0,
+          "y": 75.0
+        },
+        {
+          "x": 95.0,
+          "y": 75.0
+        }
+      ],
+      "rect": {
+        "h": 22,
+        "w": 83,
         "x": 95,
+        "y": 53
+      },
+      "score": 0.9996054172515869,
+      "text": "不锈钢保温杯"
+    },
+    {
+      "char_scores": [
+        0.9999942779541016,
+        0.9999943971633911,
+        0.9999939203262329,
+        0.8935346007347107,
+        0.9978526830673218,
+        0.9999958276748657
+      ],
+      "quad": [
+        {
+          "x": 244.0,
+          "y": 50.0
+        },
+        {
+          "x": 306.0,
+          "y": 52.0
+        },
+        {
+          "x": 305.0,
+          "y": 78.0
+        },
+        {
+          "x": 243.0,
+          "y": 76.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 63,
+        "x": 243,
+        "y": 50
+      },
+      "score": 0.9818942546844482,
+      "text": "500 毫升"
+    },
+    {
+      "char_scores": [
+        0.9999973773956299,
+        0.9999973773956299,
+        0.9999804496765137
+      ],
+      "quad": [
+        {
+          "x": 375.0,
+          "y": 52.0
+        },
+        {
+          "x": 408.0,
+          "y": 52.0
+        },
+        {
+          "x": 408.0,
+          "y": 77.0
+        },
+        {
+          "x": 375.0,
+          "y": 77.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 33,
+        "x": 375,
+        "y": 52
+      },
+      "score": 0.9999917149543762,
+      "text": "120"
+    },
+    {
+      "char_scores": [
+        0.9127877354621887,
+        0.9999872446060181,
+        0.9999935626983643,
+        0.9181514382362366,
+        0.9999966621398926,
+        0.9999886751174927
+      ],
+      "quad": [
+        {
+          "x": 454.0,
+          "y": 52.0
+        },
+        {
+          "x": 504.0,
+          "y": 52.0
+        },
+        {
+          "x": 504.0,
+          "y": 76.0
+        },
+        {
+          "x": 454.0,
+          "y": 76.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 50,
+        "x": 454,
+        "y": 52
+      },
+      "score": 0.9718175530433655,
+      "text": "¥39.90"
+    },
+    {
+      "char_scores": [
+        0.9999994039535522,
+        0.9747704267501831
+      ],
+      "quad": [
+        {
+          "x": 574.0,
+          "y": 52.0
+        },
+        {
+          "x": 610.0,
+          "y": 52.0
+        },
+        {
+          "x": 610.0,
+          "y": 78.0
+        },
+        {
+          "x": 574.0,
+          "y": 78.0
+        }
+      ],
+      "rect": {
+        "h": 26,
+        "w": 36,
+        "x": 574,
+        "y": 52
+      },
+      "score": 0.9873849153518677,
+      "text": "有货"
+    },
+    {
+      "char_scores": [
+        0.9999974966049194,
+        0.9999849796295166,
+        0.9999858140945435,
+        0.999996542930603
+      ],
+      "quad": [
+        {
+          "x": 25.0,
+          "y": 81.0
+        },
+        {
+          "x": 65.0,
+          "y": 81.0
+        },
+        {
+          "x": 65.0,
+          "y": 105.0
+        },
+        {
+          "x": 25.0,
+          "y": 105.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 40,
+        "x": 25,
         "y": 81
       },
-      "score": 0.9997749328613281,
+      "score": 0.9999911785125732,
+      "text": "1002"
+    },
+    {
+      "char_scores": [
+        0.9999812841415405,
+        0.999902606010437,
+        0.999749481678009,
+        0.9999980926513672,
+        0.9995892643928528,
+        0.9999884366989136
+      ],
+      "quad": [
+        {
+          "x": 93.0,
+          "y": 80.0
+        },
+        {
+          "x": 178.0,
+          "y": 78.0
+        },
+        {
+          "x": 179.0,
+          "y": 103.0
+        },
+        {
+          "x": 94.0,
+          "y": 105.0
+        }
+      ],
+      "rect": {
+        "h": 27,
+        "w": 86,
+        "x": 93,
+        "y": 78
+      },
+      "score": 0.9998682141304016,
       "text": "无线蓝牙耳机"
     },
     {
+      "char_scores": [
+        0.9998854398727417,
+        0.9999929666519165
+      ],
+      "quad": [
+        {
+          "x": 242.0,
+          "y": 80.0
+        },
+        {
+          "x": 279.0,
+          "y": 78.0
+        },
+        {
+          "x": 280.0,
+          "y": 104.0
+        },
+        {
+          "x": 243.0,
+          "y": 106.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 38,
+        "x": 242,
+        "y": 78
+      },
+      "score": 0.9999392032623291,
+      "text": "黑色"
+    },
+    {
+      "char_scores": [
+        0.9999951124191284,
+        0.9999974966049194
+      ],
+      "quad": [
+        {
+          "x": 375.0,
+          "y": 79.0
+        },
+        {
+          "x": 401.0,
+          "y": 81.0
+        },
+        {
+          "x": 399.0,
+          "y": 105.0
+        },
+        {
+          "x": 373.0,
+          "y": 103.0
+        }
+      ],
+      "rect": {
+        "h": 26,
+        "w": 28,
+        "x": 373,
+        "y": 79
+      },
+      "score": 0.9999963045120239,
+      "text": "45"
+    },
+    {
+      "char_scores": [
+        0.9742541909217834,
+        0.9999960660934448,
+        0.9999963045120239,
+        0.9999974966049194,
+        0.9904211759567261,
+        0.9999885559082031,
+        0.9999873638153076
+      ],
+      "quad": [
+        {
+          "x": 456.0,
+          "y": 81.0
+        },
+        {
+          "x": 510.0,
+          "y": 81.0
+        },
+        {
+          "x": 510.0,
+          "y": 104.0
+        },
+        {
+          "x": 456.0,
+          "y": 104.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 54,
+        "x": 456,
+        "y": 81
+      },
+      "score": 0.9949487447738647,
+      "text": "¥129.00"
+    },
+    {
+      "char_scores": [
+        0.9999995231628418,
+        0.9528549313545227
+      ],
+      "quad": [
+        {
+          "x": 573.0,
+          "y": 80.0
+        },
+        {
+          "x": 610.0,
+          "y": 78.0
+        },
+        {
+          "x": 611.0,
+          "y": 104.0
+        },
+        {
+          "x": 574.0,
+          "y": 106.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 38,
+        "x": 573,
+        "y": 78
+      },
+      "score": 0.9764271974563599,
+      "text": "有货"
+    },
+    {
+      "char_scores": [
+        0.9999939203262329,
+        0.9999860525131226,
+        0.999982476234436,
+        0.9999945163726807
+      ],
+      "quad": [
+        {
+          "x": 25.0,
+          "y": 110.0
+        },
+        {
+          "x": 63.0,
+          "y": 108.0
+        },
+        {
+          "x": 64.0,
+          "y": 132.0
+        },
+        {
+          "x": 26.0,
+          "y": 134.0
+        }
+      ],
+      "rect": {
+        "h": 26,
+        "w": 39,
+        "x": 25,
+        "y": 108
+      },
+      "score": 0.9999892711639404,
+      "text": "1003"
+    },
+    {
+      "char_scores": [
+        0.9941335320472717,
+        0.9999986886978149,
+        0.999996542930603,
+        0.9999558925628662
+      ],
+      "quad": [
+        {
+          "x": 92.0,
+          "y": 109.0
+        },
+        {
+          "x": 154.0,
+          "y": 107.0
+        },
+        {
+          "x": 155.0,
+          "y": 133.0
+        },
+        {
+          "x": 93.0,
+          "y": 135.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 63,
+        "x": 92,
+        "y": 107
+      },
+      "score": 0.9985211491584778,
+      "text": "纯棉毛巾"
+    },
+    {
+      "char_scores": [
+        0.9999338388442993,
+        0.9999544620513916,
+        0.9739635586738586
+      ],
+      "quad": [
+        {
+          "x": 245.0,
+          "y": 110.0
+        },
+        {
+          "x": 293.0,
+          "y": 110.0
+        },
+        {
+          "x": 293.0,
+          "y": 134.0
+        },
+        {
+          "x": 245.0,
+          "y": 134.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 48,
+        "x": 245,
+        "y": 110
+      },
+      "score": 0.9912839531898499,
+      "text": "三条装"
+    },
+    {
+      "char_scores": [
+        0.999990701675415,
+        0.9999796152114868,
+        0.9999587535858154
+      ],
+      "quad": [
+        {
+          "x": 374.0,
+          "y": 110.0
+        },
+        {
+          "x": 408.0,
+          "y": 110.0
+        },
+        {
+          "x": 408.0,
+          "y": 135.0
+        },
+        {
+          "x": 374.0,
+          "y": 135.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 34,
+        "x": 374,
+        "y": 110
+      },
+      "score": 0.9999763369560242,
+      "text": "300"
+    },
+    {
+      "char_scores": [
+        0.9326223731040955,
+        0.9999946355819702,
+        0.9999982118606567,
+        0.9966109395027161,
+        0.9999986886978149,
+        0.9999964237213135
+      ],
+      "quad": [
+        {
+          "x": 455.0,
+          "y": 110.0
+        },
+        {
+          "x": 504.0,
+          "y": 110.0
+        },
+        {
+          "x": 504.0,
+          "y": 133.0
+        },
+        {
+          "x": 455.0,
+          "y": 133.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 49,
+        "x": 455,
+        "y": 110
+      },
+      "score": 0.9882035255432129,
+      "text": "¥24.50"
+    },
+    {
+      "char_scores": [
+        0.9999995231628418,
+        0.9905297160148621
+      ],
+      "quad": [
+        {
+          "x": 574.0,
+          "y": 110.0
+        },
+        {
+          "x": 610.0,
+          "y": 110.0
+        },
+        {
+          "x": 610.0,
+          "y": 135.0
+        },
+        {
+          "x": 574.0,
+          "y": 135.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 36,
+        "x": 574,
+        "y": 110
+      },
+      "score": 0.9952646493911743,
+      "text": "有货"
+    },
+    {
+      "char_scores": [
+        0.9972777962684631,
+        0.9999923706054688,
+        0.9999868869781494,
+        0.9999969005584717
+      ],
+      "quad": [
+        {
+          "x": 26.0,
+          "y": 139.0
+        },
+        {
+          "x": 65.0,
+          "y": 139.0
+        },
+        {
+          "x": 65.0,
+          "y": 164.0
+        },
+        {
+          "x": 26.0,
+          "y": 164.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 39,
+        "x": 26,
+        "y": 139
+      },
+      "score": 0.999313473701477,
+      "text": "1004"
+    },
+    {
+      "char_scores": [
+        0.9999128580093384,
+        0.9999474287033081,
+        0.9999921321868896,
+        0.9997847676277161,
+        0.9999518394470215
+      ],
+      "quad": [
+        {
+          "x": 97.0,
+          "y": 140.0
+        },
+        {
+          "x": 166.0,
+          "y": 140.0
+        },
+        {
+          "x": 166.0,
+          "y": 163.0
+        },
+        {
+          "x": 97.0,
+          "y": 163.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 69,
+        "x": 97,
+        "y": 140
+      },
+      "score": 0.9999178051948547,
+      "text": "便携充电宝"
+    },
+    {
+      "char_scores": [
+        0.999927282333374,
+        0.7659575939178467,
+        0.9999722242355347,
+        0.9999855756759644,
+        0.9999779462814331,
+        0.4943197965621948,
+        0.9952281713485718,
+        0.9999810457229614
+      ],
+      "quad": [
+        {
+          "x": 244.0,
+          "y": 138.0
+        },
+        {
+          "x": 318.0,
+          "y": 136.0
+        },
+        {
+          "x": 319.0,
+          "y": 162.0
+        },
+        {
+          "x": 245.0,
+          "y": 164.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 75,
+        "x": 244,
+        "y": 136
+      },
+      "score": 0.9069187045097351,
+      "text": "10000 毫安"
+    },
+    {
+      "char_scores": [
+        0.9772318601608276
+      ],
+      "quad": [
+        {
+          "x": 375.0,
+          "y": 141.0
+        },
+        {
+          "x": 393.0,
+          "y": 141.0
+        },
+        {
+          "x": 393.0,
+          "y": 162.0
+        },
+        {
+          "x": 375.0,
+          "y": 162.0
+        }
+      ],
       "rect": {
         "h": 21,
-        "w": 82,
-        "x": 96,
-        "y": 54
+        "w": 18,
+        "x": 375,
+        "y": 141
       },
-      "score": 0.9995896816253662,
-      "text": "不锈钢保温杯"
+      "score": 0.9772318601608276,
+      "text": "0"
+    },
+    {
+      "char_scores": [
+        0.9394465088844299,
+        0.9999227523803711,
+        0.9999958276748657,
+        0.9770639538764954,
+        0.9999769926071167,
+        0.9999486207962036
+      ],
+      "quad": [
+        {
+          "x": 454.0,
+          "y": 139.0
+        },
+        {
+          "x": 505.0,
+          "y": 139.0
+        },
+        {
+          "x": 505.0,
+          "y": 163.0
+        },
+        {
+          "x": 454.0,
+          "y": 163.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 51,
+        "x": 454,
+        "y": 139
+      },
+      "score": 0.9860591292381287,
+      "text": "¥89.00"
+    },
+    {
+      "char_scores": [
+        0.9999995231628418,
+        0.970051646232605
+      ],
+      "quad": [
+        {
+          "x": 573.0,
+          "y": 139.0
+        },
+        {
+          "x": 610.0,
+          "y": 139.0
+        },
+        {
+          "x": 610.0,
+          "y": 163.0
+        },
+        {
+          "x": 573.0,
+          "y": 163.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 37,
+        "x": 573,
+        "y": 139
+      },
+      "score": 0.9850255846977234,
+      "text": "缺货"
+    },
+    {
+      "char_scores": [
+        0.9999946355819702,
+        0.5442755818367004,
+        0.9999709129333496,
+        0.9999979734420776
+      ],
+      "quad": [
+        {
+          "x": 25.0,
+          "y": 168.0
+        },
+        {
+          "x": 64.0,
+          "y": 168.0
+        },
+        {
+          "x": 64.0,
+          "y": 193.0
+        },
+        {
+          "x": 25.0,
+          "y": 193.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 39,
+        "x": 25,
+        "y": 168
+      },
+      "score": 0.8860597610473633,
+      "text": "1005"
+    },
+    {
+      "char_scores": [
+        0.9997407793998718,
+        0.9999992847442627,
+        0.9999996423721313,
+        0.9999878406524658
+      ],
+      "quad": [
+        {
+          "x": 95.0,
+          "y": 169.0
+        },
+        {
+          "x": 154.0,
+          "y": 169.0
+        },
+        {
+          "x": 154.0,
+          "y": 192.0
+        },
+        {
+          "x": 95.0,
+          "y": 192.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 59,
+        "x": 95,
+        "y": 169
+      },
+      "score": 0.9999318718910217,
+      "text": "木质书架"
+    },
+    {
+      "char_scores": [
+        0.9998564720153809,
+        0.5134908556938171
+      ],
+      "quad": [
+        {
+          "x": 243.0,
+          "y": 167.0
+        },
+        {
+          "x": 281.0,
+          "y": 169.0
+        },
+        {
+          "x": 280.0,
+          "y": 194.0
+        },
+        {
+          "x": 242.0,
+          "y": 192.0
+        }
+      ],
+      "rect": {
+        "h": 27,
+        "w": 39,
+        "x": 242,
+        "y": 167
+      },
+      "score": 0.7566736936569214,
+      "text": "五层"
+    },
+    {
+      "char_scores": [
+        0.9999955892562866,
+        0.9999909400939941
+      ],
+      "quad": [
+        {
+          "x": 375.0,
+          "y": 169.0
+        },
+        {
+          "x": 401.0,
+          "y": 169.0
+        },
+        {
+          "x": 401.0,
+          "y": 193.0
+        },
+        {
+          "x": 375.0,
+          "y": 193.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 26,
+        "x": 375,
+        "y": 169
+      },
+      "score": 0.9999932646751404,
+      "text": "18"
+    },
+    {
+      "char_scores": [
+        0.9217209219932556,
+        0.9999933242797852,
+        0.9999971389770508,
+        0.9998983144760132,
+        0.9541288018226624,
+        0.9999886751174927,
+        0.9999082088470459
+      ],
+      "quad": [
+        {
+          "x": 455.0,
+          "y": 169.0
+        },
+        {
+          "x": 511.0,
+          "y": 169.0
+        },
+        {
+          "x": 511.0,
+          "y": 192.0
+        },
+        {
+          "x": 455.0,
+          "y": 192.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 56,
+        "x": 455,
+        "y": 169
+      },
+      "score": 0.9822336435317993,
+      "text": "¥259.00"
+    },
+    {
+      "char_scores": [
+        0.9999957084655762,
+        0.9994161128997803
+      ],
+      "quad": [
+        {
+          "x": 573.0,
+          "y": 168.0
+        },
+        {
+          "x": 610.0,
+          "y": 168.0
+        },
+        {
+          "x": 610.0,
+          "y": 194.0
+        },
+        {
+          "x": 573.0,
+          "y": 194.0
+        }
+      ],
+      "rect": {
+        "h": 26,
+        "w": 37,
+        "x": 573,
+        "y": 168
+      },
+      "score": 0.9997059106826782,
+      "text": "预订"
+    },
+    {
+      "char_scores": [
+        0.9999948740005493,
+        0.9967517852783203,
+        0.9999887943267822,
+        0.9999945163726807
+      ],
+      "quad": [
+        {
+          "x": 25.0,
+          "y": 197.0
+        },
+        {
+          "x": 65.0,
+          "y": 197.0
+        },
+        {
+          "x": 65.0,
+          "y": 222.0
+        },
+        {
+          "x": 25.0,
+          "y": 222.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 40,
+        "x": 25,
+        "y": 197
+      },
+      "score": 0.9991824626922607,
+      "text": "1006"
+    },
+    {
+      "char_scores": [
+        0.9999150037765503,
+        0.9999997615814209,
+        0.9999939203262329
+      ],
+      "quad": [
+        {
+          "x": 95.0,
+          "y": 196.0
+        },
+        {
+          "x": 144.0,
+          "y": 196.0
+        },
+        {
+          "x": 144.0,
+          "y": 223.0
+        },
+        {
+          "x": 95.0,
+          "y": 223.0
+        }
+      ],
+      "rect": {
+        "h": 27,
+        "w": 49,
+        "x": 95,
+        "y": 196
+      },
+      "score": 0.9999695420265198,
+      "text": "记事本"
+    },
+    {
+      "char_scores": [
+        0.9997280240058899,
+        0.9996552467346191,
+        0.9228529930114746,
+        0.9509935975074768,
+        0.9998468160629272
+      ],
+      "quad": [
+        {
+          "x": 242.0,
+          "y": 196.0
+        },
+        {
+          "x": 300.0,
+          "y": 194.0
+        },
+        {
+          "x": 301.0,
+          "y": 220.0
+        },
+        {
+          "x": 243.0,
+          "y": 222.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 59,
+        "x": 242,
+        "y": 194
+      },
+      "score": 0.9746153354644775,
+      "text": "A5 横线"
+    },
+    {
+      "char_scores": [
+        0.9999964237213135,
+        0.9999855756759644,
+        0.9999921321868896
+      ],
+      "quad": [
+        {
+          "x": 374.0,
+          "y": 197.0
+        },
+        {
+          "x": 407.0,
+          "y": 197.0
+        },
+        {
+          "x": 407.0,
+          "y": 222.0
+        },
+        {
+          "x": 374.0,
+          "y": 222.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 33,
+        "x": 374,
+        "y": 197
+      },
+      "score": 0.9999913573265076,
+      "text": "560"
+    },
+    {
+      "char_scores": [
+        0.9014389514923096,
+        0.9999790191650391,
+        0.9930544495582581,
+        0.9999911785125732,
+        0.9999911785125732
+      ],
+      "quad": [
+        {
+          "x": 454.0,
+          "y": 197.0
+        },
+        {
+          "x": 498.0,
+          "y": 197.0
+        },
+        {
+          "x": 498.0,
+          "y": 221.0
+        },
+        {
+          "x": 454.0,
+          "y": 221.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 44,
+        "x": 454,
+        "y": 197
+      },
+      "score": 0.9788909554481506,
+      "text": "¥6.80"
+    },
+    {
+      "char_scores": [
+        0.9999995231628418,
+        0.9506088495254517
+      ],
+      "quad": [
+        {
+          "x": 575.0,
+          "y": 197.0
+        },
+        {
+          "x": 610.0,
+          "y": 197.0
+        },
+        {
+          "x": 610.0,
+          "y": 222.0
+        },
+        {
+          "x": 575.0,
+          "y": 222.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 35,
+        "x": 575,
+        "y": 197
+      },
+      "score": 0.9753041863441467,
+      "text": "有货"
+    },
+    {
+      "char_scores": [
+        0.9999958276748657,
+        0.9999343156814575,
+        0.9999701976776123,
+        0.9999923706054688
+      ],
+      "quad": [
+        {
+          "x": 25.0,
+          "y": 226.0
+        },
+        {
+          "x": 64.0,
+          "y": 226.0
+        },
+        {
+          "x": 64.0,
+          "y": 250.0
+        },
+        {
+          "x": 25.0,
+          "y": 250.0
+        }
+      ],
+      "rect": {
+        "h": 24,
+        "w": 39,
+        "x": 25,
+        "y": 226
+      },
+      "score": 0.9999731779098511,
+      "text": "1007"
+    },
+    {
+      "char_scores": [
+        0.999996542930603,
+        0.9998359680175781,
+        0.9997348189353943,
+        0.9999972581863403
+      ],
+      "quad": [
+        {
+          "x": 93.0,
+          "y": 225.0
+        },
+        {
+          "x": 154.0,
+          "y": 225.0
+        },
+        {
+          "x": 154.0,
+          "y": 251.0
+        },
+        {
+          "x": 93.0,
+          "y": 251.0
+        }
+      ],
+      "rect": {
+        "h": 26,
+        "w": 61,
+        "x": 93,
+        "y": 225
+      },
+      "score": 0.9998911619186401,
+      "text": "护眼台灯"
+    },
+    {
+      "char_scores": [
+        0.9999973773956299,
+        0.9995662569999695,
+        0.9999972581863403
+      ],
+      "quad": [
+        {
+          "x": 243.0,
+          "y": 225.0
+        },
+        {
+          "x": 294.0,
+          "y": 225.0
+        },
+        {
+          "x": 294.0,
+          "y": 252.0
+        },
+        {
+          "x": 243.0,
+          "y": 252.0
+        }
+      ],
+      "rect": {
+        "h": 27,
+        "w": 51,
+        "x": 243,
+        "y": 225
+      },
+      "score": 0.9998536109924316,
+      "text": "可调光"
+    },
+    {
+      "char_scores": [
+        0.9999892711639404,
+        0.99998939037323
+      ],
+      "quad": [
+        {
+          "x": 375.0,
+          "y": 226.0
+        },
+        {
+          "x": 400.0,
+          "y": 228.0
+        },
+        {
+          "x": 398.0,
+          "y": 252.0
+        },
+        {
+          "x": 373.0,
+          "y": 250.0
+        }
+      ],
+      "rect": {
+        "h": 26,
+        "w": 27,
+        "x": 373,
+        "y": 226
+      },
+      "score": 0.9999893307685852,
+      "text": "72"
+    },
+    {
+      "char_scores": [
+        0.967900276184082,
+        0.999995231628418,
+        0.999992847442627,
+        0.9974168539047241,
+        0.9999902248382568,
+        0.9999856948852539
+      ],
+      "quad": [
+        {
+          "x": 454.0,
+          "y": 227.0
+        },
+        {
+          "x": 505.0,
+          "y": 227.0
+        },
+        {
+          "x": 505.0,
+          "y": 250.0
+        },
+        {
+          "x": 454.0,
+          "y": 250.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 51,
+        "x": 454,
+        "y": 227
+      },
+      "score": 0.9942135214805603,
+      "text": "¥58.00"
+    },
+    {
+      "char_scores": [
+        0.9999978542327881,
+        0.8708837032318115
+      ],
+      "quad": [
+        {
+          "x": 572.0,
+          "y": 226.0
+        },
+        {
+          "x": 610.0,
+          "y": 224.0
+        },
+        {
+          "x": 611.0,
+          "y": 250.0
+        },
+        {
+          "x": 573.0,
+          "y": 252.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 39,
+        "x": 572,
+        "y": 224
+      },
+      "score": 0.9354407787322998,
+      "text": "有货"
+    },
+    {
+      "char_scores": [
+        0.9999957084655762,
+        0.9999853372573853,
+        0.9999938011169434,
+        0.9999918937683105
+      ],
+      "quad": [
+        {
+          "x": 24.0,
+          "y": 254.0
+        },
+        {
+          "x": 65.0,
+          "y": 257.0
+        },
+        {
+          "x": 63.0,
+          "y": 282.0
+        },
+        {
+          "x": 22.0,
+          "y": 279.0
+        }
+      ],
+      "rect": {
+        "h": 28,
+        "w": 43,
+        "x": 22,
+        "y": 254
+      },
+      "score": 0.9999916553497314,
+      "text": "1008"
+    },
+    {
+      "char_scores": [
+        0.9999576807022095,
+        0.915191650390625,
+        0.9999934434890747,
+        0.9999998807907104,
+        0.9698606729507446
+      ],
+      "quad": [
+        {
+          "x": 96.0,
+          "y": 256.0
+        },
+        {
+          "x": 166.0,
+          "y": 256.0
+        },
+        {
+          "x": 166.0,
+          "y": 279.0
+        },
+        {
+          "x": 96.0,
+          "y": 279.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 70,
+        "x": 96,
+        "y": 256
+      },
+      "score": 0.9770006537437439,
+      "text": "保鲜盒套装"
+    },
+    {
+      "char_scores": [
+        0.9999189376831055,
+        0.9999412298202515,
+        0.9999990463256836
+      ],
+      "quad": [
+        {
+          "x": 243.0,
+          "y": 253.0
+        },
+        {
+          "x": 294.0,
+          "y": 255.0
+        },
+        {
+          "x": 293.0,
+          "y": 282.0
+        },
+        {
+          "x": 242.0,
+          "y": 280.0
+        }
+      ],
+      "rect": {
+        "h": 29,
+        "w": 52,
+        "x": 242,
+        "y": 253
+      },
+      "score": 0.9999530911445618,
+      "text": "六件套"
+    },
+    {
+      "char_scores": [
+        0.9917235970497131
+      ],
+      "quad": [
+        {
+          "x": 375.0,
+          "y": 258.0
+        },
+        {
+          "x": 392.0,
+          "y": 258.0
+        },
+        {
+          "x": 392.0,
+          "y": 278.0
+        },
+        {
+          "x": 375.0,
+          "y": 278.0
+        }
+      ],
+      "rect": {
+        "h": 20,
+        "w": 17,
+        "x": 375,
+        "y": 258
+      },
+      "score": 0.9917235970497131,
+      "text": "0"
+    },
+    {
+      "char_scores": [
+        0.8825592994689941,
+        0.9999927282333374,
+        0.9999984502792358,
+        0.9921437501907349,
+        0.999990701675415,
+        0.9999840259552002
+      ],
+      "quad": [
+        {
+          "x": 455.0,
+          "y": 256.0
+        },
+        {
+          "x": 504.0,
+          "y": 256.0
+        },
+        {
+          "x": 504.0,
+          "y": 279.0
+        },
+        {
+          "x": 455.0,
+          "y": 279.0
+        }
+      ],
+      "rect": {
+        "h": 23,
+        "w": 49,
+        "x": 455,
+        "y": 256
+      },
+      "score": 0.9791114926338196,
+      "text": "¥35.00"
+    },
+    {
+      "char_scores": [
+        0.9999998807907104,
+        0.9930400848388672
+      ],
+      "quad": [
+        {
+          "x": 573.0,
+          "y": 255.0
+        },
+        {
+          "x": 610.0,
+          "y": 255.0
+        },
+        {
+          "x": 610.0,
+          "y": 280.0
+        },
+        {
+          "x": 573.0,
+          "y": 280.0
+        }
+      ],
+      "rect": {
+        "h": 25,
+        "w": 37,
+        "x": 573,
+        "y": 255
+      },
+      "score": 0.9965199828147888,
+      "text": "缺货"
     }
   ],
-  "ocr_load_ms": 88,
+  "ocr_load_ms": 124,
   "server_ms": null,
   "width": 680
 }
