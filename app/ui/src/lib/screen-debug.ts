@@ -1,3 +1,4 @@
+// Rectangles drawn over the screenshot to show the recognized lines and the group bounds.
 import type { Rect, RectF, ScreenBlock } from "./types";
 
 export const GROUP_OUTSET = 3;

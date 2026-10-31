@@ -1,28 +1,49 @@
+// English layout for screenshot blocks: font size, single-line fitting, wrapping and the room each
+// block may use. Lengths are frame pixels scaled by the layout context.
 import type { RectF, ScreenBlock, ScreenTilt } from "./types";
 
 export const ENGLISH_FONT = '"Segoe UI", "Microsoft JhengHei", sans-serif';
 export const ENGLISH_FONT_WEIGHT = 600;
+// Line height factor shared by the measurer and the drawn text, so a measured height matches what
+// is painted.
 export const ENGLISH_LINE_SPACING = 1.330078125;
 
+// Source text at or below this height counts as small and at or above the large height as large;
+// sizes between blend linearly.
 const SMALL_SOURCE_HEIGHT = 12.0;
 const LARGE_SOURCE_HEIGHT = 16.0;
+// English font size as a multiple of the source height. Small text is enlarged more.
 const SMALL_MULTIPLIER = 1.18;
 const LARGE_MULTIPLIER = 1.06;
+// Smallest preferred English font size for small and large source text.
 const SMALL_MIN_FONT_SIZE = 14.5;
 const LARGE_MIN_FONT_SIZE = 13.0;
+// A Latin source drawn as CJK is nudged larger, since CJK glyphs lose legibility first. The nudge
+// is capped in absolute terms.
 const SMALL_LATIN_TO_CJK_BOOST = 1.08;
 const LATIN_TO_CJK_BOOST_CAP = 1.25;
 
+// Margin kept between a block and the edge of the frame or selection.
 const OVERLAY_PADDING = 6;
+// How far a bubble reaches past its source box on every side.
 const BUBBLE_EXPAND = 2;
+// Narrowest bubble, so a very short label still holds a word.
 const BUBBLE_MIN_WIDTH = 30;
+// Total padding inside a bubble across its width, half on each side.
 const BUBBLE_HORIZONTAL_PADDING = 6;
+// Total padding inside a bubble down its height, half on each side.
 const BUBBLE_VERTICAL_PADDING = 6;
+// Smallest font a single line is shrunk to before it is wrapped instead.
 const SINGLE_LINE_ABSOLUTE_MIN_FONT_SIZE = 9.5;
+// Font size down to which a single line is shrunk before its box is widened to keep it readable.
 const SINGLE_LINE_READABLE_MIN_FONT_SIZE = 10.0;
+// Last-resort size for a single line that still overflows after widening.
 const SINGLE_LINE_EMERGENCY_MIN_FONT_SIZE = 7.0;
+// Smallest font for text that is too long for its box and is wrapped rather than shrunk further.
 const WRAPPED_ABSOLUTE_MIN_FONT_SIZE = 11.0;
+// Smallest font a wrapped group is ever drawn at.
 const GROUPED_EMERGENCY_MIN_FONT_SIZE = 7.0;
+// No limit on the number of lines.
 const MAX_LINE_COUNT = 2147483647;
 
 const clamp = (value: number, minimum: number, maximum: number): number => Math.min(Math.max(value, minimum), maximum);
@@ -59,6 +80,8 @@ export interface SingleLineResult {
   preferRightExpansion: boolean;
 }
 
+// Keeps the size when the box can grow to the right. Otherwise it shrinks the text to the original
+// width while it stays readable, and then widens the box.
 export function singleLineLayout(input: SingleLineInput): SingleLineResult {
   const idealBorderWidth = Math.max(input.originalBorderWidth, input.textWidth + input.horizontalPadding);
   if (idealBorderWidth <= input.rightExpansionWidth) {
@@ -81,6 +104,8 @@ export function singleLineLayout(input: SingleLineInput): SingleLineResult {
   };
 }
 
+// A wrapped bubble grows to hold its text, but not past the room below unless the source box was
+// already taller.
 export function wrappedBubbleHeight(sourceBorderHeight: number, preferredHeight: number, wrappedTextHeight: number, capHeight: number | null): number {
   const wanted = Math.max(preferredHeight, wrappedTextHeight);
   return capHeight === null ? wanted : Math.max(wrappedTextHeight, Math.min(wanted, Math.max(capHeight, sourceBorderHeight)));
@@ -114,11 +139,17 @@ export interface TextLayout {
 
 export interface AcrossInColumnsRoom { left: number; right: number; below: number }
 export interface AcrossInColumnsFit { fontSize: number; left: number; top: number; width: number; height: number }
+// If every word is this short or shorter, the text may shrink into the emergency size range. A
+// longer word widens the box instead.
 export const ORDINARY_WORD_LENGTH = 12;
+// Font size step of the fitting searches.
 const SIZE_STEP = 0.5;
+// How much taller than its own lines a group off a tilted card may be set.
 const TILTED_HEIGHT_ALLOWANCE = 1.15;
+// Characters the text is split into words on.
 const TEXT_WHITESPACE = /[\u0009-\u000d\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/u;
 
+// Free space to the left, right and below a block before it meets another block.
 export function acrossInColumnsRoom(source: RectF, others: RectF[], limit: RectF): AcrossInColumnsRoom {
   const sourceRight = source.x + source.width, sourceBottom = source.y + source.height;
   let left = Math.max(0, source.x - limit.x);
@@ -141,6 +172,9 @@ export function acrossInColumnsRoom(source: RectF, others: RectF[], limit: RectF
   return { left, right, below };
 }
 
+// Finds the largest font whose wrapped text fits the room. The searches go from keeping the source
+// footprint, to using all the room, to allowing a long word to take two or more lines, to the
+// emergency size.
 export function acrossInColumnsFit(text: string, sourceWidth: number, sourceHeight: number, preferredFontSize: number,
   readableFontSize: number, emergencyFontSize: number, room: AcrossInColumnsRoom, measurer: Measurer, keepSize = false, unitScale = 1): AcrossInColumnsFit {
   sourceWidth = Math.max(unitScale, sourceWidth);
@@ -225,6 +259,8 @@ export function estimateWrappedLineCount(text: string, size: number, width: numb
   return Math.max(1, Math.ceil((wrapped.height - 0.1 * unitScale) / lineHeight));
 }
 
+// Largest size from the preferred one down that wraps within the line and height limits. Below the
+// minimum it continues to the emergency size.
 export function findLargestGroupedFontSize(text: string, preferred: number, minimum: number, width: number, maxLines: number, maxHeight: number, measurer: Measurer, unitScale = 1): number {
   for (let size = preferred; size >= minimum; size -= 0.5 * unitScale) {
     const wrapped = measurer.measure(text, size, width);
@@ -237,6 +273,8 @@ export function findLargestGroupedFontSize(text: string, preferred: number, mini
   return GROUPED_EMERGENCY_MIN_FONT_SIZE * unitScale;
 }
 
+// Height available below a block until the next block that overlaps it in width, or the end of the
+// selection.
 export function bottomAvailableHeight(current: ScreenBlock, blocks: ScreenBlock[], context: LayoutContext): number {
   const box = bounds(current);
   const expand = BUBBLE_EXPAND * (context.scale ?? 1), padding = OVERLAY_PADDING * (context.scale ?? 1);
@@ -261,6 +299,8 @@ export function hasLowerOverlappingBlock(current: ScreenBlock, blocks: ScreenBlo
   });
 }
 
+// Width available to the right of a block until the next block that shares its rows, or the end of
+// the selection.
 export function rightExpansionWidth(current: ScreenBlock, blocks: ScreenBlock[], context: LayoutContext): number {
   const box = bounds(current);
   const expand = BUBBLE_EXPAND * (context.scale ?? 1), padding = OVERLAY_PADDING * (context.scale ?? 1);
@@ -418,6 +458,7 @@ function columnLayout(block: ScreenBlock, text: string, neighbours: ScreenBlock[
     wrappedLineCount: estimateWrappedLineCount(written, fit.fontSize, fit.width, measurer, scale) };
 }
 
+// Chooses the layout by the kind of block: columns, a tilted card, or ordinary horizontal text.
 export function blockLayout(block: ScreenBlock, text: string, blocks: ScreenBlock[], context: LayoutContext, measurer: Measurer, neighbours = blocks): TextLayout {
   if (block.intent === "across_in_columns") return columnLayout(block, text, neighbours, context, measurer);
   if (block.tilt && !block.tilt.column) return tiltedLayout(block, text, context, measurer);

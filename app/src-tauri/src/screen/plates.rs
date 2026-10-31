@@ -1,3 +1,6 @@
+//! Per-job background plates: prepares the repaired frame once, then answers each block's plate
+//! request after the browser has laid the English out.
+
 use crate::app::lock;
 use lt_core::screen::{
     erase::RemovalBlock,
@@ -45,11 +48,14 @@ struct Image {
     png: Vec<u8>,
 }
 
+/// What one job keeps after reading: the repaired backdrop and each block's source paint.
 struct Prepared {
     backdrop: Option<Backdrop>,
     blocks: Vec<SourcePaint>,
 }
 
+/// The job whose plates may be requested. A request for any other frame or job, or after cancel, is
+/// refused.
 struct Current {
     frame: u64,
     job: u64,
@@ -144,6 +150,8 @@ impl Plates {
         Ok(())
     }
 
+    /// Builds the plate for one block at the rectangle the browser chose. Each request gets a new
+    /// revision, so an older answer cannot replace a newer layout.
     pub fn request(&self, request: PlateRequest) -> Result<PlateReply, String> {
         if ![
             request.rect.x,
@@ -256,6 +264,7 @@ impl Plates {
         })
     }
 
+    /// Serves a plate PNG only while its revision is still the latest for that block.
     pub fn image(&self, path: &str, query: Option<&str>) -> Option<Vec<u8>> {
         let parts: Vec<_> = path.trim_start_matches('/').split('/').collect();
         if parts.len() != 4 || parts[1] != "plate" {

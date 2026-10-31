@@ -1,13 +1,23 @@
+//! Line facts the grouper reads: script, glyph height estimates, text size basis and writing
+//! comparisons.
+
 use super::geom::{max, min, LineGeometry, PointF, RectF};
 use serde::{Deserialize, Serialize};
 use unicode_general_category::{get_general_category, GeneralCategory};
 
+/// Glyph count from which the character pitch can be used to correct the height estimate.
 pub const PITCH_CORRECTED_FROM_GLYPHS: usize = 4;
+/// Fraction of a detection box that its glyphs occupy. Low rather than high: too big puts oversized
+/// English over the picture, too small only makes it a little small.
 pub const GLYPHS_TO_BOX_HEIGHT: f64 = 0.5;
+/// Share of the box height taken as glyph height before any pitch correction.
 pub const VERTICAL_SCALE: f64 = 0.82;
+/// Glyph height as a multiple of the character pitch for CJK text, whose characters are square.
 pub const CJK_GLYPH_HEIGHT_FROM_PITCH: f64 = 1.18;
 pub const LATIN_GLYPH_HEIGHT_FROM_PITCH: f64 = 1.3;
+/// A shared midpoint, so two lines read slightly differently do not render at two font scales.
 pub const AUTOMATIC_GLYPH_HEIGHT_FROM_PITCH: f64 = 1.24;
+/// The pitch correction applies only to boxes clearly longer than they are tall.
 pub const PITCH_MIN_ASPECT: f64 = 2.0;
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
@@ -409,10 +419,17 @@ pub enum TextSizeBasis {
     BoxNoGlyphHeight,
 }
 
+/// A line this long, in line heights, may have run out of room and wrapped. Line heights serve CJK
+/// and Latin text with one number.
 pub const WRAPPED_LINE_MIN_ASPECT: f64 = 8.0;
+/// A row of prose long enough to get the benefit of the doubt on alignment and height; a short name
+/// or a stray symbol does not.
 pub const SUBSTANTIAL_LINE_MIN_ASPECT: f64 = 6.0;
+/// A row long enough to be a line of a paragraph rather than of an interface.
 pub const PARAGRAPH_ROW_MIN_ASPECT: f64 = 12.0;
+/// A body line long enough to be running text set across a column.
 pub const PROSE_LINE_MIN_ASPECT: f64 = 20.0;
+/// The narrowest and widest a row may be, against another, to count as the same size of text.
 pub const SIZE_BAND_LOW: f64 = 0.75;
 pub const SIZE_BAND_HIGH: f64 = 1.35;
 
@@ -441,6 +458,7 @@ pub fn squeeze(text: &str) -> String {
 }
 
 pub fn says_the_same(one: &str, other: &str) -> bool {
+    /// How much of the shorter text the two must share before they are one piece of writing.
     const ENOUGH_OF_IT: f64 = 0.6;
     let a: Vec<u16> = squeeze(one).encode_utf16().collect();
     let b: Vec<u16> = squeeze(other).encode_utf16().collect();

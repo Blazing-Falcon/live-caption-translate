@@ -1,3 +1,6 @@
+//! Drops recognized lines that are noise: low confidence, boxes too wide for their text, and icon
+//! misreads.
+
 use super::{
     geom::{LineGeometry, RectF},
     line::{
@@ -8,7 +11,11 @@ use super::{
 use unicode_general_category::{get_general_category, GeneralCategory};
 use unicode_normalization::UnicodeNormalization;
 
+/// Lines whose average per-character confidence is lower are treated as non-text or icon
+/// misdetections.
 pub const MIN_RECOGNITION_CONFIDENCE: f64 = 0.6;
+/// Width per character, as a multiple of the box height, past which the box cannot be holding the
+/// text read from it.
 pub const MAX_WIDTH_PER_GLYPH: f64 = 2.0;
 
 pub fn convert_blocks(raw: &[RawLine]) -> Vec<Line> {

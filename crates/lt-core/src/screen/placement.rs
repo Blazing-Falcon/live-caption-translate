@@ -1,3 +1,5 @@
+//! Picks how a block's English is laid out over its source lines.
+
 use super::line::Line;
 use serde::{Deserialize, Serialize};
 

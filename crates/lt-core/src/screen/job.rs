@@ -21,6 +21,7 @@ use std::{
 
 /// The longest source text of one translation request, in characters.
 pub const PIECE_CHARS: usize = 120;
+/// The cache is emptied when it holds this many entries, which bounds its memory.
 const CACHE_ENTRIES: usize = 512;
 const SENTENCE_ENDS: [char; 6] = ['。', '！', '？', '；', '…', '\n'];
 const CLAUSE_ENDS: [char; 2] = ['，', '、'];

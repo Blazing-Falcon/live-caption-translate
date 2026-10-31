@@ -1,9 +1,14 @@
+//! Remembers the last raw recognition so a second job on the same frame and region does not read
+//! the text again.
+
 use lt_core::{
     engines::{TextLine, TextRecognizer},
     error::Result,
     screen::{group::profile::CaptureLayoutMode, ImageView, Rect},
 };
 
+/// What a recognition result depends on: the frozen frame, the region read, the language and the
+/// direction.
 #[derive(Clone)]
 pub struct RecognitionKey {
     pub frame: u64,
@@ -18,6 +23,8 @@ pub struct RecognitionReuse {
     last: Option<(RecognitionKey, Vec<TextLine>)>,
 }
 
+/// An empty code means the default language, so the key does not change with how the caller spelled
+/// it.
 fn normalized_language(code: &str) -> String {
     let code = code.trim();
     if code.is_empty() {
@@ -39,6 +46,7 @@ impl RecognitionReuse {
         })
     }
 
+    /// Only a non-empty result is kept, so a read that found nothing is tried again.
     fn remember(&mut self, mut key: RecognitionKey, lines: Vec<TextLine>) {
         key.language = normalized_language(&key.language);
         self.last = (!lines.is_empty()).then_some((key, lines));

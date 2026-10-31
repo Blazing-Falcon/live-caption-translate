@@ -1,3 +1,5 @@
+//! Points, rectangles and the direction of a recognized line.
+
 use super::Rect;
 use serde::{ser::SerializeStruct, Deserialize, Deserializer, Serialize, Serializer};
 
@@ -242,8 +244,14 @@ pub struct LineGeometry {
 }
 
 impl LineGeometry {
+    /// From this angle a line is measured along itself; below it the upright box is kept so level
+    /// text is untouched.
     pub const TILTED_FROM_DEGREES: f64 = 15.0;
+    /// Past this the long side is closer to vertical than horizontal, so the box is a lone letter
+    /// or mark rather than a tilted line.
     pub const TILTED_TO_DEGREES: f64 = 45.0;
+    /// A box must be this much longer than thick before its angle is believed; the detector's fit
+    /// to a short blob can come out turned.
     pub const MIN_LENGTH_TO_THICKNESS: f64 = 2.0;
 
     pub fn is_tilted(self) -> bool {

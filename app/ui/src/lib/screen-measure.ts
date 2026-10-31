@@ -1,8 +1,11 @@
+// Measures English text in the browser with the same font and line spacing it is drawn with.
 import { toCssPx, toFramePx } from "./screen";
 import { ENGLISH_FONT, ENGLISH_FONT_WEIGHT, ENGLISH_LINE_SPACING, type Measurer, type TextSize } from "./screen-layout";
 
 export class DomMeasurer implements Measurer {
   private readonly element: HTMLDivElement;
+  // Results by text, size and width, since the layout searches ask for the same measurement
+  // repeatedly.
   private readonly cache = new Map<string, TextSize>();
 
   constructor(private readonly scale: number) {
@@ -28,6 +31,8 @@ export class DomMeasurer implements Measurer {
     const box = this.element.getBoundingClientRect();
     const range = document.createRange();
     range.selectNodeContents(this.element);
+    // A wrapping box is as wide as its limit, so the width of the text itself is read from a range
+    // over it.
     const ink = range.getBoundingClientRect();
     const size = {
       width: toFramePx(maxTextWidth === undefined ? box.width : Math.min(box.width, ink.width), this.scale),
