@@ -13,6 +13,7 @@ export interface OverlayRect {
 }
 
 export interface Config {
+  screen: { direction: "horizontal" | "vertical" };
   config_version: number;
   capture: {
     mode: "system" | "apps";
@@ -105,7 +106,7 @@ export function clamp(value: number, min: number, max: number): number {
 
 const CONFIG_SECTIONS = [
   "capture", "audio", "asr", "translate",
-  "overlay", "performance", "hotkeys", "transcript", "logging", "models",
+  "overlay", "screen", "performance", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -198,6 +199,7 @@ export function formatAccelerator(accelerator: string): string {
 
 /** Kept as a JSON initializer so the Rust parity test can read it directly. */
 export const DEFAULT_CONFIG: Config = {
+  "screen": { "direction": "horizontal" },
   "config_version": 3,
   "capture": {
     "mode": "system",

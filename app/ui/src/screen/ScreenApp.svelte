@@ -23,6 +23,7 @@
 
   function keydown(event: KeyboardEvent): void {
     if (event.key === "Escape") screen.close();
+    else if (event.target instanceof HTMLSelectElement) return;
     else if (event.key.toLowerCase() === "d" && !event.repeat && !event.ctrlKey && !event.altKey && !event.metaKey && $view.frame) {
       event.preventDefault();
       screen.toggleDebug();
@@ -64,7 +65,6 @@
     {#if $view.debug && !$view.original}
       <DebugBoxes frame={$view.frame} blocks={$view.blocks} lines={$view.ocrLines} />
     {/if}
-    {#if $view.selection}
       <Toolbar
         view={$view}
         {hint}
@@ -73,10 +73,8 @@
         ondownload={() => void screen.downloadModel()}
         onoriginal={(on) => screen.setOriginal(on)}
         onclose={() => screen.close()}
+        ondirection={direction => void screen.setDirection(direction)}
       />
-    {:else}
-      <p class="prompt">Drag over the text to translate it. D shows boxes. Esc closes.</p>
-    {/if}
   </main>
 {/if}
 
@@ -94,17 +92,4 @@
     pointer-events: none;
   }
 
-  .prompt {
-    position: absolute;
-    top: var(--space-4);
-    left: 50%;
-    margin: 0;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-card);
-    background: var(--screen-bar-bg);
-    color: var(--ov-text);
-    font: var(--text-label) var(--font-ui);
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
 </style>

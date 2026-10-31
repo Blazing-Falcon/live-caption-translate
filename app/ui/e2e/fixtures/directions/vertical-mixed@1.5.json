@@ -1,0 +1,741 @@
+{
+  "name": "vertical-mixed@1.5",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 1080,
+    "h": 840
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 868,
+        "y": 73,
+        "w": 49,
+        "h": 429
+      },
+      "lines": [
+        {
+          "x": 868,
+          "y": 73,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 868,
+          "y": 115,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 158,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 201,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 244,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 287,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 330,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 373,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 416,
+          "w": 49,
+          "h": 44
+        },
+        {
+          "x": 868,
+          "y": 459,
+          "w": 49,
+          "h": 43
+        }
+      ],
+      "intent": "across_in_columns",
+      "line_height": 429,
+      "source": "春天的風輕輕吹過山谷",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 868,
+          "y": 73,
+          "width": 49,
+          "height": 429
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 868,
+            "y": 73,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 115.9,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 158.8,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 201.7,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 244.6,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 287.5,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 330.4,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 373.3,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 416.2,
+            "width": 49,
+            "height": 42.9
+          },
+          {
+            "empty": false,
+            "x": 868,
+            "y": 459.1,
+            "width": 49,
+            "height": 42.9
+          }
+        ],
+        "render_glyph_height": 42.9,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 1,
+      "rect": {
+        "x": 791,
+        "y": 68,
+        "w": 53,
+        "h": 432
+      },
+      "lines": [
+        {
+          "x": 791,
+          "y": 68,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 111,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 154,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 197,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 240,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 284,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 327,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 370,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 413,
+          "w": 53,
+          "h": 44
+        },
+        {
+          "x": 791,
+          "y": 456,
+          "w": 53,
+          "h": 44
+        }
+      ],
+      "intent": "across_in_columns",
+      "line_height": 432,
+      "source": "遠方的村莊亮起了燈火",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 791,
+          "y": 68,
+          "width": 53,
+          "height": 432
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 791,
+            "y": 68,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 111.2,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 154.4,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 197.6,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 240.8,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 284,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 327.2,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 370.4,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 413.6,
+            "width": 53,
+            "height": 43.2
+          },
+          {
+            "empty": false,
+            "x": 791,
+            "y": 456.8,
+            "width": 53,
+            "height": 43.2
+          }
+        ],
+        "render_glyph_height": 43.2,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 2,
+      "rect": {
+        "x": 719,
+        "y": 72,
+        "w": 46,
+        "h": 427
+      },
+      "lines": [
+        {
+          "x": 719,
+          "y": 72,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 719,
+          "y": 114,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 719,
+          "y": 157,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 719,
+          "y": 200,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 719,
+          "y": 242,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 719,
+          "y": 285,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 719,
+          "y": 328,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 719,
+          "y": 370,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 719,
+          "y": 413,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 719,
+          "y": 456,
+          "w": 46,
+          "h": 43
+        }
+      ],
+      "intent": "across_in_columns",
+      "line_height": 427,
+      "source": "我們沿著小路慢慢回家",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 719,
+          "y": 72,
+          "width": 46,
+          "height": 427
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 719,
+            "y": 72,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 114.7,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 157.4,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 200.1,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 242.8,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 285.5,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 328.2,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 370.9,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 413.6,
+            "width": 46,
+            "height": 42.7
+          },
+          {
+            "empty": false,
+            "x": 719,
+            "y": 456.3,
+            "width": 46,
+            "height": 42.7
+          }
+        ],
+        "render_glyph_height": 42.7,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 3,
+      "rect": {
+        "x": 119,
+        "y": 661,
+        "w": 420,
+        "h": 32
+      },
+      "lines": [
+        {
+          "x": 119,
+          "y": 661,
+          "w": 420,
+          "h": 32
+        }
+      ],
+      "intent": "single",
+      "line_height": 31.159999999999997,
+      "source": "這是一段橫排的圖片說明。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 119,
+          "y": 661.42,
+          "width": 420,
+          "height": 31.159999999999997
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 119,
+            "y": 661.42,
+            "width": 420,
+            "height": 31.159999999999997
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      }
+    }
+  ],
+  "translations": [
+    "The spring breeze blows gently through the valley.",
+    "The distant villages were lit up by the lights.",
+    "We slowly walked along the path back home.",
+    "This is a description of a picture in horizontal rows."
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "春天的風輕輕吹過山谷",
+      "text": "The spring breeze blows gently through the valley.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 859,
+        "y": 106.78,
+        "width": 126,
+        "height": 361.44
+      },
+      "textRect": {
+        "empty": false,
+        "x": 859,
+        "y": 106.78,
+        "width": 126,
+        "height": 361.44
+      },
+      "fontSize": 33.968,
+      "wrappedLineCount": 8,
+      "textAlignment": "Center",
+      "verticalAlignment": "Stretch",
+      "localSize": {
+        "actualWidth": 126,
+        "actualHeight": 361.44
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 1,
+      "source": "遠方的村莊亮起了燈火",
+      "text": "The distant villages were lit up by the lights.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 781,
+        "y": 187.435,
+        "width": 72,
+        "height": 193.13000000000002
+      },
+      "textRect": {
+        "empty": false,
+        "x": 781,
+        "y": 187.435,
+        "width": 72,
+        "height": 193.13000000000002
+      },
+      "fontSize": 20.744000000000007,
+      "wrappedLineCount": 7,
+      "textAlignment": "Center",
+      "verticalAlignment": "Stretch",
+      "localSize": {
+        "actualWidth": 72,
+        "actualHeight": 193.13000000000002
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 2,
+      "source": "我們沿著小路慢慢回家",
+      "text": "We slowly walked along the path back home.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 652,
+        "y": 81.81999999999996,
+        "width": 123,
+        "height": 407.36000000000007
+      },
+      "textRect": {
+        "empty": false,
+        "x": 652,
+        "y": 81.81999999999996,
+        "width": 123,
+        "height": 407.36000000000007
+      },
+      "fontSize": 38.284000000000006,
+      "wrappedLineCount": 8,
+      "textAlignment": "Center",
+      "verticalAlignment": "Stretch",
+      "localSize": {
+        "actualWidth": 123,
+        "actualHeight": 407.36000000000007
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 3,
+      "source": "這是一段橫排的圖片說明。",
+      "text": "This is a description of a picture in horizontal rows.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 117,
+        "y": 659.42,
+        "width": 424,
+        "height": 35.16
+      },
+      "textRect": {
+        "empty": false,
+        "x": 120,
+        "y": 664.9333333333333,
+        "width": 418,
+        "height": 24.133333333333336
+      },
+      "fontSize": 18.14418541572922,
+      "wrappedLineCount": 1,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 424,
+        "actualHeight": 35.16
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ],
+  "direction": "vertical"
+}

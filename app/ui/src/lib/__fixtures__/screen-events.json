@@ -31,6 +31,12 @@
         "y": 170,
         "w": 96,
         "h": 22
+      },
+      {
+        "x": 740,
+        "y": 44,
+        "w": 20,
+        "h": 120
       }
     ],
     "blocks": [
@@ -236,6 +242,96 @@
           "column": false
         },
         "runs_across": true
+      },
+      {
+        "id": 3,
+        "rect": {
+          "x": 740,
+          "y": 44,
+          "w": 20,
+          "h": 120
+        },
+        "lines": [
+          {
+            "x": 740,
+            "y": 44,
+            "w": 20,
+            "h": 30
+          },
+          {
+            "x": 740,
+            "y": 74,
+            "w": 20,
+            "h": 30
+          },
+          {
+            "x": 740,
+            "y": 104,
+            "w": 20,
+            "h": 30
+          },
+          {
+            "x": 740,
+            "y": 134,
+            "w": 20,
+            "h": 30
+          }
+        ],
+        "intent": "across_in_columns",
+        "line_height": 30,
+        "source": "BOOK",
+        "background": [
+          250,
+          248,
+          243
+        ],
+        "foreground": [
+          24,
+          24,
+          24
+        ],
+        "translate": false,
+        "paint": {
+          "bounds": {
+            "x": 740.0,
+            "y": 44.0,
+            "width": 20.0,
+            "height": 120.0,
+            "empty": false
+          },
+          "source_lines": [
+            {
+              "x": 740.0,
+              "y": 44.0,
+              "width": 20.0,
+              "height": 30.0,
+              "empty": false
+            },
+            {
+              "x": 740.0,
+              "y": 74.0,
+              "width": 20.0,
+              "height": 30.0,
+              "empty": false
+            },
+            {
+              "x": 740.0,
+              "y": 104.0,
+              "width": 20.0,
+              "height": 30.0,
+              "empty": false
+            },
+            {
+              "x": 740.0,
+              "y": 134.0,
+              "width": 20.0,
+              "height": 30.0,
+              "empty": false
+            }
+          ],
+          "render_glyph_height": 20.0,
+          "font_glyph_height": null
+        }
       }
     ]
   },

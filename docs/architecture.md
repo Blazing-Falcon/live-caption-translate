@@ -60,6 +60,8 @@ Both styles fill from the top of a fixed box and scroll up, never down. Each blo
 
 Screenshot recognition accepts horizontal or vertical direction. Vertical detection retains and carves the probability map, separates columns and extends clipped column ends for recognition. A quarter-turned detection pass adds only writing the upright pass missed. Pure column geometry, duplicate/ruby removal and right-to-left grouping live in `lt-core/src/screen/vertical`; model calls remain on the single OCR owner thread. Captions running across a vertical page use the horizontal preparation and grouping rules.
 
+English column groups use `across_in_columns`: words wrap across the column footprint, taking available room before smaller type. Tilted text is laid out in the card's level frame and rotated or sheared back onto it. The backend creates an image-space polygon-masked plate from that final bubble; flat fallback cards take the same transform as the text. `screen.direction` remembers the picker and participates in the OCR reuse key.
+
 The `screen_translate` hotkey starts it. It needs the text recognition model, which downloads the first time (see [models.md](models.md)), and the translation model. It does not need listening to run.
 
 ```

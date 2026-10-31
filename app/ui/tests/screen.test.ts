@@ -5,6 +5,7 @@ import { get } from "svelte/store";
 import { afterEach, describe, expect, it } from "vitest";
 import fixture from "../src/lib/__fixtures__/screen-events.json";
 import { EVENTS } from "../src/lib/events";
+import { DEFAULT_CONFIG } from "../src/lib/settings";
 import {
   OCR_MODEL_ID,
   copyText,
@@ -38,6 +39,8 @@ const MODEL: ModelStatus = {
 };
 
 interface Backend {
+  direction: "horizontal" | "vertical";
+  preferencesGate?: Promise<void>;
   calls: { cmd: string; args: Record<string, unknown> }[];
   /** Job ids `screen_select` answers with, in order. */
   jobs: number[];
@@ -46,11 +49,19 @@ interface Backend {
 }
 
 function install(overrides: Partial<Backend> = {}): Backend {
-  const backend: Backend = { calls: [], jobs: [JOB, JOB + 1, JOB + 2], models: [], ...overrides };
+  const backend: Backend = { direction: "horizontal", calls: [], jobs: [JOB, JOB + 1, JOB + 2], models: [], ...overrides };
   mockIPC(
     async (cmd, args) => {
       backend.calls.push({ cmd, args: (args ?? {}) as Record<string, unknown> });
       switch (cmd) {
+        case "get_config":
+          if (backend.preferencesGate) await backend.preferencesGate;
+          return { ...DEFAULT_CONFIG, screen: { direction: backend.direction } };
+        case "set_config": {
+          const patch = (args as { patch: { screen: { direction: "horizontal" | "vertical" } } }).patch;
+          backend.direction = patch.screen.direction;
+          return { config: { ...DEFAULT_CONFIG, screen: { direction: backend.direction } }, applied: "live", messages: [] };
+        }
         case "screen_select":
           if (backend.gate) await backend.gate;
           return backend.jobs.shift();
@@ -84,6 +95,45 @@ async function send(...list: ScreenEvent[]): Promise<void> {
 
 const view = (screen: Screen) => get(screen.state);
 const selects = (backend: Backend) => backend.calls.filter((call) => call.cmd === "screen_select");
+
+it("uses the remembered direction on the first drag and keeps it across frames", async () => {
+  const backend = install({ direction: "vertical" });
+  const screen = await open();
+  expect(view(screen).direction).toBe("vertical");
+  screen.select(AREA);
+  await flush();
+  expect(selects(backend)[0]?.args.direction).toBe("vertical");
+  screen.reset();
+  await emit(EVENTS.screenFrame, { ...FRAME, id: 2 });
+  await flush();
+  expect(view(screen).direction).toBe("vertical");
+});
+
+it("saves a direction change and reads the existing selection again", async () => {
+  const backend = install();
+  const screen = await open();
+  screen.select(AREA);
+  await flush();
+  await send(reading, blocks, translated, failed, done);
+  await screen.setDirection("vertical");
+  await flush();
+  expect(backend.direction).toBe("vertical");
+  expect(backend.calls.find(call => call.cmd === "set_config")?.args).toEqual({ patch: { screen: { direction: "vertical" } } });
+  expect(selects(backend)).toHaveLength(2);
+  expect(selects(backend)[1]?.args).toEqual({ ...selects(backend)[0]?.args, direction: "vertical" });
+  expect(view(screen).blocks).toEqual([]);
+});
+
+it("does not start a drag after closing while saved preferences are loading", async () => {
+  let release!: () => void;
+  const backend = install({ preferencesGate: new Promise<void>(resolve => { release = resolve; }) });
+  const screen = await open();
+  screen.select(AREA);
+  screen.close();
+  release();
+  await flush();
+  expect(selects(backend)).toHaveLength(0);
+});
 
 afterEach(() => {
   screens.splice(0).forEach((screen) => screen.dispose());
@@ -149,7 +199,7 @@ describe("a screen job", () => {
     expect(statusText(view(screen))).toBe("Reading text…");
 
     await send(reading, blocks);
-    expect(view(screen).blocks.map((block) => block.id)).toEqual([0, 1, 2]);
+    expect(view(screen).blocks.map((block) => block.id)).toEqual([0, 1, 2, 3]);
     expect(statusText(view(screen))).toBe("Translating 0 of 2…");
 
     await send(translated);
@@ -190,7 +240,7 @@ describe("a screen job", () => {
     expect(view(screen)).toMatchObject({ job: JOB + 1, blocks: [], outcomes: {}, phase: "reading" });
 
     await send({ ...reading, job: JOB + 1 }, { ...blocks, job: JOB + 1 }, { ...translated, job: JOB + 1 });
-    expect(view(screen).blocks).toHaveLength(3);
+    expect(view(screen).blocks).toHaveLength(4);
     expect(view(screen).outcomes[0]?.state).toBe("translated");
   });
 
@@ -204,7 +254,7 @@ describe("a screen job", () => {
     release();
     await flush();
     expect(view(screen)).toMatchObject({ job: JOB, phase: "translating" });
-    expect(view(screen).blocks).toHaveLength(3);
+    expect(view(screen).blocks).toHaveLength(4);
   });
 
   it("changes nothing for events before any drag", async () => {
@@ -221,7 +271,7 @@ describe("selection", () => {
     const screen = await open();
     screen.select({ x: 100.2, y: 50.1, w: 200.5, h: 80.3 });
     await flush();
-    expect(selects(backend)[0]?.args).toEqual({ frame: FRAME.id, rect: { x: 150, y: 75, w: 302, h: 121 } });
+    expect(selects(backend)[0]?.args).toEqual({ frame: FRAME.id, direction: "horizontal", rect: { x: 150, y: 75, w: 302, h: 121 } });
   });
 
   it("clamps to the frame and ignores a drag under 8 x 8 CSS px", async () => {
@@ -235,7 +285,7 @@ describe("selection", () => {
 
     expect(screen.select({ x: -50, y: -50, w: 900, h: 600 })).toBe(true);
     await flush();
-    expect(selects(backend)[0]?.args).toEqual({ frame: FRAME.id, rect: { x: 0, y: 0, w: 1200, h: 720 } });
+    expect(selects(backend)[0]?.args).toEqual({ frame: FRAME.id, direction: "horizontal", rect: { x: 0, y: 0, w: 1200, h: 720 } });
   });
 
   it("puts the toolbar under the box, above it near the bottom edge, else inside the bottom", () => {

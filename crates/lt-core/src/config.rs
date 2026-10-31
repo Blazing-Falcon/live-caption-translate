@@ -111,6 +111,7 @@ pub struct Config {
     pub asr: AsrConfig,
     pub translate: TranslateConfig,
     pub overlay: OverlayConfig,
+    pub screen: ScreenConfig,
     pub performance: PerformanceConfig,
     pub hotkeys: HotkeysConfig,
     pub transcript: TranscriptConfig,
@@ -127,6 +128,7 @@ impl Default for Config {
             asr: AsrConfig::default(),
             translate: TranslateConfig::default(),
             overlay: OverlayConfig::default(),
+            screen: ScreenConfig::default(),
             performance: PerformanceConfig::default(),
             hotkeys: HotkeysConfig::default(),
             transcript: TranscriptConfig::default(),
@@ -134,6 +136,12 @@ impl Default for Config {
             models: ModelsConfig::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ScreenConfig {
+    pub direction: crate::screen::Direction,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -414,6 +422,7 @@ fn choices(path: &str) -> Option<&'static [&'static str]> {
         "overlay.style" => OverlayStyle::NAMES,
         "overlay.panel_edge" => PanelEdge::NAMES,
         "logging.level" => LogLevel::NAMES,
+        "screen.direction" => crate::screen::Direction::NAMES,
         _ => return None,
     })
 }

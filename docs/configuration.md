@@ -62,6 +62,9 @@ live_source = true              # show the Chinese of the clause being spoken
 [performance]
 low_priority = true             # below-normal priority for the translation server
 
+[screen]
+direction = "horizontal"        # "horizontal" | "vertical"; remembered screenshot picker
+
 [hotkeys]
 move_lock = "Ctrl+Shift+L"
 show_hide = "Ctrl+Shift+H"
@@ -132,6 +135,12 @@ The app always starts and supervises the bundled llama-server.
 | `flow_lines` | 1–10 | live | Wrapped lines kept of each running-text paragraph. Both paragraphs fill from the top and roll up. |
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
 | `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
+
+### Screen
+
+| Key | Range | Applies | Meaning |
+|---|---|---|---|
+| `direction` | `horizontal`, `vertical` | live | Remembered screenshot direction. The picker is available before dragging; changing it with a result reads the same selection again. English is set across the source columns. |
 
 ### performance
 

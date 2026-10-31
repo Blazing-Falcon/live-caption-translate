@@ -1,0 +1,150 @@
+{
+  "name": "tilted-sign@1.5",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 1200,
+    "h": 600
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 270,
+        "y": 246,
+        "w": 517,
+        "h": 63
+      },
+      "lines": [
+        {
+          "x": 270,
+          "y": 246,
+          "w": 517,
+          "h": 63
+        }
+      ],
+      "intent": "single",
+      "line_height": 61.006,
+      "source": "请沿河边步道向前走。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 270,
+          "y": 246.997,
+          "width": 517,
+          "height": 61.006
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 270,
+            "y": 246.997,
+            "width": 517,
+            "height": 61.006
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      },
+      "tilt": {
+        "degrees": -14.737899519348419,
+        "sheared": false,
+        "centre": {
+          "x": 528.5,
+          "y": 277.5
+        },
+        "box": {
+          "empty": false,
+          "x": 271.02912786103354,
+          "y": 240.26762161773706,
+          "width": 514.9417442779329,
+          "height": 74.46475676452587
+        },
+        "line_quads": [
+          [
+            {
+              "x": 270.0281682398545,
+              "y": 306.9925784995996
+            },
+            {
+              "x": 768.0281682398545,
+              "y": 175.99257849959957
+            },
+            {
+              "x": 786.9718317601455,
+              "y": 248.00742150040043
+            },
+            {
+              "x": 288.9718317601455,
+              "y": 379.0074215004004
+            }
+          ]
+        ],
+        "column": false
+      }
+    }
+  ],
+  "translations": [
+    "Please walk along the riverbank path."
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "请沿河边步道向前走。",
+      "text": "Please walk along the riverbank path.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 266.1670872780753,
+        "y": 168.158691248354,
+        "width": 524.6658254438494,
+        "height": 218.68261750329202
+      },
+      "textRect": {
+        "empty": false,
+        "x": 269.83157946766465,
+        "y": 171.8231834379433,
+        "width": 517.3368410646708,
+        "height": 211.35363312411337
+      },
+      "fontSize": 31.43264217039743,
+      "wrappedLineCount": 2,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 518.9417442779329,
+        "actualHeight": 89.61333333333334
+      },
+      "transform": {
+        "isIdentity": false,
+        "determinant": 0.9999999999999999,
+        "hasInverse": true,
+        "m11": 0.9670996875545813,
+        "m12": -0.25439770897520114,
+        "m21": 0.25439770897520114,
+        "m22": 0.9670996875545813,
+        "offsetX": -2.862040582958235,
+        "offsetY": 67.48294875092147
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ],
+  "direction": "horizontal"
+}

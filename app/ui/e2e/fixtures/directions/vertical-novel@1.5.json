@@ -1,0 +1,858 @@
+{
+  "name": "vertical-novel@1.5",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 960,
+    "h": 780
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 762,
+        "y": 89,
+        "w": 45,
+        "h": 424
+      },
+      "lines": [
+        {
+          "x": 762,
+          "y": 89,
+          "w": 45,
+          "h": 43
+        },
+        {
+          "x": 762,
+          "y": 131,
+          "w": 45,
+          "h": 43
+        },
+        {
+          "x": 762,
+          "y": 173,
+          "w": 45,
+          "h": 44
+        },
+        {
+          "x": 762,
+          "y": 216,
+          "w": 45,
+          "h": 43
+        },
+        {
+          "x": 762,
+          "y": 258,
+          "w": 45,
+          "h": 43
+        },
+        {
+          "x": 762,
+          "y": 301,
+          "w": 45,
+          "h": 43
+        },
+        {
+          "x": 762,
+          "y": 343,
+          "w": 45,
+          "h": 43
+        },
+        {
+          "x": 762,
+          "y": 385,
+          "w": 45,
+          "h": 44
+        },
+        {
+          "x": 762,
+          "y": 428,
+          "w": 45,
+          "h": 43
+        },
+        {
+          "x": 762,
+          "y": 470,
+          "w": 45,
+          "h": 43
+        }
+      ],
+      "intent": "across_in_columns",
+      "line_height": 424,
+      "source": "清晨的河邊總是很安靜",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 762,
+          "y": 89,
+          "width": 45,
+          "height": 424
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 762,
+            "y": 89,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 131.4,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 173.8,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 216.2,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 258.6,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 301,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 343.4,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 385.8,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 428.2,
+            "width": 45,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 762,
+            "y": 470.6,
+            "width": 45,
+            "height": 42.4
+          }
+        ],
+        "render_glyph_height": 42.4,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 1,
+      "rect": {
+        "x": 686,
+        "y": 89,
+        "w": 46,
+        "h": 428
+      },
+      "lines": [
+        {
+          "x": 686,
+          "y": 89,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 686,
+          "y": 131,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 686,
+          "y": 174,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 686,
+          "y": 217,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 686,
+          "y": 260,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 686,
+          "y": 303,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 686,
+          "y": 345,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 686,
+          "y": 388,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 686,
+          "y": 431,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 686,
+          "y": 474,
+          "w": 46,
+          "h": 43
+        }
+      ],
+      "intent": "across_in_columns",
+      "line_height": 428,
+      "source": "薄霧貼著水面慢慢散開",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 686,
+          "y": 89,
+          "width": 46,
+          "height": 428
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 686,
+            "y": 89,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 131.8,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 174.6,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 217.4,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 260.2,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 303,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 345.8,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 388.6,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 431.4,
+            "width": 46,
+            "height": 42.8
+          },
+          {
+            "empty": false,
+            "x": 686,
+            "y": 474.2,
+            "width": 46,
+            "height": 42.8
+          }
+        ],
+        "render_glyph_height": 42.8,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 2,
+      "rect": {
+        "x": 609,
+        "y": 88,
+        "w": 49,
+        "h": 430
+      },
+      "lines": [
+        {
+          "x": 609,
+          "y": 88,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 131,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 174,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 217,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 260,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 303,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 346,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 389,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 432,
+          "w": 49,
+          "h": 43
+        },
+        {
+          "x": 609,
+          "y": 475,
+          "w": 49,
+          "h": 43
+        }
+      ],
+      "intent": "across_in_columns",
+      "line_height": 430,
+      "source": "岸上的老人正在練太極",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 609,
+          "y": 88,
+          "width": 49,
+          "height": 430
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 609,
+            "y": 88,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 131,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 174,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 217,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 260,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 303,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 346,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 389,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 432,
+            "width": 49,
+            "height": 43
+          },
+          {
+            "empty": false,
+            "x": 609,
+            "y": 475,
+            "width": 49,
+            "height": 43
+          }
+        ],
+        "render_glyph_height": 43,
+        "font_glyph_height": null
+      }
+    },
+    {
+      "id": 3,
+      "rect": {
+        "x": 535,
+        "y": 91,
+        "w": 46,
+        "h": 424
+      },
+      "lines": [
+        {
+          "x": 535,
+          "y": 91,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 535,
+          "y": 133,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 535,
+          "y": 175,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 535,
+          "y": 218,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 535,
+          "y": 260,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 535,
+          "y": 303,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 535,
+          "y": 345,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 535,
+          "y": 387,
+          "w": 46,
+          "h": 44
+        },
+        {
+          "x": 535,
+          "y": 430,
+          "w": 46,
+          "h": 43
+        },
+        {
+          "x": 535,
+          "y": 472,
+          "w": 46,
+          "h": 43
+        }
+      ],
+      "intent": "across_in_columns",
+      "line_height": 424,
+      "source": "橋下的水流得很慢很慢",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 535,
+          "y": 91,
+          "width": 46,
+          "height": 424
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 535,
+            "y": 91,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 133.4,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 175.8,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 218.2,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 260.6,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 303,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 345.4,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 387.8,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 430.2,
+            "width": 46,
+            "height": 42.4
+          },
+          {
+            "empty": false,
+            "x": 535,
+            "y": 472.6,
+            "width": 46,
+            "height": 42.4
+          }
+        ],
+        "render_glyph_height": 42.4,
+        "font_glyph_height": null
+      }
+    }
+  ],
+  "translations": [
+    "The riverbank in the early morning is always very quiet.",
+    "The thin mist adheres to the water surface and slowly disperses.",
+    "The old man on the shore is practicing Tai Chi.",
+    "The water flow under the bridge is very slow."
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "清晨的河邊總是很安靜",
+      "text": "The riverbank in the early morning is always very quiet.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 750,
+        "y": 149.3333333333333,
+        "width": 123,
+        "height": 303.3333333333334
+      },
+      "textRect": {
+        "empty": false,
+        "x": 750,
+        "y": 149.3333333333333,
+        "width": 123,
+        "height": 303.3333333333334
+      },
+      "fontSize": 28.508000000000003,
+      "wrappedLineCount": 8,
+      "textAlignment": "Center",
+      "verticalAlignment": "Stretch",
+      "localSize": {
+        "actualWidth": 123,
+        "actualHeight": 303.3333333333334
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 1,
+      "source": "薄霧貼著水面慢慢散開",
+      "text": "The thin mist adheres to the water surface and slowly disperses.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 675,
+        "y": 213.96,
+        "width": 68,
+        "height": 178.07999999999998
+      },
+      "textRect": {
+        "empty": false,
+        "x": 675,
+        "y": 213.96,
+        "width": 68,
+        "height": 178.07999999999998
+      },
+      "fontSize": 14.875999999999998,
+      "wrappedLineCount": 9,
+      "textAlignment": "Center",
+      "verticalAlignment": "Stretch",
+      "localSize": {
+        "actualWidth": 68,
+        "actualHeight": 178.07999999999998
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 2,
+      "source": "岸上的老人正在練太極",
+      "text": "The old man on the shore is practicing Tai Chi.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 599,
+        "y": 242.91,
+        "width": 69,
+        "height": 120.18
+      },
+      "textRect": {
+        "empty": false,
+        "x": 599,
+        "y": 242.91,
+        "width": 69,
+        "height": 120.18
+      },
+      "fontSize": 15.060000000000002,
+      "wrappedLineCount": 6,
+      "textAlignment": "Center",
+      "verticalAlignment": "Stretch",
+      "localSize": {
+        "actualWidth": 69,
+        "actualHeight": 120.18
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 3,
+      "source": "橋下的水流得很慢很慢",
+      "text": "The water flow under the bridge is very slow.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 475,
+        "y": 95.46666666666667,
+        "width": 117,
+        "height": 415.06666666666666
+      },
+      "textRect": {
+        "empty": false,
+        "x": 475,
+        "y": 95.46666666666667,
+        "width": 117,
+        "height": 415.06666666666666
+      },
+      "fontSize": 39.008,
+      "wrappedLineCount": 8,
+      "textAlignment": "Center",
+      "verticalAlignment": "Stretch",
+      "localSize": {
+        "actualWidth": 117,
+        "actualHeight": 415.06666666666666
+      },
+      "transform": {
+        "isIdentity": true,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 1,
+        "m12": 0,
+        "m21": 0,
+        "m22": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ],
+  "direction": "vertical"
+}

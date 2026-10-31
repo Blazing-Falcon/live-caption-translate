@@ -1,0 +1,278 @@
+{
+  "name": "tilted-card@1",
+  "frame": {
+    "id": 7,
+    "width": 3840,
+    "height": 1080,
+    "scale": 1
+  },
+  "selection": {
+    "x": 0,
+    "y": 0,
+    "w": 800,
+    "h": 440
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "rect": {
+        "x": 160,
+        "y": 145,
+        "w": 299,
+        "h": 33
+      },
+      "lines": [
+        {
+          "x": 160,
+          "y": 145,
+          "w": 299,
+          "h": 33
+        }
+      ],
+      "intent": "single",
+      "line_height": 32.07454545454546,
+      "source": "清晨的河边总是很安静。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 160,
+          "y": 145.46272727272728,
+          "width": 299,
+          "height": 32.07454545454546
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 160,
+            "y": 145.46272727272728,
+            "width": 299,
+            "height": 32.07454545454546
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      },
+      "tilt": {
+        "degrees": 8.04809509234071,
+        "sheared": false,
+        "centre": {
+          "x": 309.5,
+          "y": 161.5
+        },
+        "box": {
+          "empty": false,
+          "x": 161.07746128030286,
+          "y": 142.3362321032632,
+          "width": 296.84507743939434,
+          "height": 38.3275357934736
+        },
+        "line_quads": [
+          [
+            {
+              "x": 165.14688399263292,
+              "y": 122.0199050284372
+            },
+            {
+              "x": 459.1468839926329,
+              "y": 163.0199050284372
+            },
+            {
+              "x": 453.8531160073671,
+              "y": 200.9800949715628
+            },
+            {
+              "x": 159.85311600736708,
+              "y": 159.9800949715628
+            }
+          ]
+        ],
+        "column": false
+      }
+    },
+    {
+      "id": 1,
+      "rect": {
+        "x": 153,
+        "y": 193,
+        "w": 298,
+        "h": 33
+      },
+      "lines": [
+        {
+          "x": 153,
+          "y": 193,
+          "w": 298,
+          "h": 33
+        }
+      ],
+      "intent": "single",
+      "line_height": 31.967272727272725,
+      "source": "薄雾贴着水面慢慢散开。",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "foreground": [
+        0,
+        0,
+        0
+      ],
+      "translate": true,
+      "paint": {
+        "bounds": {
+          "empty": false,
+          "x": 153,
+          "y": 193.51636363636362,
+          "width": 298,
+          "height": 31.967272727272725
+        },
+        "source_lines": [
+          {
+            "empty": false,
+            "x": 153,
+            "y": 193.51636363636362,
+            "width": 298,
+            "height": 31.967272727272725
+          }
+        ],
+        "render_glyph_height": null,
+        "font_glyph_height": null
+      },
+      "tilt": {
+        "degrees": 8.04809509234071,
+        "sheared": false,
+        "centre": {
+          "x": 302,
+          "y": 209.5
+        },
+        "box": {
+          "empty": false,
+          "x": 154.00253380547355,
+          "y": 191.8223304703363,
+          "width": 295.9949323890529,
+          "height": 35.35533905932738
+        },
+        "line_quads": [
+          [
+            {
+              "x": 158.00836091771325,
+              "y": 171.00119645500044
+            },
+            {
+              "x": 451.0083609177132,
+              "y": 213.00119645500044
+            },
+            {
+              "x": 445.9916390822868,
+              "y": 247.99880354499956
+            },
+            {
+              "x": 152.99163908228675,
+              "y": 205.99880354499956
+            }
+          ]
+        ],
+        "column": false
+      }
+    }
+  ],
+  "translations": [
+    "The riverbank in the early morning is always very quiet.",
+    "The thin mist slowly disperses along the surface of the water."
+  ],
+  "expected": [
+    {
+      "id": 0,
+      "source": "清晨的河边总是很安静。",
+      "text": "The riverbank in the early morning is always very quiet.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 157.22875295705492,
+        "y": 116.88780840252902,
+        "width": 304.5424940858902,
+        "height": 89.22438319494198
+      },
+      "textRect": {
+        "empty": false,
+        "x": 160.61921854474468,
+        "y": 120.27827399021879,
+        "width": 297.7615629105107,
+        "height": 82.44345201956241
+      },
+      "fontSize": 15.62718794108202,
+      "wrappedLineCount": 2,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 300.84507743939434,
+        "actualHeight": 47.57333333333334
+      },
+      "transform": {
+        "isIdentity": false,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 0.9901508955064743,
+        "m12": 0.14000430039012032,
+        "m21": -0.14000430039012032,
+        "m22": 0.9901508955064743,
+        "offsetX": 4.811762927311377,
+        "offsetY": -20.82552493080432
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    },
+    {
+      "id": 1,
+      "source": "薄雾贴着水面慢慢散开。",
+      "text": "The thin mist slowly disperses along the surface of the water.",
+      "bubbleRect": {
+        "empty": false,
+        "x": 150.36384547810474,
+        "y": 166.46225125415552,
+        "width": 303.2723090437905,
+        "height": 86.07549749168899
+      },
+      "textRect": {
+        "empty": false,
+        "x": 153.75431106579455,
+        "y": 169.85271684184528,
+        "width": 296.49137786841084,
+        "height": 79.29456631630944
+      },
+      "fontSize": 14.476659402887023,
+      "wrappedLineCount": 2,
+      "textAlignment": "Left",
+      "verticalAlignment": "Center",
+      "localSize": {
+        "actualWidth": 299.9949323890529,
+        "actualHeight": 44.513333333333335
+      },
+      "transform": {
+        "isIdentity": false,
+        "determinant": 1,
+        "hasInverse": true,
+        "m11": 0.9901508955064743,
+        "m12": 0.14000430039012032,
+        "m21": -0.14000430039012032,
+        "m22": 0.9901508955064743,
+        "offsetX": 4.59336976399676,
+        "offsetY": -20.78108207917783
+      },
+      "dpiX": 1,
+      "dpiY": 1
+    }
+  ],
+  "direction": "horizontal"
+}

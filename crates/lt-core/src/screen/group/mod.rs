@@ -104,7 +104,7 @@ pub fn blocks_from_groups_direction(
                 translate: group.text.chars().any(is_han),
                 foreground,
                 background,
-                intent: placement::intent_for(group),
+                intent: placement::intent_for_direction(group, direction),
                 lines,
                 source: group.text.clone(),
                 tilt: group.tilt.clone(),

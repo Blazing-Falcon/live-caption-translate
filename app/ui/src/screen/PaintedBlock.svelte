@@ -2,24 +2,29 @@
   import { tick, untrack } from "svelte";
   import { screenPlate } from "../lib/api";
   import { cssColor, fitText, startFontPx, toCssFloatRect, toCssRect, toCssPx } from "../lib/screen";
-  import { ENGLISH_FONT, ENGLISH_FONT_WEIGHT, ENGLISH_LINE_SPACING, horizontalLayout, type LayoutContext, type TextLayout } from "../lib/screen-layout";
+  import { ENGLISH_FONT, ENGLISH_FONT_WEIGHT, ENGLISH_LINE_SPACING, blockLayout, tiltTransform, type LayoutContext, type TextLayout } from "../lib/screen-layout";
   import { DomMeasurer } from "../lib/screen-measure";
   import type { ScreenBlock, ScreenFrame, ScreenPlate } from "../lib/types";
 
-  let { frame, job, block, blocks, context, text }: { frame: ScreenFrame; job: number; block: ScreenBlock; blocks: ScreenBlock[]; context: LayoutContext; text: string } = $props();
+  let { frame, job, block, blocks, neighbours = blocks, context, text }: { frame: ScreenFrame; job: number; block: ScreenBlock; blocks: ScreenBlock[]; neighbours?: ScreenBlock[]; context: LayoutContext; text: string } = $props();
   let node = $state<HTMLElement>();
   let plate = $state<ScreenPlate | null>(null);
   let loaded = $state(false);
   let result = $state<TextLayout | null>(null);
   const css = $derived(result ? toCssFloatRect(result.bubble, frame.scale) : toCssRect(block.rect, frame.scale));
   const plateCss = $derived(plate ? toCssFloatRect(plate.rect, frame.scale) : null);
-  const layoutKey = $derived(JSON.stringify([frame.id, frame.scale, job, block, blocks.map(b => b.paint?.bounds ?? b.rect), context, text]));
+  const layoutKey = $derived(JSON.stringify([frame.id, frame.scale, job, block, blocks.map(b => b.paint?.bounds ?? b.rect), context, text,
+    block.intent === "across_in_columns" ? neighbours.map(b => b.paint?.bounds ?? b.rect) : null]));
+  const textCss = $derived(result ? toCssFloatRect(result.text, frame.scale) : null);
+  const turn = $derived(result?.tilt ? tiltTransform(result.tilt) : undefined);
+  const origin = (x: number, y: number): string | undefined => result?.tilt ?
+    `${(result.tilt.centre.x - x) / frame.scale}px ${(result.tilt.centre.y - y) / frame.scale}px` : undefined;
 
   $effect(() => {
     if (!node) return;
     void layoutKey;
     const element = node;
-    const current = untrack(() => ({ frame, job, block, blocks, context, text }));
+    const current = untrack(() => ({ frame, job, block, blocks, neighbours, context, text }));
     let active = true;
     plate = null;
     loaded = false;
@@ -34,7 +39,7 @@
       }
       const measurer = new DomMeasurer(current.frame.scale);
       let final: TextLayout;
-      try { final = horizontalLayout(current.block, current.text, current.blocks, current.context, measurer); }
+      try { final = blockLayout(current.block, current.text, current.blocks, current.context, measurer, current.neighbours); }
       finally { measurer.dispose(); }
       result = final;
       await tick();
@@ -62,6 +67,8 @@
     style:top="{plateCss.y}px"
     style:width="{plateCss.w}px"
     style:height="{plateCss.h}px"
+    style:transform={plate.transform_with_block ? turn : undefined}
+    style:transform-origin={plate.transform_with_block ? origin(plate.rect.x, plate.rect.y) : undefined}
     onload={() => { if (plate === shownPlate) loaded = true; }}
     onerror={() => { if (plate === shownPlate) { plate = null; loaded = false; } }}
   />
@@ -70,6 +77,7 @@
   bind:this={node}
   class="box"
   class:modern={!!result}
+  class:positioned={!!result?.positioned}
   data-block={block.id}
   data-lines={result?.wrappedLineCount}
   data-source-font={result ? toCssPx(result.sourceFontSize, frame.scale) : undefined}
@@ -84,7 +92,14 @@
   style:color={cssColor(loaded && plate ? plate.foreground : block.foreground)}
   style:font-family={ENGLISH_FONT}
   style:font-weight={ENGLISH_FONT_WEIGHT}
->{#if result}<span class="written" style:white-space={result.wrap ? "pre-wrap" : "pre"}>{text}</span>{:else}{text}{/if}</div>
+  style:transform={turn}
+  style:transform-origin={result ? origin(result.bubble.x, result.bubble.y) : undefined}
+>{#if result}<span class="written" style:white-space={result.wrap ? "pre-wrap" : "pre"}
+  style:left={result.positioned && textCss ? `${textCss.x - css.x}px` : undefined}
+  style:top={result.positioned && textCss ? `${textCss.y - css.y}px` : undefined}
+  style:width={result.positioned && textCss ? `${textCss.w}px` : undefined}
+  style:text-align={result.textAlign}
+>{result.content ?? text}</span>{:else}{text}{/if}</div>
 
 <style>
   .box {
@@ -108,6 +123,9 @@
     overflow-wrap: anywhere;
     word-break: normal;
   }
+
+  .positioned { display: block; padding: 0; }
+  .positioned .written { position: absolute; }
 
   .plate {
     position: absolute;

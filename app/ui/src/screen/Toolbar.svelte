@@ -2,6 +2,7 @@
   import { onDestroy } from "svelte";
   import { modelsPercent } from "../lib/format";
   import { copyText, modelBusy, placeBar, statusText, type ScreenState, type Size } from "../lib/screen";
+  import type { ScreenDirection } from "../lib/types";
 
   type CopyKind = "english" | "chinese";
 
@@ -13,6 +14,7 @@
     ondownload,
     onoriginal,
     onclose,
+    ondirection,
   }: {
     view: ScreenState;
     /** Why a block failed, while the pointer is on its mark; it replaces the status text. */
@@ -22,6 +24,7 @@
     ondownload: () => void;
     onoriginal: (on: boolean) => void;
     onclose: () => void;
+    ondirection: (direction: ScreenDirection) => void;
   } = $props();
 
   let width = $state(0);
@@ -31,8 +34,8 @@
 
   const COPIED_MS = 1500;
 
-  const placement = $derived(view.selection ? placeBar(view.selection, { w: width, h: height }, viewport) : null);
-  const text = $derived(hint ?? statusText(view));
+  const placement = $derived(view.selection ? placeBar(view.selection, { w: width, h: height }, viewport) : { left: Math.max(0, (viewport.w - width) / 2), top: 16 });
+  const text = $derived(hint ?? (view.phase === "selecting" ? "Drag over the text to translate it. D shows boxes. Esc closes." : statusText(view)));
   const needsModel = $derived(view.model !== null && view.model.state !== "ready");
   const downloading = $derived(modelBusy(view.model));
   const hasEnglish = $derived(copyText(view, "english") !== "");
@@ -79,10 +82,16 @@
       <p class="warning">{view.downloadError}</p>
     {/if}
     <div class="actions">
+      <label class="direction">Text direction
+        <select aria-label="Text direction" value={view.direction} onchange={event => ondirection(event.currentTarget.value as ScreenDirection)}>
+          <option value="horizontal">Horizontal</option>
+          <option value="vertical">Vertical</option>
+        </select>
+      </label>
       {#if needsModel && !downloading}
         <button type="button" onclick={ondownload}>Download</button>
       {/if}
-      {#if !needsModel && view.phase !== "error"}
+      {#if view.selection && !needsModel && view.phase !== "error"}
         <button type="button" disabled={!hasEnglish} onclick={() => copy("english")}>{label("english", "Copy English")}</button>
         <button type="button" disabled={!hasChinese} onclick={() => copy("chinese")}>{label("chinese", "Copy Chinese")}</button>
         <button
@@ -105,6 +114,7 @@
 
 <style>
   .bar {
+    z-index: 4;
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -174,4 +184,7 @@
     color: var(--ov-meta);
     cursor: default;
   }
+
+  .direction { display: flex; align-items: center; gap: var(--space-2); }
+  select { min-height: calc(var(--control-h) - var(--space-2)); padding: 0 var(--space-2); border: 1px solid var(--ov-key-border); border-radius: var(--radius-control); background: var(--screen-bar-bg); color: var(--ov-text); font: inherit; }
 </style>

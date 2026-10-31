@@ -142,7 +142,7 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
 
     await drag(page, AREA.from, AREA.to);
     expect(await calls(page, "screen_select")).toEqual([
-      { cmd: "screen_select", args: { frame: FRAME.id, rect: { x: 60, y: 45, w: 1080, h: 615 } } },
+      { cmd: "screen_select", args: { frame: FRAME.id, rect: { x: 60, y: 45, w: 1080, h: 615 }, direction: "horizontal" } },
     ]);
     await expect(page.getByRole("status")).toHaveText("Reading text…");
 

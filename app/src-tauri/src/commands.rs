@@ -149,7 +149,7 @@ pub async fn screen_select(
             frame,
             rect,
             debug.unwrap_or(false),
-            direction.unwrap_or_default(),
+            direction.unwrap_or_else(|| crate::app::lock(&shared.config).screen.direction),
         )
     })
     .await

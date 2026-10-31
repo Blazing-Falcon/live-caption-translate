@@ -2,7 +2,8 @@ import { get, writable, type Readable } from "svelte/store";
 import * as api from "./api";
 import { EVENTS, subscribe, type Disposer } from "./events";
 import { formatBytes, modelsPercent } from "./format";
-import type { ModelStatus, Rect, RectF, Rgb, ScreenBlock, ScreenEvent, ScreenFrame } from "./types";
+import type { Config } from "./settings";
+import type { ModelStatus, Rect, RectF, Rgb, ScreenBlock, ScreenEvent, ScreenFrame, ScreenDirection } from "./types";
 
 /** The text recognizer in `models/manifest.json`. */
 export const OCR_MODEL_ID = "pp-ocrv6-det-tiny-rec-small";
@@ -113,6 +114,7 @@ export type Outcome = { state: "translated"; text: string } | { state: "failed";
 export type Phase = "idle" | "selecting" | "reading" | "translating" | "done" | "error";
 
 export interface ScreenState {
+  direction: ScreenDirection;
   frame: ScreenFrame | null;
   /** The last committed selection, CSS px. */
   selection: Rect | null;
@@ -132,6 +134,7 @@ export interface ScreenState {
 }
 
 const IDLE: ScreenState = {
+  direction: "horizontal",
   frame: null,
   selection: null,
   job: 0,
@@ -238,6 +241,7 @@ export function copyText(state: ScreenState, kind: "english" | "chinese"): strin
 }
 
 export interface Screen {
+  setDirection(direction: ScreenDirection): Promise<void>;
   state: Readable<ScreenState>;
   /** Starts a job on `css` (CSS px). False when the drag is too small to be a selection. */
   select(css: Rect): boolean;
@@ -261,13 +265,26 @@ export function createScreen(): Screen {
   let highest = 0;
   /** Events of jobs at or below this id belong to an older drag or frame and change nothing. */
   let floor = 0;
+  let directionChange = 0;
+  let savingDirection = false;
+  let disposed = false;
+
+  function applyDirection(direction: ScreenDirection): void {
+    const current = get(state);
+    if (disposed || current.direction === direction) return;
+    state.update(now => ({ ...now, direction }));
+    if (current.frame && current.selection) start(current.selection, current.frame);
+  }
+  const ready = api.getConfig().then(config => applyDirection(config.screen.direction)).catch(() => undefined);
 
   function start(css: Rect, frame: ScreenFrame): void {
     drag += 1;
     const mine = drag;
     floor = highest;
     state.update((current) => ({ ...withoutResults(current), selection: css, job: 0, phase: "reading" }));
-    api.screenSelect(frame.id, toFrameRect(css, frame), get(state).debug).then(
+    void ready.then(() => {
+      if (disposed || mine !== drag || get(state).frame?.id !== frame.id) return;
+      return api.screenSelect(frame.id, toFrameRect(css, frame), get(state).debug, get(state).direction).then(
       (id) => {
         highest = Math.max(highest, id);
         if (mine !== drag) {
@@ -280,7 +297,8 @@ export function createScreen(): Screen {
         if (mine !== drag) return;
         state.update((current) => ({ ...current, phase: "error", message: api.readableError(error) }));
       },
-    );
+      );
+    });
   }
 
   function select(css: Rect): boolean {
@@ -293,8 +311,9 @@ export function createScreen(): Screen {
   }
 
   function reset(): void {
+    drag += 1;
     floor = highest;
-    state.set(IDLE);
+    state.set({ ...IDLE, direction: get(state).direction });
   }
 
   function close(): void {
@@ -318,7 +337,7 @@ export function createScreen(): Screen {
 
   function onFrame(frame: ScreenFrame): void {
     floor = highest;
-    state.set({ ...IDLE, frame, phase: "selecting" });
+    state.set({ ...IDLE, frame, phase: "selecting", direction: get(state).direction });
   }
 
   function onEvent(event: ScreenEvent): void {
@@ -344,6 +363,7 @@ export function createScreen(): Screen {
   }
 
   disposers.push(
+    subscribe<Config>(EVENTS.configChanged, config => { if (!savingDirection) applyDirection(config.screen.direction); }),
     subscribe<ScreenFrame>(EVENTS.screenFrame, onFrame),
     subscribe<ScreenEvent>(EVENTS.screenEvent, onEvent),
     subscribe<ModelStatus[]>(EVENTS.modelsProgress, onProgress),
@@ -354,6 +374,24 @@ export function createScreen(): Screen {
 
   return {
     state: { subscribe: state.subscribe },
+    async setDirection(direction) {
+      await ready;
+      const previous = get(state).direction;
+      if (direction === previous) return;
+      const change = ++directionChange;
+      savingDirection = true;
+      state.update(now => ({ ...now, direction }));
+      try {
+        await api.setConfig({ screen: { direction } });
+        if (change !== directionChange || disposed) return;
+        const current = get(state);
+        if (current.frame && current.selection) start(current.selection, current.frame);
+      } catch (error) {
+        if (change === directionChange && !disposed) state.update(now => ({ ...now, direction: previous, phase: "error", message: api.readableError(error) }));
+      } finally {
+        if (change === directionChange) savingDirection = false;
+      }
+    },
     select,
     close,
     reset,
@@ -384,6 +422,8 @@ export function createScreen(): Screen {
       }
     },
     dispose() {
+      disposed = true;
+      drag += 1;
       for (const dispose of disposers.splice(0)) dispose();
     },
   };

@@ -1,0 +1,1 @@
+Floating geometry and English recorded from native screenshot layout on vertical and tilted pages, plus a tilted column scene. recorded-vertical.screen.json records a real vertical screenshot job and its English.

@@ -151,6 +151,8 @@ The real-model horizontal OCR baseline covers `article`, `chat`, `dense`, `mixed
 
 `lt-cli screen --direction vertical` reads columns down the page and groups them right to left. The default is `horizontal`. Output records `direction`; vertical raw lines also carry `glyph_pitch`, preserving metrics from the orientation in which each crop was read. `--explain` reports horizontal grouping decisions; vertical output includes its final groups in the usual events.
 
+The screenshot toolbar remembers Horizontal/Vertical in `screen.direction` and reads the same area again when it changes. English is fitted across a column group. Tilted blocks retain their level layout and use rotation or shear for drawing. Direction layout fixtures in `app/ui/e2e/fixtures/directions` record native geometry and English; `recorded-vertical.screen.json` is a real `lt-cli screen --direction vertical` job checked at 150% display scale.
+
 ## Package
 
 ```powershell

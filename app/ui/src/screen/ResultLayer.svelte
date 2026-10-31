@@ -27,6 +27,7 @@
     const r = selection ? toFrameRect(selection, frame) : { x: 0, y: 0, w: frame.width, h: frame.height };
     return { width: frame.width, height: frame.height, scale: frame.scale, selection: { x: r.x, y: r.y, width: r.w, height: r.h } };
   });
+  const neighbours = $derived(blocks.filter(block => outcomes[block.id]?.state === "translated"));
 
 </script>
 
@@ -35,7 +36,7 @@
     {@const outcome = outcomes[block.id]}
     {@const css = toCssRect(block.rect, frame.scale)}
     {#if outcome?.state === "translated"}
-      <PaintedBlock {frame} {job} {block} {blocks} {context} text={outcome.text} />
+      <PaintedBlock {frame} {job} {block} {blocks} {neighbours} {context} text={outcome.text} />
     {:else if outcome?.state === "failed"}
       <div
         class="mark"

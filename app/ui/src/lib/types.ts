@@ -203,6 +203,7 @@ export interface ScreenPlateRequest {
 }
 
 export interface ScreenPlate {
+  transform_with_block?: boolean;
   rect: RectF;
   foreground: Rgb;
   url: string;
@@ -230,7 +231,7 @@ export interface ScreenBlock {
   id: number;
   rect: Rect;
   lines: Rect[];
-  intent: "single" | "group_reflow";
+  intent: "single" | "group_reflow" | "across_in_columns";
   line_height: number;
   source: string;
   background: Rgb;

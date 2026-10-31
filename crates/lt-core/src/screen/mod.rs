@@ -34,6 +34,10 @@ pub enum Direction {
     Vertical,
 }
 
+impl Direction {
+    pub const NAMES: &'static [&'static str] = &["horizontal", "vertical"];
+}
+
 /// A rectangle in pixels, origin top-left.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Rect {
@@ -233,11 +237,22 @@ mod tests {
             ScreenEvent::Blocks {
                 job: 3,
                 ocr_ms: 640,
-                ocr_lines: Some(vec![rect(80, 44, 640, 24), rect(80, 76, 400, 24), rect(80, 126, 220, 22), rect(80, 170, 96, 22)]),
+                ocr_lines: Some(vec![rect(80, 44, 640, 24), rect(80, 76, 400, 24), rect(80, 126, 220, 22), rect(80, 170, 96, 22),rect(740,44,20,120)]),
                 blocks: vec![
                     paragraph,
                     single_line(1, rect(80, 126, 220, 22), "Thank you for your patience.", false, false),
                     single_line(2, rect(80, 170, 96, 22), "关闭窗口", true, true),
+                    Block {
+                        intent: placement::LayoutIntent::AcrossInColumns,
+                        line_height: 30,
+                        lines: (0..4).map(|i|rect(740,44+i*30,20,30)).collect(),
+                        paint: Some(PaintFacts {
+                            bounds: rect(740,44,20,120).into(),
+                            source_lines: (0..4).map(|i|rect(740,44+i*30,20,30).into()).collect(),
+                            render_glyph_height: Some(20.0),font_glyph_height: None,
+                        }),
+                        ..single_line(3,rect(740,44,20,120),"BOOK",false,false)
+                    },
                 ],
             },
             ScreenEvent::Translated {

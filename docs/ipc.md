@@ -155,7 +155,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
 | `screen_select` | `frame`, `rect`, `debug?`, `direction?` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |
 | `screen_close` | | | Cancel the screen job, hide the `screen` window and drop the frame |
-| `screen_plate` | `request: { frame, job, block, rect, written_height }` | `{ rect, foreground, url }` | Build a background image and choose its text color after English layout; geometry is in frame pixels |
+| `screen_plate` | `request: { frame, job, block, rect, written_height }` | `{ rect, foreground, url, transform_with_block? }` | Build a background image and choose its text color after English layout; geometry is in frame pixels |
 | `quit` | | | Stop the pipeline and the translation server, then exit |
 
 `AppState` contains `listening`, `source`, `source_state`, `engines` (`asr`, `translator`), `models_ready`, `overlay_moving`, `overlay_visible` and `logical_cpus` (the most threads a setting can use).
@@ -164,7 +164,9 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 
 ## Screen jobs
 
-`screen_select.direction` accepts `horizontal` (default) or `vertical`. Direction is part of the OCR reuse key. Vertical jobs preserve source-frame coordinates and mark horizontal captions with optional `Block.runs_across: true`; missing means false. English column layout and the direction picker are handled by the screenshot UI.
+`screen_select.direction` accepts `horizontal` or `vertical`; omission uses `screen.direction` (default `horizontal`). Direction is part of the OCR reuse key. Vertical jobs preserve source-frame coordinates and mark horizontal captions with optional `Block.runs_across: true`; missing means false. Column groups use `intent: "across_in_columns"` for English. The toolbar picker is available before selection, persists the direction and reads the same area again after a change.
+
+`screen_plate.rect` is in the block's level frame for tilted text. The backend derives the bubble outline from the stored card geometry. A masked plate returns its image-space bounding box; a flat fallback returns the level rectangle with optional `transform_with_block: true`, which applies the block's rotation or shear. Missing means false. Glyph metrics and written height retain the existing physical-pixel units.
 
 The `screen_translate` hotkey captures the monitor under the cursor, sends `screen://frame`, and shows the `screen` window over that monitor. The page loads the frame from `http://ltshot.localhost/<id>` (a 32-bit BMP; any other id is 404). The UI converts CSS pixels to frame pixels by multiplying by `scale`, and frame pixels back by dividing; every rect the app sends is in frame pixels.
 
@@ -200,8 +202,9 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 |---|---|
 | `id` | Reading order, from 0 |
 | `rect` | `{ x, y, w, h }`, the union of `lines`, frame pixels |
-| `lines` | The rect of each text line |
-| `intent` | `single` for one source line, `group_reflow` for a group assembled from several source lines |
+| `lines` | The rect of each text line; vertical groups carry columns or character cells |
+| `intent` | `single` for one source line, `group_reflow` for a group assembled from several source lines, `across_in_columns` for English in a vertical column group |
+| `runs_across` | Optional true for a horizontal caption on a vertical page; missing means false |
 | `line_height` | Median line height, frame pixels |
 | `source` | Same-row fragments joined at their text boundary; consecutive lines of a group joined with one space |
 | `background`, `foreground` | `[r, g, b]` of the surface behind the text and of text that reads on it |
@@ -212,6 +215,7 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 After English layout, `screen_plate` accepts `request.rect` as a floating rectangle
 in frame pixels and `written_height` as the layout's written-height budget in frame
 pixels: font size for an unwrapped line, measured text height for wrapped text.
+Tilted columns use the level bubble's full height as that budget.
 It returns a floating rectangle, RGB `foreground`, and an alpha PNG URL such as
 `http://ltshot.localhost/<frame>/plate/<job>/<block>?v=<revision>`. The returned
 rectangle includes the plate's feathered border when needed; a flat card uses the

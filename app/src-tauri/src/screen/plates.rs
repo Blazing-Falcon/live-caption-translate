@@ -26,12 +26,15 @@ pub struct PlateRequest {
 
 #[derive(Serialize)]
 pub struct PlateReply {
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub transform_with_block: bool,
     pub rect: RectF,
     pub foreground: [u8; 3],
     pub url: String,
 }
 
 struct SourcePaint {
+    tilt: Option<lt_core::screen::tilt::TiltedText>,
     background: [u8; 3],
     text: [u8; 3],
     glyph_height: f64,
@@ -103,9 +106,20 @@ impl Plates {
                             .unwrap_or(line.bounds.height)
                     });
                 SourcePaint {
+                    tilt: line.tilt.clone(),
                     background: block.background,
                     text: block.foreground,
-                    glyph_height: height,
+                    glyph_height: if block.intent
+                        == lt_core::screen::placement::LayoutIntent::AcrossInColumns
+                    {
+                        height.min(
+                            line.tilt
+                                .as_ref()
+                                .map_or(line.bounds.width, |t| t.box_rect.width),
+                        )
+                    } else {
+                        height
+                    },
                 }
             })
             .collect();
@@ -173,24 +187,39 @@ impl Plates {
             .offset(-f64::from(origin.0), -f64::from(origin.1));
         let block = &prepared.blocks[request.block as usize];
         let feather = backdrop::feather(block.glyph_height);
-        let area = bubble.inflate(feather, feather);
+        let outline = block.tilt.as_ref().map(|t| t.corners(bubble).to_vec());
+        let within = outline.as_ref().map(|q| vec![q.clone()]);
+        let area = outline
+            .as_ref()
+            .map_or(bubble, |q| RectF::enclosing(q))
+            .inflate(feather, feather);
         let plate = prepared.backdrop.as_ref().and_then(|b| {
             b.plate(
                 area,
                 block.background,
                 block.text,
                 block.glyph_height,
-                request.written_height,
-                None,
+                if block.tilt.as_ref().is_some_and(|t| t.column) {
+                    bubble.height
+                } else {
+                    request.written_height
+                },
+                within.as_deref(),
             )
         });
+        let transform_with_block = plate.is_none() && block.tilt.is_some();
         let (rect, text, width, height, pixels) = if let Some(plate) = plate {
             (area, plate.text, plate.width, plate.height, plate.bgra)
         } else {
             let (background, text) = prepared
                 .backdrop
                 .as_ref()
-                .and_then(|b| b.card(bubble, block.text))
+                .and_then(|b| {
+                    b.card(
+                        block.tilt.as_ref().map_or(bubble, |t| t.sample_area()),
+                        block.text,
+                    )
+                })
                 .unwrap_or((block.background, block.text));
             let (w, h) = (
                 bubble.width.ceil().max(1.0) as usize,
@@ -217,6 +246,7 @@ impl Plates {
             .images
             .insert(request.block, Image { revision, png });
         Ok(PlateReply {
+            transform_with_block,
             rect: rect.offset(f64::from(origin.0), f64::from(origin.1)),
             foreground: text,
             url: format!(
@@ -294,6 +324,80 @@ mod tests {
             rect: RectF::new(51.0, 71.0, 4.0, 4.0),
             written_height: 2.0,
         }
+    }
+
+    fn tilted(store: &Plates) -> lt_core::screen::tilt::TiltedText {
+        let shape = lt_core::screen::tilt::TiltedText {
+            degrees: 8.0,
+            sheared: false,
+            centre: lt_core::screen::geom::PointF::new(3.0, 3.0),
+            box_rect: RectF::new(1.0, 1.0, 4.0, 4.0),
+            line_quads: vec![],
+            column: false,
+        };
+        let mut state = lock(&store.0);
+        Arc::get_mut(state.as_mut().unwrap().prepared.as_mut().unwrap())
+            .unwrap()
+            .blocks[0]
+            .tilt = Some(shape.clone());
+        shape
+    }
+
+    #[test]
+    fn a_flat_tilted_card_returns_level_geometry_for_the_block_transform() {
+        let (store, _) = prepared();
+        tilted(&store);
+        let reply = store.request(request()).unwrap();
+        assert!(reply.transform_with_block);
+        assert_eq!(reply.rect, request().rect);
+    }
+
+    #[test]
+    fn a_tilted_plate_uses_the_image_space_mask_and_applies_crop_origin_once() {
+        use lt_core::screen::imaging::{ImageBuffer, PixelType};
+        let (store, _) = prepared();
+        let shape = tilted(&store);
+        let source = ImageBuffer::new(8, 8, PixelType::U8C3);
+        for y in 0..8 {
+            for x in 0..8 {
+                for c in 0..3 {
+                    source.set_byte(y, x * 3 + c, ((x * 31 + y * 23 + c * 61) % 256) as u8);
+                }
+            }
+        }
+        {
+            let mut state = lock(&store.0);
+            Arc::get_mut(state.as_mut().unwrap().prepared.as_mut().unwrap())
+                .unwrap()
+                .backdrop = Backdrop::from_repaired(&source);
+        }
+        let prepared = lock(&store.0).as_ref().unwrap().prepared.clone().unwrap();
+        let block = &prepared.blocks[0];
+        let outline = shape.corners(RectF::new(1.0, 1.0, 4.0, 4.0));
+        let area = RectF::enclosing(&outline).inflate(
+            backdrop::feather(block.glyph_height),
+            backdrop::feather(block.glyph_height),
+        );
+        let expected = prepared
+            .backdrop
+            .as_ref()
+            .unwrap()
+            .plate(
+                area,
+                block.background,
+                block.text,
+                block.glyph_height,
+                2.0,
+                Some(&[outline.to_vec()]),
+            )
+            .unwrap();
+        let reply = store.request(request()).unwrap();
+        assert!(!reply.transform_with_block);
+        assert_eq!(reply.rect, area.offset(50.0, 70.0));
+        assert_eq!(
+            store.image("/5/plate/8/0", Some("v=1")).unwrap(),
+            encode(expected.width, expected.height, &expected.bgra).unwrap()
+        );
     }
 
     #[test]
