@@ -1,10 +1,17 @@
+//! Detects columns read twice, once upright and once on the turned frame, and keeps one reading.
+
 use super::super::{
     geom::RectF,
     line::{glyphs_in, says_the_same, squeeze, Line},
 };
 
+/// How much of the smaller box must lie inside the larger. Not full containment, since the two come
+/// from separate expansions of one blob.
 const INSIDE: f64 = 0.8;
+/// How much of the smaller box two readings share before they are in the same place.
 const SHARES_THE_PLACE: f64 = 0.3;
+/// How much of a turned box the upright pass must already cover before the second reading is the
+/// same writing. The pass exists for writing the upright one missed.
 const SAME_PIECE_OF_WRITING: f64 = 0.65;
 
 pub fn drop_repeated(columns: Vec<Line>) -> Vec<Line> {

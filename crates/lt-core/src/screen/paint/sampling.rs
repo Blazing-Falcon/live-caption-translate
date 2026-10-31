@@ -1,3 +1,6 @@
+//! Reads the background and text colors of a source block from the pixels around and between its
+//! lines.
+
 use super::{
     color, layers,
     vote::DominantColorVote,
@@ -8,7 +11,11 @@ use crate::screen::{
     ImageView,
 };
 
+/// How much of the gap between lines must agree before one color is called the paper. Below it the
+/// gaps hold texture or two surfaces meeting, so the ring is used.
 const MAJORITY: f64 = 0.6;
+/// Tight leading leaves almost nothing between two lines; fewer samples than this are not a
+/// measurement.
 const MINIMUM_SAMPLES: usize = 64;
 
 pub fn between_lines(image: ImageView<'_>, lines: &[RectF], vertical: bool) -> Option<[u8; 3]> {

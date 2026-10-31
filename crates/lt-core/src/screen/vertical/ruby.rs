@@ -1,7 +1,14 @@
+//! Sets aside reading columns printed beside the writing they annotate.
+
 use super::super::line::{glyphs_in, is_whitespace, Line};
 
+/// How small a reading's glyphs must be against the writing's. Glyph size separates readings from
+/// dialogue better than width does.
 const SMALLER_THAN_THE_WRITING: f64 = 0.62;
+/// How far a reading may sit from the writing, as a share of the writing's width. Generous in both
+/// directions: expanded boxes overlap as often as they leave a gap.
 const AGAINST_THE_WRITING: f64 = 0.5;
+/// How much of the reading must lie alongside the writing.
 const ALONGSIDE_THE_WRITING: f64 = 0.85;
 
 pub fn separate(columns: Vec<Line>) -> (Vec<Line>, Vec<Line>) {

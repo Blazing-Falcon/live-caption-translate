@@ -1,6 +1,14 @@
+//! Splits merged columns using the detector's probability map.
+
+/// How much ink a strip must carry, against the heaviest in the box, to be a column of its own
+/// rather than the reading beside one.
 const COLUMN_INK_SHARE: f64 = 0.67;
+/// The least a strip may fill of its own rectangle and still be writing. Scribbled artwork lights
+/// the map thinly and over an area.
 const COLUMN_FILL: f64 = 0.3;
+/// A position across a strip is part of its column when it is on for this much of its length.
 const CORE_LENGTH: f64 = 0.3;
+/// Blobs smaller than this, in map pixels, are specks.
 const MINIMUM_BLOB: usize = 12;
 
 pub struct DetectorProbability<'a> {

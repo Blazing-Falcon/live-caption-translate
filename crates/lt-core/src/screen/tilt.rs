@@ -1,3 +1,6 @@
+//! Straightens tilted cards for grouping, then restores and levels them, with the geometry of their
+//! erase quads.
+
 use super::{
     geom::{max, min, LineGeometry, PointF, RectF},
     line::{layout_glyph_height_for, Line, SizeF, TiltedLine},
@@ -5,15 +8,30 @@ use super::{
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, f64::consts::PI};
 
+/// The tilt from which a line can seed a cluster.
 const MIN_DEGREES: f64 = 3.0;
+/// Past this a line runs closer to vertical than horizontal.
 const MAX_DEGREES: f64 = LineGeometry::TILTED_TO_DEGREES;
+/// How much longer than thick a line must be to seed a cluster.
 const MIN_LENGTH_TO_THICKNESS: f64 = 3.0;
+/// How far apart in angle two lines can be and still be one card.
 const MAX_ANGLE_SPREAD: f64 = 5.0;
+/// How many nearby lines a line's own angle is averaged over.
 const LOCAL_ANGLE_LINES: usize = 3;
+/// The tilt from which a line on its own is drawn tilted. Higher than for clusters: a lone line has
+/// no neighbour to agree with it, and a level line drawn tilted is more visible than the reverse.
 const LONE_MIN_DEGREES: f64 = 6.0;
+/// A lone line must be this much longer than thick to be drawn tilted. A short box's angle is only
+/// the detector's fit to a blob.
 const LONE_MIN_LENGTH_TO_THICKNESS: f64 = 5.0;
+/// How far past a line's quadrilateral the erase may reach, as a share of line thickness, since
+/// outlines and tails can sit just outside it.
 const ERASE_PADDING: f64 = 0.18;
+/// How far inside the box's left edge the erase stops, as a share of line thickness; about half the
+/// room the detector leaves before the first letter.
 const MARGIN_INSET: f64 = 0.12;
+/// A card is drawn upright when its tilt adds more overlap with a neighbour than this share of the
+/// smaller card.
 pub const OVERLAP_TOLERANCE: f64 = 0.03;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]

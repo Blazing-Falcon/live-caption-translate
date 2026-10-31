@@ -1,3 +1,5 @@
+//! Crop geometry for vertical columns: top-right anchored crops, pitch and fragment joins.
+
 use super::super::{
     geom::{max, min, RectF},
     line::{glyphs_in, layout_script_for, Line},

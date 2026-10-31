@@ -1,3 +1,5 @@
+//! Recognition of vertical text: column detection, crops, grouping and turned frames.
+
 pub mod columns_first;
 pub mod detection;
 pub mod geometry;

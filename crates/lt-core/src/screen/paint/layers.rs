@@ -1,15 +1,26 @@
+//! Separates a text box into surface, body and outline colors.
+
 use super::{
     vote::DominantColorVote,
     window::{contains, distance, PixelWindow},
 };
 use crate::screen::Rect;
 
+/// How close, as a summed channel distance, a pixel must be to a layer color to count as it.
 const NEAR: i32 = 75;
+/// Share of the box a far color must cover to be the surface rather than the text.
 const PLATE_SHARE: f64 = 0.5;
+/// Share of the ring around the box that a surface must also cover. A plate runs on past the box
+/// and text does not, so a bold line is not mistaken for the plate it is printed on.
 const PLATE_RING: f64 = 0.1;
+/// Enclosed pixels, against the outline's own, below which the holes are only letter counters.
 const ENCLOSURE: f64 = 0.3;
+/// Summed channel distance the body and outline colors must stand apart by.
 const APART: i32 = 150;
+/// Share of the body color that must be enclosed by the outline when the body is also far from the
+/// surface. This separates a body from a counter.
 const ENCLOSED_WITH_CONTRAST: f64 = 0.3;
+/// The same share when nothing else supports the body.
 const ENCLOSED_ALONE: f64 = 0.5;
 
 #[derive(Clone, Copy, Debug, PartialEq)]

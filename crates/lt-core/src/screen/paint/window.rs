@@ -1,3 +1,5 @@
+//! A read-only view of a frame region with color distance.
+
 use crate::screen::{ImageView, Rect};
 
 pub struct PixelWindow<'a> {

@@ -1,3 +1,6 @@
+//! Finds the dominant color of a set of pixels by bucketed voting.
+
+/// Colors are bucketed to 3 bits per channel, so shades of one color vote together.
 const SHIFT: usize = 5;
 const LEVELS: usize = 256 >> SHIFT;
 const BUCKETS: usize = LEVELS * LEVELS * LEVELS;

@@ -1,3 +1,6 @@
+//! Groups vertical columns into blocks, with ruby, rows lying on columns and writing that runs
+//! across.
+
 use super::super::{
     filters,
     geom::{max, min, RectF},
@@ -10,12 +13,26 @@ use super::{
     repeated, ruby, tilted,
 };
 
+/// How small a group must be, against the one it sits on, to be the ruby over it. Ruby is set at
+/// about half the body size.
 const RUBY_MAX_RELATIVE_SIZE: f64 = 0.60;
+/// How much of the smaller group must lie on the other one. A looser bar would start catching small
+/// aside balloons beside a big one.
 const RUBY_SHARED_AREA: f64 = 0.50;
+/// How much of a row must lie on a group of columns before it is taken as a misread of them. Low,
+/// because a real row never touches a column.
 const ROW_LYING_ON_COLUMNS: f64 = 0.15;
+/// How much of the shorter of two runs of columns must lie alongside the other for the two to be
+/// one block.
 const RUNS_ALONGSIDE: f64 = 0.65;
+/// How much longer than thick a detector quadrilateral near level must be for its writing to be
+/// taken as running across, whatever its upright box says.
 pub const ACROSS_ALONG_ITSELF: f64 = 1.6;
+/// How much of the shorter column must run alongside the other for the two to be one piece of
+/// writing. Balloon columns start at different heights, so tops are not compared.
 const SIDE_BY_SIDE_ALONG_THE_COLUMN: f64 = 0.35;
+/// How far apart two columns may be, in characters of the smaller type. Big lettering would
+/// otherwise stretch the distance bar to reach a balloon beside it.
 const SMALLER_TYPE_REACH: f64 = 4.0;
 
 pub fn group(blocks: Vec<Line>, pixels: Option<&ImageView<'_>>, cjk: Option<bool>) -> Vec<Line> {

@@ -1,10 +1,18 @@
+//! Assigns detector blobs to columns before rows, reassigning heads and tails between neighbouring
+//! columns.
+
 use super::probability::{blobs, Blob};
 use std::collections::{BTreeMap, BTreeSet};
 
+/// A blob this many times wider than tall is writing across, or a row of heads.
 const ROW_SHAPE: f64 = 1.6;
+/// The widest gap, in characters, between two pieces of one column.
 const PIECE_GAP: f64 = 1.0;
+/// Blobs smaller than this, in map pixels, are specks.
 const MINIMUM_BLOB: usize = 12;
+/// Value given to a bridged gap: over the detector threshold, under the ink either side.
 const BRIDGE: f32 = 0.5;
+/// Columns kept clear between what a column took of a row and what is left of it.
 const GUTTER: i32 = 3;
 
 #[derive(Clone, Copy)]

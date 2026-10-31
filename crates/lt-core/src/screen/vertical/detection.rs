@@ -1,3 +1,5 @@
+//! Finds the columns inside a detector box and where each really ends.
+
 use super::super::{detection::Detection, ImageView};
 use super::probability::DetectorProbability;
 
@@ -193,7 +195,10 @@ pub fn split(
 }
 
 pub fn extend(image: &ImageView<'_>, box_rect: &Detection) -> Detection {
+    /// How far past its own edge a column may reach for the glyph it cut, in box widths. A column
+    /// is about one character wide, and the walk stops at the first blank row anyway.
     const REACH: f64 = 0.5;
+    /// Ink a row needs before it counts as a glyph continuing, as a share of the width.
     const ROW_INK: f64 = 0.05;
     let [left, top, right, bottom] = clipped(image, &box_rect.points);
     let (width, height) = (right - left, bottom - top);

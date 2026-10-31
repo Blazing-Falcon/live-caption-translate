@@ -1,3 +1,7 @@
+//! Text colors tuned for legibility on a background.
+
+/// The least contrast text is drawn at. Below the usual body-text bar on purpose: that bar pushes
+/// most colored text to black or white, and keeping the source color is why it is sampled.
 pub const MINIMUM_CONTRAST: f64 = 3.0;
 pub fn tune(text: [u8; 3], background: [u8; 3]) -> [u8; 3] {
     let bg_lum = perceived_luminance(background);

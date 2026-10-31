@@ -1,14 +1,23 @@
+//! Finds columns that agree on a tilt and builds the cards they sit on.
+
 use super::super::{
     geom::{LineGeometry, PointF, RectF},
     line::Line,
     tilt::TiltedText,
 };
 
+/// How far from vertical every agreeing column must be.
 pub const FROM_DEGREES: f64 = 4.0;
+/// How far apart the agreeing columns' angles may be.
 pub const MAX_SPREAD: f64 = 3.0;
+/// Past this a column is closer to a diagonal than to writing that runs down the page, and is left
+/// upright rather than guessed at.
 pub const TO_DEGREES: f64 = 30.0;
+/// How long a column's quadrilateral must be against its thickness for its angle to be trusted.
 pub const TRUSTED_LENGTH: f64 = 2.0;
+/// How long a column must be to say on its own that it is tilted.
 pub const LONE_LENGTH: f64 = 5.0;
+/// How far a column on its own must be turned.
 pub const LONE_FROM_DEGREES: f64 = 6.0;
 
 pub fn deviation(line: LineGeometry) -> f64 {

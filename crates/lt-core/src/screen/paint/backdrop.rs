@@ -1,3 +1,5 @@
+//! Builds the card or blurred plate the English is drawn on, from the repaired frame.
+
 use super::{color, vote::DominantColorVote};
 use crate::screen::tilt::TiltedText;
 use crate::screen::{
@@ -9,18 +11,38 @@ use crate::screen::{
     },
 };
 use std::collections::BTreeMap;
+/// Blur radius as a share of the source glyph height, so it scales with what it needs to stop
+/// competing with.
 const BLUR_FACTOR: f64 = 0.30;
+/// Width of the alpha ramp at the plate's edge, as a share of glyph height.
 const FEATHER_FACTOR: f64 = 0.35;
+/// Smallest feather width, in pixels.
 const FEATHER_MINIMUM: f64 = 3.0;
+/// Largest feather width, in pixels.
 const FEATHER_MAXIMUM: f64 = 12.0;
+/// How much of the sampled background color is washed over the blur. Small on purpose: it settles
+/// the picture, legibility comes from the text color and the lift.
 const WASH_OPACITY: f64 = 0.25;
+/// How far the English must stand from its plate, as a contrast ratio. Higher than for a flat card:
+/// on a picture the text crosses light and dark parts.
 const PLATE_CONTRAST: f64 = 4.5;
+/// What moving the text is asked for before the plate is asked for anything. Moving text costs the
+/// picture nothing; moving the plate does.
 const COMFORTABLE_CONTRAST: f64 = 7.0;
+/// How far past the plate is lifted, to cover what the sampled palette missed.
 const LIFT_MARGIN: f64 = 1.15;
+/// Above this share of near-equal neighbouring pixels the area was drawn rather than photographed,
+/// and a soft patch there is conspicuous.
 const SHARP_NEIGHBOURHOOD: f64 = 0.82;
+/// How far past the bubble the sharpness question is asked, in source glyph heights.
 const NEIGHBOURHOOD_GLYPHS: f64 = 2.0;
+/// Per-channel difference two neighbours may have and still count as one run.
 const SMOOTH: i32 = 2;
+/// How nearly one color the surface under a bubble must be to use a flat card instead of a plate,
+/// on a sharp neighbourhood. A blurred patch there smears button edges, so the plate has to earn
+/// its place.
 const SHARP_FLAT_SHARE: f64 = 0.45;
+/// The same share on a soft neighbourhood.
 const SOFT_FLAT_SHARE: f64 = 0.85;
 type Area = (i32, i32, i32, i32);
 pub struct Backdrop {
