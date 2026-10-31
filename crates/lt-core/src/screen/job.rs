@@ -93,6 +93,9 @@ pub fn run_job_with_output(
     } = output;
     let started = Instant::now();
     let cancelled = || cancel.load(Ordering::Acquire);
+    if cancelled() {
+        return;
+    }
     emit(ScreenEvent::Reading { job });
     let lines = match recognizer.recognize(image) {
         Ok(lines) => lines,

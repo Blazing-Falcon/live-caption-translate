@@ -141,6 +141,19 @@ fn events_follow_the_order_contract() {
 }
 
 #[test]
+fn a_job_cancelled_before_it_starts_emits_nothing() {
+    let (events, requests) = run(
+        None,
+        &mut TranslationCache::default(),
+        &AtomicBool::new(true),
+        |_, _| panic!("cancelled job must not translate"),
+        |_, _| {},
+    );
+    assert!(events.is_empty());
+    assert!(requests.is_empty());
+}
+
+#[test]
 fn cancelling_during_paint_preparation_emits_no_blocks_or_translation() {
     let pixels = vec![255; 300 * 400 * 4];
     let image = ImageView::new(300, 400, 1200, &pixels).unwrap();
