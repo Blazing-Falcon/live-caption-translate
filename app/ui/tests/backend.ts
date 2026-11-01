@@ -79,6 +79,8 @@ export class FakeBackend {
         const result: SetConfigResult = { config: this.config, applied: this.applied, messages: this.messages };
         return result;
       }
+      case "test_translator":
+        return { text: "Today’s meeting has been moved to 3 p.m.", ms: 123 };
       case "models_status":
         return this.models;
       case "models_use_existing":

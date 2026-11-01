@@ -12,10 +12,13 @@ function parseDefaultToml(): Record<string, unknown> {
   for (const raw of block.split(/\r?\n/)) {
     const line = raw.trim();
     if (line === "" || line.startsWith("#")) continue;
-    const header = /^\[([a-z_]+)\]/.exec(line);
+    const header = /^\[([a-z_.]+)\]/.exec(line);
     if (header?.[1]) {
-      table = {};
-      root[header[1]] = table;
+      table = root;
+      for (const part of header[1].split(".")) {
+        table[part] ??= {};
+        table = table[part] as Record<string, unknown>;
+      }
       continue;
     }
     const pair = /^([a-z_]+)\s*=\s*(.*)$/.exec(line);

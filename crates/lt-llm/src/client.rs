@@ -1,9 +1,6 @@
 //! Hy-MT2 over the local server's chat completions API.
 use crate::{
-    http::{
-        local_agent, map_http_error, server_unavailable, translation_error, Endpoint, SseDecoder,
-        SseEvent,
-    },
+    http::{local_agent, map_http_error, server_unavailable, translation_error, Endpoint},
     prompts::HyMt2Prompts,
 };
 use lt_core::{
@@ -13,6 +10,7 @@ use lt_core::{
     },
     error::{Error, Result},
     events::FailReason,
+    sse::{SseDecoder, SseEvent},
     types::UtteranceId,
 };
 use serde_json::{json, Value};

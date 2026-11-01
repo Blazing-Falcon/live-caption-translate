@@ -140,6 +140,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `start_listening` | | | Start capture and the pipeline |
 | `pause_listening` | | | Close capture. Pending translations finish. |
 | `get_config` | | `Config` | Full config |
+| `test_translator` | | `{ text, ms }` | Build the saved translator and translate `今天的会议改到下午三点。`; returns the checked answer and elapsed milliseconds, or a readable error. Local may start llama-server. |
 | `set_config` | `patch` | `{ config, applied, messages }` | Merge, validate, save and apply. `applied` is `live`, `capture`, `pipeline` or `restart`. |
 | `reset_config` | | `{ config, applied, messages }` | Save and apply the defaults. The overlay positions, `capture.apps` and `models.dir` stay. |
 | `get_stats` | | `PipelineStats` | Latest stats |

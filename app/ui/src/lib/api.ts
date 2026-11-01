@@ -19,6 +19,7 @@ export const COMMANDS = {
   startListening: "start_listening",
   pauseListening: "pause_listening",
   getConfig: "get_config",
+  testTranslator: "test_translator",
   setConfig: "set_config",
   resetConfig: "reset_config",
   getStats: "get_stats",
@@ -74,6 +75,7 @@ async function call<T>(command: CommandName, args?: Record<string, unknown>): Pr
   }
 }
 
+export const testTranslator = (): Promise<{ text: string; ms: number }> => call(COMMANDS.testTranslator);
 export const getState = (): Promise<AppState> => call<AppState>(COMMANDS.getState);
 /** Config problems found at launch plus hardware warnings, as plain sentences. */
 export const startupNotices = (): Promise<string[]> => call<string[]>(COMMANDS.startupNotices);

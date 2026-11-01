@@ -43,8 +43,14 @@ pause_s = 0.8                   # silence that ends a line
 second_pass_threads = 2         # 1 to the logical CPUs of the PC
 
 [translate]
-engine = "local"                # "local" | "microsoft" | "google"
+engine = "local"                # "local" | "microsoft" | "google" | "openai"
 threads = 4                     # 1 to the logical CPUs of the PC
+
+[translate.openai]
+base_url = ""                   # e.g. "http://localhost:1234/v1"
+model = ""
+api_key = ""                    # optional; stored in plain text
+prompt = ""                     # empty uses the built-in translation instruction
 
 [overlay]
 visible = true
@@ -116,14 +122,27 @@ The second pass always runs: each closed line is decoded again by the offline X-
 
 ### translate
 
-`engine` selects the translator for both captions and screenshots. Local is the default and keeps text on the PC. Microsoft and Google send recognized text to the selected service; audio, screenshots and image pixels stay on the PC. Online choices need no translation model and do not start llama-server. Speech recognition and screenshot text recognition still use local models.
+`engine` selects the translator for both captions and screenshots. Local is the default and keeps text on the PC. Microsoft, Google and OpenAI-compatible endpoints send recognized text to the selected service; audio, screenshots and image pixels stay on the PC. Online choices need no translation model and do not start llama-server. Speech recognition and screenshot text recognition still use local models.
 
 Changing the engine restarts the caption pipeline and clears screenshot translation reuse on the next job. Switching away from local stops its server after any current screenshot job releases it.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `engine` | `local`, `microsoft`, `google` | pipeline | Translator used by captions and screenshots. |
+| `engine` | `local`, `microsoft`, `google`, `openai` | pipeline | Translator used by captions and screenshots. |
 | `threads` | 1–64 | pipeline | Local llama-server threads. The app uses at most the PC's logical CPUs. |
+
+### translate.openai
+
+Used when `translate.engine = "openai"`. The API key is saved in plain text in `config.toml`, masked in the control window, and redacted from Debug output. Config parse errors report a line number without showing file contents. Changing any field restarts the caption pipeline and refreshes screenshot translation reuse on the next job.
+
+| Key | Range | Applies | Meaning |
+|---|---|---|---|
+| `base_url` | string | pipeline | HTTP or HTTPS API base, such as `http://localhost:1234/v1`. `/chat/completions` is appended unless already present. |
+| `model` | string | pipeline | Model name accepted by the endpoint. |
+| `api_key` | string | pipeline | Optional bearer API key; an empty key sends no Authorization header. |
+| `prompt` | string | pipeline | System instruction. Empty uses: "Translate the user's Chinese text into natural English. Output only the translation." |
+
+The endpoint streams responses. A temperature refusal is retried once without temperature and that setting is remembered for the engine instance. The Test translator button sends one fixed Chinese sentence using the saved config and shows its answer and elapsed milliseconds. Requests have no token-limit field; answer checks, repetition detection, output size and deadlines bound the response.
 
 ### overlay
 

@@ -15,6 +15,7 @@ pub(crate) mod recognizer;
 pub mod refine;
 pub mod screen;
 pub mod source;
+pub mod sse;
 pub(crate) mod text;
 pub mod transcript;
 pub mod types;

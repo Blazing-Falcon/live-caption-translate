@@ -196,3 +196,7 @@ Remove-Item Env:LT_WEB_LIVE
 ```
 
 The recorder writes fixed public sentences and raw answers under `crates/lt-web/tests/fixtures/`. Regenerate a recording only when the endpoint contract changes on purpose, inspect its parsed expected text, and record the command and date in the fixture README. Never send private screenshots, their recognized text or private transcripts to an online test.
+
+### OpenAI-Compatible Live Test
+
+Set `LT_WEB_LIVE=1`, `LT_OPENAI_BASE_URL`, `LT_OPENAI_MODEL`, and optionally `LT_OPENAI_API_KEY`, then run `cargo test -p lt-web --test live openai_compatible_sentence -- --nocapture`. It sends only the fixed test sentence. The test reports skipped when the endpoint or model is absent. Fake HTTP tests in `crates/lt-web/tests/openai.rs` run offline and cover streaming, headers, temperature compatibility and errors.

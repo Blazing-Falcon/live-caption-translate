@@ -51,3 +51,46 @@ fn microsoft_sentence_and_batch() {
 fn google_sentence_and_batch() {
     run(TranslateEngine::Google);
 }
+
+#[test]
+fn openai_compatible_sentence() {
+    if std::env::var("LT_WEB_LIVE").as_deref() != Ok("1") {
+        eprintln!("Live OpenAI-compatible test skipped: set LT_WEB_LIVE=1");
+        return;
+    }
+    let (Ok(base_url), Ok(model)) = (
+        std::env::var("LT_OPENAI_BASE_URL"),
+        std::env::var("LT_OPENAI_MODEL"),
+    ) else {
+        eprintln!("Live OpenAI-compatible test skipped: LT_OPENAI_BASE_URL and LT_OPENAI_MODEL are required");
+        return;
+    };
+    if base_url.trim().is_empty() || model.trim().is_empty() {
+        eprintln!("Live OpenAI-compatible test skipped: endpoint and model must be nonempty");
+        return;
+    }
+    let mut translator = lt_web::OpenAiTranslator::new(&lt_core::config::OpenAiConfig {
+        base_url,
+        model,
+        api_key: std::env::var("LT_OPENAI_API_KEY").unwrap_or_default(),
+        prompt: String::new(),
+    })
+    .unwrap();
+    let answer = translator
+        .translate(
+            &TranslateRequest {
+                id: UtteranceId(1),
+                text: "今天的会议改到下午三点。",
+                max_tokens: None,
+                control: TranslationControl {
+                    deadline: Instant::now() + Duration::from_secs(10),
+                    cancelled: Arc::new(AtomicBool::new(false)),
+                    abort: Arc::new(AtomicBool::new(false)),
+                },
+            },
+            &mut |_| {},
+        )
+        .unwrap();
+    assert!(!answer.text.trim().is_empty());
+    println!("Live OpenAI-compatible sentence passed");
+}

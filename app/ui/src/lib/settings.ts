@@ -30,7 +30,8 @@ export interface Config {
     second_pass_threads: number;
   };
   translate: {
-    engine: "local" | "microsoft" | "google";
+    engine: "local" | "microsoft" | "google" | "openai";
+    openai: { base_url: string; model: string; api_key: string; prompt: string };
     threads: number;
   };
   overlay: {
@@ -218,6 +219,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   "translate": {
     "engine": "local",
+    "openai": { "base_url": "", "model": "", "api_key": "", "prompt": "" },
     "threads": 4
   },
   "overlay": {

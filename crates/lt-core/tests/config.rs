@@ -219,6 +219,23 @@ fn failed_patch_is_transactional_and_malformed_toml_is_reported() {
 }
 
 #[test]
+fn endpoint_key_persists_but_debug_and_parse_errors_do_not_expose_it() {
+    let mut config = Config::default();
+    config.merge_patch(json!({"translate":{"engine":"openai","openai":{"base_url":"http://localhost:1234/v1","model":"test","api_key":"private-test-key","prompt":"Translate."}}})).unwrap();
+    let saved = config.to_toml().unwrap();
+    assert!(saved.contains("private-test-key"));
+    assert_eq!(Config::from_toml(&saved).unwrap().0, config);
+    let debug = format!("{config:?}");
+    assert!(debug.contains("***"));
+    assert!(!debug.contains("private-test-key"));
+    let error = Config::from_toml("[translate.openai]\napi_key = \"private-test-key")
+        .unwrap_err()
+        .to_string();
+    assert!(!error.contains("private-test-key"));
+    assert!(error.contains("line 2"));
+}
+
+#[test]
 fn failed_atomic_replace_preserves_existing_destination() {
     let temp = TempConfig::new();
     fs::create_dir(&temp.0).unwrap();

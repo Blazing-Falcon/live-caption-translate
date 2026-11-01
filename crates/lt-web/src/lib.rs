@@ -1,6 +1,8 @@
 mod google;
 mod http;
 mod microsoft;
+mod openai;
+pub use openai::OpenAiTranslator;
 
 use lt_core::{
     config::{TranslateConfig, TranslateEngine},
@@ -12,6 +14,9 @@ use lt_core::{
 };
 
 pub fn build(config: &TranslateConfig) -> Result<Box<dyn Translator>> {
+    if config.engine == TranslateEngine::Openai {
+        return Ok(Box::new(OpenAiTranslator::new(&config.openai)?));
+    }
     Ok(Box::new(WebTranslator::new(config.engine)?))
 }
 
@@ -22,7 +27,7 @@ pub struct WebTranslator {
 
 impl WebTranslator {
     pub fn new(engine: TranslateEngine) -> Result<Self> {
-        if engine.is_local() {
+        if engine.is_local() || engine == TranslateEngine::Openai {
             return Err(http::error("Local translation requires llama-server"));
         }
         Ok(Self {
@@ -51,7 +56,9 @@ impl WebTranslator {
             TranslateEngine::Google => {
                 google::send(&self.agent, texts, control).map(|raw| (raw, serde_json::Value::Null))
             }
-            TranslateEngine::Local => Err(http::error("Local engine is not an online endpoint")),
+            TranslateEngine::Local | TranslateEngine::Openai => {
+                Err(http::error("Local engine is not an online endpoint"))
+            }
         }
     }
 }
@@ -60,7 +67,9 @@ pub fn parse_response(engine: TranslateEngine, raw: &str) -> Result<Vec<String>>
     match engine {
         TranslateEngine::Microsoft => microsoft::parse(raw),
         TranslateEngine::Google => google::parse(raw),
-        TranslateEngine::Local => Err(http::error("Local engine is not an online endpoint")),
+        TranslateEngine::Local | TranslateEngine::Openai => {
+            Err(http::error("Local engine is not an online endpoint"))
+        }
     }
 }
 

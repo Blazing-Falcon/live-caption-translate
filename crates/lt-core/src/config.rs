@@ -25,10 +25,11 @@ pub enum TranslateEngine {
     Local,
     Microsoft,
     Google,
+    Openai,
 }
 
 impl TranslateEngine {
-    pub const NAMES: &'static [&'static str] = &["local", "microsoft", "google"];
+    pub const NAMES: &'static [&'static str] = &["local", "microsoft", "google", "openai"];
     pub fn is_local(self) -> bool {
         self == Self::Local
     }
@@ -37,6 +38,7 @@ impl TranslateEngine {
             Self::Local => "local",
             Self::Microsoft => "microsoft",
             Self::Google => "google",
+            Self::Openai => "openai",
         }
     }
 }
@@ -52,6 +54,7 @@ impl std::str::FromStr for TranslateEngine {
             "local" => Ok(Self::Local),
             "microsoft" => Ok(Self::Microsoft),
             "google" => Ok(Self::Google),
+            "openai" => Ok(Self::Openai),
             _ => Err(format!("Unknown translation engine: {value}")),
         }
     }
@@ -240,10 +243,31 @@ impl Default for AsrConfig {
     }
 }
 
+#[derive(Clone, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct OpenAiConfig {
+    pub base_url: String,
+    pub model: String,
+    pub api_key: String,
+    pub prompt: String,
+}
+
+impl std::fmt::Debug for OpenAiConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("OpenAiConfig")
+            .field("base_url", &self.base_url)
+            .field("model", &self.model)
+            .field("api_key", &if self.api_key.is_empty() { "" } else { "***" })
+            .field("prompt", &self.prompt)
+            .finish()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TranslateConfig {
     pub engine: TranslateEngine,
+    pub openai: OpenAiConfig,
     pub threads: u32,
 }
 
@@ -251,6 +275,7 @@ impl Default for TranslateConfig {
     fn default() -> Self {
         Self {
             engine: TranslateEngine::Local,
+            openai: OpenAiConfig::default(),
             threads: 4,
         }
     }
@@ -491,7 +516,13 @@ impl Config {
     }
 
     pub fn from_toml(contents: &str) -> Result<(Self, Vec<Message>)> {
-        let value = toml::from_str::<toml::Value>(contents).map_err(config_error)?;
+        let value = toml::from_str::<toml::Value>(contents).map_err(|error| {
+            let at = error
+                .span()
+                .map_or(0, |span| span.start.min(contents.len()));
+            let line = contents[..at].bytes().filter(|byte| *byte == b'\n').count() + 1;
+            Error::Config(format!("Invalid TOML at line {line}"))
+        })?;
         Self::from_value(value)
     }
 

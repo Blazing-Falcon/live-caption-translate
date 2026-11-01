@@ -54,7 +54,32 @@
     reconcileChecked(input, get(liveConfig)?.performance.low_priority ?? config.performance.low_priority);
   }
 
+  let testing = $state(false);
+  let testResult = $state("");
+  const builtInPrompt = "Translate the user's Chinese text into natural English. Output only the translation.";
+
+  async function saveOpenAi(event: Event, key: keyof Config["translate"]["openai"]): Promise<void> {
+    const input = event.currentTarget as HTMLInputElement | HTMLTextAreaElement;
+    testResult = "";
+    const saved = await session.save(`translate.openai.${key}`, { translate: { openai: { [key]: input.value } } });
+    if (!saved) input.value = config.translate.openai[key];
+  }
+
+  async function testTranslator(): Promise<void> {
+    testing = true;
+    testResult = "";
+    try {
+      const result = await api.testTranslator();
+      testResult = `${result.text} (${result.ms} ms)`;
+    } catch (error) {
+      testResult = api.readableError(error);
+    } finally {
+      testing = false;
+    }
+  }
+
   async function chooseEngine(event: Event): Promise<void> {
+    testResult = "";
     const select = event.currentTarget as HTMLSelectElement;
     const saved = await session.save("translate.engine", { translate: { engine: select.value as Config["translate"]["engine"] } });
     if (!saved) select.value = config.translate.engine;
@@ -133,10 +158,32 @@
         <option value="local">Local model</option>
         <option value="microsoft">Microsoft</option>
         <option value="google">Google</option>
+        <option value="openai">OpenAI-compatible</option>
       </select>
     </label>
     {#if config.translate.engine !== "local"}
-      <p class="help small">Captions and screenshot text are sent to {config.translate.engine === "microsoft" ? "Microsoft" : "Google"} to be translated.</p>
+      <p class="help small">Captions and screenshot text are sent to {config.translate.engine === "openai" ? "your configured endpoint" : config.translate.engine === "microsoft" ? "Microsoft" : "Google"} to be translated.</p>
+    {/if}
+    {#if config.translate.engine === "openai"}
+      <label class="field">
+        <span>Base URL</span>
+        <input class="input" type="url" value={config.translate.openai.base_url} placeholder="http://localhost:1234/v1" onchange={(event) => saveOpenAi(event, "base_url")} />
+      </label>
+      <label class="field">
+        <span>Model</span>
+        <input class="input" value={config.translate.openai.model} onchange={(event) => saveOpenAi(event, "model")} />
+      </label>
+      <label class="field">
+        <span>API key</span>
+        <input class="input" type="password" autocomplete="off" value={config.translate.openai.api_key} onchange={(event) => saveOpenAi(event, "api_key")} />
+      </label>
+      <p class="help small">The API key is stored in plain text in config.toml.</p>
+      <label class="field">
+        <span>Translation prompt</span>
+        <textarea class="input" rows="3" value={config.translate.openai.prompt} placeholder={builtInPrompt} onchange={(event) => saveOpenAi(event, "prompt")}></textarea>
+      </label>
+      <button class="button" disabled={testing || $busy.size > 0} onclick={testTranslator}>{testing ? "Testing…" : "Test translator"}</button>
+      {#if testResult}<p class="help small" role="status" data-testid="translator-test-result">{testResult}</p>{/if}
     {/if}
     <div class="field">
       <span>Local translation model</span>

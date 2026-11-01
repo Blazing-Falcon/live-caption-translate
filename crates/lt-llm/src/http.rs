@@ -21,8 +21,6 @@ use ureq::{
 };
 
 const POLL: Duration = Duration::from_millis(100);
-const MAX_LINE_BYTES: usize = 64 * 1024;
-const MAX_EVENT_BYTES: usize = 64 * 1024;
 const HTTP_BUFFER_BYTES: usize = 16 * 1024;
 
 #[derive(Clone, Debug)]
@@ -169,68 +167,6 @@ pub(crate) fn map_http_error(error: ureq::Error, control: &TranslationControl) -
             server_unavailable("Cannot communicate with the local translation server")
         }
         _ => translation_error("Invalid response from the local translation server"),
-    }
-}
-
-#[derive(Default)]
-pub(crate) struct SseDecoder {
-    line: Vec<u8>,
-    data: Vec<u8>,
-}
-
-pub(crate) enum SseEvent {
-    Done,
-    Data(Vec<u8>),
-}
-
-impl SseDecoder {
-    pub(crate) fn byte(&mut self, byte: u8) -> Result<Option<SseEvent>> {
-        if byte != b'\n' {
-            if self.line.len() == MAX_LINE_BYTES {
-                return Err(translation_error(
-                    "Translation SSE line exceeded its size limit",
-                ));
-            }
-            self.line.push(byte);
-            return Ok(None);
-        }
-        if self.line.last() == Some(&b'\r') {
-            self.line.pop();
-        }
-        if self.line.is_empty() {
-            if self.data.is_empty() {
-                return Ok(None);
-            }
-            let data = std::mem::take(&mut self.data);
-            if data.as_slice() == b"[DONE]" {
-                return Ok(Some(SseEvent::Done));
-            }
-            return Ok(Some(SseEvent::Data(data)));
-        }
-        let line = std::mem::take(&mut self.line);
-        // Decoding after the complete line preserves partial multi-byte UTF-8.
-        std::str::from_utf8(&line)
-            .map_err(|_| translation_error("Invalid UTF-8 in translation SSE event"))?;
-        if let Some(data) = line.strip_prefix(b"data:") {
-            let data = data.strip_prefix(b" ").map_or(data, |data| data);
-            let extra = usize::from(!self.data.is_empty());
-            if self
-                .data
-                .len()
-                .saturating_add(data.len())
-                .saturating_add(extra)
-                > MAX_EVENT_BYTES
-            {
-                return Err(translation_error(
-                    "Translation SSE event exceeded its size limit",
-                ));
-            }
-            if extra != 0 {
-                self.data.push(b'\n');
-            }
-            self.data.extend_from_slice(data);
-        }
-        Ok(None)
     }
 }
 

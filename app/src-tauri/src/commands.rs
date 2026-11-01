@@ -60,6 +60,50 @@ pub fn reset_config(shared: Shell) -> Reply<SetConfigResult> {
     shared.reset_config()
 }
 
+#[derive(serde::Serialize)]
+pub struct TranslatorTest {
+    text: String,
+    ms: u64,
+}
+
+#[tauri::command]
+pub async fn test_translator(shared: Shell<'_>) -> Reply<TranslatorTest> {
+    let shared = shared.inner().clone();
+    blocking(move || {
+        let config = shared.config();
+        let mut translator: Box<dyn lt_core::engines::Translator> =
+            if config.translate.engine.is_local() {
+                Box::new(
+                    lt_llm::OpenAiCompatTranslator::new(&controller::server_url(&shared)?)
+                        .map_err(|e| e.to_string())?,
+                )
+            } else {
+                lt_web::build(&config.translate).map_err(|e| e.to_string())?
+            };
+        let started = std::time::Instant::now();
+        let answer = translator
+            .translate(
+                &lt_core::engines::TranslateRequest {
+                    id: lt_core::types::UtteranceId(0),
+                    text: "今天的会议改到下午三点。",
+                    max_tokens: None,
+                    control: lt_core::engines::TranslationControl {
+                        deadline: started + lt_core::engines::REQUEST_TIMEOUT,
+                        cancelled: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+                        abort: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+                    },
+                },
+                &mut |_| {},
+            )
+            .map_err(|e| e.to_string())?;
+        Ok(TranslatorTest {
+            text: answer.text,
+            ms: started.elapsed().as_millis().try_into().unwrap_or(u64::MAX),
+        })
+    })
+    .await
+}
+
 #[tauri::command]
 pub fn get_stats(shared: Shell) -> PipelineStats {
     crate::app::lock(&shared.stats).clone()

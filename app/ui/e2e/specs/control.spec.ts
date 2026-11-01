@@ -20,6 +20,29 @@ async function flip(locator: Locator, checked: boolean): Promise<void> {
 }
 
 test.describe("control window (browser simulation with mocked transport)", () => {
+  test("OpenAI-compatible settings mask the key and test saved settings", async ({ page }) => {
+    await open(page, "control", { config: { translate: { engine: "openai" } } });
+    await page.getByRole("tab", { name: "Performance" }).click();
+    for (const [label, key, value] of [
+      ["Base URL", "base_url", "http://localhost:1234/v1"],
+      ["Model", "model", "test-model"],
+      ["API key", "api_key", "test-secret"],
+      ["Translation prompt", "prompt", "Translate into English."],
+    ] as const) {
+      const input = page.getByLabel(label, { exact: true });
+      await input.fill(value);
+      await input.press("Tab");
+      await expectPatch(page, { translate: { openai: { [key]: value } } });
+    }
+    await expect(page.getByLabel("API key", { exact: true })).toHaveAttribute("type", "password");
+    await page.getByRole("button", { name: "Test translator", exact: true }).click();
+    await expectCalls(page, "test_translator", 1);
+    await expect(page.getByTestId("translator-test-result")).toHaveText("Today’s meeting has been moved to 3 p.m. (123 ms)");
+    await page.evaluate(() => window.__lt.backend.failures.set("test_translator", "The endpoint rejected the API key."));
+    await page.getByRole("button", { name: "Test translator", exact: true }).click();
+    await expect(page.getByTestId("translator-test-result")).toHaveText("The endpoint rejected the API key.");
+  });
+
   test("translator choice saves one engine and explains where text goes", async ({ page }) => {
     await open(page, "control");
     await page.getByRole("tab", { name: "Performance" }).click();

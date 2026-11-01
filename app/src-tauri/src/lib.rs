@@ -220,6 +220,7 @@ pub fn run() {
             commands::start_listening,
             commands::pause_listening,
             commands::get_config,
+            commands::test_translator,
             commands::set_config,
             commands::reset_config,
             commands::get_stats,

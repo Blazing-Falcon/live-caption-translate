@@ -10,7 +10,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 | `crates/lt-audio` | WASAPI capture (system mix or selected apps), WAV replay, resampling, normalization |
 | `crates/lt-sherpa` | X-ASR speech recognition: the streaming recognizer and its offline second pass. It also loads the ONNX Runtime that `lt-ocr` uses. |
 | `crates/lt-llm` | llama-server clients, the server supervisor, model downloads |
-| `crates/lt-web` | Microsoft and Google translation clients, synchronous HTTP, request signing and batch limits |
+| `crates/lt-web` | Microsoft, Google and OpenAI-compatible translation clients, synchronous HTTP, shared SSE parsing, request signing and batch limits |
 | `crates/lt-ocr` | PP-OCRv6 text recognition for screenshots: a detector and a recognizer on the shared ONNX Runtime |
 | `crates/lt-cli` | Headless runner: `replay`, `screen`, `models fetch` |
 | `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge, screen capture |
