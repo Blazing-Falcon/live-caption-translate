@@ -3,6 +3,7 @@
 //! the speech.
 
 use crate::{
+    engines::PreviewMode,
     text::classify,
     types::{CutReason, StageTiming, TextClass, Transcript, UtteranceId},
 };
@@ -29,6 +30,7 @@ const PREVIEW_MIN_CHARS: usize = 4;
 pub(super) struct RunningText {
     /// Closed lines not yet in a unit, oldest first.
     active: Vec<Transcript>,
+    mode: PreviewMode,
     /// Live text of the lines that have no final text yet: the open line, and a closed line
     /// whose final waits for the second pass while the next line is already heard.
     heard: BTreeMap<UtteranceId, String>,
@@ -39,6 +41,13 @@ pub(super) struct RunningText {
 }
 
 impl RunningText {
+    pub(super) fn new(mode: PreviewMode) -> Self {
+        Self {
+            mode,
+            ..Self::default()
+        }
+    }
+
     /// A closed line to translate. Returns the units to translate for good, oldest first.
     pub(super) fn push(&mut self, transcript: Transcript) -> Vec<Transcript> {
         let mut units = Vec::new();
@@ -93,14 +102,16 @@ impl RunningText {
     /// The text to translate again now, as a line led by the first id it covers, with every id
     /// it covers. `None` while the text is unchanged, too short or the last preview too recent.
     pub(super) fn preview(&mut self, now: Instant) -> Option<(Transcript, Vec<UtteranceId>)> {
-        if self.next_preview.is_some_and(|next| now < next) {
+        if self.mode == PreviewMode::Live && self.next_preview.is_some_and(|next| now < next) {
             return None;
         }
         let mut ids: Vec<UtteranceId> = self.active.iter().map(|line| line.id).collect();
         let mut text: String = self.active.iter().map(|line| line.text.as_str()).collect();
-        for (id, partial) in &self.heard {
-            ids.push(*id);
-            text.push_str(partial);
+        if self.mode == PreviewMode::Live {
+            for (id, partial) in &self.heard {
+                ids.push(*id);
+                text.push_str(partial);
+            }
         }
         let letters = text.chars().filter(|c| c.is_alphanumeric()).count();
         if letters < PREVIEW_MIN_CHARS || text == self.previewed {

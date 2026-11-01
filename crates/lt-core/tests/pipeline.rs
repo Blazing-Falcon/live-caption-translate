@@ -7,8 +7,8 @@ use lt_core::{
     bus::{EventBus, EventReceiver},
     config::Config,
     engines::{
-        OfflineAsr, OfflineText, StreamResult, StreamingAsr, TokenTranscript, TranslateRequest,
-        TranslationControl, TranslationOut, Translator, TranslatorCaps,
+        OfflineAsr, OfflineText, PreviewMode, StreamResult, StreamingAsr, TokenTranscript,
+        TranslateRequest, TranslationControl, TranslationOut, Translator, TranslatorCaps,
     },
     error::{Error, Result},
     events::{DropReason, EngineKind, EngineState, FailReason, ListeningStateKind, PipelineEvent},
@@ -228,6 +228,7 @@ struct RecordingTranslator {
     requests: RequestLog,
     gate: Option<(Sender<()>, Receiver<()>)>,
     fake: FakeTranslator,
+    previews: PreviewMode,
 }
 
 impl RecordingTranslator {
@@ -237,6 +238,7 @@ impl RecordingTranslator {
             requests: requests.clone(),
             gate: None,
             fake: FakeTranslator::default(),
+            previews: PreviewMode::Live,
         };
         (translator, requests)
     }
@@ -255,6 +257,7 @@ impl RecordingTranslator {
 impl Translator for RecordingTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
+            previews: self.previews,
             max_input_chars: 300,
             ..TranslatorCaps::default()
         }
@@ -1047,4 +1050,40 @@ fn random_translation_timing_and_failures_keep_every_ordering_rule() {
         assert_order(&events);
         assert!(!finals(&events).is_empty(), "seed {seed}");
     }
+}
+
+#[test]
+fn clause_previews_use_only_closed_asr_lines_through_the_full_pipeline() {
+    let (mut translator, requests) = RecordingTranslator::new();
+    translator.previews = PreviewMode::Clauses;
+    let (mut handle, events) = start_with(
+        Config::default(),
+        VecSource::new(speech(sentence_chars().len(), 1.0)),
+        AmplitudeStream::default(),
+        Box::new(FakeOffline),
+        translator,
+    );
+    finish(&mut handle);
+    let events: Vec<_> = events.try_iter().collect();
+    assert_order(&events);
+    let clauses = finals(&events);
+    let mut possible = Vec::new();
+    for start in 0..clauses.len() {
+        let mut text = String::new();
+        for (_, clause, _) in &clauses[start..] {
+            text.push_str(clause);
+            possible.push(text.clone());
+        }
+    }
+    let requests = requests.lock().unwrap();
+    assert!(!requests.is_empty());
+    for request in requests.iter() {
+        assert!(
+            possible.contains(request),
+            "heard partial reached the engine: {request:?}"
+        );
+    }
+    assert!(events
+        .iter()
+        .any(|event| matches!(event, PipelineEvent::TranslationPreview { .. })));
 }

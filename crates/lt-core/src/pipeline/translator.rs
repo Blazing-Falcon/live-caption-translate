@@ -4,7 +4,7 @@ use super::{cancel::Cancel, queue::QueuedTranscript};
 use crate::{
     bus::EventBus,
     clock::Clock,
-    engines::{TranslateRequest, TranslationControl, Translator},
+    engines::{PreviewMode, TranslateRequest, TranslationControl, Translator},
     error::{Error, Result},
     events::{EngineKind, EngineState, FailReason, PipelineEvent, Timing},
     text::chinese_chars,
@@ -151,7 +151,10 @@ fn translate_one(
     } else {
         control
             .check()
-            .and_then(|()| translator.translate(&request, &mut on_delta))
+            .and_then(|()| {
+                tracing::debug!(preview = item.preview.is_some(), "Translation request");
+                translator.translate(&request, &mut on_delta)
+            })
             .and_then(|output| {
                 control.check()?;
                 Ok(output)
@@ -264,6 +267,7 @@ impl TranslatorWorker {
         bus: EventBus,
         cancelled: Cancel,
     ) -> Result<Self> {
+        let reuse_previews = translator.caps().previews == PreviewMode::Clauses;
         let (input, work): (Sender<QueuedTranscript>, Receiver<QueuedTranscript>) = bounded(1);
         let (complete, completed) = bounded(1);
         let worker_cancelled = cancelled.clone();
@@ -290,21 +294,65 @@ impl TranslatorWorker {
                     },
                     message: warmup.err().map(|error| error.to_string()),
                 });
+                let mut preview: Option<(String, String)> = None;
                 while !worker_cancelled.is_set() {
                     let item = match work.recv_timeout(Duration::from_millis(20)) {
                         Ok(item) => item,
                         Err(crossbeam_channel::RecvTimeoutError::Timeout) => continue,
                         Err(crossbeam_channel::RecvTimeoutError::Disconnected) => break,
                     };
-                    let event = translate_one(
-                        translator.as_mut(),
-                        &item,
-                        clock.as_ref(),
-                        &bus,
-                        worker_cancelled.clone(),
-                    );
+                    let reused = if item.preview.is_none() {
+                        preview
+                            .take()
+                            .filter(|(source, _)| *source == item.transcript.text)
+                    } else {
+                        None
+                    };
+                    let event = if let Some((_, text)) = reused {
+                        let now = clock.now().millis();
+                        tracing::debug!(
+                            id = item.transcript.id.0,
+                            reused_preview = true,
+                            "Translation reused preview"
+                        );
+                        PipelineEvent::TranslationFinal {
+                            id: item.transcript.id,
+                            text,
+                            timing: Timing {
+                                speech_end_ms: item.transcript.timing.end.millis(),
+                                asr_done_ms: item.transcript.timing.asr_done_ms,
+                                queued_ms: item.queued_ms,
+                                sent_ms: now,
+                                first_token_ms: None,
+                                done_ms: now,
+                                prompt_tokens: 0,
+                                cached_tokens: 0,
+                                generated_tokens: 0,
+                            },
+                        }
+                    } else {
+                        translate_one(
+                            translator.as_mut(),
+                            &item,
+                            clock.as_ref(),
+                            &bus,
+                            worker_cancelled.clone(),
+                        )
+                    };
                     let event = match item.preview {
-                        Some(ids) => preview_event(event, ids),
+                        Some(ids) => {
+                            if reuse_previews {
+                                preview = match &event {
+                                    PipelineEvent::TranslationFinal { text, .. }
+                                        if chinese_chars(text) == 0 =>
+                                    {
+                                        Some((item.transcript.text.clone(), text.clone()))
+                                    }
+                                    _ => None,
+                                };
+                            }
+                            preview_event(event, ids)
+                        }
                         None => Some(event),
                     };
                     // Cooperative channel send: shutdown must not wait for scheduler.

@@ -529,6 +529,7 @@ pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
             last: ResourceSample::default(),
         }) as Box<dyn ResourceSampler>
     }));
+    let previews = translator.caps().previews;
     let worker =
         TranslatorWorker::start(translator, clock.clone(), bus.clone(), cancelled.clone())?;
     let mut scheduler = Scheduler {
@@ -544,7 +545,7 @@ pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
         metrics,
         shared: shared.clone(),
         asr_failed: false,
-        running_text: RunningText::default(),
+        running_text: RunningText::new(previews),
         previewing: None,
         front,
         asr,
@@ -583,4 +584,249 @@ pub(super) fn scheduler_loop(context: SchedulerContext) -> Result<()> {
         }
     }
     scheduler.shutdown(clock.as_ref())
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{
+        bus::EventReceiver,
+        clock::ManualClock,
+        engines::{
+            PreviewMode, TranslateRequest, TranslationControl, TranslationOut, TranslatorCaps,
+        },
+        source::SessionClock,
+        types::{CutReason, PipelineStats, StageTiming},
+    };
+    use crossbeam_channel::bounded;
+    use std::sync::{atomic::AtomicBool, Mutex};
+
+    struct ClauseTranslator {
+        requests: Arc<Mutex<Vec<String>>>,
+        answer: &'static str,
+    }
+
+    impl Translator for ClauseTranslator {
+        fn caps(&self) -> TranslatorCaps {
+            TranslatorCaps {
+                previews: PreviewMode::Clauses,
+                max_input_chars: 300,
+                ..TranslatorCaps::default()
+            }
+        }
+        fn warm_up(&mut self, control: &TranslationControl) -> Result<()> {
+            control.check()
+        }
+        fn translate(
+            &mut self,
+            request: &TranslateRequest<'_>,
+            on_delta: &mut dyn FnMut(&str),
+        ) -> Result<TranslationOut> {
+            self.requests.lock().unwrap().push(request.text.into());
+            on_delta(self.answer);
+            Ok(TranslationOut {
+                text: self.answer.into(),
+                prompt_tokens: 11,
+                cached_tokens: 3,
+                generated_tokens: 4,
+                truncated: false,
+            })
+        }
+    }
+
+    struct Harness {
+        scheduler: Scheduler,
+        clock: ManualClock,
+        events: EventReceiver,
+        requests: Arc<Mutex<Vec<String>>>,
+    }
+
+    impl Harness {
+        fn new(answer: &'static str) -> Self {
+            let clock = ManualClock::new(StreamTime::from_millis(5000));
+            let shared = Arc::new(Shared {
+                cancelled: Default::default(),
+                clock: Arc::new(SessionClock::default()),
+                listening: AtomicBool::new(false),
+                latest_stats: Mutex::new(PipelineStats::default()),
+                clause_counts: Default::default(),
+            });
+            let bus = EventBus::default();
+            let events = bus.subscribe(100);
+            let requests = Arc::new(Mutex::new(Vec::new()));
+            let translator = Box::new(ClauseTranslator {
+                requests: requests.clone(),
+                answer,
+            });
+            let previews = translator.caps().previews;
+            let worker = TranslatorWorker::start(
+                translator,
+                Arc::new(clock.clone()),
+                bus.clone(),
+                shared.cancelled.clone(),
+            )
+            .unwrap();
+            let scheduler = Scheduler {
+                queue: Default::default(),
+                ready: Default::default(),
+                bus,
+                observed: Default::default(),
+                translating: Default::default(),
+                in_flight: false,
+                started_through: None,
+                handled_through: None,
+                closed_through: None,
+                metrics: Metrics::new(),
+                shared,
+                asr_failed: false,
+                running_text: RunningText::new(previews),
+                previewing: None,
+                front: bounded(1).1,
+                asr: bounded(1).1,
+                worker,
+                front_done: false,
+                asr_done: false,
+                pending_asr: None,
+                last_stats: Instant::now(),
+                was_listening: false,
+            };
+            Self {
+                scheduler,
+                clock,
+                events,
+                requests,
+            }
+        }
+
+        fn clause(&mut self, id: u64, text: &str, cut: CutReason) {
+            self.scheduler
+                .transcript(AsrMessage::Transcript(Transcript {
+                    id: UtteranceId(id),
+                    text: text.into(),
+                    class: TextClass::Chinese,
+                    timing: StageTiming {
+                        start: StreamTime::from_seconds(id as f64),
+                        end: StreamTime::from_seconds(id as f64 + 0.5),
+                        asr_done_ms: 4000,
+                        asr_ms: 1,
+                    },
+                    absorbed: Vec::new(),
+                    cut,
+                    logprob: None,
+                    second_pass: Default::default(),
+                }));
+        }
+
+        fn partial(&mut self, id: u64, text: &str) {
+            self.scheduler.transcript(AsrMessage::Partial {
+                id: UtteranceId(id),
+                text: text.into(),
+                class: TextClass::Chinese,
+                end: StreamTime::from_seconds(id as f64 + 0.5),
+            });
+        }
+
+        fn complete_request(&mut self) {
+            self.scheduler.feed_queue(&self.clock).unwrap();
+            assert!(self.scheduler.dispatch(&self.clock).unwrap().progressed());
+            let event = self
+                .scheduler
+                .worker
+                .completed
+                .recv_timeout(Duration::from_secs(30))
+                .unwrap();
+            self.scheduler.completed(event);
+        }
+    }
+
+    #[test]
+    fn clauses_ignore_heard_partials_preview_each_changed_state_and_reuse_the_sealed_unit() {
+        let mut h = Harness::new("A checked answer.");
+        h.partial(1, "这是尚未闭合的内容");
+        assert!(h.scheduler.next_preview(5000).is_none());
+        h.clause(1, "今天一起出门，", CutReason::Commit);
+        h.partial(2, "这是另一段未闭合内容");
+        h.complete_request();
+        h.partial(2, "实时文字继续增加");
+        assert!(h.scheduler.next_preview(5000).is_none());
+        h.clause(2, "然后回家吃饭，", CutReason::Commit);
+        h.complete_request();
+        assert_eq!(
+            *h.requests.lock().unwrap(),
+            ["今天一起出门，", "今天一起出门，然后回家吃饭，"]
+        );
+        assert!(h.scheduler.next_preview(5000).is_none());
+        h.scheduler.freeze_running();
+        h.clock.advance(StreamTime::from_millis(700));
+        h.complete_request();
+        assert_eq!(h.requests.lock().unwrap().len(), 2);
+        let events: Vec<_> = h.events.try_iter().collect();
+        assert_eq!(
+            events
+                .iter()
+                .filter(|e| matches!(e, PipelineEvent::TranslationPreview { .. }))
+                .count(),
+            2
+        );
+        assert!(!events
+            .iter()
+            .any(|e| matches!(e, PipelineEvent::TranslationDelta { .. })));
+        let timing = events
+            .iter()
+            .find_map(|e| match e {
+                PipelineEvent::TranslationFinal { id, text, timing } => {
+                    assert_eq!(*id, UtteranceId(1));
+                    assert_eq!(text, "A checked answer.");
+                    Some(timing)
+                }
+                _ => None,
+            })
+            .unwrap();
+        assert_eq!((timing.sent_ms, timing.done_ms), (5700, 5700));
+        assert_eq!(timing.first_token_ms, None);
+        assert_eq!(
+            (
+                timing.prompt_tokens,
+                timing.cached_tokens,
+                timing.generated_tokens
+            ),
+            (0, 0, 0)
+        );
+        assert_eq!(timing.speech_end_ms, 2500);
+    }
+
+    #[test]
+    fn changed_final_translates_normally_and_consumes_the_saved_preview() {
+        let mut h = Harness::new("A checked answer.");
+        h.clause(1, "今天一起出门，", CutReason::Commit);
+        h.complete_request();
+        h.clause(2, "然后回家吃饭。", CutReason::Pause);
+        h.complete_request();
+        h.clause(3, "今天一起出门，", CutReason::Pause);
+        h.complete_request();
+        assert_eq!(
+            *h.requests.lock().unwrap(),
+            [
+                "今天一起出门，",
+                "今天一起出门，然后回家吃饭。",
+                "今天一起出门，"
+            ]
+        );
+    }
+
+    #[test]
+    fn preview_with_chinese_is_hidden_and_not_reused() {
+        let mut h = Harness::new("Hello 世界.");
+        h.clause(1, "今天一起出门，", CutReason::Commit);
+        h.complete_request();
+        h.scheduler.freeze_running();
+        h.complete_request();
+        assert_eq!(h.requests.lock().unwrap().len(), 2);
+        let events: Vec<_> = h.events.try_iter().collect();
+        assert!(!events
+            .iter()
+            .any(|e| matches!(e, PipelineEvent::TranslationPreview { .. })));
+        assert!(events.iter().any(
+            |e| matches!(e, PipelineEvent::TranslationFinal { text, .. } if text == "Hello 世界.")
+        ));
+    }
 }
