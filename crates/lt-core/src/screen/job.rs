@@ -6,9 +6,8 @@ use super::{
     Direction, ImageView, ScreenEvent,
 };
 use crate::{
-    engines::{TextRecognizer, TranslateRequest, TranslationControl, Translator, REQUEST_TIMEOUT},
+    engines::{TextRecognizer, TranslationControl, Translator, TranslatorCaps, REQUEST_TIMEOUT},
     error::Result,
-    types::UtteranceId,
 };
 use std::{
     collections::HashMap,
@@ -43,7 +42,7 @@ impl TranslationCache {
     }
 }
 
-/// Reads `image`, groups its text into blocks and translates them one request at a time. The
+/// Reads `image`, groups its text into blocks and translates batches one request at a time. The
 /// events follow the order described on [`ScreenEvent`]. Once `cancel` is set the job sends no
 /// further request and emits nothing more. A block whose piece fails is reported as failed and
 /// the next block still runs.
@@ -51,7 +50,7 @@ pub fn run_job(
     job: u64,
     image: &ImageView<'_>,
     recognizer: &mut dyn TextRecognizer,
-    translator: &mut dyn FnMut(&str) -> Result<String>,
+    translator: &mut dyn FnMut(&[&str]) -> Result<Vec<String>>,
     cancel: &AtomicBool,
     cache: &mut TranslationCache,
     emit: &mut dyn FnMut(ScreenEvent),
@@ -68,12 +67,14 @@ pub fn run_job(
             prepare: None,
             debug: false,
             direction: Direction::Horizontal,
+            translator_caps: TranslatorCaps::default(),
         },
     );
 }
 
 pub type PreparePaint<'a> = dyn FnMut(&ImageView<'_>, &[Line], &[super::Block]) -> Result<()> + 'a;
 pub struct JobOutput<'a> {
+    pub translator_caps: TranslatorCaps,
     pub direction: Direction,
     pub debug: bool,
     pub emit: &'a mut dyn FnMut(ScreenEvent),
@@ -84,7 +85,7 @@ pub fn run_job_with_output(
     job: u64,
     image: &ImageView<'_>,
     recognizer: &mut dyn TextRecognizer,
-    translator: &mut dyn FnMut(&str) -> Result<String>,
+    translator: &mut dyn FnMut(&[&str]) -> Result<Vec<String>>,
     cancel: &AtomicBool,
     cache: &mut TranslationCache,
     output: JobOutput<'_>,
@@ -94,6 +95,7 @@ pub fn run_job_with_output(
         prepare,
         debug,
         direction,
+        translator_caps,
     } = output;
     let started = Instant::now();
     let cancelled = || cancel.load(Ordering::Acquire);
@@ -155,14 +157,15 @@ pub fn run_job_with_output(
         ocr_ms: millis(started),
         ocr_lines: debug.then(|| lines.iter().map(|line| line.rect).collect()),
     });
-    for (id, source) in sources {
-        let event = match translate_block(&source, translator, cancel, cache) {
-            Outcome::Cancelled => return,
-            Outcome::Translated(text) => ScreenEvent::Translated { job, id, text },
-            Outcome::Failed(message) => ScreenEvent::Failed { job, id, message },
-        };
-        emit(event);
-    }
+    translate_blocks(
+        job,
+        sources,
+        translator,
+        &translator_caps,
+        cancel,
+        cache,
+        emit,
+    );
     if cancelled() {
         return;
     }
@@ -172,70 +175,186 @@ pub fn run_job_with_output(
     });
 }
 
-enum Outcome {
-    Cancelled,
-    Translated(String),
-    Failed(String),
+struct PendingBlock {
+    id: u32,
+    pieces: Vec<String>,
+    answers: Vec<Option<String>>,
+    failed: Option<String>,
 }
 
-fn translate_block(
-    source: &str,
-    translator: &mut dyn FnMut(&str) -> Result<String>,
+fn translate_blocks(
+    job: u64,
+    sources: Vec<(u32, String)>,
+    translator: &mut dyn FnMut(&[&str]) -> Result<Vec<String>>,
+    caps: &TranslatorCaps,
     cancel: &AtomicBool,
     cache: &mut TranslationCache,
-) -> Outcome {
-    let mut english: Vec<String> = Vec::new();
-    for piece in pieces(source, PIECE_CHARS) {
-        if cancel.load(Ordering::Acquire) {
-            return Outcome::Cancelled;
-        }
-        if let Some(known) = cache.entries.get(&piece) {
-            english.push(known.clone());
-            continue;
-        }
-        let result = translator(&piece);
-        if cancel.load(Ordering::Acquire) {
-            return Outcome::Cancelled;
-        }
-        match result.map(|text| text.trim().to_owned()) {
-            Ok(text) if text.is_empty() => {
-                return Outcome::Failed("The translation is empty".into())
+    emit: &mut dyn FnMut(ScreenEvent),
+) {
+    let mut blocks: Vec<_> = sources
+        .into_iter()
+        .map(|(id, source)| {
+            let pieces = pieces(&source, PIECE_CHARS)
+                .into_iter()
+                .flat_map(|piece| {
+                    if piece.encode_utf16().count() > caps.max_batch_chars {
+                        pieces(&piece, (caps.max_batch_chars / 2).max(1))
+                    } else {
+                        vec![piece]
+                    }
+                })
+                .collect::<Vec<_>>();
+            PendingBlock {
+                id,
+                answers: vec![None; pieces.len()],
+                pieces,
+                failed: None,
             }
-            Ok(text) => {
-                cache.insert(piece, text.clone());
-                english.push(text);
-            }
-            Err(error) => return Outcome::Failed(error.to_string()),
+        })
+        .collect();
+    let positions: Vec<_> = blocks
+        .iter()
+        .enumerate()
+        .flat_map(|(block, pending)| (0..pending.pieces.len()).map(move |piece| (block, piece)))
+        .collect();
+    let mut cursor = 0;
+    let mut reported = 0;
+    while reported < blocks.len() {
+        if cancel.load(Ordering::Acquire) {
+            return;
         }
+        let mut batch: Vec<String> = Vec::new();
+        let mut owners: Vec<Vec<(usize, usize)>> = Vec::new();
+        let mut characters = 0;
+        while let Some(&(block, piece)) = positions.get(cursor) {
+            if batch.len() >= caps.max_batch_items.max(1) {
+                break;
+            }
+            if blocks[block].failed.is_some() {
+                cursor += 1;
+                continue;
+            }
+            let source = &blocks[block].pieces[piece];
+            if let Some(known) = cache.entries.get(source) {
+                blocks[block].answers[piece] = Some(known.clone());
+                if batch.is_empty() {
+                    report_ready(job, &blocks, &mut reported, cancel, emit);
+                    if cancel.load(Ordering::Acquire) {
+                        return;
+                    }
+                }
+                cursor += 1;
+                continue;
+            }
+            if let Some(at) = batch.iter().position(|text| text == source) {
+                owners[at].push((block, piece));
+                cursor += 1;
+                continue;
+            }
+            let length = source.encode_utf16().count();
+            if !batch.is_empty() && characters + length > caps.max_batch_chars {
+                break;
+            }
+            characters += length;
+            batch.push(source.clone());
+            owners.push(vec![(block, piece)]);
+            cursor += 1;
+        }
+        if !batch.is_empty() {
+            let inputs: Vec<_> = batch.iter().map(String::as_str).collect();
+            let result = translator(&inputs);
+            if cancel.load(Ordering::Acquire) {
+                return;
+            }
+            let answers = match result {
+                Ok(answers) if answers.len() == inputs.len() => Ok(answers),
+                Ok(_) => Err("Translation answer count does not match request".to_owned()),
+                Err(error) => Err(error.to_string()),
+            };
+            match answers {
+                Ok(answers) => {
+                    for ((source, owners), text) in batch.into_iter().zip(owners).zip(answers) {
+                        let text = text.trim().to_owned();
+                        if !text.is_empty() {
+                            cache.insert(source, text.clone());
+                        }
+                        for (block, piece) in owners {
+                            if text.is_empty() {
+                                blocks[block].failed = Some("The translation is empty".into());
+                            } else {
+                                blocks[block].answers[piece] = Some(text.clone());
+                            }
+                        }
+                    }
+                }
+                Err(message) => {
+                    for (block, _) in owners.into_iter().flatten() {
+                        blocks[block].failed = Some(message.clone());
+                    }
+                }
+            }
+        }
+        report_ready(job, &blocks, &mut reported, cancel, emit);
     }
-    Outcome::Translated(english.join(" "))
+}
+
+fn report_ready(
+    job: u64,
+    blocks: &[PendingBlock],
+    reported: &mut usize,
+    cancel: &AtomicBool,
+    emit: &mut dyn FnMut(ScreenEvent),
+) {
+    while let Some(block) = blocks.get(*reported) {
+        if cancel.load(Ordering::Acquire) {
+            return;
+        }
+        let event = if let Some(message) = &block.failed {
+            ScreenEvent::Failed {
+                job,
+                id: block.id,
+                message: message.clone(),
+            }
+        } else if block.answers.iter().all(Option::is_some) {
+            ScreenEvent::Translated {
+                job,
+                id: block.id,
+                text: block
+                    .answers
+                    .iter()
+                    .map(|answer| answer.as_deref().unwrap())
+                    .collect::<Vec<_>>()
+                    .join(" "),
+            }
+        } else {
+            break;
+        };
+        emit(event);
+        *reported += 1;
+    }
 }
 
 fn millis(started: Instant) -> u32 {
     u32::try_from(started.elapsed().as_millis()).unwrap_or(u32::MAX)
 }
 
-/// Adapts a [`Translator`] to the closure [`run_job`] takes. Each piece gets its own deadline
-/// and stops when `cancelled` is set.
-pub fn piece_translator<'a>(
+/// Adapts a [`Translator`] to screen batches, each with its own deadline and cancellation flag.
+pub fn batch_translator<'a>(
     translator: &'a mut dyn Translator,
     cancelled: &Arc<AtomicBool>,
-) -> impl FnMut(&str) -> Result<String> + 'a {
+) -> impl FnMut(&[&str]) -> Result<Vec<String>> + 'a {
     let cancelled = cancelled.clone();
-    let mut requests = 0;
-    move |piece| {
-        requests += 1;
-        let request = TranslateRequest {
-            id: UtteranceId(requests),
-            text: piece,
-            max_tokens: None,
-            control: TranslationControl {
-                deadline: Instant::now() + REQUEST_TIMEOUT,
-                cancelled: cancelled.clone(),
-                abort: Arc::new(AtomicBool::new(false)),
-            },
+    move |texts| {
+        let control = TranslationControl {
+            deadline: Instant::now() + REQUEST_TIMEOUT,
+            cancelled: cancelled.clone(),
+            abort: Arc::new(AtomicBool::new(false)),
         };
-        Ok(translator.translate(&request, &mut |_| {})?.text)
+        Ok(translator
+            .translate_batch(texts, &control)?
+            .into_iter()
+            .map(|answer| answer.text)
+            .collect())
     }
 }
 

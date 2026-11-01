@@ -19,7 +19,7 @@ pub mod vertical;
 
 pub use group::blocks;
 pub use job::{
-    piece_translator, pieces, run_job, run_job_with_output, JobOutput, TranslationCache,
+    batch_translator, pieces, run_job, run_job_with_output, JobOutput, TranslationCache,
     PIECE_CHARS,
 };
 

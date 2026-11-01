@@ -25,7 +25,7 @@ mod run {
         engines::{TextLine, TextRecognizer, Translator},
         error::Error,
         screen::{
-            piece_translator, run_job_with_output, Direction, ImageView, JobOutput, ScreenEvent,
+            batch_translator, run_job_with_output, Direction, ImageView, JobOutput, ScreenEvent,
             TranslationCache,
         },
     };
@@ -97,15 +97,20 @@ mod run {
             }
             events.push((millis(started), event));
         };
+        let translator_caps = server
+            .as_ref()
+            .map(|server| server.translator.caps())
+            .unwrap_or_default();
         match server.as_mut() {
             Some(server) => run_job_with_output(
                 1,
                 &image,
                 &mut recorder,
-                &mut piece_translator(&mut *server.translator, &cancelled),
+                &mut batch_translator(&mut *server.translator, &cancelled),
                 &cancelled,
                 &mut cache,
                 JobOutput {
+                    translator_caps: translator_caps.clone(),
                     direction: args.direction.into(),
                     debug: false,
                     prepare: None,
@@ -120,6 +125,7 @@ mod run {
                 &cancelled,
                 &mut cache,
                 JobOutput {
+                    translator_caps,
                     direction: args.direction.into(),
                     debug: false,
                     prepare: None,

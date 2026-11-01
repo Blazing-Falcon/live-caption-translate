@@ -1,7 +1,7 @@
 //! The screen job's event order, cancelling and cache, with a fake reader and translator.
 
 use lt_core::{
-    engines::{TextLine, TextRecognizer},
+    engines::{TextLine, TextRecognizer, TranslatorCaps},
     error::{Error, Result},
     events::FailReason,
     screen::{
@@ -76,12 +76,13 @@ fn vertical_job_keeps_source_pixels_and_translates_columns_right_to_left() {
         &image,
         &mut Columns,
         &mut |text| {
-            assert_eq!(text, "你好世界");
-            Ok("Hello world".into())
+            assert_eq!(text, ["你好世界"]);
+            Ok(vec!["Hello world".into()])
         },
         &AtomicBool::new(false),
         &mut TranslationCache::default(),
         JobOutput {
+            translator_caps: TranslatorCaps::default(),
             direction: Direction::Vertical,
             debug: false,
             prepare: None,
@@ -132,8 +133,9 @@ fn run(
         &image,
         &mut FakeReader(lines),
         &mut |piece| {
-            requests.push(piece.to_owned());
-            translate(piece, cancel)
+            assert_eq!(piece.len(), 1);
+            requests.push(piece[0].to_owned());
+            translate(piece[0], cancel).map(|text| vec![text])
         },
         cancel,
         cache,
@@ -239,6 +241,7 @@ fn cancelling_during_paint_preparation_emits_no_blocks_or_translation() {
         &cancel,
         &mut TranslationCache::default(),
         JobOutput {
+            translator_caps: TranslatorCaps::default(),
             direction: lt_core::screen::Direction::Horizontal,
             debug: false,
             emit: &mut |event| events.push(event),
@@ -268,10 +271,11 @@ fn debug_lines_include_detections_rejected_before_grouping_only_when_requested()
             7,
             &image,
             &mut FakeReader(Some(input.clone())),
-            &mut |_| Ok("Hello".into()),
+            &mut |_| Ok(vec!["Hello".into()]),
             &AtomicBool::new(false),
             &mut TranslationCache::default(),
             JobOutput {
+                translator_caps: TranslatorCaps::default(),
                 direction: lt_core::screen::Direction::Horizontal,
                 debug,
                 emit: &mut |event| events.push(event),
@@ -435,4 +439,241 @@ fn the_pieces_of_a_block_are_joined_with_a_space() {
     assert_eq!(requests.len(), 2);
     assert!(matches!(&events[2],
         ScreenEvent::Translated { text, .. } if text == "part part"));
+}
+
+fn run_batch(
+    lines: Vec<TextLine>,
+    caps: TranslatorCaps,
+    cache: &mut TranslationCache,
+    mut translate: impl FnMut(&[&str]) -> Result<Vec<String>>,
+) -> Vec<ScreenEvent> {
+    let height = lines
+        .iter()
+        .map(|line| line.rect.y as u32 + line.rect.h)
+        .max()
+        .unwrap_or(1);
+    let pixels = vec![255; 300 * height as usize * 4];
+    let image = ImageView::new(300, height, 1200, &pixels).unwrap();
+    let mut events = Vec::new();
+    run_job_with_output(
+        8,
+        &image,
+        &mut FakeReader(Some(lines)),
+        &mut translate,
+        &AtomicBool::new(false),
+        cache,
+        JobOutput {
+            translator_caps: caps,
+            direction: lt_core::screen::Direction::Horizontal,
+            debug: false,
+            prepare: None,
+            emit: &mut |event| events.push(event),
+        },
+    );
+    events
+}
+
+fn many_lines() -> Vec<TextLine> {
+    (0..20)
+        .map(|index| line(10 + index * 100, &format!("测试第{index}条")))
+        .collect()
+}
+
+#[test]
+fn batches_respect_limits_and_complete_blocks_in_reading_order() {
+    let mut calls = Vec::new();
+    let events = run_batch(
+        many_lines(),
+        TranslatorCaps {
+            max_batch_items: 8,
+            max_batch_chars: 1000,
+            ..Default::default()
+        },
+        &mut TranslationCache::default(),
+        |texts| {
+            calls.push(
+                texts
+                    .iter()
+                    .map(|text| text.to_string())
+                    .collect::<Vec<_>>(),
+            );
+            Ok(texts.iter().map(|text| format!("en:{text}")).collect())
+        },
+    );
+    assert_eq!(calls.iter().map(Vec::len).collect::<Vec<_>>(), [8, 8, 4]);
+    assert_eq!(
+        calls.into_iter().flatten().collect::<Vec<_>>(),
+        many_lines()
+            .iter()
+            .map(|line| line.text.clone())
+            .collect::<Vec<_>>()
+    );
+    let mut expected = vec!["reading".to_owned(), "blocks 20".to_owned()];
+    expected.extend((0..20).map(|id| format!("translated {id}")));
+    expected.push("done".into());
+    assert_eq!(described(&events), expected);
+}
+
+#[test]
+fn a_short_batch_answer_fails_only_its_blocks_and_later_batches_continue() {
+    let mut calls = 0;
+    let events = run_batch(
+        many_lines(),
+        TranslatorCaps {
+            max_batch_items: 8,
+            max_batch_chars: 1000,
+            ..Default::default()
+        },
+        &mut TranslationCache::default(),
+        |texts| {
+            calls += 1;
+            let count = if calls == 2 {
+                texts.len() - 1
+            } else {
+                texts.len()
+            };
+            Ok(vec!["translated".into(); count])
+        },
+    );
+    assert_eq!(calls, 3);
+    let failed: Vec<_> = events
+        .iter()
+        .filter_map(|event| match event {
+            ScreenEvent::Failed { id, .. } => Some(*id),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(failed, (8..16).collect::<Vec<_>>());
+    assert!(matches!(events[21], ScreenEvent::Translated { id: 19, .. }));
+    assert!(matches!(events.last(), Some(ScreenEvent::Done { .. })));
+}
+
+#[test]
+fn batches_deduplicate_pieces_and_reuse_cached_answers_across_jobs() {
+    let long = format!("{}。{}。", "二".repeat(60), "三".repeat(60));
+    let lines = vec![line(10, &long), line(110, "确定"), line(210, "确定")];
+    let caps = TranslatorCaps {
+        max_batch_items: 8,
+        max_batch_chars: 1000,
+        ..Default::default()
+    };
+    let mut cache = TranslationCache::default();
+    let mut requests = Vec::new();
+    let events = run_batch(lines.clone(), caps.clone(), &mut cache, |texts| {
+        requests.push(
+            texts
+                .iter()
+                .map(|text| text.to_string())
+                .collect::<Vec<_>>(),
+        );
+        Ok(texts.iter().map(|_| " part ".into()).collect())
+    });
+    assert_eq!(requests.len(), 1);
+    assert_eq!(requests[0].len(), 3);
+    assert_eq!(
+        requests[0],
+        [
+            format!("{}。", "二".repeat(60)),
+            format!("{}。", "三".repeat(60)),
+            "确定".into()
+        ]
+    );
+    assert!(matches!(&events[2], ScreenEvent::Translated { text, .. } if text == "part part"));
+    let cached = run_batch(lines, caps, &mut cache, |_| {
+        panic!("cache must avoid the network")
+    });
+    assert_eq!(described(&cached), described(&events));
+}
+
+#[test]
+fn character_budget_counts_utf16_and_cuts_before_the_next_piece() {
+    let mut sizes = Vec::new();
+    let events = run_batch(
+        vec![line(10, "你好😀"), line(110, "世界😀"), line(210, "谢谢😀")],
+        TranslatorCaps {
+            max_batch_items: 8,
+            max_batch_chars: 8,
+            ..Default::default()
+        },
+        &mut TranslationCache::default(),
+        |texts| {
+            sizes.push(
+                texts
+                    .iter()
+                    .map(|text| text.encode_utf16().count())
+                    .sum::<usize>(),
+            );
+            Ok(vec!["answer".into(); texts.len()])
+        },
+    );
+    assert_eq!(sizes, [8, 4]);
+    assert_eq!(
+        described(&events),
+        [
+            "reading",
+            "blocks 3",
+            "translated 0",
+            "translated 1",
+            "translated 2",
+            "done"
+        ]
+    );
+}
+
+#[test]
+fn local_failure_skips_remaining_block_pieces_and_retries_a_repeated_later_block() {
+    let long = format!(
+        "{}。{}。{}。",
+        "一".repeat(60),
+        "二".repeat(60),
+        "三".repeat(60)
+    );
+    let mut calls = 0;
+    let (_, requests) = run(
+        Some(vec![line(10, &long), line(110, "确定"), line(210, "确定")]),
+        &mut TranslationCache::default(),
+        &AtomicBool::new(false),
+        |piece, _| {
+            calls += 1;
+            if calls <= 2 {
+                Err(translation_failed())
+            } else {
+                Ok(format!("en:{piece}"))
+            }
+        },
+        |_, _| {},
+    );
+    assert_eq!(
+        requests,
+        [
+            format!("{}。", "一".repeat(60)),
+            "确定".into(),
+            "确定".into()
+        ]
+    );
+}
+
+#[test]
+fn cancelling_after_a_cached_block_sends_no_later_local_request() {
+    let mut cache = TranslationCache::default();
+    run(
+        Some(vec![line(10, "确定")]),
+        &mut cache,
+        &AtomicBool::new(false),
+        |_, _| Ok("OK".into()),
+        |_, _| {},
+    );
+    let (events, requests) = run(
+        Some(vec![line(10, "确定"), line(110, "取消")]),
+        &mut cache,
+        &AtomicBool::new(false),
+        |_, _| panic!("cancel must precede the next request"),
+        |event, cancel| {
+            if matches!(event, ScreenEvent::Translated { .. }) {
+                cancel.store(true, Ordering::Release);
+            }
+        },
+    );
+    assert!(requests.is_empty());
+    assert_eq!(described(&events), ["reading", "blocks 2", "translated 0"]);
 }

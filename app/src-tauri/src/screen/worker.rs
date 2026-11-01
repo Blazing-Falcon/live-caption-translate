@@ -11,7 +11,7 @@ use lt_core::{
     error::{Error, Result},
     events::FailReason,
     screen::{
-        piece_translator, run_job_with_output, ImageView, JobOutput, ScreenEvent, TranslationCache,
+        batch_translator, run_job_with_output, ImageView, JobOutput, ScreenEvent, TranslationCache,
     },
 };
 use lt_core::{config::TranslateConfig, engines::Translator};
@@ -260,7 +260,15 @@ impl Worker {
         );
         server.failed = None;
         let cancel = &job.cancel;
-        let mut translate = |piece: &str| server.translate(piece, cancel);
+        let translator_caps = if server.config.engine.is_local() {
+            lt_core::engines::TranslatorCaps::default()
+        } else {
+            server
+                .client(false)
+                .map(|client| client.caps())
+                .unwrap_or_default()
+        };
+        let mut translate = |pieces: &[&str]| server.translate(pieces, cancel);
         let plates = &self.shared.screen.jobs.plates;
         let mut prepare = |image: &ImageView<'_>,
                            groups: &[lt_core::screen::line::Line],
@@ -275,6 +283,7 @@ impl Worker {
             cancel,
             cache,
             JobOutput {
+                translator_caps,
                 direction: job.direction,
                 emit: &mut emit,
                 prepare: Some(&mut prepare),
@@ -324,8 +333,8 @@ struct Server {
 }
 
 impl Server {
-    fn translate(&mut self, piece: &str, cancel: &Arc<AtomicBool>) -> Result<String> {
-        let first = piece_translator(self.client(false)?, cancel)(piece);
+    fn translate(&mut self, piece: &[&str], cancel: &Arc<AtomicBool>) -> Result<Vec<String>> {
+        let first = batch_translator(self.client(false)?, cancel)(piece);
         match first {
             // A server the supervisor gave up on is replaced by one on a new port. A crash it
             // restarts keeps the port, so blocks sent during that restart fail.
@@ -333,7 +342,7 @@ impl Server {
                 reason: FailReason::ServerUnavailable,
                 ..
             }) if self.config.engine.is_local() => {
-                piece_translator(self.client(true)?, cancel)(piece)
+                batch_translator(self.client(true)?, cancel)(piece)
             }
             other => other,
         }
