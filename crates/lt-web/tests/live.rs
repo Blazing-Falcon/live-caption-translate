@@ -104,3 +104,8 @@ fn openai_compatible_sentence() {
 fn google_alt_sentence_and_batch() {
     run_with(TranslateEngine::Google, true);
 }
+
+#[test]
+fn google_beta_sentence_and_batch() {
+    run_with(TranslateEngine::GoogleBeta, false);
+}

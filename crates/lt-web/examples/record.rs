@@ -16,7 +16,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         name.parse()?
     };
-    let translator = if alternate {
+    let mut translator = if alternate {
         lt_web::WebTranslator::google_alt()?
     } else {
         lt_web::WebTranslator::new(engine)?

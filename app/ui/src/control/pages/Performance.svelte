@@ -158,11 +158,12 @@
         <option value="local">Local model</option>
         <option value="microsoft">Microsoft</option>
         <option value="google">Google</option>
+        <option value="google_beta">Google Beta</option>
         <option value="openai">OpenAI-compatible</option>
       </select>
     </label>
     {#if config.translate.engine !== "local"}
-      <p class="help small">Captions and screenshot text are sent to {config.translate.engine === "openai" ? "your configured endpoint" : config.translate.engine === "microsoft" ? "Microsoft" : "Google"} to be translated.</p>
+      <p class="help small">Captions and screenshot text are sent to {config.translate.engine === "openai" ? "your configured endpoint" : config.translate.engine === "microsoft" ? "Microsoft" : config.translate.engine === "google_beta" ? "Google Beta" : "Google"} to be translated.</p>
     {/if}
     {#if config.translate.engine === "openai"}
       <label class="field">

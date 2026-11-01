@@ -81,3 +81,21 @@ pub fn encode(text: &str) -> String {
     }
     encoded
 }
+
+pub fn get(
+    agent: &ureq::Agent,
+    url: &str,
+    referer: Option<&str>,
+    control: &TranslationControl,
+) -> Result<String> {
+    let mut request = agent
+        .get(url)
+        .config()
+        .timeout_global(Some(timeout(control)?))
+        .build();
+    if let Some(referer) = referer {
+        request = request.header("Referer", referer);
+    }
+    let response = request.call().map_err(|error| map_error(error, control))?;
+    read(response, control)
+}

@@ -1,5 +1,6 @@
 mod google;
 mod google_alt;
+mod google_beta;
 mod http;
 mod microsoft;
 mod openai;
@@ -25,6 +26,7 @@ pub struct WebTranslator {
     engine: TranslateEngine,
     agent: ureq::Agent,
     google_alt: bool,
+    google_beta: google_beta::Session,
 }
 
 impl WebTranslator {
@@ -36,6 +38,7 @@ impl WebTranslator {
             engine,
             agent: http::agent(),
             google_alt: false,
+            google_beta: google_beta::Session::default(),
         })
     }
 
@@ -46,7 +49,7 @@ impl WebTranslator {
     }
 
     pub fn record_response(
-        &self,
+        &mut self,
         texts: &[&str],
         control: &TranslationControl,
     ) -> Result<(String, serde_json::Value)> {
@@ -66,6 +69,10 @@ impl WebTranslator {
         }
         match self.engine {
             TranslateEngine::Microsoft => microsoft::send(&self.agent, texts, control),
+            TranslateEngine::GoogleBeta => self
+                .google_beta
+                .send(&self.agent, texts, control)
+                .map(|raw| (raw, serde_json::Value::Null)),
             TranslateEngine::Google => {
                 google::send(&self.agent, texts, control).map(|raw| (raw, serde_json::Value::Null))
             }
@@ -87,6 +94,7 @@ pub fn parse_response(engine: TranslateEngine, raw: &str) -> Result<Vec<String>>
     match engine {
         TranslateEngine::Microsoft => microsoft::parse(raw),
         TranslateEngine::Google => google::parse(raw),
+        TranslateEngine::GoogleBeta => google_beta::parse(raw),
         TranslateEngine::Local | TranslateEngine::Openai => {
             Err(http::error("Local engine is not an online endpoint"))
         }
@@ -96,7 +104,7 @@ pub fn parse_response(engine: TranslateEngine, raw: &str) -> Result<Vec<String>>
 impl Translator for WebTranslator {
     fn caps(&self) -> TranslatorCaps {
         let (items, chars) = match self.engine {
-            TranslateEngine::Google => (50, 5000),
+            TranslateEngine::Google | TranslateEngine::GoogleBeta => (50, 5000),
             _ => (25, 1000),
         };
         TranslatorCaps {

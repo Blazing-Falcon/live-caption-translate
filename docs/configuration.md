@@ -43,7 +43,7 @@ pause_s = 0.8                   # silence that ends a line
 second_pass_threads = 2         # 1 to the logical CPUs of the PC
 
 [translate]
-engine = "local"                # "local" | "microsoft" | "google" | "openai"
+engine = "local"                # "local" | "microsoft" | "google" | "google_beta" | "openai"
 threads = 4                     # 1 to the logical CPUs of the PC
 
 [translate.openai]
@@ -122,13 +122,13 @@ The second pass always runs: each closed line is decoded again by the offline X-
 
 ### translate
 
-`engine` selects the translator for both captions and screenshots. Local is the default and keeps text on the PC. Microsoft, Google and OpenAI-compatible endpoints send recognized text to the selected service; audio, screenshots and image pixels stay on the PC. Online choices need no translation model and do not start llama-server. Speech recognition and screenshot text recognition still use local models.
+`engine` selects the translator for both captions and screenshots. Local is the default and keeps text on the PC. Microsoft, Google, Google Beta and OpenAI-compatible endpoints send recognized text to the selected service; audio, screenshots and image pixels stay on the PC. Online choices need no translation model and do not start llama-server. Speech recognition and screenshot text recognition still use local models.
 
 Changing the engine restarts the caption pipeline and clears screenshot translation reuse on the next job. Switching away from local stops its server after any current screenshot job releases it.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
-| `engine` | `local`, `microsoft`, `google`, `openai` | pipeline | Translator used by captions and screenshots. |
+| `engine` | `local`, `microsoft`, `google`, `google_beta`, `openai` | pipeline | Translator used by captions and screenshots. |
 | `threads` | 1–64 | pipeline | Local llama-server threads. The app uses at most the PC's logical CPUs. |
 
 ### translate.openai
@@ -208,3 +208,5 @@ Values use the Tauri global-shortcut format, for example `Ctrl+Shift+L`. An empt
 ## Environment variables
 
 For development only. See [development.md](development.md#environment-variables).
+
+Google Beta uses the page-translation endpoint and looks up its session key from the translate element at runtime. Its request budget is 50 items and 5,000 UTF-16 units.

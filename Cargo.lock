@@ -2550,6 +2550,7 @@ dependencies = [
  "getrandom 0.3.4",
  "hmac",
  "lt-core",
+ "regex",
  "serde",
  "serde_json",
  "sha2",

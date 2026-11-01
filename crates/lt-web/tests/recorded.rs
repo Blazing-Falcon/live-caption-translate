@@ -9,6 +9,11 @@ fn recorded_answers_preserve_count_and_text() {
             include_str!("fixtures/microsoft/public.expected.json"),
         ),
         (
+            TranslateEngine::GoogleBeta,
+            include_str!("fixtures/google_beta/public.json"),
+            include_str!("fixtures/google_beta/public.expected.json"),
+        ),
+        (
             TranslateEngine::Google,
             include_str!("fixtures/google/public.json"),
             include_str!("fixtures/google/public.expected.json"),

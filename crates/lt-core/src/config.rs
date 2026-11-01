@@ -25,11 +25,14 @@ pub enum TranslateEngine {
     Local,
     Microsoft,
     Google,
+    #[serde(rename = "google_beta")]
+    GoogleBeta,
     Openai,
 }
 
 impl TranslateEngine {
-    pub const NAMES: &'static [&'static str] = &["local", "microsoft", "google", "openai"];
+    pub const NAMES: &'static [&'static str] =
+        &["local", "microsoft", "google", "google_beta", "openai"];
     pub fn is_local(self) -> bool {
         self == Self::Local
     }
@@ -38,6 +41,7 @@ impl TranslateEngine {
             Self::Local => "local",
             Self::Microsoft => "microsoft",
             Self::Google => "google",
+            Self::GoogleBeta => "google_beta",
             Self::Openai => "openai",
         }
     }
@@ -54,6 +58,7 @@ impl std::str::FromStr for TranslateEngine {
             "local" => Ok(Self::Local),
             "microsoft" => Ok(Self::Microsoft),
             "google" => Ok(Self::Google),
+            "google_beta" => Ok(Self::GoogleBeta),
             "openai" => Ok(Self::Openai),
             _ => Err(format!("Unknown translation engine: {value}")),
         }
