@@ -133,6 +133,7 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
 
   test("selects in frame pixels and paints each block once it is translated", async ({ page }) => {
     await start(page);
+    await page.evaluate(() => { window.__lt.backend.plateReply = () => new Promise(() => {}); });
     const box = await page.locator(".frame").boundingBox();
     expect(box).toMatchObject({ x: 0, y: 0, width: 800, height: 480 });
 
@@ -160,11 +161,29 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
     await expect(page.locator("[data-block]")).toHaveCount(2);
     await expect(page.getByRole("status")).toHaveText("Done.");
 
+    // A group that reflows keeps its source width and left edge; the bubble grows by BUBBLE_EXPAND
+    // (2 css px, so 2 * SCALE frame px) on every side and never shrinks below the source height.
+    const grow = 2 * SCALE;
+    for (const block of [first, second]) {
+      const painted = await page.locator(`[data-block="${block.id}"]`).boundingBox();
+      const { x, y, width, height } = block.paint.bounds;
+      expect(painted?.x).toBeCloseTo((x - grow) / SCALE, 0);
+      expect(painted?.y).toBeCloseTo((y - grow) / SCALE, 0);
+      expect(painted?.width).toBeCloseTo((width + 2 * grow) / SCALE, 0);
+      expect(painted?.height).toBeGreaterThanOrEqual((height + 2 * grow) / SCALE - 0.5);
+      expect(painted!.x + painted!.width).toBeLessThanOrEqual(FRAME.width / SCALE);
+      expect(painted!.y + painted!.height).toBeLessThanOrEqual(FRAME.height / SCALE);
+    }
     const overflow = await page
       .locator("[data-block]")
       .evaluateAll((elements) => elements.map((element) => element.scrollHeight - element.clientHeight));
     expect(overflow).toHaveLength(2);
     expect(Math.max(...overflow)).toBeLessThanOrEqual(1);
+    // The plate never arrives, so the recorded source colors show.
+    const colors = await page
+      .locator('[data-block="0"]')
+      .evaluate((element) => ({ background: getComputedStyle(element).backgroundColor, color: getComputedStyle(element).color }));
+    expect(colors).toEqual({ background: "rgb(251, 250, 247)", color: "rgb(39, 38, 39)" });
   });
 
   test("Escape and a right click call screen_close", async ({ page }) => {
@@ -245,6 +264,15 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
     ]);
     const painted = await page.locator('[data-block="0"]').boundingBox();
     expect(painted?.width).toBeGreaterThan(rect.w / SCALE + 4);
+    // The word stays on one line, so the box is as tall as the font plus 6 css px of padding, and
+    // never shorter than the source box grown by 2 css px on each side.
+    const block = page.locator('[data-block="0"]');
+    await expect(block).toHaveAttribute("data-lines", "1");
+    const fontSize = await block.evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+    expect(painted?.x).toBeCloseTo((rect.x - 2 * SCALE) / SCALE, 0);
+    expect(painted?.y).toBeCloseTo((rect.y - 2 * SCALE) / SCALE, 0);
+    expect(painted?.height).toBeGreaterThanOrEqual((rect.h + 4 * SCALE) / SCALE - 0.5);
+    expect(painted?.height).toBeLessThanOrEqual(fontSize + 6 + 0.5);
   });
 
   test("copies the English or the Chinese, and shows the original while held", async ({ page }) => {
