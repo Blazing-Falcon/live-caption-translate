@@ -19,21 +19,6 @@ use serde_json::{json, Value};
 use std::{io::Read, sync::atomic::Ordering, time::Instant};
 
 const MAX_OUTPUT_BYTES: usize = 64 * 1024;
-/// An answer this many times longer than its source in characters is not a translation of it.
-const MAX_LENGTH_RATIO: usize = 12;
-/// Openings of a reply that answers the instruction instead of translating the line. They are
-/// lowercase because the check lowercases the answer first.
-const REPLY_PHRASES: [&str; 6] = [
-    "please translate",
-    "translate the following",
-    "here is the translation",
-    "here's the translation",
-    "the translation is",
-    "translated text",
-];
-/// A reply introduces what follows with a colon soon after its opening. A translation that only
-/// contains the words ("Please translate this.", "The translation is wrong.") has none.
-const REPLY_COLON_WITHIN: usize = 40;
 /// Hy-MT2's template ends a sentence with a control token. A leaked spelling of it is ordinary
 /// text, so a stop string catches it; the model has been seen to emit either full-width bar.
 pub const LEAKED_MARKERS: [&str; 6] = [
@@ -182,6 +167,7 @@ impl Translator for OpenAiCompatTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
             max_input_chars: 300,
+            ..TranslatorCaps::default()
         }
     }
 
@@ -230,29 +216,7 @@ fn finish(output: &mut TranslationOut) {
 /// instruction instead of translating. A leftover Chinese proper noun is not one of these: the
 /// pipeline shows it and counts it, so rejecting it would lose a real translation.
 fn answer_problem(output: &TranslationOut, request: &TranslateRequest<'_>) -> Option<&'static str> {
-    if output.text.is_empty() {
-        return Some("empty");
-    }
-    let source = request.text.chars().count().max(1);
-    if output.text.chars().count() > MAX_LENGTH_RATIO * source {
-        return Some("longer than a translation");
-    }
-    // The model sometimes answers the instruction instead of translating: "Please translate the
-    // following content into English: <line>". That is a reply, not a translation, and the line
-    // it repeats is already in the answer.
-    let lowered = output.text.to_lowercase();
-    let replies = REPLY_PHRASES.iter().any(|phrase| {
-        lowered.find(phrase).is_some_and(|at| {
-            lowered[at + phrase.len()..]
-                .chars()
-                .take(REPLY_COLON_WITHIN)
-                .any(|character| matches!(character, ':' | '：'))
-        })
-    });
-    if replies {
-        return Some("answered instead of translating");
-    }
-    None
+    lt_core::engines::answer_problem(output, request.text)
 }
 
 /// Remove a leaked marker spelling, including a truncated one at the end of the answer, and a

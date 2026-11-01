@@ -26,6 +26,7 @@ tauri-build = { version = "=2.7.1", features = [] }
 
 [dependencies]
 lt-core.workspace = true
+lt-web.workspace = true
 lt-audio.workspace = true
 lt-sherpa.workspace = true
 lt-llm.workspace = true

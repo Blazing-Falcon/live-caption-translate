@@ -28,11 +28,11 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
   real-model test is not a pass; say which tests ran.
 - A change to a config key, event or command updates `docs/configuration.md` or `docs/ipc.md` in
   the same commit.
-- OS code lives in `lt-audio` and the app, engine code in `lt-sherpa`, `lt-llm` and `lt-ocr`.
+- OS code lives in `lt-audio` and the app, engine code in `lt-sherpa`, `lt-llm`, `lt-web` and `lt-ocr`.
   `lt-core` has neither.
 - One owner thread per in-process engine. llama-server takes requests from the caption translator
   and the screen thread, one at a time each. No async runtime in the core. Bounded channels.
-- No network use except model downloads and the local llama-server. No telemetry.
+- No network use except model downloads, the local llama-server, and the online translation engine the user selects. No telemetry.
 - Never commit models, `testdata/fetched/`, `.deps/` or build output.
 - Write no comment unless the reason is not obvious from the code. One or two lines. No history,
   measurements, task names or document references in code; those go in `.agent/` or `docs/`.
@@ -56,6 +56,7 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
 | Vertical probability carving, crops, columns, ruby and turned-frame geometry | `crates/lt-core/src/screen/vertical/` |
 | OCR reuse and per-job repaired plates | `app/src-tauri/src/screen/reuse.rs`, `plates.rs`, `worker.rs` |
 | English screenshot layout, DOM ruler, debug outlines | `app/ui/src/lib/screen-layout.ts`, `screen-measure.ts`, `screen-debug.ts`, `app/ui/src/screen/` |
+| Online translation engines | `crates/lt-web/src/` |
 | Translator client, loopback HTTP | `crates/lt-llm/src/client.rs`, `http.rs` |
 | llama-server, model downloads | `crates/lt-llm/src/supervisor.rs`, `models/` |
 | Windows capture | `crates/lt-audio/src/windows/` |

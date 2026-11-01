@@ -43,6 +43,8 @@ pub enum Cmd {
     },
     /// Starts the translation server if it is not running; answers with its URL.
     EnsureServer(Sender<Result<String, String>>),
+    AcquireScreenServer(Sender<Result<String, String>>),
+    ReleaseScreenServer,
     Shutdown(Reply),
 }
 
@@ -55,6 +57,8 @@ struct Session {
     pipeline: Option<PipelineHandle>,
     transcript: Option<Transcript>,
     supervisor: Option<Supervisor>,
+    screen_users: usize,
+    stop_pending: bool,
 }
 
 pub struct Controller {
@@ -119,6 +123,20 @@ impl Controller {
                     let config = self.shared.config();
                     let _ = reply.send(self.ensure_server(&config));
                 }
+                Cmd::AcquireScreenServer(reply) => {
+                    let config = self.shared.config();
+                    let result = self.ensure_server(&config);
+                    if result.is_ok() {
+                        self.session.screen_users += 1;
+                    }
+                    let _ = reply.send(result);
+                }
+                Cmd::ReleaseScreenServer => {
+                    self.session.screen_users = self.session.screen_users.saturating_sub(1);
+                    if self.session.screen_users == 0 && self.session.stop_pending {
+                        self.stop_server();
+                    }
+                }
                 Cmd::Shutdown(reply) => {
                     self.stop_listening();
                     self.stop_server();
@@ -138,7 +156,7 @@ impl Controller {
         }
         let config = self.shared.config();
         let models = self.shared.paths.models(&config);
-        let missing = crate::models::missing_for(&models);
+        let missing = crate::models::missing_for(&models, config.translate.engine);
         if !missing.is_empty() {
             return Err(format!(
                 "Models are not ready: {}. The control window shows the download.",
@@ -163,13 +181,10 @@ impl Controller {
             state: EngineState::Ready,
             message: None,
         });
-        self.ensure_server(&config)?;
-        let (translator, pid) = engines::translator(
-            self.session
-                .supervisor
-                .as_ref()
-                .expect("a start leaves a running supervisor"),
-        )?;
+        if config.translate.engine.is_local() {
+            self.ensure_server(&config)?;
+        }
+        let (translator, pid) = engines::translator(&config, self.session.supervisor.as_ref())?;
         let (source, mode, label) = make_source(&config)?;
         let transcript = self.start_transcript(&config, mode, &label)?;
         let sampler = ProcessSampler::new(pid).map_err(|e| e.to_string())?;
@@ -207,14 +222,18 @@ impl Controller {
 
     /// The server's URL, after starting it if it is not running.
     fn ensure_server(&mut self, config: &Config) -> Result<String, String> {
+        if !config.translate.engine.is_local() {
+            return Err("The selected translator does not use a local server".into());
+        }
+        self.session.stop_pending = false;
         if self
             .session
             .supervisor
             .as_ref()
             .is_some_and(|supervisor| !supervisor.is_running())
         {
-            // It gave up after repeated crashes; a new start tries a new server.
-            self.stop_server();
+            // A dead child has no work to preserve, including requests holding a screen lease.
+            self.session.supervisor = None;
         }
         if self.session.supervisor.is_none() {
             let models = self.shared.paths.models(config);
@@ -273,7 +292,11 @@ impl Controller {
             },
             asr: lt_core::transcript::recognizer_name(),
             asr_second: lt_core::transcript::SECOND_PASS_NAME.into(),
-            translator: lt_core::transcript::translator_name(),
+            translator: if config.translate.engine.is_local() {
+                lt_core::transcript::translator_name()
+            } else {
+                config.translate.engine.to_string()
+            },
             config: SessionConfig::default(),
         };
         let writer =
@@ -329,6 +352,11 @@ impl Controller {
     }
 
     fn stop_server(&mut self) {
+        if self.session.screen_users > 0 && !self.shared.config().translate.engine.is_local() {
+            self.session.stop_pending = true;
+            return;
+        }
+        self.session.stop_pending = false;
         if let Some(mut supervisor) = self.session.supervisor.take() {
             if let Err(error) = supervisor.stop() {
                 tracing::warn!(%error, "Translator did not stop cleanly");
@@ -338,7 +366,7 @@ impl Controller {
 
     fn apply(&mut self, old: &Config, new: &Config) -> Result<(), String> {
         let Some(pipeline) = &self.session.pipeline else {
-            if applies::server_changed(old, new) {
+            if applies::server_changed(old, new) || !new.translate.engine.is_local() {
                 self.stop_server();
             }
             return Ok(());
@@ -351,7 +379,7 @@ impl Controller {
             Applies::Pipeline => {
                 let was_listening = self.shared.state().listening == ListeningStateKind::Listening;
                 self.stop_listening();
-                if applies::server_changed(old, new) {
+                if applies::server_changed(old, new) || !new.translate.engine.is_local() {
                     self.stop_server();
                 }
                 self.start()?;
@@ -415,4 +443,22 @@ pub fn server_url(shared: &Shared) -> Result<String, String> {
 pub fn shutdown(shared: &Shared) {
     let _ = request(shared, Cmd::Shutdown);
     lock(&shared.state).listening = ListeningStateKind::Paused;
+}
+
+/// A local screenshot job keeps its server until the last request has finished.
+pub struct ScreenServer {
+    pub url: String,
+    shared: Arc<Shared>,
+}
+impl Drop for ScreenServer {
+    fn drop(&mut self) {
+        let _ = self.shared.controller.send(Cmd::ReleaseScreenServer);
+    }
+}
+pub fn screen_server(shared: &Arc<Shared>) -> Result<ScreenServer, String> {
+    let url = request(shared, Cmd::AcquireScreenServer)?;
+    Ok(ScreenServer {
+        url,
+        shared: shared.clone(),
+    })
 }

@@ -20,6 +20,45 @@ pub const MAX_THREADS: u32 = 64;
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "lowercase")]
+pub enum TranslateEngine {
+    #[default]
+    Local,
+    Microsoft,
+    Google,
+}
+
+impl TranslateEngine {
+    pub const NAMES: &'static [&'static str] = &["local", "microsoft", "google"];
+    pub fn is_local(self) -> bool {
+        self == Self::Local
+    }
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Local => "local",
+            Self::Microsoft => "microsoft",
+            Self::Google => "google",
+        }
+    }
+}
+impl std::fmt::Display for TranslateEngine {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl std::str::FromStr for TranslateEngine {
+    type Err = String;
+    fn from_str(value: &str) -> std::result::Result<Self, Self::Err> {
+        match value {
+            "local" => Ok(Self::Local),
+            "microsoft" => Ok(Self::Microsoft),
+            "google" => Ok(Self::Google),
+            _ => Err(format!("Unknown translation engine: {value}")),
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum OverlayStyle {
     #[default]
     Panel,
@@ -204,12 +243,16 @@ impl Default for AsrConfig {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TranslateConfig {
+    pub engine: TranslateEngine,
     pub threads: u32,
 }
 
 impl Default for TranslateConfig {
     fn default() -> Self {
-        Self { threads: 4 }
+        Self {
+            engine: TranslateEngine::Local,
+            threads: 4,
+        }
     }
 }
 
@@ -419,6 +462,7 @@ const VALUE_MIGRATIONS: &[(&str, &str, &str)] = &[("overlay.style", "bar", "pane
 fn choices(path: &str) -> Option<&'static [&'static str]> {
     Some(match path {
         "capture.mode" => CaptureMode::NAMES,
+        "translate.engine" => TranslateEngine::NAMES,
         "overlay.style" => OverlayStyle::NAMES,
         "overlay.panel_edge" => PanelEdge::NAMES,
         "logging.level" => LogLevel::NAMES,

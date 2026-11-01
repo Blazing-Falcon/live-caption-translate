@@ -26,6 +26,8 @@ pub enum Commands {
 
 #[derive(Args)]
 pub struct ReplayArgs {
+    #[arg(long)]
+    pub engine: Option<lt_core::config::TranslateEngine>,
     pub wav: PathBuf,
     #[arg(long, default_value_t = 0.0, value_parser = nonnegative)]
     pub start: f64,
@@ -52,6 +54,10 @@ pub struct ReplayArgs {
 
 #[derive(Args)]
 pub struct ScreenArgs {
+    #[arg(long)]
+    pub engine: Option<lt_core::config::TranslateEngine>,
+    #[arg(long, env = "LT_CONFIG")]
+    pub config: Option<PathBuf>,
     #[arg(long, value_enum, default_value = "horizontal")]
     pub direction: DirectionArg,
     pub png: PathBuf,

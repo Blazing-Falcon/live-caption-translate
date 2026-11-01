@@ -20,9 +20,18 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     let config_path = match &cli.command {
         Commands::Replay(args) => args.config.as_deref(),
-        Commands::Models { .. } | Commands::Screen(_) => None,
+        Commands::Screen(args) => args.config.as_deref(),
+        Commands::Models { .. } => None,
     };
-    let (config, messages) = engines::config(config_path)?;
+    let (mut config, messages) = engines::config(config_path)?;
+    let engine = match &cli.command {
+        Commands::Replay(args) => args.engine,
+        Commands::Screen(args) => args.engine,
+        Commands::Models { .. } => None,
+    };
+    if let Some(engine) = engine {
+        config.translate.engine = engine;
+    }
     let filter = std::env::var("LT_LOG")
         .or_else(|_| std::env::var("RUST_LOG"))
         .unwrap_or_else(|_| config.logging.level.to_string());

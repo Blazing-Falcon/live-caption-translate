@@ -16,6 +16,7 @@ ocr = ["sherpa", "llm", "dep:lt-ocr", "dep:png"]
 [dependencies]
 # `--fake` replay runs the deterministic engines, so this is not test-only.
 lt-core = { workspace = true, features = ["fakes"] }
+lt-web.workspace = true
 lt-audio.workspace = true
 lt-sherpa = { workspace = true, optional = true }
 lt-llm = { workspace = true, optional = true }

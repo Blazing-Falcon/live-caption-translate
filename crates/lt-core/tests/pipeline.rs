@@ -256,6 +256,7 @@ impl Translator for RecordingTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
             max_input_chars: 300,
+            ..TranslatorCaps::default()
         }
     }
     fn warm_up(&mut self, control: &TranslationControl) -> Result<()> {
@@ -311,6 +312,7 @@ impl Translator for SeededTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
             max_input_chars: 300,
+            ..TranslatorCaps::default()
         }
     }
     fn warm_up(&mut self, _: &TranslationControl) -> Result<()> {
@@ -980,6 +982,7 @@ impl Translator for PanickingTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
             max_input_chars: 300,
+            ..TranslatorCaps::default()
         }
     }
     fn warm_up(&mut self, _: &TranslationControl) -> Result<()> {

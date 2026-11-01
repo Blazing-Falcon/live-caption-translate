@@ -137,7 +137,7 @@ pub fn run() {
             }
             let models = paths.models(&config);
             let state = state::AppState {
-                models_ready: models::all_ready(&models),
+                models_ready: models::all_ready(&models, config.translate.engine),
                 overlay_visible: config.overlay.visible,
                 ..Default::default()
             };

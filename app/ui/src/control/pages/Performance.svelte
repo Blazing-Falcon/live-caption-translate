@@ -54,6 +54,12 @@
     reconcileChecked(input, get(liveConfig)?.performance.low_priority ?? config.performance.low_priority);
   }
 
+  async function chooseEngine(event: Event): Promise<void> {
+    const select = event.currentTarget as HTMLSelectElement;
+    const saved = await session.save("translate.engine", { translate: { engine: select.value as Config["translate"]["engine"] } });
+    if (!saved) select.value = config.translate.engine;
+  }
+
   async function chooseThreads(event: Event, table: "asr" | "translate"): Promise<void> {
     const select = event.currentTarget as HTMLSelectElement;
     const saved = await session.save(`${table}.threads`, threadsPatch(table, Number(select.value)));
@@ -121,12 +127,23 @@
 
   <div class="stack">
     <h3 class="section-title">Translation</h3>
+    <label class="field">
+      <span>Translator</span>
+      <select class="select" value={config.translate.engine} data-testid="translate-engine" onchange={chooseEngine}>
+        <option value="local">Local model</option>
+        <option value="microsoft">Microsoft</option>
+        <option value="google">Google</option>
+      </select>
+    </label>
+    {#if config.translate.engine !== "local"}
+      <p class="help small">Captions and screenshot text are sent to {config.translate.engine === "microsoft" ? "Microsoft" : "Google"} to be translated.</p>
+    {/if}
     <div class="field">
-      <span>Translation model</span>
+      <span>Local translation model</span>
       <span class="model-name" data-testid="translate-model">Tencent Hy-MT2 1.8B (1.25-bit)</span>
     </div>
     <label class="field">
-      <span>Translator threads</span>
+      <span>Local model threads</span>
       <select
         class="select"
         value={String(config.translate.threads)}
@@ -149,7 +166,7 @@
         <span>Give games priority</span>
       </label>
       <p id="help-low-priority" class="help small">
-        Runs translation at low priority so games stay smooth. Off: English can appear slightly sooner, but uses more CPU.
+        Runs the local translation model at low priority so games stay smooth. Off: English can appear slightly sooner, but uses more CPU.
       </p>
     </div>
   </div>
@@ -200,7 +217,7 @@
       <dt>Memory</dt>
       <dd data-testid="stat-memory">{$stats ? formatMemory(totalMemoryMb($stats)) : "—"}</dd>
       <span class="note">
-        CPU {$stats ? `${totalCpu($stats)}%` : "—"}, app and translation server
+        CPU {$stats ? `${totalCpu($stats)}%` : "—"}, {config.translate.engine === "local" ? "app and translation server" : "app"}
       </span>
     </div>
   </dl>

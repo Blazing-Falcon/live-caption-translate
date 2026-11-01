@@ -1,0 +1,6 @@
+{
+  "date": "Sun, 01 Nov 2026 09:01:34GMT",
+  "nonce": "1d4d527ba6f5d419694cda40db9de3ae",
+  "signature": "MSTranslatorAndroidApp::vre0qaliYpW5NXnyDpv/x2QTgWoa2jPuRRqKCpnBSOs=::Sun, 01 Nov 2026 09:01:34GMT::1d4d527ba6f5d419694cda40db9de3ae",
+  "url": "api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=en"
+}

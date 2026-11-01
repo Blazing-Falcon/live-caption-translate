@@ -40,7 +40,10 @@ fn frozen_translation_sentences_against_configured_llama_server() {
         model.display()
     );
     // Three MT threads leave one core for the app/ASR within the user's budget.
-    let config = lt_core::config::TranslateConfig { threads: 3 };
+    let config = lt_core::config::TranslateConfig {
+        threads: 3,
+        ..Default::default()
+    };
     let mut supervisor = Supervisor::start(
         ServerOptions::new(PathBuf::from(binary), model, &config),
         EventBus::default(),

@@ -6,6 +6,52 @@ use serde_json::Value;
 use std::{path::PathBuf, process::Command};
 
 #[test]
+fn online_screen_needs_no_server_binary() {
+    if std::env::var("LT_WEB_LIVE").as_deref() != Ok("1")
+        || std::env::var_os("LT_MODELS_DIR").is_none()
+    {
+        eprintln!("Live online screen test skipped: set LT_WEB_LIVE=1 and LT_MODELS_DIR");
+        return;
+    }
+    let workspace = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let out = workspace
+        .join("target")
+        .join(format!("online-screen-{}.json", std::process::id()));
+    let run = Command::new(env!("CARGO_BIN_EXE_lt-cli"))
+        .current_dir(&workspace)
+        .env_remove("LT_LLAMA_SERVER")
+        .env_remove("LT_CONFIG")
+        .args([
+            "screen",
+            "testdata/screen/article@1.png",
+            "--engine",
+            "microsoft",
+            "--server",
+            "target/no-such-server.exe",
+            "--out",
+        ])
+        .arg(&out)
+        .output()
+        .unwrap();
+    assert!(
+        run.status.success(),
+        "{}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let output: Value = serde_json::from_slice(&std::fs::read(&out).unwrap()).unwrap();
+    std::fs::remove_file(out).unwrap();
+    let events = output["events"].as_array().unwrap();
+    assert_eq!(
+        events
+            .iter()
+            .filter(|entry| entry["event"]["type"] == "translated")
+            .count(),
+        2
+    );
+    assert_eq!(events.last().unwrap()["event"]["type"], "done");
+}
+
+#[test]
 fn every_block_of_the_article_is_translated() {
     if std::env::var_os("LT_MODELS_DIR").is_none() || std::env::var_os("LT_LLAMA_SERVER").is_none()
     {

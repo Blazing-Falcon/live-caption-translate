@@ -20,6 +20,23 @@ async function flip(locator: Locator, checked: boolean): Promise<void> {
 }
 
 test.describe("control window (browser simulation with mocked transport)", () => {
+  test("translator choice saves one engine and explains where text goes", async ({ page }) => {
+    await open(page, "control");
+    await page.getByRole("tab", { name: "Performance" }).click();
+    const select = page.getByTestId("translate-engine");
+    await expect(select).toHaveValue("local");
+    await select.selectOption("microsoft");
+    await expectPatch(page, { translate: { engine: "microsoft" } });
+    await expect(page.getByText("Captions and screenshot text are sent to Microsoft to be translated.")).toBeVisible();
+    await expect(page.getByText(/CPU .*app and translation server/)).toHaveCount(0);
+    await select.selectOption("google");
+    await expectPatch(page, { translate: { engine: "google" } });
+    await expect(page.getByText("Captions and screenshot text are sent to Google to be translated.")).toBeVisible();
+    await select.selectOption("local");
+    await expectPatch(page, { translate: { engine: "local" } });
+    await expect(page.getByText(/Captions and screenshot text are sent/)).toHaveCount(0);
+  });
+
   test("renders the shell and makes no network request outside localhost", async ({ page }) => {
     const external = await open(page, "control");
     await expect(page.getByTestId("header-title")).toHaveText("Listening");

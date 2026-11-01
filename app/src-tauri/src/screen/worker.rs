@@ -14,6 +14,7 @@ use lt_core::{
         piece_translator, run_job_with_output, ImageView, JobOutput, ScreenEvent, TranslationCache,
     },
 };
+use lt_core::{config::TranslateConfig, engines::Translator};
 use lt_llm::{models::ModelState, OpenAiCompatTranslator};
 use lt_ocr::{OcrEngine, OCR_MODEL};
 use std::{
@@ -135,6 +136,8 @@ pub fn spawn(shared: Arc<Shared>, work: Receiver<Work>) -> std::io::Result<JoinH
                 server: Server {
                     shared: shared.clone(),
                     client: None,
+                    config: TranslateConfig::default(),
+                    lease: None,
                     failed: None,
                 },
                 shared,
@@ -226,6 +229,12 @@ impl Worker {
                 return;
             }
         };
+        let config = self.shared.config().translate;
+        if self.server.config != config {
+            self.server.client = None;
+            self.server.config = config;
+            self.cache = TranslationCache::default();
+        }
         let Self {
             engine,
             reuse,
@@ -272,6 +281,7 @@ impl Worker {
                 debug: job.debug,
             },
         );
+        server.lease = None;
     }
 }
 
@@ -306,7 +316,9 @@ fn to_frame(event: &mut ScreenEvent, (x, y): (i32, i32)) {
 /// A client of the translation server the controller owns.
 struct Server {
     shared: Arc<Shared>,
-    client: Option<OpenAiCompatTranslator>,
+    client: Option<Box<dyn Translator>>,
+    config: TranslateConfig,
+    lease: Option<controller::ScreenServer>,
     /// Why the server could not start in this job; later blocks fail at once.
     failed: Option<String>,
 }
@@ -320,23 +332,36 @@ impl Server {
             Err(Error::Translation {
                 reason: FailReason::ServerUnavailable,
                 ..
-            }) => piece_translator(self.client(true)?, cancel)(piece),
+            }) if self.config.engine.is_local() => {
+                piece_translator(self.client(true)?, cancel)(piece)
+            }
             other => other,
         }
     }
 
-    fn client(&mut self, fresh: bool) -> Result<&mut OpenAiCompatTranslator> {
+    fn client(&mut self, fresh: bool) -> Result<&mut dyn Translator> {
         if let Some(message) = &self.failed {
             return Err(Error::Engine(message.clone()));
         }
+        if self.config.engine.is_local() && self.lease.is_none() {
+            let lease = controller::screen_server(&self.shared)
+                .inspect_err(|message| self.failed = Some(message.clone()))
+                .map_err(Error::Engine)?;
+            self.client = Some(Box::new(OpenAiCompatTranslator::new(&lease.url)?));
+            self.lease = Some(lease);
+        }
         if fresh || self.client.is_none() {
             self.client = None;
-            let url = controller::server_url(&self.shared).inspect_err(|message| {
-                self.failed = Some(message.clone());
+            self.client = Some(if self.config.engine.is_local() {
+                let url = controller::server_url(&self.shared)
+                    .inspect_err(|message| self.failed = Some(message.clone()))
+                    .map_err(Error::Engine)?;
+                Box::new(OpenAiCompatTranslator::new(&url)?)
+            } else {
+                lt_web::build(&self.config)?
             });
-            self.client = Some(OpenAiCompatTranslator::new(&url.map_err(Error::Engine)?)?);
         }
-        Ok(self.client.as_mut().expect("connected above"))
+        Ok(&mut **self.client.as_mut().expect("connected above"))
     }
 }
 

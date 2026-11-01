@@ -522,6 +522,7 @@ mod tests {
         fn caps(&self) -> TranslatorCaps {
             TranslatorCaps {
                 max_input_chars: 300,
+                ..TranslatorCaps::default()
             }
         }
 

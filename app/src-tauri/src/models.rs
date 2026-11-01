@@ -12,24 +12,15 @@ use std::{
 use tauri::Emitter;
 
 /// Every model needed to listen is on disk and verified.
-pub fn all_ready(dir: &Path) -> bool {
-    lt_llm::models::status(dir)
-        .map(|models| {
-            models
-                .iter()
-                .filter(|m| !m.optional)
-                .all(|m| m.state == ModelState::Ready)
-        })
-        .unwrap_or(false)
+pub fn all_ready(dir: &Path, engine: lt_core::config::TranslateEngine) -> bool {
+    missing_for(dir, engine).is_empty()
 }
 
-/// Names of the models that listening needs and that are not ready on disk.
-pub fn missing_for(dir: &Path) -> Vec<String> {
-    let wanted = vec![
-        lt_sherpa::XASR_STREAM_MODEL,
-        lt_sherpa::XASR_OFFLINE_MODEL,
-        lt_core::config::TranslateConfig::MODEL.0,
-    ];
+pub fn missing_for(dir: &Path, engine: lt_core::config::TranslateEngine) -> Vec<String> {
+    let mut wanted = vec![lt_sherpa::XASR_STREAM_MODEL, lt_sherpa::XASR_OFFLINE_MODEL];
+    if engine.is_local() {
+        wanted.push(lt_core::config::TranslateConfig::MODEL.0);
+    }
     match lt_llm::models::status(dir) {
         Ok(models) => models
             .into_iter()
@@ -80,10 +71,18 @@ impl Models {
         let disk = ModelManager::new()
             .and_then(|manager| manager.status(dir))
             .map_err(|e| e.to_string())?;
-        Ok(merge(disk, &lock(&self.live)))
+        let mut statuses = merge(disk, &lock(&self.live));
+        if !shared.config().translate.engine.is_local() {
+            for status in &mut statuses {
+                if status.id == lt_core::config::TranslateConfig::MODEL.0 {
+                    status.optional = true;
+                }
+            }
+        }
+        Ok(statuses)
     }
 
-    fn publish(&self, shared: &Shared) {
+    pub fn publish(&self, shared: &Shared) {
         if let Ok(statuses) = self.status(shared) {
             let ready = statuses
                 .iter()
@@ -141,6 +140,21 @@ impl Models {
                         let dir = shared.paths.models(&shared.config());
                         let progress = &mut |status| models.record(&shared, status);
                         match &only {
+                            None if !shared.config().translate.engine.is_local() => manager
+                                .fetch_id(
+                                    &dir,
+                                    lt_sherpa::XASR_STREAM_MODEL,
+                                    &models.cancel,
+                                    progress,
+                                )
+                                .and_then(|_| {
+                                    manager.fetch_id(
+                                        &dir,
+                                        lt_sherpa::XASR_OFFLINE_MODEL,
+                                        &models.cancel,
+                                        progress,
+                                    )
+                                }),
                             None => manager.fetch(dir, &models.cancel, progress),
                             Some(id) => manager.fetch_id(dir, id, &models.cancel, progress),
                         }

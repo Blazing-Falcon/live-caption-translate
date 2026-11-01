@@ -103,9 +103,30 @@ pub trait TextRecognizer: Send {
     }
 }
 
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum PreviewMode {
+    #[default]
+    Live,
+    Clauses,
+}
+
 #[derive(Clone, Debug)]
 pub struct TranslatorCaps {
     pub max_input_chars: usize,
+    pub previews: PreviewMode,
+    pub max_batch_items: usize,
+    pub max_batch_chars: usize,
+}
+
+impl Default for TranslatorCaps {
+    fn default() -> Self {
+        Self {
+            max_input_chars: 300,
+            previews: PreviewMode::Live,
+            max_batch_items: 1,
+            max_batch_chars: 300,
+        }
+    }
 }
 
 /// Built-in translators must check this on each blocking or streaming step, so shutdown never
@@ -165,6 +186,27 @@ pub trait Translator: Send {
         request: &TranslateRequest<'_>,
         on_delta: &mut dyn FnMut(&str),
     ) -> Result<TranslationOut>;
+    fn translate_batch(
+        &mut self,
+        texts: &[&str],
+        control: &TranslationControl,
+    ) -> Result<Vec<TranslationOut>> {
+        texts
+            .iter()
+            .map(|text| {
+                control.check()?;
+                self.translate(
+                    &TranslateRequest {
+                        id: UtteranceId(0),
+                        text,
+                        max_tokens: None,
+                        control: control.clone(),
+                    },
+                    &mut |_| {},
+                )
+            })
+            .collect()
+    }
 }
 
 /// One request's time limit, including the stream.
@@ -179,4 +221,46 @@ pub fn max_tokens(text: &str) -> u32 {
     u32::try_from(wanted)
         .unwrap_or(u32::MAX)
         .clamp(24, MAX_TOKENS_CAP)
+}
+
+/// An answer this many times longer than its source in characters is not a translation of it.
+const MAX_LENGTH_RATIO: usize = 12;
+/// Openings of a reply that answers the instruction instead of translating the line. They are
+/// lowercase because the check lowercases the answer first.
+const REPLY_PHRASES: [&str; 6] = [
+    "please translate",
+    "translate the following",
+    "here is the translation",
+    "here's the translation",
+    "the translation is",
+    "translated text",
+];
+/// A reply introduces what follows with a colon soon after its opening. A translation that only
+/// contains the words ("Please translate this.", "The translation is wrong.") has none.
+const REPLY_COLON_WITHIN: usize = 40;
+
+pub fn answer_problem(output: &TranslationOut, source_text: &str) -> Option<&'static str> {
+    if output.text.is_empty() {
+        return Some("empty");
+    }
+    let source = source_text.chars().count().max(1);
+    if output.text.chars().count() > MAX_LENGTH_RATIO * source {
+        return Some("longer than a translation");
+    }
+    // The model sometimes answers the instruction instead of translating: "Please translate the
+    // following content into English: <line>". That is a reply, not a translation, and the line
+    // it repeats is already in the answer.
+    let lowered = output.text.to_lowercase();
+    let replies = REPLY_PHRASES.iter().any(|phrase| {
+        lowered.find(phrase).is_some_and(|at| {
+            lowered[at + phrase.len()..]
+                .chars()
+                .take(REPLY_COLON_WITHIN)
+                .any(|character| matches!(character, ':' | '：'))
+        })
+    });
+    if replies {
+        return Some("answered instead of translating");
+    }
+    None
 }

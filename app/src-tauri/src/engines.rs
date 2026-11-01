@@ -57,8 +57,15 @@ pub fn start_supervisor(
 
 /// A client for the server the supervisor owns.
 pub fn translator(
-    supervisor: &Supervisor,
+    config: &Config,
+    supervisor: Option<&Supervisor>,
 ) -> Result<(Box<dyn Translator>, Arc<AtomicU32>), String> {
+    if !config.translate.engine.is_local() {
+        return lt_web::build(&config.translate)
+            .map(|translator| (translator, Arc::new(AtomicU32::new(0))))
+            .map_err(|e| e.to_string());
+    }
+    let supervisor = supervisor.ok_or("Local translation server is not running")?;
     let translator =
         lt_llm::OpenAiCompatTranslator::new(supervisor.url()).map_err(|e| e.to_string())?;
     Ok((Box::new(translator), supervisor.child_pid()))

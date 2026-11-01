@@ -157,6 +157,7 @@ impl Translator for FakeTranslator {
     fn caps(&self) -> TranslatorCaps {
         TranslatorCaps {
             max_input_chars: 300,
+            ..TranslatorCaps::default()
         }
     }
     fn warm_up(&mut self, control: &TranslationControl) -> Result<()> {

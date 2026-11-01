@@ -30,6 +30,7 @@ export interface Config {
     second_pass_threads: number;
   };
   translate: {
+    engine: "local" | "microsoft" | "google";
     threads: number;
   };
   overlay: {
@@ -216,6 +217,7 @@ export const DEFAULT_CONFIG: Config = {
     "second_pass_threads": 2
   },
   "translate": {
+    "engine": "local",
     "threads": 4
   },
   "overlay": {

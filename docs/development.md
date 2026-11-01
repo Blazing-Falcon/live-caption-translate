@@ -110,7 +110,7 @@ python scripts\replay-checks.py out\conv.events.jsonl      # event order, repeat
 
 ## Screenshots
 
-`lt-cli screen` runs the app's screenshot path on a PNG: it reads the text, groups it into blocks and translates each block. It needs the `ocr` feature (which turns on `sherpa` and `llm`) and the text recognition model. Unless you pass `--no-translate`, it also needs the translation model and `llama-server`.
+`lt-cli screen` runs the app's screenshot path on a PNG: it reads the text, groups it into blocks and translates each block. It needs the `ocr` feature (which turns on `sherpa` and `llm`) and the text recognition model. Unless you pass `--no-translate`, the local engine also needs the translation model and `llama-server`. `--engine microsoft` or `--engine google` uses the selected online translator instead, without either local translation asset. Both `replay` and `screen` accept `--engine`, overriding `translate.engine` from `--config` or `LT_CONFIG`.
 
 Pass `--explain` to include `decisions` and `grouping_trace` in the output JSON.
 Each verdict names its source lines, rule, join/refusal and geometry. Row verdicts
@@ -181,3 +181,18 @@ effects and display resampling, so use the canonical PNG tests for numeric parit
 ```
 
 The script builds the UI and the release app. It makes `dist/LiveTranslation-<version>-win-x64.zip` with the app, the native DLLs, `llama-server`, the WebView2 bootstrapper (signature checked), the notices and `docs/USER-README.md`. It does not include models. `-SkipUi`, `-SkipBuild`, `-SkipBootstrapper` and `-Jobs` change the steps.
+
+### Online Translation Tests
+
+`cargo test -p lt-web` checks recorded answers and an accepted request signature without network access. Live tests are opt-in and are separate from `check.ps1`:
+
+```powershell
+$env:LT_WEB_LIVE = '1'
+cargo test -p lt-web --test live -- --nocapture --test-threads=1
+cargo test -p lt-cli --features ocr --test screen online_screen -- --nocapture
+cargo run -p lt-web --example record -- microsoft
+cargo run -p lt-web --example record -- google
+Remove-Item Env:LT_WEB_LIVE
+```
+
+The recorder writes fixed public sentences and raw answers under `crates/lt-web/tests/fixtures/`. Regenerate a recording only when the endpoint contract changes on purpose, inspect its parsed expected text, and record the command and date in the fixture README. Never send private screenshots, their recognized text or private transcripts to an online test.

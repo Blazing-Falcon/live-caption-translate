@@ -140,8 +140,10 @@ pub fn toggle(shared: &Arc<Shared>) {
     shared.screen.jobs.preload();
     let shared = shared.clone();
     std::thread::spawn(move || {
-        if let Err(message) = crate::controller::server_url(&shared) {
-            tracing::warn!(message, "Translation server did not start for a screenshot");
+        if shared.config().translate.engine.is_local() {
+            if let Err(message) = crate::controller::server_url(&shared) {
+                tracing::warn!(message, "Translation server did not start for a screenshot");
+            }
         }
     });
 }

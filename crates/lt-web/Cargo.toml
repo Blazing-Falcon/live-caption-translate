@@ -1,0 +1,20 @@
+[package]
+name = "lt-web"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+lt-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+ureq = { version = "~3.4.2", default-features = false, features = ["json", "rustls", "win-system-proxy"] }
+hmac = "0.12"
+sha2 = "0.10"
+base64 = "0.22"
+getrandom = "0.3"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }

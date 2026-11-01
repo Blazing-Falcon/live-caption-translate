@@ -141,6 +141,9 @@ impl Shared {
     }
 
     fn on_config_changed(&self, old: &Config, new: &Config) {
+        if old.translate.engine != new.translate.engine {
+            self.models.publish(self);
+        }
         if old.hotkeys != new.hotkeys {
             crate::hotkeys::register(&self.handle, &new.hotkeys);
         }

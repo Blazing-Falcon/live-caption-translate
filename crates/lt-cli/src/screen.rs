@@ -43,7 +43,7 @@ mod run {
     struct Server {
         translator: Box<dyn Translator>,
         // Kills the child when dropped.
-        _supervisor: lt_llm::supervisor::Supervisor,
+        _supervisor: Option<lt_llm::supervisor::Supervisor>,
     }
 
     /// Keeps the lines the engine found, which the job reports only as blocks.

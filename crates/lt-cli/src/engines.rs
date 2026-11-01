@@ -93,7 +93,7 @@ pub fn build(
             asr,
             second_pass,
             translator,
-            supervisor: Some(supervisor),
+            supervisor,
             pid,
         })
     }
@@ -107,7 +107,7 @@ pub fn build(
 #[cfg(feature = "llm")]
 pub type TranslationEngine = (
     Box<dyn Translator>,
-    lt_llm::supervisor::Supervisor,
+    Option<lt_llm::supervisor::Supervisor>,
     Arc<AtomicU32>,
 );
 
@@ -120,6 +120,13 @@ pub fn translator(
     cancelled: &AtomicBool,
 ) -> Result<TranslationEngine> {
     check_cancel(cancelled)?;
+    if !config.translate.engine.is_local() {
+        return Ok((
+            lt_web::build(&config.translate)?,
+            None,
+            Arc::new(AtomicU32::new(0)),
+        ));
+    }
     let binary = binary.map(Path::to_path_buf).unwrap_or_else(default_binary);
     let (id, file) = lt_core::config::TranslateConfig::MODEL;
     let options = lt_llm::supervisor::ServerOptions::new(
@@ -134,7 +141,7 @@ pub fn translator(
         .context("Starting local translator")?;
     let translator = lt_llm::OpenAiCompatTranslator::new(supervisor.url())?;
     let pid = supervisor.child_pid();
-    Ok((Box::new(translator), supervisor, pid))
+    Ok((Box::new(translator), Some(supervisor), pid))
 }
 
 #[cfg(feature = "llm")]
@@ -148,4 +155,28 @@ fn default_binary() -> PathBuf {
         .ok()
         .and_then(|path| path.parent().map(|parent| parent.join(name)))
         .unwrap_or_else(|| name.into())
+}
+
+#[cfg(all(test, feature = "llm"))]
+mod tests {
+    use super::*;
+    #[test]
+    fn online_engine_builds_without_local_assets_or_process() {
+        let mut config = Config::default();
+        config.translate.engine = lt_core::config::TranslateEngine::Microsoft;
+        let (translator, supervisor, pid) = translator(
+            &config,
+            Path::new("missing-models"),
+            Some(Path::new("missing-server")),
+            &EventBus::default(),
+            &AtomicBool::new(false),
+        )
+        .unwrap();
+        assert!(supervisor.is_none());
+        assert_eq!(pid.load(Ordering::Relaxed), 0);
+        assert_eq!(
+            translator.caps().previews,
+            lt_core::engines::PreviewMode::Clauses
+        );
+    }
 }

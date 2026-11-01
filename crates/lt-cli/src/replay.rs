@@ -95,7 +95,11 @@ pub fn replay(args: ReplayArgs, config: Config, cancelled: Arc<AtomicBool>) -> R
         translator: if args.fake {
             "fake".into()
         } else {
-            lt_core::transcript::translator_name()
+            if config.translate.engine.is_local() {
+                lt_core::transcript::translator_name()
+            } else {
+                config.translate.engine.to_string()
+            }
         },
         config: SessionConfig::default(),
     };
