@@ -114,3 +114,8 @@ fn google_beta_sentence_and_batch() {
 fn bing_sentence_and_batch() {
     run_with(TranslateEngine::Bing, false);
 }
+
+#[test]
+fn youdao_sentence_and_batch() {
+    run_with(TranslateEngine::Youdao, false);
+}

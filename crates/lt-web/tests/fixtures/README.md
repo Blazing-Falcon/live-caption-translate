@@ -5,6 +5,7 @@ Recorded on 2026-11-01 with `LT_WEB_LIVE=1`:
 ```powershell
 cargo run -p lt-web --example record -- microsoft
 cargo run -p lt-web --example record -- google
+cargo run -p lt-web --example record -- youdao
 cargo run -p lt-web --example record -- bing
 cargo run -p lt-web --example record -- google_beta
 cargo run -p lt-web --example record -- google_alt
@@ -19,3 +20,5 @@ Google alternate records the original position-tagged batchexecute response. It 
 Google Beta recordings contain translation bodies only. Runtime script keys and request headers are not saved.
 
 Bing accepts one text per call, so its three raw bodies are public-1.json through public-3.json. Cookies and page credentials are never recorded.
+
+For Youdao, public.transport.txt is the exact encrypted response body and public.json is that body after transport decryption. The session signing key, AES key and IV are never stored. A separate synthetic-key regression verifies transport decryption.

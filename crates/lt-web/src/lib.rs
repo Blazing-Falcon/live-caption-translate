@@ -5,6 +5,7 @@ mod google_beta;
 mod http;
 mod microsoft;
 mod openai;
+mod youdao;
 pub use openai::OpenAiTranslator;
 
 use lt_core::{
@@ -29,6 +30,7 @@ pub struct WebTranslator {
     google_alt: bool,
     google_beta: google_beta::Session,
     bing: bing::Session,
+    youdao: youdao::Session,
 }
 
 impl WebTranslator {
@@ -42,6 +44,7 @@ impl WebTranslator {
             google_alt: false,
             google_beta: google_beta::Session::default(),
             bing: bing::Session::default(),
+            youdao: youdao::Session::default(),
         })
     }
 
@@ -75,6 +78,10 @@ impl WebTranslator {
                 .bing
                 .send(&self.agent, texts, control)
                 .map(|raw| (raw, serde_json::Value::Null)),
+            TranslateEngine::Youdao => self
+                .youdao
+                .send(&self.agent, texts, control)
+                .map(|(raw, encrypted)| (raw, serde_json::json!({"encrypted": encrypted}))),
             TranslateEngine::Microsoft => microsoft::send(&self.agent, texts, control),
             TranslateEngine::GoogleBeta => self
                 .google_beta
@@ -100,6 +107,7 @@ pub fn parse_google_alt(raw: &str, count: usize) -> Result<Vec<String>> {
 pub fn parse_response(engine: TranslateEngine, raw: &str) -> Result<Vec<String>> {
     match engine {
         TranslateEngine::Bing => bing::parse(raw),
+        TranslateEngine::Youdao => youdao::parse(raw),
         TranslateEngine::Microsoft => microsoft::parse(raw),
         TranslateEngine::Google => google::parse(raw),
         TranslateEngine::GoogleBeta => google_beta::parse(raw),
@@ -114,6 +122,7 @@ impl Translator for WebTranslator {
         let (items, chars) = match self.engine {
             TranslateEngine::Google | TranslateEngine::GoogleBeta => (50, 5000),
             TranslateEngine::Bing => (1, 1000),
+            TranslateEngine::Youdao => (50, 4500),
             _ => (25, 1000),
         };
         TranslatorCaps {

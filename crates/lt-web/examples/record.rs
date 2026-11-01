@@ -56,7 +56,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             format!("public-{}.json", i + 1)
         };
         std::fs::write(dir.join(file), raw)?;
-        if !signature.is_null() && !alternate {
+        if let Some(encrypted) = signature["encrypted"].as_str() {
+            std::fs::write(dir.join("public.transport.txt"), encrypted)?;
+        }
+        if engine == TranslateEngine::Microsoft && !alternate {
             std::fs::write(
                 dir.join("signature.json"),
                 serde_json::to_string_pretty(&signature)?,
