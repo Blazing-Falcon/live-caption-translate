@@ -129,6 +129,11 @@ pub fn is_kana(c: u16) -> bool {
     matches!(c, 0x3041..=0x30ff | 0x31f0..=0x31ff)
 }
 
+/// Han, kana, CJK punctuation and fullwidth forms: one em wide, with no spaces between words.
+pub fn is_wide_cjk(c: u16) -> bool {
+    is_han_ideograph(c) || is_kana(c) || matches!(c, 0x3000..=0x303f | 0xff01..=0xff60)
+}
+
 pub fn is_letter(c: u16) -> bool {
     char::from_u32(u32::from(c)).is_some_and(|c| {
         matches!(
@@ -417,6 +422,8 @@ pub enum TextSizeBasis {
     Glyph,
     BoxDifferentScript,
     BoxNoGlyphHeight,
+    Pitch,
+    Ink,
 }
 
 /// A line this long, in line heights, may have run out of room and wrapped. Line heights serve CJK

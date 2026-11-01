@@ -206,7 +206,7 @@ There is one `translated` or `failed` for each block with `translate: true`, in 
 | `intent` | `single` for one source line, `group_reflow` for a group assembled from several source lines, `across_in_columns` for English in a vertical column group |
 | `runs_across` | Optional true for a horizontal caption on a vertical page; missing means false |
 | `line_height` | Median line height, frame pixels |
-| `source` | Same-row fragments joined at their text boundary; consecutive lines of a group joined with one space |
+| `source` | Same-row fragments joined at their text boundary; consecutive lines of a group joined with one space, or with none when the characters on both sides of the break are Han, kana, CJK punctuation (U+3000 to U+303F) or fullwidth forms (U+FF01 to U+FF60) |
 | `background`, `foreground` | `[r, g, b]` of the surface behind the text and of text that reads on it |
 | `translate` | `false` when `source` has no Han character; such a block gets no translation events |
 | `tilt` | Optional card geometry: `degrees`, `sheared`, `centre: { x, y }`, level `box: { x, y, width, height }`, `line_quads` (point arrays) and `column`. All positions are frame pixels; omitted for level groups. |

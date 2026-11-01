@@ -2937,7 +2937,7 @@
           "runsAcross": false
         },
         {
-          "text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件 智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯 盟。",
+          "text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯盟。",
           "bounds": {
             "empty": false,
             "x": 86,
@@ -3017,7 +3017,7 @@
           "runsAcross": false
         },
         {
-          "text": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說 明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
+          "text": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
           "bounds": {
             "empty": false,
             "x": 88,
@@ -4199,7 +4199,7 @@
           "runsAcross": false
         },
         {
-          "text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件 智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯 盟。",
+          "text": "單點技術的領先只是開始，生態的繁榮才是長期價值所在，為了讓文件智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯盟。",
           "bounds": {
             "empty": false,
             "x": 86,
@@ -4279,7 +4279,7 @@
           "runsAcross": false
         },
         {
-          "text": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說 明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
+          "text": "使用精確的地理位置資料並主動掃描裝置特徵以進行識別，接著依照說明在裝置上儲存或存取資訊，並將結果提供給合作夥伴使用。",
           "bounds": {
             "empty": false,
             "x": 88,
@@ -28707,7 +28707,7 @@
       },
       "output": [
         {
-          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴 注意。",
+          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴注意。",
           "bounds": {
             "empty": false,
             "x": 86,
@@ -28751,53 +28751,39 @@
           "runsAcross": false
         },
         {
-          "text": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+          "text": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟警告。",
           "bounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 304,
-            "width": 782,
-            "height": 28
+            "width": 787,
+            "height": 75
           },
-          "sourceLineBounds": null,
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 89,
+              "y": 304,
+              "width": 782,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 84,
+              "y": 338,
+              "width": 81,
+              "height": 41
+            }
+          ],
           "renderGlyphHeight": 22.959999999999997,
-          "confidence": 0.9990872144699097,
+          "confidence": 0.999153120951219,
           "layoutScript": "Cjk",
           "layoutBounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 304,
-            "width": 782,
-            "height": 28
-          },
-          "layoutGlyphHeight": 22.959999999999997,
-          "layoutInkHeight": 23,
-          "fontGlyphHeight": null,
-          "lineGeometry": null,
-          "uprightLayoutBounds": null,
-          "tiltedLines": null,
-          "tilt": null,
-          "runsAcross": false
-        },
-        {
-          "text": "警告。",
-          "bounds": {
-            "empty": false,
-            "x": 84,
-            "y": 338,
-            "width": 81,
-            "height": 41
-          },
-          "sourceLineBounds": null,
-          "renderGlyphHeight": 20.5,
-          "confidence": 0.9998121857643127,
-          "layoutScript": "Cjk",
-          "layoutBounds": {
-            "empty": false,
-            "x": 84,
-            "y": 338,
-            "width": 81,
-            "height": 41
+            "width": 787,
+            "height": 75
           },
           "layoutGlyphHeight": 33.62,
           "layoutInkHeight": null,
@@ -28853,7 +28839,7 @@
           "leadingBar": 1.38,
           "solidBar": 1.2,
           "joined": false,
-          "rule": "text size",
+          "rule": "vertical gap",
           "previousId": "L1",
           "currentId": "L2",
           "sizeBasis": "Glyph",
@@ -28878,8 +28864,8 @@
           "lineAdvance": 0.9855072463768116,
           "leadingBar": 1.38,
           "solidBar": 1.45,
-          "joined": false,
-          "rule": "text size",
+          "joined": true,
+          "rule": "set solid",
           "previousId": "L2",
           "currentId": "L3",
           "sizeBasis": "Glyph",
@@ -29212,9 +29198,7 @@
             "L1"
           ],
           [
-            "L2"
-          ],
-          [
+            "L2",
             "L3"
           ]
         ]
@@ -29349,7 +29333,7 @@
       },
       "output": [
         {
-          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴 注意。",
+          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴注意。",
           "bounds": {
             "empty": false,
             "x": 86,
@@ -29393,53 +29377,39 @@
           "runsAcross": false
         },
         {
-          "text": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟",
+          "text": "請從離你最近的鏡像站下載安裝程式，下載完成之後再依照下列步驟警告。",
           "bounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 304,
-            "width": 782,
-            "height": 28
+            "width": 787,
+            "height": 75
           },
-          "sourceLineBounds": null,
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "x": 89,
+              "y": 304,
+              "width": 782,
+              "height": 28
+            },
+            {
+              "empty": false,
+              "x": 84,
+              "y": 338,
+              "width": 81,
+              "height": 41
+            }
+          ],
           "renderGlyphHeight": 22.959999999999997,
-          "confidence": 0.9990872144699097,
+          "confidence": 0.999153120951219,
           "layoutScript": "Cjk",
           "layoutBounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 304,
-            "width": 782,
-            "height": 28
-          },
-          "layoutGlyphHeight": 22.959999999999997,
-          "layoutInkHeight": 23,
-          "fontGlyphHeight": null,
-          "lineGeometry": null,
-          "uprightLayoutBounds": null,
-          "tiltedLines": null,
-          "tilt": null,
-          "runsAcross": false
-        },
-        {
-          "text": "警告。",
-          "bounds": {
-            "empty": false,
-            "x": 84,
-            "y": 338,
-            "width": 81,
-            "height": 41
-          },
-          "sourceLineBounds": null,
-          "renderGlyphHeight": 20.5,
-          "confidence": 0.9998121857643127,
-          "layoutScript": "Cjk",
-          "layoutBounds": {
-            "empty": false,
-            "x": 84,
-            "y": 338,
-            "width": 81,
-            "height": 41
+            "width": 787,
+            "height": 75
           },
           "layoutGlyphHeight": 33.62,
           "layoutInkHeight": null,
@@ -29495,7 +29465,7 @@
           "leadingBar": 1.38,
           "solidBar": 1.2,
           "joined": false,
-          "rule": "text size",
+          "rule": "vertical gap",
           "previousId": "L1",
           "currentId": "L2",
           "sizeBasis": "Glyph",
@@ -29520,8 +29490,8 @@
           "lineAdvance": 0.9855072463768116,
           "leadingBar": 1.38,
           "solidBar": 1.45,
-          "joined": false,
-          "rule": "text size",
+          "joined": true,
+          "rule": "set solid",
           "previousId": "L2",
           "currentId": "L3",
           "sizeBasis": "Glyph",
@@ -29854,9 +29824,7 @@
             "L1"
           ],
           [
-            "L2"
-          ],
-          [
+            "L2",
             "L3"
           ]
         ]
@@ -29991,7 +29959,7 @@
       },
       "output": [
         {
-          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴 注意。",
+          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴注意。",
           "bounds": {
             "empty": false,
             "x": 86,
@@ -30633,7 +30601,7 @@
       },
       "output": [
         {
-          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴 注意。",
+          "text": "這個生態聯盟沒有商業獨佔，也沒有任何加入的門檻，任何一個夥伴注意。",
           "bounds": {
             "empty": false,
             "x": 86,
@@ -33824,7 +33792,7 @@
           },
           "sourceLineBounds": null,
           "renderGlyphHeight": 22.959999999999997,
-          "confidence": 0.9998020529747009,
+          "confidence": 0.9998020529747008,
           "layoutScript": "Cjk",
           "layoutBounds": {
             "empty": false,
@@ -33843,53 +33811,39 @@
           "runsAcross": false
         },
         {
-          "text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+          "text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯盟。",
           "bounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 106,
-            "width": 781,
-            "height": 28
+            "width": 786,
+            "height": 75
           },
-          "sourceLineBounds": null,
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "height": 28,
+              "width": 781,
+              "x": 89,
+              "y": 106
+            },
+            {
+              "empty": false,
+              "height": 37,
+              "width": 54,
+              "x": 84,
+              "y": 144
+            }
+          ],
           "renderGlyphHeight": 22.959999999999997,
-          "confidence": 0.9995632767677307,
+          "confidence": 0.9994894079864026,
           "layoutScript": "Cjk",
           "layoutBounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 106,
-            "width": 781,
-            "height": 28
-          },
-          "layoutGlyphHeight": 22.959999999999997,
-          "layoutInkHeight": 23,
-          "fontGlyphHeight": null,
-          "lineGeometry": null,
-          "uprightLayoutBounds": null,
-          "tiltedLines": null,
-          "tilt": null,
-          "runsAcross": false
-        },
-        {
-          "text": "盟。",
-          "bounds": {
-            "empty": false,
-            "x": 84,
-            "y": 144,
-            "width": 54,
-            "height": 37
-          },
-          "sourceLineBounds": null,
-          "renderGlyphHeight": 18.5,
-          "confidence": 0.9983813762664795,
-          "layoutScript": "Cjk",
-          "layoutBounds": {
-            "empty": false,
-            "x": 84,
-            "y": 144,
-            "width": 54,
-            "height": 37
+            "width": 786,
+            "height": 75
           },
           "layoutGlyphHeight": 30.34,
           "layoutInkHeight": null,
@@ -33944,8 +33898,8 @@
           "lineAdvance": 1.1692307692307693,
           "leadingBar": 1.38,
           "solidBar": 1.45,
-          "joined": false,
-          "rule": "text size",
+          "joined": true,
+          "rule": "set solid",
           "previousId": "L1",
           "currentId": "L2",
           "sizeBasis": "Glyph",
@@ -34199,9 +34153,7 @@
             "L0"
           ],
           [
-            "L1"
-          ],
-          [
+            "L1",
             "L2"
           ]
         ]
@@ -34317,7 +34269,7 @@
           },
           "sourceLineBounds": null,
           "renderGlyphHeight": 22.959999999999997,
-          "confidence": 0.9998020529747009,
+          "confidence": 0.9998020529747008,
           "layoutScript": "Cjk",
           "layoutBounds": {
             "empty": false,
@@ -34336,53 +34288,39 @@
           "runsAcross": false
         },
         {
-          "text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯",
+          "text": "智慧技術能夠真正走進每一個產業，我們正式發起這個開放的生態聯盟。",
           "bounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 106,
-            "width": 781,
-            "height": 28
+            "width": 786,
+            "height": 75
           },
-          "sourceLineBounds": null,
+          "sourceLineBounds": [
+            {
+              "empty": false,
+              "height": 28,
+              "width": 781,
+              "x": 89,
+              "y": 106
+            },
+            {
+              "empty": false,
+              "height": 37,
+              "width": 54,
+              "x": 84,
+              "y": 144
+            }
+          ],
           "renderGlyphHeight": 22.959999999999997,
-          "confidence": 0.9995632767677307,
+          "confidence": 0.9994894079864026,
           "layoutScript": "Cjk",
           "layoutBounds": {
             "empty": false,
-            "x": 89,
+            "x": 84,
             "y": 106,
-            "width": 781,
-            "height": 28
-          },
-          "layoutGlyphHeight": 22.959999999999997,
-          "layoutInkHeight": 23,
-          "fontGlyphHeight": null,
-          "lineGeometry": null,
-          "uprightLayoutBounds": null,
-          "tiltedLines": null,
-          "tilt": null,
-          "runsAcross": false
-        },
-        {
-          "text": "盟。",
-          "bounds": {
-            "empty": false,
-            "x": 84,
-            "y": 144,
-            "width": 54,
-            "height": 37
-          },
-          "sourceLineBounds": null,
-          "renderGlyphHeight": 18.5,
-          "confidence": 0.9983813762664795,
-          "layoutScript": "Cjk",
-          "layoutBounds": {
-            "empty": false,
-            "x": 84,
-            "y": 144,
-            "width": 54,
-            "height": 37
+            "width": 786,
+            "height": 75
           },
           "layoutGlyphHeight": 30.34,
           "layoutInkHeight": null,
@@ -34437,8 +34375,8 @@
           "lineAdvance": 1.1692307692307693,
           "leadingBar": 1.38,
           "solidBar": 1.45,
-          "joined": false,
-          "rule": "text size",
+          "joined": true,
+          "rule": "set solid",
           "previousId": "L1",
           "currentId": "L2",
           "sizeBasis": "Glyph",
@@ -34692,9 +34630,7 @@
             "L0"
           ],
           [
-            "L1"
-          ],
-          [
+            "L1",
             "L2"
           ]
         ]

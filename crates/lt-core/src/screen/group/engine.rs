@@ -186,12 +186,20 @@ pub fn build_group(blocks: &[Line]) -> Line {
         .map(|b| b.bounds.bottom())
         .reduce(max)
         .unwrap();
-    let text = blocks
+    let mut text = String::new();
+    for part in blocks
         .iter()
         .map(|b| b.text.trim())
         .filter(|s| !s.is_empty())
-        .collect::<Vec<_>>()
-        .join(" ");
+    {
+        // Chinese and Japanese wrap mid-word, so a break between two wide characters is no space.
+        let wide_break = text.encode_utf16().last().is_some_and(line::is_wide_cjk)
+            && part.encode_utf16().next().is_some_and(line::is_wide_cjk);
+        if !text.is_empty() && !wide_break {
+            text.push(' ');
+        }
+        text.push_str(part);
+    }
     let script = line::layout_script_for(&text);
     let refs: Vec<_> = blocks.iter().collect();
     Line {

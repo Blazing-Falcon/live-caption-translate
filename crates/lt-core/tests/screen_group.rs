@@ -20,12 +20,7 @@ use std::{
 
 /// Truth blocks the grouping splits into more than one block on current recognizer output:
 /// (page@scale, truth block id, blocks produced). The test fails when one stops or a new one appears.
-const KNOWN_MISSES: &[(&str, u32, usize)] = &[
-    ("chat@1", 1, 2),
-    ("chat@1.5", 1, 2),
-    ("subtitle@1", 0, 2),
-    ("subtitle@1.5", 0, 2),
-];
+const KNOWN_MISSES: &[(&str, u32, usize)] = &[];
 
 #[derive(Deserialize)]
 struct Recorded {

@@ -359,5 +359,7 @@ fn same_line_decision(
         current_size_value: 0.0,
         advance_pixels: 0.0,
         advance_denominator: 0.0,
+        judged_size_ratio: 0.0,
+        judged_size_basis: TextSizeBasis::None,
     }
 }

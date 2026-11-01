@@ -85,7 +85,7 @@
               "x": 118,
               "y": 76
             },
-            "source": "清晨的河边总是很安静。薄雾贴着水面慢慢散开，岸上的老人在练太极，卖早点的小摊刚刚 支起炉子。桥下的水流得很慢，几只白鹭站在浅滩上，一动不动地盯着水里的小鱼。偶尔有 自行车从石板路上驶过，铃声清脆，很快又消失在街角。",
+            "source": "清晨的河边总是很安静。薄雾贴着水面慢慢散开，岸上的老人在练太极，卖早点的小摊刚刚支起炉子。桥下的水流得很慢，几只白鹭站在浅滩上，一动不动地盯着水里的小鱼。偶尔有自行车从石板路上驶过，铃声清脆，很快又消失在街角。",
             "translate": true
           },
           {
@@ -175,15 +175,15 @@
               "x": 116,
               "y": 241
             },
-            "source": "这条河曾经因为污染而被人遗忘。二十多年前，附近的居民自发组织起来清理河岸，种上柳 树和芦苇，后来政府也加入进来，修建了步道和小公园。如今每到周末，孩子们在水边追 逐，年轻人带着相机寻找合适的角度，河水重新成为这里最受欢迎的公共空间。人们常说 一座城市是否宜居，看看它的河就知道了。",
+            "source": "这条河曾经因为污染而被人遗忘。二十多年前，附近的居民自发组织起来清理河岸，种上柳树和芦苇，后来政府也加入进来，修建了步道和小公园。如今每到周末，孩子们在水边追逐，年轻人带着相机寻找合适的角度，河水重新成为这里最受欢迎的公共空间。人们常说一座城市是否宜居，看看它的河就知道了。",
             "translate": true
           }
         ],
         "job": 1,
-        "ocr_ms": 499,
+        "ocr_ms": 521,
         "type": "blocks"
       },
-      "t_ms": 499
+      "t_ms": 521
     },
     {
       "event": {
@@ -192,24 +192,24 @@
         "text": "The riverbank in the early morning is always very quiet. The thin mist slowly spreads across the water’s surface. The old people on the shore are practicing Tai Chi. The small stalls that sell breakfast have just set up their stoves. The water flow under the bridge is slow. A few white egrets stand still on the shallow waters, staring at the small fish in the water. Occasionally, bicycles pass by on the stone-paved path. The bells ring loudly, but soon they disappear behind the street corners.",
         "type": "translated"
       },
-      "t_ms": 3289
+      "t_ms": 3199
     },
     {
       "event": {
         "id": 1,
         "job": 1,
-        "text": "This river was once forgotten due to its pollution. Over twenty years ago, the local residents organized themselves to clean up the riverbank, planting willows and reeds. Later, the government also joined in, building paths and small parks along the river. Now, on weekends, children chase after the river, while young people use their cameras to find the right angle to observe it. The river has once again become one of the most popular public spaces here. People often say that to determine whether a city is livable, one just needs to look at its rivers.",
+        "text": "This river was once forgotten due to its pollution. Over twenty years ago, the local residents organized themselves to clean up the riverbank, planting willows and reeds. Later, the government also joined in, building paths and small parks along the river. Now, on weekends, children chase each other by the water, while young people use their cameras to find the right angle to take pictures. The river has once again become one of the most popular public spaces here. People often say that whether a city is livable depends on its rivers.",
         "type": "translated"
       },
-      "t_ms": 6042
+      "t_ms": 5807
     },
     {
       "event": {
         "job": 1,
-        "total_ms": 6042,
+        "total_ms": 5807,
         "type": "done"
       },
-      "t_ms": 6042
+      "t_ms": 5807
     }
   ],
   "height": 720,
@@ -668,7 +668,7 @@
       "text": "一座城市是否宜居，看看它的河就知道了。"
     }
   ],
-  "ocr_load_ms": 124,
-  "server_ms": 1605,
+  "ocr_load_ms": 147,
+  "server_ms": 1199,
   "width": 1200
 }

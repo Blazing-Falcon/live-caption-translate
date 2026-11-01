@@ -32,6 +32,9 @@ pub struct NextLineDecision {
     pub current_size_value: f64,
     pub advance_pixels: f64,
     pub advance_denominator: f64,
+    /// The ratio the size rules judged by: `text_size_ratio`, or a pitch or ink ratio in its place.
+    pub judged_size_ratio: f64,
+    pub judged_size_basis: TextSizeBasis,
 }
 
 #[derive(Clone, Debug, Serialize)]

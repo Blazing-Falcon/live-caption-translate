@@ -49,6 +49,11 @@ const COLUMN_LEADING_SLACK: f64 = 1.2;
 const VISIBLE_HEADING_INK_RATIO: f64 = 0.85;
 /// How close in box height a paragraph's short last line must be to the line above it.
 const PARAGRAPH_FINAL_HEIGHT_RATIO: f64 = 0.85;
+/// How far two centres may sit apart, in line heights, for a two-line caption: subtitles are set
+/// on one centre, so this is tighter than the set-solid centre test.
+const CAPTION_MAX_CENTRE_OFFSET: f64 = 0.1;
+/// Pixel floor for the caption centre test: detector jitter on small text.
+const CAPTION_MIN_CENTRE_PIXELS: f64 = 4.0;
 
 pub(super) fn group_this_line_continues(
     groups: &[Vec<Node>],
@@ -197,6 +202,7 @@ fn can_join_next_line(
     let avg_height = (previous.layout_bounds.height + current.layout_bounds.height) / 2.0;
     let (size_ratio, basis, previous_size, current_size) =
         text_size_ratio_with_basis(previous, current);
+    let (judged_size_ratio, judged_size_basis) = judged_size_ratio(previous, current, profile);
     let advance_pixels = current.layout_bounds.y - previous.layout_bounds.y;
     let advance_denominator = (previous.layout_bounds.height + current.layout_bounds.height) / 2.0;
     context.decisions.push(NextLineDecision {
@@ -227,6 +233,8 @@ fn can_join_next_line(
         current_size_value: current_size,
         advance_pixels,
         advance_denominator,
+        judged_size_ratio,
+        judged_size_basis,
     });
     joined
 }
@@ -261,7 +269,7 @@ fn judge_next_line(
     loose_prose: bool,
 ) -> (bool, &'static str) {
     let avg_height = (previous.layout_bounds.height + current.layout_bounds.height) / 2.0;
-    let ratio = text_size_ratio(previous, current);
+    let (ratio, _) = judged_size_ratio(previous, current, profile);
     if profile.takes_prose_evidence
         && previous.layout_script != current.layout_script
         && previous.layout_bounds.width < current.layout_bounds.width
@@ -314,6 +322,44 @@ fn judge_next_line(
     )
 }
 
+/// The size ratio the next-line rules judge by. Detector boxes of short CJK lines run taller than
+/// their glyphs, so a short all-wide pair compares character pitch instead.
+fn judged_size_ratio(
+    previous: &Line,
+    current: &Line,
+    profile: &GroupingProfile,
+) -> (f64, TextSizeBasis) {
+    if profile.takes_prose_evidence {
+        let shortest =
+            line::glyphs_in(previous.text.trim()).min(line::glyphs_in(current.text.trim()));
+        if let (Some(a), Some(b)) = (wide_pitch(previous), wide_pitch(current)) {
+            if shortest < line::PITCH_CORRECTED_FROM_GLYPHS {
+                return (min(a, b) / max(a, b), TextSizeBasis::Pitch);
+            }
+        }
+    }
+    let (boxes, basis, _, _) = text_size_ratio_with_basis(previous, current);
+    // Across scripts the boxes differ by script, not size; the ink can vouch for a match.
+    if previous.layout_script != current.layout_script {
+        if let (Some(a), Some(b)) = (previous.layout_ink_height, current.layout_ink_height) {
+            if a > 0.0 && b > 0.0 && min(a, b) / max(a, b) > boxes {
+                return (min(a, b) / max(a, b), TextSizeBasis::Ink);
+            }
+        }
+    }
+    (boxes, basis)
+}
+
+fn wide_pitch(line: &Line) -> Option<f64> {
+    let text = line.text.trim();
+    let glyphs = line::glyphs_in(text);
+    let wide = text
+        .encode_utf16()
+        .filter(|c| !line::is_whitespace(*c))
+        .all(line::is_wide_cjk);
+    (wide && glyphs >= 2).then(|| line.layout_bounds.width / glyphs as f64)
+}
+
 pub fn text_size_ratio(previous: &Line, current: &Line) -> f64 {
     text_size_ratio_with_basis(previous, current).0
 }
@@ -364,6 +410,9 @@ fn sentence_continuation_evidence(
     if is_numeric_row(current_text) {
         return (false, "numeric row");
     }
+    if ends_with_clock_time(previous_text) || is_dated_byline(current_text) {
+        return (false, "timestamp header");
+    }
     if ends_with_label_colon(previous_text)
         && line_advance_ratio(previous, current) > SOLID_LINE_ADVANCE
     {
@@ -382,6 +431,9 @@ fn sentence_continuation_evidence(
         return (true, "punctuation");
     }
     if ends_with_sentence_terminator(previous_text) {
+        if is_centred_caption_pair(previous, current, size_ratio) {
+            return (true, "centred caption");
+        }
         return (false, "sentence terminator");
     }
     if is_set_solid_under(previous, current, profile) || loose_prose {
@@ -397,6 +449,23 @@ fn sentence_continuation_evidence(
     } else {
         (false, "leading")
     }
+}
+
+/// Two centred CJK lines set solid read as one caption even across a sentence end. Left edges that
+/// line up would make a flush-left stack instead.
+fn is_centred_caption_pair(previous: &Line, current: &Line, size_ratio: f64) -> bool {
+    let avg_height = (previous.layout_bounds.height + current.layout_bounds.height) / 2.0;
+    previous.layout_script == LayoutScript::Cjk
+        && current.layout_script == LayoutScript::Cjk
+        && size_ratio >= MIN_TEXT_SIZE_RATIO
+        && line_advance_ratio(previous, current) <= SOLID_LINE_ADVANCE
+        && (center_x(previous) - center_x(current)).abs()
+            <= max(
+                avg_height * CAPTION_MAX_CENTRE_OFFSET,
+                CAPTION_MIN_CENTRE_PIXELS,
+            )
+        && (previous.layout_bounds.x - current.layout_bounds.x).abs()
+            > avg_height * SET_SOLID_MAX_ALIGNMENT
 }
 
 fn is_set_solid_under(previous: &Line, current: &Line, profile: &GroupingProfile) -> bool {
@@ -593,6 +662,42 @@ fn starts_with_continuation_punctuation(text: &str) -> bool {
 fn ends_with_sentence_terminator(text: &str) -> bool {
     text.ends_with(['。', '！', '？', '!', '?', '.'])
 }
+/// A line ending in a clock time ("14:35", "05:21:38 PM") is a header over the message under it.
+fn ends_with_clock_time(text: &str) -> bool {
+    let mut text = text.trim_end();
+    if let Some(rest) = ["AM", "PM", "am", "pm"]
+        .iter()
+        .find_map(|suffix| text.strip_suffix(suffix))
+    {
+        text = rest.trim_end();
+    }
+    let fields: Vec<&str> = text.split(':').collect();
+    let Some((hour, rest)) = fields.split_first() else {
+        return false;
+    };
+    let hour_digits = hour.bytes().rev().take_while(u8::is_ascii_digit).count();
+    matches!(rest.len(), 1 | 2)
+        && (1..=2).contains(&hour_digits)
+        && rest
+            .iter()
+            .all(|field| field.len() == 2 && field.bytes().all(|b| b.is_ascii_digit()))
+}
+
+/// "name · 10-20" or "name · 3 days ago": an author line under a title.
+fn is_dated_byline(text: &str) -> bool {
+    let Some((_, tail)) = text.rsplit_once('·') else {
+        return false;
+    };
+    let tail = tail.trim();
+    tail.ends_with("ago")
+        || tail.ends_with('前')
+        || (!tail.is_empty()
+            && tail
+                .chars()
+                .all(|c| c.is_ascii_digit() || matches!(c, '-' | '/' | '.'))
+            && tail.contains(['-', '/', '.']))
+}
+
 fn starts_with_list_bullet(text: &str) -> bool {
     text.starts_with(['·', '・', '•', '‧', '●', '○', '▪', '◆', '※'])
 }

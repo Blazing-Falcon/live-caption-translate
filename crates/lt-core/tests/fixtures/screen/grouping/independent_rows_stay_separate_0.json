@@ -149,7 +149,7 @@
           "leadingBar": 1.38,
           "solidBar": 1.2,
           "joined": false,
-          "rule": "no continuation evidence",
+          "rule": "text size",
           "previousId": "L0",
           "currentId": "L1",
           "sizeBasis": "Glyph",
