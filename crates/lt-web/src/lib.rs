@@ -1,4 +1,5 @@
 mod google;
+mod google_alt;
 mod http;
 mod microsoft;
 mod openai;
@@ -23,6 +24,7 @@ pub fn build(config: &TranslateConfig) -> Result<Box<dyn Translator>> {
 pub struct WebTranslator {
     engine: TranslateEngine,
     agent: ureq::Agent,
+    google_alt: bool,
 }
 
 impl WebTranslator {
@@ -33,7 +35,14 @@ impl WebTranslator {
         Ok(Self {
             engine,
             agent: http::agent(),
+            google_alt: false,
         })
+    }
+
+    pub fn google_alt() -> Result<Self> {
+        let mut translator = Self::new(TranslateEngine::Google)?;
+        translator.google_alt = true;
+        Ok(translator)
     }
 
     pub fn record_response(
@@ -51,6 +60,10 @@ impl WebTranslator {
         {
             return Err(http::error("Recording exceeds one request's limits"));
         }
+        if self.google_alt {
+            let (raw, answers) = google_alt::send(&self.agent, texts, control)?;
+            return Ok((raw, serde_json::json!({"answers": answers})));
+        }
         match self.engine {
             TranslateEngine::Microsoft => microsoft::send(&self.agent, texts, control),
             TranslateEngine::Google => {
@@ -61,6 +74,13 @@ impl WebTranslator {
             }
         }
     }
+}
+
+pub fn parse_google_alt(raw: &str, count: usize) -> Result<Vec<String>> {
+    google_alt::parse(raw, count)?
+        .into_iter()
+        .map(|answer| answer.ok_or_else(|| http::error("Missing Google alternate answer")))
+        .collect()
 }
 
 pub fn parse_response(engine: TranslateEngine, raw: &str) -> Result<Vec<String>> {
@@ -144,8 +164,13 @@ impl Translator for WebTranslator {
             }
             let inputs: Vec<_> = pieces[start..end].iter().map(|piece| piece.1).collect();
             let began = std::time::Instant::now();
-            let (raw, _) = self.record_response(&inputs, control)?;
-            let answers = parse_response(self.engine, &raw)?;
+            let (raw, metadata) = self.record_response(&inputs, control)?;
+            let answers = if self.google_alt {
+                serde_json::from_value(metadata["answers"].clone())
+                    .map_err(|_| http::error("Incomplete Google alternate answers"))?
+            } else {
+                parse_response(self.engine, &raw)?
+            };
             if answers.len() != inputs.len() {
                 return Err(http::error(
                     "Translation answer count does not match request",

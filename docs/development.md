@@ -200,3 +200,5 @@ The recorder writes fixed public sentences and raw answers under `crates/lt-web/
 ### OpenAI-Compatible Live Test
 
 Set `LT_WEB_LIVE=1`, `LT_OPENAI_BASE_URL`, `LT_OPENAI_MODEL`, and optionally `LT_OPENAI_API_KEY`, then run `cargo test -p lt-web --test live openai_compatible_sentence -- --nocapture`. It sends only the fixed test sentence. The test reports skipped when the endpoint or model is absent. Fake HTTP tests in `crates/lt-web/tests/openai.rs` run offline and cover streaming, headers, temperature compatibility and errors.
+
+The recorder also accepts `google_alt` for the internal Google alternate transport. Its batchexecute answers are matched by position tags; refused or untagged calls are retried individually once. It has no separate setting.

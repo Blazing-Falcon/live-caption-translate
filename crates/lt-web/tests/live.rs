@@ -8,12 +8,17 @@ use std::{
     time::{Duration, Instant},
 };
 
-fn run(engine: TranslateEngine) {
+fn run_with(engine: TranslateEngine, alternate: bool) {
     if std::env::var("LT_WEB_LIVE").as_deref() != Ok("1") {
         eprintln!("Live {engine} test skipped: set LT_WEB_LIVE=1");
         return;
     }
-    let mut translator = lt_web::WebTranslator::new(engine).unwrap();
+    let mut translator = if alternate {
+        lt_web::WebTranslator::google_alt()
+    } else {
+        lt_web::WebTranslator::new(engine)
+    }
+    .unwrap();
     let control = TranslationControl {
         deadline: Instant::now() + Duration::from_secs(60),
         cancelled: Arc::new(AtomicBool::new(false)),
@@ -44,12 +49,12 @@ fn run(engine: TranslateEngine) {
 
 #[test]
 fn microsoft_sentence_and_batch() {
-    run(TranslateEngine::Microsoft);
+    run_with(TranslateEngine::Microsoft, false);
 }
 
 #[test]
 fn google_sentence_and_batch() {
-    run(TranslateEngine::Google);
+    run_with(TranslateEngine::Google, false);
 }
 
 #[test]
@@ -93,4 +98,9 @@ fn openai_compatible_sentence() {
         .unwrap();
     assert!(!answer.text.trim().is_empty());
     println!("Live OpenAI-compatible sentence passed");
+}
+
+#[test]
+fn google_alt_sentence_and_batch() {
+    run_with(TranslateEngine::Google, true);
 }
