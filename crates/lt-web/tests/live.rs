@@ -109,3 +109,8 @@ fn google_alt_sentence_and_batch() {
 fn google_beta_sentence_and_batch() {
     run_with(TranslateEngine::GoogleBeta, false);
 }
+
+#[test]
+fn bing_sentence_and_batch() {
+    run_with(TranslateEngine::Bing, false);
+}

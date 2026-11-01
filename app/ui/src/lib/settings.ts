@@ -30,7 +30,7 @@ export interface Config {
     second_pass_threads: number;
   };
   translate: {
-    engine: "local" | "microsoft" | "google" | "google_beta" | "openai";
+    engine: "local" | "microsoft" | "google" | "google_beta" | "bing" | "openai";
     openai: { base_url: string; model: string; api_key: string; prompt: string };
     threads: number;
   };

@@ -1,3 +1,4 @@
+mod bing;
 mod google;
 mod google_alt;
 mod google_beta;
@@ -27,6 +28,7 @@ pub struct WebTranslator {
     agent: ureq::Agent,
     google_alt: bool,
     google_beta: google_beta::Session,
+    bing: bing::Session,
 }
 
 impl WebTranslator {
@@ -39,6 +41,7 @@ impl WebTranslator {
             agent: http::agent(),
             google_alt: false,
             google_beta: google_beta::Session::default(),
+            bing: bing::Session::default(),
         })
     }
 
@@ -68,6 +71,10 @@ impl WebTranslator {
             return Ok((raw, serde_json::json!({"answers": answers})));
         }
         match self.engine {
+            TranslateEngine::Bing => self
+                .bing
+                .send(&self.agent, texts, control)
+                .map(|raw| (raw, serde_json::Value::Null)),
             TranslateEngine::Microsoft => microsoft::send(&self.agent, texts, control),
             TranslateEngine::GoogleBeta => self
                 .google_beta
@@ -92,6 +99,7 @@ pub fn parse_google_alt(raw: &str, count: usize) -> Result<Vec<String>> {
 
 pub fn parse_response(engine: TranslateEngine, raw: &str) -> Result<Vec<String>> {
     match engine {
+        TranslateEngine::Bing => bing::parse(raw),
         TranslateEngine::Microsoft => microsoft::parse(raw),
         TranslateEngine::Google => google::parse(raw),
         TranslateEngine::GoogleBeta => google_beta::parse(raw),
@@ -105,6 +113,7 @@ impl Translator for WebTranslator {
     fn caps(&self) -> TranslatorCaps {
         let (items, chars) = match self.engine {
             TranslateEngine::Google | TranslateEngine::GoogleBeta => (50, 5000),
+            TranslateEngine::Bing => (1, 1000),
             _ => (25, 1000),
         };
         TranslatorCaps {

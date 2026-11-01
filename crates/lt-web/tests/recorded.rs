@@ -37,3 +37,20 @@ fn google_alternate_recording_matches_position_tags() {
     );
     assert!(lt_web::parse_google_alt("{}", 3).is_err());
 }
+
+#[test]
+fn bing_recordings_preserve_single_request_order() {
+    let expected: Vec<String> =
+        serde_json::from_str(include_str!("fixtures/bing/public.expected.json")).unwrap();
+    let raw = [
+        include_str!("fixtures/bing/public-1.json"),
+        include_str!("fixtures/bing/public-2.json"),
+        include_str!("fixtures/bing/public-3.json"),
+    ];
+    let answers: Vec<_> = raw
+        .iter()
+        .flat_map(|raw| lt_web::parse_response(TranslateEngine::Bing, raw).unwrap())
+        .collect();
+    assert_eq!(answers, expected);
+    assert_eq!(answers.len(), 3);
+}

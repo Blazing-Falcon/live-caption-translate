@@ -5118,6 +5118,7 @@ dependencies = [
  "serde",
  "serde_json",
  "ureq-proto",
+ "url",
  "utf8-zero",
  "webpki-roots 1.0.9",
  "winreg",

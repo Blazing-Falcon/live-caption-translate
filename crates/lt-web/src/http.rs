@@ -99,3 +99,9 @@ pub fn get(
     let response = request.call().map_err(|error| map_error(error, control))?;
     read(response, control)
 }
+
+pub fn nonce() -> Result<String> {
+    let mut bytes = [0; 16];
+    getrandom::fill(&mut bytes).map_err(|_| error("Could not create session identifier"))?;
+    Ok(bytes.iter().map(|byte| format!("{byte:02x}")).collect())
+}

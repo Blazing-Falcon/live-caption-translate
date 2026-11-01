@@ -5,6 +5,7 @@ Recorded on 2026-11-01 with `LT_WEB_LIVE=1`:
 ```powershell
 cargo run -p lt-web --example record -- microsoft
 cargo run -p lt-web --example record -- google
+cargo run -p lt-web --example record -- bing
 cargo run -p lt-web --example record -- google_beta
 cargo run -p lt-web --example record -- google_alt
 ```
@@ -16,3 +17,5 @@ Parse tests require the exact count and text. Regenerate only after an intention
 Google alternate records the original position-tagged batchexecute response. It is an internal transport, without a config or dropdown value.
 
 Google Beta recordings contain translation bodies only. Runtime script keys and request headers are not saved.
+
+Bing accepts one text per call, so its three raw bodies are public-1.json through public-3.json. Cookies and page credentials are never recorded.
