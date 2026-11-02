@@ -55,16 +55,23 @@ pub fn default_rect(style: OverlayStyle, edge_right: bool, monitor: &Monitor) ->
     }
 }
 
-/// Top-left of the tray panel in physical pixels: above and left of the click, kept inside the
-/// work area `(x, y, w, h)`. A taskbar at the top or a side puts the click near that edge, and the
-/// clamp then moves the panel beside it.
+/// Top-left of the tray panel in physical pixels: left of the click and above it, or below it when
+/// the work area `(x, y, w, h)` has no room above, so the panel never covers the icon that opened
+/// it (an icon in the hidden-icons flyout under a top taskbar). The clamp keeps it inside the area;
+/// a taskbar at a side puts the click outside it, and the panel then sits beside the taskbar.
 pub fn tray_panel_origin(
     click: (i32, i32),
     size: (i32, i32),
     area: (i32, i32, i32, i32),
 ) -> (i32, i32) {
     const GAP: i32 = 12;
-    let (x, y) = (click.0 - size.0 + GAP, click.1 - size.1 - GAP);
+    let above = click.1 - size.1 - GAP;
+    let y = if above >= area.1 {
+        above
+    } else {
+        click.1 + GAP
+    };
+    let x = click.0 - size.0 + GAP;
     let max_x = (area.0 + area.2 - size.0).max(area.0);
     let max_y = (area.1 + area.3 - size.1).max(area.1);
     (x.clamp(area.0, max_x), y.clamp(area.1, max_y))
@@ -122,6 +129,10 @@ mod tests {
         assert_eq!(
             tray_panel_origin((1800, 10), (360, 440), (0, 48, 1920, 1032)),
             (1452, 48)
+        );
+        assert_eq!(
+            tray_panel_origin((1700, 90), (360, 440), (0, 48, 1920, 1032)),
+            (1352, 102)
         );
         assert_eq!(
             tray_panel_origin((-1800, 1060), (360, 440), (-1920, 0, 1920, 1040)),

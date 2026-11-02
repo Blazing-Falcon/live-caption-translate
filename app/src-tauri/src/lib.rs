@@ -167,6 +167,7 @@ pub fn run() {
             windows::create_control(&handle)?;
             screen::create_window(&handle)?;
             shared.overlay.create(&shared)?;
+            windows::create_tray_panel(&handle)?;
             *lock(&shared.tray) = Some(tray::build(&handle)?);
             shared.refresh_tray();
             hotkeys::register(&handle, &config.hotkeys);
