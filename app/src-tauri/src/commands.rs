@@ -178,6 +178,31 @@ pub fn open_folder_native(shared: &Shared, which: &str) -> Reply<()> {
         .map_err(|e| format!("Could not open the folder: {e}"))
 }
 
+/// The saved transcripts, newest first.
+#[tauri::command]
+pub async fn list_transcripts(shared: Shell<'_>) -> Reply<Vec<lt_core::transcript::SavedSession>> {
+    let dir = shared.paths.transcripts();
+    blocking(move || {
+        lt_core::transcript::saved_sessions(dir)
+            .map_err(|e| format!("Could not read the transcripts: {e}"))
+    })
+    .await
+}
+
+/// The lines of one saved transcript, named as `list_transcripts` names it.
+#[tauri::command]
+pub async fn read_transcript(
+    shared: Shell<'_>,
+    file: String,
+) -> Reply<Vec<lt_core::transcript::SavedLine>> {
+    let dir = shared.paths.transcripts();
+    blocking(move || {
+        lt_core::transcript::saved_lines(dir, &file)
+            .map_err(|e| format!("Could not read this transcript: {e}"))
+    })
+    .await
+}
+
 /// Starts reading and translating `rect` (frame pixels) of the frozen frame; returns the job id.
 #[tauri::command]
 pub async fn screen_select(

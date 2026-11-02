@@ -1,6 +1,6 @@
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { applyPatch, type AppliedKind, type Config, type ConfigPatch, type SetConfigResult } from "../src/lib/settings";
-import type { AppState, AudioAppList, AudioDevice, ModelStatus, PipelineStats, ScreenPlate, ScreenPlateRequest } from "../src/lib/types";
+import type { AppState, AudioAppList, AudioDevice, ModelStatus, PipelineStats, SavedLine, SavedSession, ScreenPlate, ScreenPlateRequest } from "../src/lib/types";
 import { STATS, testConfig, testState } from "./helpers";
 
 export interface Call {
@@ -40,6 +40,17 @@ export class FakeBackend {
       { exe: "vlc.exe", name: "VLC media player", pid: 2, icon_png: null, peak: 0.0, active: true, recent: true },
     ],
   };
+  transcripts: (Omit<SavedSession, "lines"> & { lines: SavedLine[] })[] = [
+    {
+      file: "2026-11-01_211200.jsonl",
+      started_at: "2026-11-01T21:12:00+07:00",
+      source: "Speakers (Realtek)",
+      lines: [
+        { wall: "2026-11-01T21:12:05+07:00", source: "你昨天晚上去哪儿了？", english: "Where were you last night?", status: "final" },
+        { wall: "2026-11-01T21:12:09+07:00", source: "我等了你整整一个小时。", english: null, status: "skipped" },
+      ],
+    },
+  ];
   failures = new Map<string, string>();
   dialogResult: string | null = "D:\\existing-models";
   /** Id of the last screen job `screen_select` started. */
@@ -95,6 +106,10 @@ export class FakeBackend {
         return this.screenJob;
       case "screen_plate":
         return this.plateReply(args.request as ScreenPlateRequest);
+      case "list_transcripts":
+        return this.transcripts.map(({ lines, ...session }) => ({ ...session, lines: lines.length }));
+      case "read_transcript":
+        return this.transcripts.find((session) => session.file === args.file)?.lines ?? [];
       case "plugin:dialog|open":
         return this.dialogResult;
       default:
