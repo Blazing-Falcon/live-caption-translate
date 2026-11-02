@@ -17,12 +17,18 @@ for (const page of ['overlay.html', 'control.html', 'screen.html']) {
   if (!existsSync(join(dist, page))) problems.push(`missing ${page}`);
 }
 
+/** The OFL fonts in src/assets/fonts, credited in notices/. Vite appends a content hash. */
+const BUNDLED_FONTS = ['nunito-latin-wght', 'fredoka-latin-wght', 'atkinson-hyperlegible-latin-700'];
+const isBundledFont = (file, stem) => new RegExp(`[\\\\/]${stem}-[\\w-]+\\.woff2$`).test(file);
+
 const TEST_ONLY = ['__LT_BOOT', '__lt', 'FakeBackend', 'mockIPC', 'plugin:event|listen"'];
 
 if (existsSync(dist)) {
   for (const file of walk(dist)) {
     const name = relative(dist, file);
-    if (/\.(woff2?|ttf|otf|eot)$/i.test(file)) problems.push(`${name}: font file shipped`);
+    if (/\.(woff2?|ttf|otf|eot)$/i.test(file) && !BUNDLED_FONTS.some((stem) => isBundledFont(file, stem))) {
+      problems.push(`${name}: font file shipped that is not one of the bundled OFL fonts`);
+    }
     if (!/\.(html|css|js)$/i.test(file)) continue;
     const text = readFileSync(file, 'utf8');
     if (/\.(html|css)$/i.test(file)) {
@@ -42,4 +48,4 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`verify:dist: ${problem}`);
   process.exit(1);
 }
-console.log('verify:dist ok: overlay.html, control.html and screen.html present, no external resources, fonts or test harness code');
+console.log('verify:dist ok: overlay.html, control.html and screen.html present, no external resources, unlisted fonts or test harness code');

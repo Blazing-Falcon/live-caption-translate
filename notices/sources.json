@@ -143,6 +143,27 @@
       "source": "https://raw.githubusercontent.com/mborgerding/kissfft/febd4caeed32e33ad8b2e0bb5ea77542c40f18ec/LICENSES/BSD-3-Clause",
       "size": 1830,
       "sha256": "4d6bcab46f27d6d0c878e8305d4bdcfe040d52bf6656b9771f04c9fb9902c0ed"
+    },
+    {
+      "file": "Nunito-OFL-1.1.txt",
+      "source": "https://registry.npmjs.org/@fontsource-variable/nunito/-/nunito-5.3.0.tgz#package/LICENSE",
+      "resolved_source": "https://registry.npmjs.org/@fontsource-variable/nunito/-/nunito-5.3.0.tgz#package/LICENSE",
+      "sha256": "40991bfa02ac620aae16dc527f3c47765a25e43f270d4c301ee6ab663a8d9015",
+      "size": 4491
+    },
+    {
+      "file": "Fredoka-OFL-1.1.txt",
+      "source": "https://registry.npmjs.org/@fontsource-variable/fredoka/-/fredoka-5.3.0.tgz#package/LICENSE",
+      "resolved_source": "https://registry.npmjs.org/@fontsource-variable/fredoka/-/fredoka-5.3.0.tgz#package/LICENSE",
+      "sha256": "9bbd4f5f107895d5a213579b73821fadd05105241cf4360e86050199fcfd6034",
+      "size": 4387
+    },
+    {
+      "file": "Atkinson-Hyperlegible-OFL-1.1.txt",
+      "source": "https://registry.npmjs.org/@fontsource/atkinson-hyperlegible/-/atkinson-hyperlegible-5.3.0.tgz#package/LICENSE",
+      "resolved_source": "https://registry.npmjs.org/@fontsource/atkinson-hyperlegible/-/atkinson-hyperlegible-5.3.0.tgz#package/LICENSE",
+      "sha256": "e137caeef2ff7c04fbf87078ad09cf3dcba8a3a58a4aa4e2f399d42c50bc4b18",
+      "size": 4603
     }
   ]
 }
