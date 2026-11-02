@@ -5,7 +5,7 @@ import type { PipelineEvent } from "../../src/lib/types";
 test.describe("overlay (browser simulation with mocked transport)", () => {
 
   test("shows a live line, then pending, streaming and the final in the same elements", async ({ page }) => {
-    const external = await open(page, "overlay", { config: { overlay: { style: "panel" } } });
+    const external = await open(page, "overlay", { config: { overlay: { style: "panel", english_color: "#ffd84d" } } });
     await emitEvent(page, NOW.partial(1, "这次华为发布的呢是整个"));
     await expect(page.locator('[data-state="open"] .source')).toHaveText("这次华为发布的呢是整个");
     await expect(page.locator(".english")).toHaveCount(0);
@@ -37,7 +37,7 @@ test.describe("overlay (browser simulation with mocked transport)", () => {
       count: document.querySelectorAll("article").length,
     }));
     expect(after).toEqual({ article: "article", english: "english", animations: 0, caret: false, count: 1 });
-    expect(await english.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(244, 244, 242)");
+    expect(await english.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(255, 216, 77)");
     expect((await page.locator(".panel").boundingBox())?.height).toBe(panelHeight);
     expect(external).toEqual([]);
   });

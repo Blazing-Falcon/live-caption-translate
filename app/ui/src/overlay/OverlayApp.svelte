@@ -31,8 +31,12 @@
   <main
     class="overlay-root"
     data-style={$config.overlay.style}
+    data-card={$config.overlay.card}
+    data-font={$config.overlay.font}
     style:--font-px={$config.overlay.font_px}
     style:--ov-bar-alpha={$config.overlay.background}
+    style:--cap-en={$config.overlay.english_color}
+    style:--cap-zh={$config.overlay.chinese_color}
   >
     {#if $captions.chip}
       <div class="chip-row">

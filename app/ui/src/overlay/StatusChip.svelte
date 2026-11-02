@@ -18,10 +18,10 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    padding: 6px 10px;
+    padding: 6px 12px;
     background: var(--ov-chip-bg);
-    border-radius: var(--radius-control);
-    font-size: var(--text-help);
+    border-radius: 999px;
+    font: 700 var(--text-help) / 1.3 var(--font-body);
     color: var(--ov-chip-text);
     animation: chip-in var(--slide-ms) ease-out;
   }

@@ -114,8 +114,9 @@
   }
 
   .english {
+    font-family: var(--cap-font);
     font-size: calc(var(--font-px, 26) * 1px);
-    font-weight: 500;
+    font-weight: var(--cap-weight);
     color: var(--ov-text);
     text-shadow: var(--ov-halo);
   }
@@ -133,7 +134,7 @@
 
   /* English that the next translation may still change. */
   .preview {
-    color: var(--ov-text-secondary);
+    color: var(--cap-preview);
   }
 
   .waiting {
