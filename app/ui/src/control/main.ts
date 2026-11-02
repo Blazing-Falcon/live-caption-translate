@@ -7,7 +7,12 @@ import ControlApp from "./ControlApp.svelte";
 
 type ThemeName = "light" | "dark";
 
-function applyTheme(theme: ThemeName | null): void {
+/** The Windows theme, when Tauri reports one; otherwise prefers-color-scheme decides. */
+let windowsTheme: ThemeName | null = null;
+let chosen: "system" | ThemeName = "system";
+
+function applyTheme(): void {
+  const theme = chosen === "system" ? windowsTheme : chosen;
   if (theme === null) delete document.documentElement.dataset.theme;
   else document.documentElement.dataset.theme = theme;
 }
@@ -18,14 +23,23 @@ async function followTauriTheme(): Promise<void> {
   try {
     const { getCurrentWindow } = await import("@tauri-apps/api/window");
     const current = getCurrentWindow();
-    applyTheme(await current.theme());
-    await current.onThemeChanged(({ payload }) => applyTheme(payload));
+    windowsTheme = await current.theme();
+    applyTheme();
+    await current.onThemeChanged(({ payload }) => {
+      windowsTheme = payload;
+      applyTheme();
+    });
   } catch {
-    applyTheme(null);
+    windowsTheme = null;
+    applyTheme();
   }
 }
 
 const session = createSession({ kind: "control" });
+session.config.subscribe((config) => {
+  chosen = config?.app.theme ?? "system";
+  applyTheme();
+});
 const target = document.getElementById("app");
 if (!target) throw new Error("Missing #app mount point");
 
