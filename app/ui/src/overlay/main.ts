@@ -1,5 +1,6 @@
 import { mount } from "svelte";
 import { createSession } from "../lib/events";
+import "../lib/fonts.css";
 import "../lib/tokens.css";
 import OverlayApp from "./OverlayApp.svelte";
 

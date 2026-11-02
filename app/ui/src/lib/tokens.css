@@ -235,9 +235,43 @@
   --sticker-shadow-small: none;
 }
 
-/* Re-resolved per element so the user opacity set on the overlay root applies. */
+/* Captions: the card, the font and the user's English and Chinese colors. Words still being
+ * heard and English that may change are the chosen color mixed toward the card, so they stay
+ * distinct whatever color is picked. Set on the overlay root, re-resolved per element. */
 .overlay-root {
-  --ov-bar-bg: rgb(var(--ov-ground-rgb) / var(--ov-bar-alpha));
+  --cap-text: var(--cap-en, #ffffff);
+  --cap-source: var(--cap-zh, #c9c9c4);
+  --cap-dim-base: rgb(var(--cap-night-rgb));
+  --cap-font: var(--font-cap-rounded);
+  --cap-weight: 700;
+  --cap-preview: color-mix(in srgb, var(--cap-text) 62%, var(--cap-dim-base));
+  --radius-overlay: 16px;
+  --ov-bar-bg: rgb(var(--cap-night-rgb) / var(--ov-bar-alpha));
+  --ov-text: var(--cap-text);
+  --ov-text-secondary: var(--cap-source);
+  --ov-dim: color-mix(in srgb, var(--cap-source) 62%, var(--cap-dim-base));
+  --ov-pending: color-mix(in srgb, var(--cap-text) 55%, var(--cap-dim-base));
+  --ov-meta: color-mix(in srgb, var(--cap-source) 80%, var(--cap-dim-base));
+  --ov-halo: var(--cap-night-halo);
+  --ov-accent: var(--cap-night-mark);
+  --ov-chip-bg: rgb(var(--cap-night-rgb) / 0.8);
+  --ov-chip-text: var(--cap-source);
+}
+
+.overlay-root[data-card="outline"] {
+  --cap-dim-base: var(--cap-outline-dim);
+  --ov-bar-bg: transparent;
+  --ov-halo: var(--cap-outline-halo);
+  --ov-accent: var(--cap-outline-mark);
+}
+
+.overlay-root[data-font="clear"] {
+  --cap-font: var(--font-cap-clear);
+}
+
+.overlay-root[data-font="system"] {
+  --cap-font: var(--font-cap-system);
+  --cap-weight: 600;
 }
 
 *,

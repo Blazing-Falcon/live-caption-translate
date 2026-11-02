@@ -75,8 +75,9 @@
   /* Every caption size is one step from the setting: an older block dims but never shrinks, so
    * the reader's eye keeps its place on the panel. */
   .english {
+    font-family: var(--cap-font);
     font-size: calc(var(--font-px, 26) * 1px);
-    font-weight: 500;
+    font-weight: var(--cap-weight);
     line-height: 1.3;
     color: var(--ov-text);
     text-shadow: var(--ov-halo);
@@ -109,7 +110,7 @@
 
   /* English that the next translation may still change. */
   .preview {
-    color: var(--ov-text-secondary);
+    color: var(--cap-preview);
   }
 
   .label {
