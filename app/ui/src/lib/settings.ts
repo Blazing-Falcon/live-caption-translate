@@ -15,6 +15,7 @@ export interface OverlayRect {
 export interface Config {
   screen: { direction: "horizontal" | "vertical" };
   config_version: number;
+  app: { theme: "system" | "light" | "dark" };
   capture: {
     mode: "system" | "apps";
     device: string;
@@ -27,6 +28,7 @@ export interface Config {
   asr: {
     threads: number;
     pause_s: number;
+    second_pass: boolean;
     second_pass_threads: number;
   };
   translate: {
@@ -45,6 +47,12 @@ export interface Config {
     panel_lines: number;
     flow_lines: number;
     live_source: boolean;
+    card: "night" | "outline";
+    font: "rounded" | "clear" | "system";
+    /** `#rrggbb` */
+    english_color: string;
+    /** `#rrggbb` */
+    chinese_color: string;
     panel_rect?: OverlayRect;
     flow_rect?: OverlayRect;
   };
@@ -108,7 +116,7 @@ export function clamp(value: number, min: number, max: number): number {
 }
 
 const CONFIG_SECTIONS = [
-  "capture", "audio", "asr", "translate",
+  "app", "capture", "audio", "asr", "translate",
   "overlay", "screen", "performance", "hotkeys", "transcript", "logging", "models",
 ] as const;
 
@@ -203,7 +211,8 @@ export function formatAccelerator(accelerator: string): string {
 /** Kept as a JSON initializer so the Rust parity test can read it directly. */
 export const DEFAULT_CONFIG: Config = {
   "screen": { "direction": "horizontal" },
-  "config_version": 3,
+  "config_version": 4,
+  "app": { "theme": "system" },
   "capture": {
     "mode": "system",
     "device": "default",
@@ -216,6 +225,7 @@ export const DEFAULT_CONFIG: Config = {
   "asr": {
     "threads": 1,
     "pause_s": 0.8,
+    "second_pass": true,
     "second_pass_threads": 2
   },
   "translate": {
@@ -233,7 +243,11 @@ export const DEFAULT_CONFIG: Config = {
     "panel_edge": "right",
     "panel_lines": 5,
     "flow_lines": 3,
-    "live_source": true
+    "live_source": true,
+    "card": "night",
+    "font": "rounded",
+    "english_color": "#ffffff",
+    "chinese_color": "#c9c9c4"
   },
   "performance": {
     "low_priority": true

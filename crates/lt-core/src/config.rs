@@ -13,7 +13,7 @@ use std::io::Write;
 use std::path::Path;
 
 /// The version this build reads and writes. An older file loads as it is and is saved as this.
-pub const CONFIG_VERSION: u32 = 3;
+pub const CONFIG_VERSION: u32 = 4;
 
 /// The most threads a setting accepts; engines also stay within the PC's logical CPUs.
 pub const MAX_THREADS: u32 = 64;
@@ -92,6 +92,45 @@ impl OverlayStyle {
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "lowercase")]
+pub enum CaptionCard {
+    #[default]
+    Night,
+    /// No card: outlined text over the video.
+    Outline,
+}
+
+impl CaptionCard {
+    const NAMES: &'static [&'static str] = &["night", "outline"];
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum CaptionFont {
+    #[default]
+    Rounded,
+    Clear,
+    System,
+}
+
+impl CaptionFont {
+    const NAMES: &'static [&'static str] = &["rounded", "clear", "system"];
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum AppTheme {
+    #[default]
+    System,
+    Light,
+    Dark,
+}
+
+impl AppTheme {
+    const NAMES: &'static [&'static str] = &["system", "light", "dark"];
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum PanelEdge {
     Left,
     #[default]
@@ -166,6 +205,7 @@ impl Message {
 #[serde(default)]
 pub struct Config {
     pub config_version: u32,
+    pub app: AppConfig,
     pub capture: CaptureConfig,
     pub audio: AudioConfig,
     pub asr: AsrConfig,
@@ -183,6 +223,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             config_version: CONFIG_VERSION,
+            app: AppConfig::default(),
             capture: CaptureConfig::default(),
             audio: AudioConfig::default(),
             asr: AsrConfig::default(),
@@ -196,6 +237,13 @@ impl Default for Config {
             models: ModelsConfig::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct AppConfig {
+    /// The control window's theme. Captions keep their own card.
+    pub theme: AppTheme,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -248,6 +296,8 @@ impl Default for AudioConfig {
 pub struct AsrConfig {
     pub threads: u32,
     pub pause_s: f32,
+    /// Decode each closed clause again with the offline model and the speech around it.
+    pub second_pass: bool,
     pub second_pass_threads: u32,
 }
 
@@ -256,6 +306,7 @@ impl Default for AsrConfig {
         Self {
             threads: 1,
             pause_s: 0.8,
+            second_pass: true,
             second_pass_threads: 2,
         }
     }
@@ -313,6 +364,12 @@ pub struct OverlayConfig {
     pub panel_lines: u32,
     pub flow_lines: u32,
     pub live_source: bool,
+    pub card: CaptionCard,
+    pub font: CaptionFont,
+    /// `#rrggbb`.
+    pub english_color: String,
+    /// `#rrggbb`.
+    pub chinese_color: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub panel_rect: Option<OverlayRect>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -331,6 +388,10 @@ impl Default for OverlayConfig {
             panel_lines: 5,
             flow_lines: 3,
             live_source: true,
+            card: CaptionCard::Night,
+            font: CaptionFont::Rounded,
+            english_color: "#ffffff".into(),
+            chinese_color: "#c9c9c4".into(),
             panel_rect: None,
             flow_rect: None,
         }
@@ -510,6 +571,9 @@ fn choices(path: &str) -> Option<&'static [&'static str]> {
         "translate.engine" => TranslateEngine::NAMES,
         "overlay.style" => OverlayStyle::NAMES,
         "overlay.panel_edge" => PanelEdge::NAMES,
+        "overlay.card" => CaptionCard::NAMES,
+        "overlay.font" => CaptionFont::NAMES,
+        "app.theme" => AppTheme::NAMES,
         "logging.level" => LogLevel::NAMES,
         "screen.direction" => crate::screen::Direction::NAMES,
         _ => return None,
@@ -568,6 +632,7 @@ impl Config {
                 "config_version: invalid type; using {CONFIG_VERSION}"
             )));
         }
+        migrate_second_pass(table, &mut messages);
         let schema = schema()?;
         if let Some(schema) = schema.as_table() {
             normalize_table(table, schema, "", &mut messages, &mut dropped);
@@ -644,10 +709,32 @@ impl Config {
         write_result.map_err(Error::Io)
     }
 
-    /// Clamp bounded numbers and the saved overlay rects.
+    /// Clamp bounded numbers and the saved overlay rects, and reset malformed colors.
     pub fn validate(&mut self) -> Vec<String> {
         let mut messages = Vec::new();
         clamp_all(self, &mut messages);
+        let defaults = OverlayConfig::default();
+        for (name, color, default) in [
+            (
+                "overlay.english_color",
+                &mut self.overlay.english_color,
+                defaults.english_color,
+            ),
+            (
+                "overlay.chinese_color",
+                &mut self.overlay.chinese_color,
+                defaults.chinese_color,
+            ),
+        ] {
+            if !is_hex_color(color) {
+                messages.push(format!(
+                    "{name}: invalid color {color:?}; using {default:?}"
+                ));
+                *color = default;
+            } else {
+                color.make_ascii_lowercase();
+            }
+        }
         for (name, rect) in [
             ("overlay.panel_rect", &mut self.overlay.panel_rect),
             ("overlay.flow_rect", &mut self.overlay.flow_rect),
@@ -690,6 +777,31 @@ impl Config {
         }
         messages
     }
+}
+
+fn is_hex_color(text: &str) -> bool {
+    text.len() == 7
+        && text.starts_with('#')
+        && text[1..].bytes().all(|byte| byte.is_ascii_hexdigit())
+}
+
+/// Older files saved the second pass as a word; only "off" turned it off.
+fn migrate_second_pass(table: &mut toml::Table, messages: &mut Vec<Message>) {
+    let Some(asr) = table.get_mut("asr").and_then(toml::Value::as_table_mut) else {
+        return;
+    };
+    let Some(word) = asr
+        .get("second_pass")
+        .and_then(toml::Value::as_str)
+        .map(str::to_owned)
+    else {
+        return;
+    };
+    let on = word != "off";
+    asr.insert("second_pass".into(), toml::Value::Boolean(on));
+    messages.push(Message::info(format!(
+        "asr.second_pass \"{word}\" is now {on}"
+    )));
 }
 
 fn config_error(error: impl std::fmt::Display) -> Error {

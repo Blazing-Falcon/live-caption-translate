@@ -38,7 +38,7 @@ pub(super) enum RefineInput {
 }
 
 pub(super) fn refine_loop(
-    mut engine: Box<dyn OfflineAsr>,
+    mut engine: Option<Box<dyn OfflineAsr>>,
     inputs: Receiver<RefineInput>,
     output: Sender<AsrMessage>,
     shared: Arc<Shared>,
@@ -57,7 +57,12 @@ pub(super) fn refine_loop(
                 closed,
             } => {
                 let live = transcript.text.clone();
-                second_pass(engine.as_mut(), &mut transcript, &window, closed, MAX_WAIT);
+                match engine.as_mut() {
+                    Some(engine) => {
+                        second_pass(engine.as_mut(), &mut transcript, &window, closed, MAX_WAIT);
+                    }
+                    None => skip_second_pass(&mut transcript, &window, closed),
+                }
                 finalize(transcript, &live)
             }
             RefineInput::Message(message) => message,
@@ -112,6 +117,20 @@ fn second_pass(
     }
     record.refine_ms = elapsed_ms(closed);
     transcript.second_pass = record;
+}
+
+fn skip_second_pass(transcript: &mut Transcript, window: &Window, closed: Instant) {
+    let window_end = StreamTime(window.start.0 + window.samples.len() as u64);
+    transcript.second_pass = SecondPass {
+        outcome: SecondPassOutcome::Off,
+        live_text: None,
+        window_text: None,
+        window_start_ms: window.start.millis(),
+        window_end_ms: window_end.millis(),
+        distance: None,
+        decode_ms: None,
+        refine_ms: elapsed_ms(closed),
+    };
 }
 
 fn elapsed_ms(since: Instant) -> u32 {

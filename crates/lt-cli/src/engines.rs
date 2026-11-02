@@ -20,7 +20,7 @@ use std::{
 
 pub struct Engines {
     pub asr: Box<dyn StreamingAsr>,
-    pub second_pass: Box<dyn OfflineAsr>,
+    pub second_pass: Option<Box<dyn OfflineAsr>>,
     pub translator: Box<dyn Translator>,
     pub pid: Arc<AtomicU32>,
     // These guards outlive the pipeline and kill the children on every exit path.
@@ -73,7 +73,10 @@ pub fn build(
                 vec!["你好，这是测试语音。".into(); 4096],
                 f64::from(config.asr.pause_s),
             )),
-            second_pass: Box::<FakeOffline>::default(),
+            second_pass: config
+                .asr
+                .second_pass
+                .then(|| Box::<FakeOffline>::default() as Box<dyn OfflineAsr>),
             translator: Box::<FakeTranslator>::default(),
             pid: Arc::new(AtomicU32::new(0)),
             #[cfg(feature = "llm")]
@@ -86,8 +89,13 @@ pub fn build(
             models.join(lt_sherpa::XASR_STREAM_MODEL),
             &config.asr,
         )?);
-        let second_pass: Box<dyn OfflineAsr> =
-            Box::new(lt_sherpa::xasr_offline(models, config).context("Starting the second pass")?);
+        let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass {
+            Some(Box::new(
+                lt_sherpa::xasr_offline(models, config).context("Starting the second pass")?,
+            ))
+        } else {
+            None
+        };
         let (translator, supervisor, pid) = translator(config, models, binary, bus, cancelled)?;
         Ok(Engines {
             asr,

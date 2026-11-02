@@ -11,7 +11,7 @@ Rules:
 - A key the app does not know is dropped on load and named in one info line.
 - A file that does not load (not valid TOML, not UTF-8, or not readable) is renamed to `config.toml.bad-<seconds>`, and the app starts with the defaults. A notice gives the new name.
 - The app writes `config.toml.tmp` and renames it, so a save is atomic.
-- The file is version 3. A file at version 1 or 2 loads like any other: known keys keep their values, unknown keys drop, `overlay.style = "bar"` becomes `panel`, and the next save writes version 3.
+- The file is version 4. A file at version 1, 2 or 3 loads like any other: known keys keep their values, new keys take their defaults, unknown keys drop, `overlay.style = "bar"` becomes `panel`, a word in `asr.second_pass` becomes the switch (`"off"` is off, any other word is on), and the next save writes version 4. A file without `translate.engine` keeps the local translator.
 
 **Applies** tells when a change has an effect:
 
@@ -25,7 +25,10 @@ Rules:
 ## Full Default File
 
 ```toml
-config_version = 3
+config_version = 4
+
+[app]
+theme = "system"                # "system" | "light" | "dark"; the control window
 
 [capture]
 mode = "system"                 # "system" | "apps"
@@ -40,6 +43,7 @@ normalize = true
 [asr]
 threads = 1                     # 1 to the logical CPUs of the PC
 pause_s = 0.8                   # silence that ends a line
+second_pass = true              # decode each closed line again with the offline model
 second_pass_threads = 2         # 1 to the logical CPUs of the PC
 
 [translate]
@@ -63,6 +67,10 @@ panel_edge = "right"            # "left" | "right"
 panel_lines = 5
 flow_lines = 3
 live_source = true              # show the Chinese of the clause being spoken
+card = "night"                  # "night" (dark card) | "outline" (no card, outlined text)
+font = "rounded"                # "rounded" | "clear" | "system"
+english_color = "#ffffff"       # "#rrggbb"
+chinese_color = "#c9c9c4"       # "#rrggbb"
 # Saved positions, written by the app after move mode. Absent = default placement.
 # [overlay.panel_rect] monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 420, h = 600
 # [overlay.flow_rect]  monitor = "\\\\.\\DISPLAY1", x = 0, y = 0, w = 960, h = 360
@@ -96,6 +104,12 @@ dir = ""                        # "" = <local data>/models
 
 The default values are in the file above.
 
+### app
+
+| Key | Range | Applies | Meaning |
+|---|---|---|---|
+| `theme` | `system`, `light`, `dark` | live | Theme of the control window. `system` follows Windows. Captions keep their own card. |
+
 ### capture
 
 | Key | Range | Applies | Meaning |
@@ -113,12 +127,13 @@ The default values are in the file above.
 
 ### asr
 
-The second pass always runs: each closed line is decoded again by the offline X-ASR model.
+With `second_pass` on, each closed line is decoded again by the offline X-ASR model. Off, the line keeps its live text, the offline model is not loaded and listening does not need it.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
 | `threads` | 1–64 | pipeline | ONNX Runtime threads for the recognizer. The app uses at most the PC's logical CPUs. |
 | `pause_s` | 0.3–3.0 | pipeline | Silence after the last word that ends a line. Lines also end at sentence marks (the commit rule). |
+| `second_pass` | bool | pipeline | Decode each closed line again with the offline model and the speech around it ("Double-check each line"). |
 | `second_pass_threads` | 1–64 | pipeline | Threads for the second-pass model. The app uses at most the PC's logical CPUs. |
 
 ### translate
@@ -171,6 +186,10 @@ The endpoint streams responses. A temperature refusal is retried once without te
 | `panel_lines` | 1–10 | live | Blocks kept in the panel. The panel fills from the top and rolls up. |
 | `flow_lines` | 1–10 | live | Wrapped lines kept of each running-text paragraph. Both paragraphs fill from the top and roll up. |
 | `live_source` | bool | live | Show the Chinese of the clause that is spoken now |
+| `card` | `night`, `outline` | live | `night`: a dark card whose opacity is `background`. `outline`: no card; the text has a black outline and `background` is not used. |
+| `font` | `rounded`, `clear`, `system` | live | English caption font: Nunito, Atkinson Hyperlegible or Segoe UI. Chinese always uses Microsoft YaHei UI. |
+| `english_color` | `#rrggbb` | live | English caption color. Another value takes the default, and the app logs a warning. |
+| `chinese_color` | `#rrggbb` | live | Chinese caption color, for the finished line and for words still being heard. Another value takes the default. |
 | `panel_rect`, `flow_rect` | `{ monitor, x, y, w, h }` | live | Saved position in device-independent pixels. The app writes them after move mode. Absent: default position. |
 
 ### Screen

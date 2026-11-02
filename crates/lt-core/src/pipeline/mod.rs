@@ -44,10 +44,11 @@ const ASR_CAPACITY: usize = 4;
 /// so a full queue empties quickly and holds the recognizer only briefly.
 const REFINE_CAPACITY: usize = 8;
 
-/// The three engines the pipeline owns, one thread each.
+/// The engines the pipeline owns, one thread each. Without a second pass, closed clauses keep
+/// their live text.
 pub struct Engines {
     pub asr: Box<dyn StreamingAsr>,
-    pub second_pass: Box<dyn OfflineAsr>,
+    pub second_pass: Option<Box<dyn OfflineAsr>>,
     pub translator: Box<dyn Translator>,
 }
 
@@ -125,7 +126,9 @@ impl Pipeline {
         let asr_outputs = asr::AsrOutputs {
             partials: asr_tx.clone(),
             clauses: refine_tx,
-            context_s: second_pass.context_s(),
+            context_s: second_pass
+                .as_ref()
+                .map_or(0.0, |engine| engine.context_s()),
         };
         let asr_thread = spawn("lt-asr", move || {
             asr::asr_loop(

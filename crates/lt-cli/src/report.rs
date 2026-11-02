@@ -176,19 +176,25 @@ impl ReplayReport {
     }
 }
 
+/// Lines heard with the second pass off are left out: the summary describes decodes.
 fn second_pass_summary(passes: &[SecondPass]) -> Option<SecondPassSummary> {
+    let passes: Vec<&SecondPass> = passes
+        .iter()
+        .filter(|pass| pass.outcome != SecondPassOutcome::Off)
+        .collect();
     if passes.is_empty() {
         return None;
     }
     let mut outcomes: BTreeMap<&'static str, u64> = ["used", "mismatch", "late", "failed"]
         .map(|key| (key, 0))
         .into();
-    for pass in passes {
+    for pass in &passes {
         let key = match pass.outcome {
             SecondPassOutcome::Used => "used",
             SecondPassOutcome::Mismatch => "mismatch",
             SecondPassOutcome::Late => "late",
             SecondPassOutcome::Failed => "failed",
+            SecondPassOutcome::Off => continue,
         };
         *outcomes.entry(key).or_default() += 1;
     }

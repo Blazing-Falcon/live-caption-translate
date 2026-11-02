@@ -1,8 +1,8 @@
 # Models and runtime
 
 `models/manifest.json` is the source of truth. The app embeds it at build time. The repository and
-the package do not contain models. The app downloads the three required models at first run and the
-optional one when the user first asks for screenshot translation. Developers use
+the package do not contain models. The app downloads the models the settings need at first run and the
+text recognition model when the user first asks for screenshot translation. Developers use
 `scripts/setup.ps1 -Models` (every model) or `lt-cli models fetch` (the required models; add
 `--optional` for the text recognition model).
 
@@ -11,7 +11,7 @@ optional one when the user first asks for screenshot translation. Developers use
 | Id | Use | File |
 |---|---|---|
 | `xasr-stream-480ms-int8-2026-06-05` | Live speech recognition | `.tar.bz2`, 4 files |
-| `xasr-offline-int8-2026-06-03` | Second pass, always on | `.tar.bz2`, 4 files |
+| `xasr-offline-int8-2026-06-03` | Second pass, when `asr.second_pass` is on | `.tar.bz2`, 4 files |
 | `hy-mt2-1.8b-ternary-tq2_0` | Translation | `Hy-MT2-1.8B-1.25Bit.gguf`, rewritten and kept as `Hy-MT2-1.8B-ternary-TQ2_0.gguf` |
 | `pp-ocrv6-det-tiny-rec-small` | Screenshot text recognition, optional | `det.onnx`, `rec.onnx`, `dict.txt` |
 
@@ -30,8 +30,10 @@ Sizes and SHA-256 hashes are in the manifest. The text recognition model is 23 M
 
 ## Download rules
 
-- The first-run download takes the three required models. Listening does not start while one is
-  missing.
+- Listening needs the streaming model, the offline model when `asr.second_pass` is on, and the
+  translation model when `translate.engine` is `local`. The first-run download and `models_download`
+  take those; `models_status` marks the others optional. Listening does not start while one it
+  needs is missing. `lt-cli models fetch` takes the three manifest models that are not optional.
 - The text recognition model is optional (`"optional": true` in the manifest). The first-run
   download, `models_download` and `lt-cli models fetch` skip it; `lt-cli models fetch --optional` and
   `scripts/setup.ps1 -Models` include it. The app downloads it when the user

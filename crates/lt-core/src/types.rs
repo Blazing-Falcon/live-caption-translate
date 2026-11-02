@@ -132,6 +132,8 @@ pub enum SecondPassOutcome {
     Late,
     /// The second pass failed.
     Failed,
+    /// The second pass is turned off, so the line keeps its live text.
+    Off,
 }
 
 /// How the second pass read a closed clause. The line keeps the live text unless `outcome` is

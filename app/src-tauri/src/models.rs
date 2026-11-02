@@ -1,5 +1,6 @@
 //! Model status, downloads and imports for the first-run screen.
 use crate::app::{lock, Shared};
+use lt_core::config::Config;
 use lt_llm::models::{ModelManager, ModelState, ModelStatus};
 use std::{
     path::Path,
@@ -11,16 +12,25 @@ use std::{
 };
 use tauri::Emitter;
 
-/// Every model needed to listen is on disk and verified.
-pub fn all_ready(dir: &Path, engine: lt_core::config::TranslateEngine) -> bool {
-    missing_for(dir, engine).is_empty()
-}
-
-pub fn missing_for(dir: &Path, engine: lt_core::config::TranslateEngine) -> Vec<String> {
-    let mut wanted = vec![lt_sherpa::XASR_STREAM_MODEL, lt_sherpa::XASR_OFFLINE_MODEL];
-    if engine.is_local() {
+/// The models listening needs with these settings, in download order.
+pub fn required(config: &Config) -> Vec<&'static str> {
+    let mut wanted = vec![lt_sherpa::XASR_STREAM_MODEL];
+    if config.asr.second_pass {
+        wanted.push(lt_sherpa::XASR_OFFLINE_MODEL);
+    }
+    if config.translate.engine.is_local() {
         wanted.push(lt_core::config::TranslateConfig::MODEL.0);
     }
+    wanted
+}
+
+/// Every model needed to listen is on disk and verified.
+pub fn all_ready(dir: &Path, config: &Config) -> bool {
+    missing_for(dir, config).is_empty()
+}
+
+pub fn missing_for(dir: &Path, config: &Config) -> Vec<String> {
+    let wanted = required(config);
     match lt_llm::models::status(dir) {
         Ok(models) => models
             .into_iter()
@@ -72,11 +82,10 @@ impl Models {
             .and_then(|manager| manager.status(dir))
             .map_err(|e| e.to_string())?;
         let mut statuses = merge(disk, &lock(&self.live));
-        if !shared.config().translate.engine.is_local() {
-            for status in &mut statuses {
-                if status.id == lt_core::config::TranslateConfig::MODEL.0 {
-                    status.optional = true;
-                }
+        let wanted = required(&shared.config());
+        for status in &mut statuses {
+            if !wanted.contains(&status.id.as_str()) {
+                status.optional = true;
             }
         }
         Ok(statuses)
@@ -137,28 +146,20 @@ impl Models {
                 let outcome = ModelManager::new()
                     .map_err(|e| e.to_string())
                     .and_then(|manager| {
-                        let dir = shared.paths.models(&shared.config());
+                        let config = shared.config();
+                        let dir = shared.paths.models(&config);
                         let progress = &mut |status| models.record(&shared, status);
-                        match &only {
-                            None if !shared.config().translate.engine.is_local() => manager
-                                .fetch_id(
-                                    &dir,
-                                    lt_sherpa::XASR_STREAM_MODEL,
-                                    &models.cancel,
-                                    progress,
-                                )
-                                .and_then(|_| {
-                                    manager.fetch_id(
-                                        &dir,
-                                        lt_sherpa::XASR_OFFLINE_MODEL,
-                                        &models.cancel,
-                                        progress,
-                                    )
-                                }),
-                            None => manager.fetch(dir, &models.cancel, progress),
-                            Some(id) => manager.fetch_id(dir, id, &models.cancel, progress),
-                        }
-                        .map_err(|e| e.to_string())
+                        let ids = match &only {
+                            None => required(&config),
+                            Some(id) => vec![id.as_str()],
+                        };
+                        ids.into_iter()
+                            .try_for_each(|id| {
+                                manager
+                                    .fetch_id(&dir, id, &models.cancel, progress)
+                                    .map(drop)
+                            })
+                            .map_err(|e| e.to_string())
                     });
                 if let Err(message) = outcome {
                     if !models.cancel.load(Ordering::Acquire) {
@@ -209,5 +210,26 @@ impl Models {
         self.publish(shared);
         result?;
         self.status(shared)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn listening_needs_only_the_models_its_settings_use() {
+        let mut config = Config::default();
+        assert_eq!(
+            required(&config),
+            [
+                lt_sherpa::XASR_STREAM_MODEL,
+                lt_sherpa::XASR_OFFLINE_MODEL,
+                lt_core::config::TranslateConfig::MODEL.0,
+            ]
+        );
+        config.asr.second_pass = false;
+        config.translate.engine = lt_core::config::TranslateEngine::Microsoft;
+        assert_eq!(required(&config), [lt_sherpa::XASR_STREAM_MODEL]);
     }
 }

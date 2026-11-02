@@ -156,7 +156,7 @@ impl Controller {
         }
         let config = self.shared.config();
         let models = self.shared.paths.models(&config);
-        let missing = crate::models::missing_for(&models, config.translate.engine);
+        let missing = crate::models::missing_for(&models, &config);
         if !missing.is_empty() {
             return Err(format!(
                 "Models are not ready: {}. The control window shows the download.",

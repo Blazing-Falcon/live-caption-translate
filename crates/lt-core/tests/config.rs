@@ -1,5 +1,6 @@
 use lt_core::config::{
-    CaptureConfig, Config, LogLevel, MessageLevel, OverlayConfig, OverlayStyle, PanelEdge,
+    AppTheme, CaptionCard, CaptionFont, CaptureConfig, Config, LogLevel, MessageLevel,
+    OverlayConfig, OverlayStyle, PanelEdge,
 };
 use serde_json::json;
 use std::fs;
@@ -143,7 +144,7 @@ level = "verbose"
 "#,
     )
     .unwrap();
-    assert_eq!(config.config_version, 3);
+    assert_eq!(config.config_version, 4);
     assert_eq!(config.capture.mode, CaptureConfig::default().mode);
     assert!(config.capture.autostart);
     assert_eq!(config.capture.device, "selected-device");
@@ -192,7 +193,7 @@ fn every_bounded_number_clamps_to_the_limits_table() {
         "transcript":{"retention_days":-1},"logging":{"keep_files":-1}
     }))
     .unwrap();
-    assert_eq!(config.config_version, 3);
+    assert_eq!(config.config_version, 4);
     assert_eq!(config.asr.threads, 1);
     assert_eq!(config.asr.pause_s, 3.0);
     assert_eq!(config.translate.threads, 64);
@@ -246,7 +247,7 @@ fn failed_atomic_replace_preserves_existing_destination() {
 }
 
 /// A saved version 2 file keeps the values that still exist, loses the keys the app no longer
-/// has, and is written as version 3 by the next save.
+/// has, turns its second pass word into the switch, and is written as version 4 by the next save.
 #[test]
 fn a_version_2_file_loads_with_its_known_values() {
     let (config, messages) = Config::from_toml(
@@ -276,7 +277,7 @@ level = "debug"
 "#,
     )
     .unwrap();
-    assert_eq!(config.config_version, 3);
+    assert_eq!(config.config_version, 4);
     assert_eq!(config.capture.mode, lt_core::types::CaptureMode::Apps);
     assert_eq!(config.capture.apps.len(), 1);
     assert_eq!(config.asr.threads, 3);
@@ -288,8 +289,9 @@ level = "debug"
     assert_eq!(config.logging.level, LogLevel::Debug);
     assert!(warnings(&messages).is_empty(), "{messages:?}");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
-    assert_eq!(saved["config_version"].as_integer(), Some(3));
-    assert!(saved["asr"].get("second_pass").is_none());
+    assert_eq!(saved["config_version"].as_integer(), Some(4));
+    assert!(!config.asr.second_pass);
+    assert_eq!(saved["asr"]["second_pass"].as_bool(), Some(false));
     assert!(saved["translate"].get("temperature").is_none());
     assert!(saved["overlay"].get("expire_s").is_none());
 }
@@ -312,14 +314,14 @@ style = "flow"
 "#,
     )
     .unwrap();
-    assert_eq!(config.config_version, 3);
+    assert_eq!(config.config_version, 4);
     assert_eq!(config.asr.threads, 3);
     // A version 1 file wrote 0 for automatic threads, which is clamped like any other value.
     assert_eq!(config.translate.threads, 1);
     assert_eq!(config.overlay.style, OverlayStyle::Flow);
     assert!(warnings(&messages).len() == 1, "{messages:?}");
     let saved: toml::Value = toml::from_str(&config.to_toml().unwrap()).unwrap();
-    assert_eq!(saved["config_version"].as_integer(), Some(3));
+    assert_eq!(saved["config_version"].as_integer(), Some(4));
 }
 
 #[test]
@@ -368,4 +370,57 @@ dir = "D:/models"
     assert_eq!(reset.capture.apps, config.capture.apps);
     assert_eq!(reset.overlay.panel_rect, config.overlay.panel_rect);
     assert_eq!(reset.models.dir, "D:/models");
+}
+
+/// A version 3 file gets the new settings at their defaults. A file that never chose a
+/// translator stays on the local one, so an upgrade never sends text online.
+#[test]
+fn a_version_3_file_gains_the_new_settings_and_keeps_the_local_translator() {
+    let (config, messages) = Config::from_toml(
+        r#"
+config_version = 3
+[asr]
+second_pass_threads = 3
+[overlay]
+font_px = 30
+"#,
+    )
+    .unwrap();
+    assert!(warnings(&messages).is_empty(), "{messages:?}");
+    assert_eq!(config.config_version, 4);
+    assert!(config.asr.second_pass);
+    assert_eq!(config.asr.second_pass_threads, 3);
+    assert!(config.translate.engine.is_local());
+    assert_eq!(config.overlay.card, CaptionCard::Night);
+    assert_eq!(config.overlay.font, CaptionFont::Rounded);
+    assert_eq!(config.overlay.english_color, "#ffffff");
+    assert_eq!(config.overlay.chinese_color, "#c9c9c4");
+    assert_eq!(config.app.theme, AppTheme::System);
+}
+
+#[test]
+fn a_caption_color_that_is_not_hex_falls_back_and_hex_is_kept_in_lowercase() {
+    let (config, messages) = Config::from_toml(
+        r##"
+[overlay]
+english_color = "yellow"
+chinese_color = "#FFE27A"
+card = "paper"
+"##,
+    )
+    .unwrap();
+    assert_eq!(config.overlay.english_color, "#ffffff");
+    assert_eq!(config.overlay.chinese_color, "#ffe27a");
+    assert_eq!(config.overlay.card, CaptionCard::Night);
+    let warned = warnings(&messages);
+    assert!(
+        warned
+            .iter()
+            .any(|text| text.starts_with("overlay.english_color")),
+        "{warned:?}"
+    );
+    assert!(
+        warned.iter().any(|text| text.starts_with("overlay.card")),
+        "{warned:?}"
+    );
 }
