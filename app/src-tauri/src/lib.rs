@@ -234,6 +234,8 @@ pub fn run() {
             commands::set_overlay_moving,
             commands::set_overlay_visible,
             commands::open_folder,
+            commands::list_transcripts,
+            commands::read_transcript,
             commands::screen_select,
             commands::screen_plate,
             commands::screen_close,

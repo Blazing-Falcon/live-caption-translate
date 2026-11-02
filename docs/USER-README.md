@@ -35,7 +35,7 @@ All processing is on your computer. After the downloads, the app does not use th
 | **Translation** | A free online service (Microsoft, Google, Google Beta, Bing, Youdao, with a backup), on this PC (downloads the translator first), or your own AI server. A note always says who sees the Chinese text. |
 | **Screenshot** | How to use it, text direction, the text reader download |
 | **Shortcuts** | The five hotkeys. Press **Change**, then the new keys. |
-| **History** | Save transcripts, how long to keep them, open the folder |
+| **History** | Save transcripts, how long to keep them, read past sessions in the app, open the folder |
 | **About & help** | App theme, downloads and the model folder, log detail and folder, **Reset settings** |
 
 **Reset settings** sets all settings back to their defaults. The caption position, the selected apps and the downloaded models stay.

@@ -98,3 +98,18 @@ export function healthRows(stats: PipelineStats | null, listening: boolean, loca
     { label: "Using", value: `${totalCpu(stats)}% CPU · ${formatMemory(memory)} memory${local ? " with the translator" : ""}`, tone: "plain" },
   ];
 }
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "1 Nov 2026, 21:12" in the time zone the session was recorded in. */
+export function sessionTime(startedAt: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(startedAt);
+  if (!match) return startedAt || "Unknown time";
+  const [, year, month, day, hour, minute] = match;
+  return `${Number(day)} ${MONTHS[Number(month) - 1] ?? month} ${year}, ${hour}:${minute}`;
+}
+
+/** "21:12:05" from a line's wall time. */
+export function lineTime(wall: string): string {
+  return /T(\d{2}:\d{2}:\d{2})/.exec(wall)?.[1] ?? "";
+}

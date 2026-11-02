@@ -440,6 +440,105 @@ pub fn cleanup(dir: impl AsRef<Path>, days: u32, now: SystemTime) -> Result<usiz
     Ok(removed)
 }
 
+/// A saved session as the control window lists it.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct SavedSession {
+    pub file: String,
+    pub started_at: String,
+    /// What was heard: the capture label, such as "Speakers" or "Chrome".
+    pub source: String,
+    pub lines: usize,
+}
+
+/// One finished line of a saved session.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct SavedLine {
+    pub wall: String,
+    pub source: String,
+    pub english: Option<String>,
+    pub status: String,
+}
+
+/// The most sessions `saved_sessions` lists, newest first.
+pub const SAVED_SESSIONS_LIMIT: usize = 100;
+
+/// The transcripts in `dir`, newest first. Other files are ignored; an unreadable one is skipped.
+pub fn saved_sessions(dir: impl AsRef<Path>) -> Result<Vec<SavedSession>> {
+    let entries = match fs::read_dir(dir.as_ref()) {
+        Ok(entries) => entries,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => return Err(Error::Io(error)),
+    };
+    let mut names: Vec<String> = entries
+        .filter_map(|entry| entry.ok()?.file_name().into_string().ok())
+        .filter(|name| generated_filename(name))
+        .collect();
+    names.sort_unstable_by(|a, b| b.cmp(a));
+    names.truncate(SAVED_SESSIONS_LIMIT);
+    Ok(names
+        .into_iter()
+        .filter_map(|file| {
+            let contents = fs::read_to_string(dir.as_ref().join(&file)).ok()?;
+            let (header, lines) = parse_saved(&contents);
+            Some(SavedSession {
+                started_at: header.as_ref().map(|h| h.0.clone()).unwrap_or_default(),
+                source: header.map(|h| h.1).unwrap_or_default(),
+                lines: lines.len(),
+                file,
+            })
+        })
+        .collect())
+}
+
+/// The lines of one saved session. `file` must be a transcript name, never a path.
+pub fn saved_lines(dir: impl AsRef<Path>, file: &str) -> Result<Vec<SavedLine>> {
+    if !generated_filename(file) {
+        return Err(Error::Config(format!("Not a transcript: {file}")));
+    }
+    let contents = fs::read_to_string(dir.as_ref().join(file)).map_err(Error::Io)?;
+    Ok(parse_saved(&contents).1)
+}
+
+/// The header's start time and source label, and every utterance. Malformed lines are skipped,
+/// so a session cut short by a crash still reads.
+fn parse_saved(contents: &str) -> (Option<(String, String)>, Vec<SavedLine>) {
+    let mut header = None;
+    let mut lines = Vec::new();
+    for value in contents
+        .lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+    {
+        let text = |key: &str| {
+            value
+                .get(key)
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_owned()
+        };
+        match value.get("type").and_then(|v| v.as_str()) {
+            Some("session") => {
+                let label = value
+                    .pointer("/source/label")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default()
+                    .to_owned();
+                header = Some((text("started_at"), label));
+            }
+            Some("utterance") => lines.push(SavedLine {
+                wall: text("wall"),
+                source: text("source"),
+                english: value
+                    .get("english")
+                    .and_then(|v| v.as_str())
+                    .map(str::to_owned),
+                status: text("status"),
+            }),
+            _ => {}
+        }
+    }
+    (header, lines)
+}
+
 fn generated_filename(name: &str) -> bool {
     let bytes = name.as_bytes();
     if bytes.len() != 23
@@ -481,6 +580,44 @@ fn generated_filename(name: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn saved_sessions_list_newest_first_and_read_only_transcript_names() {
+        let dir = std::env::temp_dir().join(format!("lt-saved-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let header = r#"{"type":"session","app_version":"1","started_at":"2026-11-01T21:12:00+07:00","source":{"mode":"system","label":"Speakers"},"asr":"x","asr_second":"y","translator":"z","config":{"skip_lag_s":6.0}}"#;
+        let line = r#"{"type":"utterance","id":1,"source":"你好。","english":"Hello.","status":"final","wall":"2026-11-01T21:12:05+07:00"}"#;
+        let skipped = r#"{"type":"utterance","id":2,"source":"他们来了。","english":null,"status":"skipped","wall":"2026-11-01T21:12:09+07:00"}"#;
+        fs::write(
+            dir.join("2026-11-01_211200.jsonl"),
+            format!("{header}\n{line}\n{skipped}\n{{cut short"),
+        )
+        .unwrap();
+        fs::write(dir.join("2026-11-02_080000.jsonl"), format!("{header}\n")).unwrap();
+        fs::write(dir.join("notes.txt"), "not a transcript").unwrap();
+
+        let sessions = super::saved_sessions(&dir).unwrap();
+        assert_eq!(
+            sessions
+                .iter()
+                .map(|s| (s.file.as_str(), s.lines))
+                .collect::<Vec<_>>(),
+            [
+                ("2026-11-02_080000.jsonl", 0),
+                ("2026-11-01_211200.jsonl", 2)
+            ]
+        );
+        assert_eq!(sessions[1].source, "Speakers");
+        let lines = super::saved_lines(&dir, "2026-11-01_211200.jsonl").unwrap();
+        assert_eq!(lines[0].english.as_deref(), Some("Hello."));
+        assert_eq!(
+            (lines[1].status.as_str(), lines[1].english.as_deref()),
+            ("skipped", None)
+        );
+        assert!(super::saved_lines(&dir, "../config.toml").is_err());
+        let _ = fs::remove_dir_all(&dir);
+    }
+
     use super::*;
     use crate::events::{DropReason, SkipReason};
     use std::fs::{File, FileTimes};

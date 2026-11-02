@@ -182,6 +182,22 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await expect(row).toContainText("Ready");
   });
 
+  test("history lists saved sessions and reads one", async ({ page }) => {
+    await open(page, "control");
+    await openPage(page, "History");
+    const list = page.getByTestId("transcripts");
+    await expect(list).toContainText("1 Nov 2026, 21:12");
+    await expect(list).toContainText("Speakers (Realtek) · 2 lines");
+    await list.getByRole("button", { name: "Read" }).click();
+    await expect.poll(async () => (await calls(page, "read_transcript")).at(-1)?.args).toEqual({ file: "2026-11-01_211200.jsonl" });
+    const reader = page.getByTestId("transcript-reader");
+    await expect(reader.locator(".line")).toHaveCount(2);
+    await expect(reader.locator(".line").first()).toContainText(["21:12:05", "你昨天晚上去哪儿了？", "Where were you last night?"].join(" "));
+    await expect(reader.locator(".line").last()).toContainText("Skipped to catch up");
+    await reader.getByRole("button", { name: "Back to the list" }).click();
+    await expect(page.getByTestId("transcripts")).toBeVisible();
+  });
+
   test("the app theme setting overrides the system theme", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "light" });
     await open(page, "control");

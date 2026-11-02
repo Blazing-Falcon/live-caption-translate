@@ -138,6 +138,20 @@ export interface AudioAppList {
 export type ModelState = "missing" | "downloading" | "paused" | "verifying" | "ready" | "corrupt";
 export type FolderKind = "transcripts" | "logs" | "models";
 
+export interface SavedSession {
+  file: string;
+  started_at: string;
+  source: string;
+  lines: number;
+}
+
+export interface SavedLine {
+  wall: string;
+  source: string;
+  english: string | null;
+  status: "final" | "english" | "skipped" | "failed";
+}
+
 export interface ModelStatus {
   id: string;
   name: string;

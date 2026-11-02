@@ -2,6 +2,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { parseConfig, type Config, type ConfigPatch, type SetConfigResult } from "./settings";
 import type {
+  SavedLine,
+  SavedSession,
   AppState,
   AudioAppList,
   AudioDevice,
@@ -37,6 +39,8 @@ export const COMMANDS = {
   setOverlayMoving: "set_overlay_moving",
   setOverlayVisible: "set_overlay_visible",
   openFolder: "open_folder",
+  listTranscripts: "list_transcripts",
+  readTranscript: "read_transcript",
   quit: "quit",
 } as const;
 
@@ -102,6 +106,8 @@ export const setOverlayMoving = (moving: boolean): Promise<void> => call<void>(C
 export const setOverlayVisible = (visible: boolean): Promise<void> =>
   call<void>(COMMANDS.setOverlayVisible, { visible });
 export const openFolder = (which: FolderKind): Promise<void> => call<void>(COMMANDS.openFolder, { which });
+export const listTranscripts = (): Promise<SavedSession[]> => call<SavedSession[]>(COMMANDS.listTranscripts);
+export const readTranscript = (file: string): Promise<SavedLine[]> => call<SavedLine[]>(COMMANDS.readTranscript, { file });
 export const quit = (): Promise<void> => call<void>(COMMANDS.quit);
 
 export async function getConfig(): Promise<Config> {
