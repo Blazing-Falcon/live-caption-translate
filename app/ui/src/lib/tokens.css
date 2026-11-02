@@ -63,66 +63,6 @@
   --screen-dim: rgb(0 0 0 / 0.4);
   --screen-bar-bg: rgb(var(--ov-ground-rgb) / 0.94);
 
-  /* Control window, light. */
-  --c-ground: #f7f7f5;
-  --c-surface: #ffffff;
-  --c-border: #e3e3de;
-  --c-border-strong: #cfcfca;
-  --c-row-sep: #f0f0ec;
-  --c-text: #1b1c1e;
-  --c-text-label: #44474c;
-  --c-text-secondary: #6b6e73;
-  --c-accent: #b27318;
-  --c-link: #8a5a12;
-  --c-warning: #8a5a12;
-  --c-nav-selected: #e9e9e4;
-  --c-track: #ecece7;
-  --c-btn-primary-bg: #1b1c1e;
-  --c-btn-primary-text: #f7f7f5;
-  --c-focus: #b27318;
-  --c-hollow: #8c8f94;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --c-ground: #1c1d20;
-    --c-surface: #25272a;
-    --c-border: #34363a;
-    --c-border-strong: #4a4d52;
-    --c-row-sep: #2d2f33;
-    --c-text: #ededea;
-    --c-text-label: #c4c7cc;
-    --c-text-secondary: #a3a6ac;
-    --c-accent: #e3a33b;
-    --c-link: #e3a33b;
-    --c-warning: #e8b866;
-    --c-nav-selected: #2f3134;
-    --c-track: #34363a;
-    --c-btn-primary-bg: #ededea;
-    --c-btn-primary-text: #1c1d20;
-    --c-focus: #e3a33b;
-    --c-hollow: #a3a6ac;
-  }
-}
-
-:root[data-theme="dark"] {
-  --c-ground: #1c1d20;
-  --c-surface: #25272a;
-  --c-border: #34363a;
-  --c-border-strong: #4a4d52;
-  --c-row-sep: #2d2f33;
-  --c-text: #ededea;
-  --c-text-label: #c4c7cc;
-  --c-text-secondary: #a3a6ac;
-  --c-accent: #e3a33b;
-  --c-link: #e3a33b;
-  --c-warning: #e8b866;
-  --c-nav-selected: #2f3134;
-  --c-track: #34363a;
-  --c-btn-primary-bg: #ededea;
-  --c-btn-primary-text: #1c1d20;
-  --c-focus: #e3a33b;
-  --c-hollow: #a3a6ac;
 }
 
 /* Pencil: graphite paper with one yellow pencil. Light mode has offset sticker shadows; dark mode
@@ -291,10 +231,6 @@ html {
   background: transparent;
 }
 
-html:has(> body.control-body) {
-  background: var(--c-ground);
-}
-
 body {
   margin: 0;
   font-family: var(--font-ui);
@@ -316,11 +252,6 @@ body.screen-body {
   user-select: none;
 }
 
-body.control-body {
-  background: var(--c-ground);
-  color: var(--c-text);
-}
-
 #app {
   height: 100vh;
 }
@@ -333,7 +264,7 @@ select {
 }
 
 :focus-visible {
-  outline: var(--focus-width) solid var(--c-focus);
+  outline: var(--focus-width) solid var(--pen-text);
   outline-offset: 2px;
 }
 
