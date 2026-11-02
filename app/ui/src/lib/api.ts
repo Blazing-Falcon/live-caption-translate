@@ -41,6 +41,7 @@ export const COMMANDS = {
   openFolder: "open_folder",
   listTranscripts: "list_transcripts",
   readTranscript: "read_transcript",
+  openSettings: "open_settings",
   quit: "quit",
 } as const;
 
@@ -108,6 +109,7 @@ export const setOverlayVisible = (visible: boolean): Promise<void> =>
 export const openFolder = (which: FolderKind): Promise<void> => call<void>(COMMANDS.openFolder, { which });
 export const listTranscripts = (): Promise<SavedSession[]> => call<SavedSession[]>(COMMANDS.listTranscripts);
 export const readTranscript = (file: string): Promise<SavedLine[]> => call<SavedLine[]>(COMMANDS.readTranscript, { file });
+export const openSettings = (): Promise<void> => call<void>(COMMANDS.openSettings);
 export const quit = (): Promise<void> => call<void>(COMMANDS.quit);
 
 export async function getConfig(): Promise<Config> {

@@ -7,7 +7,7 @@ export interface Call {
   args: Record<string, unknown>;
 }
 
-export async function open(page: Page, kind: "overlay" | "control" | "screen", boot: Boot = {}, query = ""): Promise<string[]> {
+export async function open(page: Page, kind: "overlay" | "control" | "screen" | "tray", boot: Boot = {}, query = ""): Promise<string[]> {
   const external: string[] = [];
   page.on("request", (request) => {
     const url = new URL(request.url());
@@ -19,7 +19,7 @@ export async function open(page: Page, kind: "overlay" | "control" | "screen", b
   await page.goto(`/e2e/harness/${kind}.html${query}`);
   // The screen page stays empty until a frame arrives.
   if (kind === "screen") await page.waitForSelector("#app", { state: "attached" });
-  else await page.waitForSelector(kind === "overlay" ? ".overlay-root" : ".shell, .first-run, .loading");
+  else await page.waitForSelector(kind === "overlay" ? ".overlay-root" : kind === "tray" ? ".tray" : ".shell, .first-run, .loading");
   return external;
 }
 

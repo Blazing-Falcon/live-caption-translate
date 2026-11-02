@@ -40,7 +40,7 @@ All processing is on your computer. After the downloads, the app does not use th
 
 **Reset settings** sets all settings back to their defaults. The caption position, the selected apps and the downloaded models stay.
 
-When you close the control window, the app continues in the system tray. Right-click the tray icon for Pause, Hide overlay, Move overlay, Listen to, Open transcript folder, Settings and Quit.
+When you close the control window, the app continues in the system tray. Click the tray icon for a small panel with Start or Pause, captions on or off, the Chinese line, layout, size, Move captions and All settings; it closes when you click elsewhere. Right-click the tray icon for Pause, Hide overlay, Move overlay, Listen to, Open transcript folder, Settings and Quit.
 
 The overlay does not take focus. It does not show in Alt-Tab or the taskbar. Mouse clicks go through it to the window below.
 

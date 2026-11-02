@@ -154,6 +154,7 @@ All commands return `Result<T, String>`. The error string is a sentence for the 
 | `set_overlay_moving` | `moving` | | Start or stop move mode |
 | `set_overlay_visible` | `visible` | | Show or hide the overlay |
 | `open_folder` | `which` | | Open `transcripts`, `logs` or `models` |
+| `open_settings` | | | Hide the tray panel and show the control window |
 | `list_transcripts` | | `{ file, started_at, source, lines }[]` | The saved transcripts, newest first, at most 100. `source` is the capture label; `lines` counts utterance records |
 | `read_transcript` | `file` | `{ wall, source, english, status }[]` | The utterances of one transcript. `file` must be a name that `list_transcripts` returns, never a path |
 | `screen_select` | `frame`, `rect`, `debug?`, `direction?` | `number` | Cancel any screen job, cut `rect` (frame pixels) from frame `frame` and start a job on it; returns the job id |

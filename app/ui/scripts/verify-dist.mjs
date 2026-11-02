@@ -13,7 +13,7 @@ function* walk(directory) {
   }
 }
 
-for (const page of ['overlay.html', 'control.html', 'screen.html']) {
+for (const page of ['overlay.html', 'control.html', 'screen.html', 'tray.html']) {
   if (!existsSync(join(dist, page))) problems.push(`missing ${page}`);
 }
 
@@ -48,4 +48,4 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`verify:dist: ${problem}`);
   process.exit(1);
 }
-console.log('verify:dist ok: overlay.html, control.html and screen.html present, no external resources, unlisted fonts or test harness code');
+console.log('verify:dist ok: overlay.html, control.html, screen.html and tray.html present, no external resources, unlisted fonts or test harness code');

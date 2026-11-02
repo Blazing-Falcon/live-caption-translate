@@ -63,5 +63,8 @@ These are defaults. When one makes a change worse, break it. Say why in the comm
 | Screenshot capture, `ltshot` frame, window, `lt-screen` thread | `app/src-tauri/src/screen/` |
 | App commands, controller, bridge | `app/src-tauri/src/` |
 | Caption blocks, overlay viewport | `app/ui/src/lib/captions.ts`, `app/ui/src/overlay/` |
-| Control window | `app/ui/src/control/` |
+| Control window, first start, model-gated settings | `app/ui/src/control/`, `app/ui/src/lib/pending.ts`, `app/ui/src/lib/wording.ts` |
+| Design tokens, fonts, component kit | `app/ui/src/lib/tokens.css`, `fonts.css`, `app/ui/src/lib/ui/` |
+| Tray panel | `app/ui/src/tray/`, `app/src-tauri/src/windows.rs` |
+| Saved transcript reading | `crates/lt-core/src/transcript.rs` (`saved_sessions`, `saved_lines`) |
 | Screenshot window, store, coordinate math | `app/ui/src/screen/`, `app/ui/src/lib/screen.ts` |
