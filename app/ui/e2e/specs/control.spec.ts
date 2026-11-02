@@ -51,6 +51,11 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await select.selectOption("microsoft");
     await expectPatch(page, { translate: { engine: "microsoft" } });
     await expect(page.getByText("Captions and screenshot text are sent to Microsoft to be translated.")).toBeVisible();
+    await expect(page.getByTestId("translate-fallback")).toBeChecked();
+    await expect(page.getByText("After retrying, text may also be sent to Google.")).toBeVisible();
+    await flip(page.getByTestId("translate-fallback"), false);
+    await expectPatch(page, { translate: { fallback: false } });
+    await expect(page.getByText(/After retrying, text may also be sent/)).toHaveCount(0);
     await expect(page.getByText(/CPU .*app and translation server/)).toHaveCount(0);
     await select.selectOption("google");
     await expectPatch(page, { translate: { engine: "google" } });

@@ -85,6 +85,14 @@
     if (!saved) select.value = config.translate.engine;
   }
 
+  const fallbackServices = $derived(config.translate.engine === "youdao" ? "Microsoft" : config.translate.engine === "google" || config.translate.engine === "bing" ? "Google and Microsoft" : "Google");
+
+  async function toggleFallback(event: Event): Promise<void> {
+    const input = event.currentTarget as HTMLInputElement;
+    await session.save("translate.fallback", { translate: { fallback: input.checked } });
+    reconcileChecked(input, get(liveConfig)?.translate.fallback ?? config.translate.fallback);
+  }
+
   async function chooseThreads(event: Event, table: "asr" | "translate"): Promise<void> {
     const select = event.currentTarget as HTMLSelectElement;
     const saved = await session.save(`${table}.threads`, threadsPatch(table, Number(select.value)));
@@ -166,6 +174,15 @@
     </label>
     {#if config.translate.engine !== "local"}
       <p class="help small">Captions and screenshot text are sent to {config.translate.engine === "openai" ? "your configured endpoint" : config.translate.engine === "microsoft" ? "Microsoft" : config.translate.engine === "google_beta" ? "Google Beta" : config.translate.engine === "bing" ? "Bing" : config.translate.engine === "youdao" ? "Youdao" : "Google"} to be translated.</p>
+    {/if}
+    {#if config.translate.engine !== "local" && config.translate.engine !== "openai"}
+      <label class="check-row">
+        <input type="checkbox" checked={config.translate.fallback} data-testid="translate-fallback" onchange={toggleFallback} />
+        Use backup translators if a request fails
+      </label>
+      {#if config.translate.fallback}
+        <p class="help small">After retrying, text may also be sent to {fallbackServices}.</p>
+      {/if}
     {/if}
     {#if config.translate.engine === "openai"}
       <label class="field">

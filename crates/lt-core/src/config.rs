@@ -285,6 +285,7 @@ impl std::fmt::Debug for OpenAiConfig {
 #[serde(default)]
 pub struct TranslateConfig {
     pub engine: TranslateEngine,
+    pub fallback: bool,
     pub openai: OpenAiConfig,
     pub threads: u32,
 }
@@ -293,6 +294,7 @@ impl Default for TranslateConfig {
     fn default() -> Self {
         Self {
             engine: TranslateEngine::Local,
+            fallback: true,
             openai: OpenAiConfig::default(),
             threads: 4,
         }

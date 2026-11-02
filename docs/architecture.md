@@ -10,7 +10,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 | `crates/lt-audio` | WASAPI capture (system mix or selected apps), WAV replay, resampling, normalization |
 | `crates/lt-sherpa` | X-ASR speech recognition: the streaming recognizer and its offline second pass. It also loads the ONNX Runtime that `lt-ocr` uses. |
 | `crates/lt-llm` | llama-server clients, the server supervisor, model downloads |
-| `crates/lt-web` | Microsoft, Google and OpenAI-compatible translation clients, synchronous HTTP, shared SSE parsing, request signing and batch limits |
+| `crates/lt-web` | Microsoft, Google, Google Beta, Bing, Youdao and OpenAI-compatible translation clients, synchronous HTTP, request signing, sessions, batch limits and fallback chains |
 | `crates/lt-ocr` | PP-OCRv6 text recognition for screenshots: a detector and a recognizer on the shared ONNX Runtime |
 | `crates/lt-cli` | Headless runner: `replay`, `screen`, `models fetch` |
 | `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge, screen capture |
@@ -38,6 +38,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 - Both X-ASR models (streaming and offline) run inside the app through sherpa-onnx.
 - The text recognition model for screenshots runs inside the app through `lt-ocr`, on the same ONNX Runtime. The `lt-screen` thread loads it when a screenshot first needs it and drops it after 5 minutes without a job.
 - With an online translator, each translation worker owns its synchronous engine client. No llama-server or translation model is needed. Speech and OCR model ownership stays the same.
+- Keyless online engines use `translate.fallback` by default: retry the primary once, then try each configured backup within the same request deadline. A batch succeeds wholly through one engine; answers are never mixed across engines. The primary's capabilities determine screenshot packing. Local and OpenAI-compatible engines have no fallback. The control window discloses backup services and can disable fallback; [configuration.md](configuration.md#translate) lists every chain.
 - With the local translator, the server is a child process of the app. A model crash does not stop the overlay.
 - A Windows Job Object stops the server when the app stops, also after a crash.
 - The supervisor checks `/health`, sends one warm-up request, then reports the server ready. After a crash it restarts the server after 1, 2 and 4 s. Then it reports a failure.

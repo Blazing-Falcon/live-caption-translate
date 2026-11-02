@@ -44,6 +44,7 @@ second_pass_threads = 2         # 1 to the logical CPUs of the PC
 
 [translate]
 engine = "local"                # "local" | "microsoft" | "google" | "google_beta" | "bing" | "youdao" | "openai"
+fallback = true                 # Retry keyless online engines, then use their backups
 threads = 4                     # 1 to the logical CPUs of the PC
 
 [translate.openai]
@@ -124,12 +125,25 @@ The second pass always runs: each closed line is decoded again by the offline X-
 
 `engine` selects the translator for both captions and screenshots. Local is the default and keeps text on the PC. Microsoft, Google, Google Beta, Bing, Youdao and OpenAI-compatible endpoints send recognized text to the selected service; audio, screenshots and image pixels stay on the PC. Online choices need no translation model and do not start llama-server. Speech recognition and screenshot text recognition still use local models.
 
-Changing the engine restarts the caption pipeline and clears screenshot translation reuse on the next job. Switching away from local stops its server after any current screenshot job releases it.
+Changing translator settings restarts the caption pipeline and clears screenshot translation reuse on the next job. Switching away from local stops its server after any current screenshot job releases it.
 
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
 | `engine` | `local`, `microsoft`, `google`, `google_beta`, `bing`, `youdao`, `openai` | pipeline | Translator used by captions and screenshots. |
+| `fallback` | bool | pipeline | Retry a failed keyless request once, then try its backups. Ignored by local and OpenAI-compatible engines. |
 | `threads` | 1–64 | pipeline | Local llama-server threads. The app uses at most the PC's logical CPUs. |
+
+With fallback enabled, a request or whole screenshot batch tries the selected engine twice, then each backup once, within its original deadline. Cancelled requests stop immediately. Backup engines can receive the same recognized text; the control window lists the backup services and allows disabling fallback. Chains are:
+
+| Selected Engine | Backups In Order |
+|---|---|
+| Microsoft | Google, Google alternate |
+| Google | Google alternate, Microsoft |
+| Google Beta | Google, Google alternate |
+| Bing | Google, Microsoft |
+| Youdao | Microsoft |
+
+Google alternate uses a different Google request path and has no separate dropdown entry. Tencent is deferred because its endpoint failed certificate validation; it is neither a selectable engine nor a backup.
 
 ### translate.openai
 

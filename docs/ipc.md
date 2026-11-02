@@ -66,7 +66,7 @@ Notes:
 - If an ASR decode fails, the core sends `engine_status` (`asr`, `failed`) and then `dropped` (`empty`).
 - When listening stops, each open id gets a terminal event: `translation_failed` (`error`) if a translation is in progress, otherwise `dropped` (`empty`).
 - `source_state` becomes `silent` after 3 s without real audio.
-- `engine_status` for a translator stays `loading` until its warm-up request is complete.
+- `engine_status` for a translator stays `loading` until warm-up completes. Online warm-up sends no request. A keyless fallback chain stays within one translation request and emits one terminal event, with the same schema and source id.
 
 ### Stats
 

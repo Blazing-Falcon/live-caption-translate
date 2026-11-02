@@ -31,6 +31,7 @@ export interface Config {
   };
   translate: {
     engine: "local" | "microsoft" | "google" | "google_beta" | "bing" | "youdao" | "openai";
+    fallback: boolean;
     openai: { base_url: string; model: string; api_key: string; prompt: string };
     threads: number;
   };
@@ -218,6 +219,7 @@ export const DEFAULT_CONFIG: Config = {
     "second_pass_threads": 2
   },
   "translate": {
+    "fallback": true,
     "engine": "local",
     "openai": { "base_url": "", "model": "", "api_key": "", "prompt": "" },
     "threads": 4

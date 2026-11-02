@@ -1,4 +1,5 @@
 mod bing;
+mod fallback;
 mod google;
 mod google_alt;
 mod google_beta;
@@ -21,7 +22,12 @@ pub fn build(config: &TranslateConfig) -> Result<Box<dyn Translator>> {
     if config.engine == TranslateEngine::Openai {
         return Ok(Box::new(OpenAiTranslator::new(&config.openai)?));
     }
-    Ok(Box::new(WebTranslator::new(config.engine)?))
+    let primary = Box::new(WebTranslator::new(config.engine)?);
+    if config.fallback {
+        Ok(Box::new(fallback::Fallback::build(config.engine, primary)?))
+    } else {
+        Ok(primary)
+    }
 }
 
 pub struct WebTranslator {

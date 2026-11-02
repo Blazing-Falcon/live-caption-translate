@@ -192,6 +192,11 @@ cargo test -p lt-web --test live -- --nocapture --test-threads=1
 cargo test -p lt-cli --features ocr --test screen online_screen -- --nocapture
 cargo run -p lt-web --example record -- microsoft
 cargo run -p lt-web --example record -- google
+cargo run -p lt-web --example record -- google_alt
+cargo run -p lt-web --example record -- google_beta
+cargo run -p lt-web --example record -- bing
+cargo run -p lt-web --example record -- youdao
+cargo run -p lt-web --example measure > out/online-latency.json
 Remove-Item Env:LT_WEB_LIVE
 ```
 
@@ -201,4 +206,10 @@ The recorder writes fixed public sentences and raw answers under `crates/lt-web/
 
 Set `LT_WEB_LIVE=1`, `LT_OPENAI_BASE_URL`, `LT_OPENAI_MODEL`, and optionally `LT_OPENAI_API_KEY`, then run `cargo test -p lt-web --test live openai_compatible_sentence -- --nocapture`. It sends only the fixed test sentence. The test reports skipped when the endpoint or model is absent. Fake HTTP tests in `crates/lt-web/tests/openai.rs` run offline and cover streaming, headers, temperature compatibility and errors.
 
+### Recorder And Measurements
+
 The recorder also accepts `google_alt` for the internal Google alternate transport. Its batchexecute answers are matched by position tags; refused or untagged calls are retried individually once. It has no separate setting.
+
+The measurement example sends 20 fixed caption-length Chinese sentences and one 30-text batch per keyless transport, sequentially. It requires `LT_WEB_LIVE=1`, uses primary transports directly so fallback cannot hide a failure, and reports individual, median and worst elapsed times plus failures. The first sentence includes lazy session initialization; the single batch result has one sample. Save machine, command and date alongside output. Tencent is deferred following endpoint certificate failure and is not measured. OpenAI-compatible measurements require a separately configured endpoint; its live test remains opt-in.
+
+`translate.fallback` defaults to true for selectable keyless engines. Set it false in a test config to isolate one engine; the recorder and measurement example already isolate transports. Offline fallback tests use fake engines to verify primary retry, whole-batch backup ownership, first-error preservation and cancellation. Fallback never changes local or OpenAI-compatible behavior.
