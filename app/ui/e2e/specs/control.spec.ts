@@ -56,6 +56,15 @@ test.describe("control window (browser simulation with mocked transport)", () =>
     await expectCalls(page, "start_listening", 1);
   });
 
+  test("a stacked row puts its control right under its label", async ({ page }) => {
+    await open(page, "control");
+    await openPage(page, "Captions");
+    const row = page.getByTestId("english-color");
+    const help = await row.locator(".help").boundingBox();
+    const control = await row.locator(".control").boundingBox();
+    expect(control!.y - (help!.y + help!.height)).toBeLessThan(16);
+  });
+
   test("translator choice names who sees the text and switches online services", async ({ page }) => {
     await open(page, "control", { config: { translate: { engine: "microsoft" } } });
     await openPage(page, "Translation");

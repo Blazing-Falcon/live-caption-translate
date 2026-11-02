@@ -79,6 +79,11 @@
     gap: 8px;
   }
 
+  /* In a column the 14em basis would become a height. */
+  .stacked .text {
+    flex: none;
+  }
+
   .stacked .control {
     justify-content: flex-start;
   }
