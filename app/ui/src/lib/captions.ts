@@ -192,10 +192,6 @@ export function silentChipText(source: SourceInfo | null): string {
   return label ? `No audio playing on ${label}` : "No audio playing";
 }
 
-export function listeningChipText(source: SourceInfo | null): string {
-  const label = source?.label.trim();
-  return label ? `Listening · ${label}` : "Listening";
-}
 
 /** Newest line is full strength; older lines fade by index and stop at the last step. The
  * dimmest step stays at 0.6: below that the English drops under 4.5:1 against white video. */
@@ -612,9 +608,7 @@ export function createCaptionController(options: CaptionControllerOptions = {}):
         return;
       }
       case "listening_state": {
-        const changed = app.listening !== event.state;
         app = { ...app, listening: event.state, modelsReady: true };
-        if (changed && event.state === "listening") showChip(listeningChipText(app.source));
         emit();
         return;
       }
