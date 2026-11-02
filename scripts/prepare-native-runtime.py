@@ -27,6 +27,7 @@ import stat
 import sys
 import tarfile
 import tempfile
+import time
 from dataclasses import dataclass
 from typing import BinaryIO
 import urllib.request
@@ -311,6 +312,19 @@ def require_libraries(lib_dir: Path, target: str) -> None:
         raise ValueError(f"Pinned archives lack required {target} libraries: {required}")
 
 
+def replace_directory(source: Path, target: Path) -> None:
+    # A virus scanner briefly holds freshly extracted DLLs open, and Windows then refuses to rename
+    # the folder that holds them.
+    for attempt in range(50):
+        try:
+            source.replace(target)
+            return
+        except PermissionError:
+            if attempt == 49:
+                raise
+            time.sleep(0.1)
+
+
 def prepare(target: str, output: Path, offline: bool, deps: Path = DEPS, adopt_existing: bool = False) -> dict:
     output = within_deps(output, deps)
     if output == deps.resolve():
@@ -358,7 +372,7 @@ def prepare(target: str, output: Path, offline: bool, deps: Path = DEPS, adopt_e
             else:
                 if output.exists():
                     output.rmdir()  # Only an empty directory can be replaced.
-                staged.replace(output)
+                replace_directory(staged, output)
         print(f"Prepared runtime: {lib_dir}", file=sys.stderr)
     runtime = lib_dir / ("onnxruntime.dll" if target == "windows-x64" else "libonnxruntime.so")
     # runtime_path describes the prepared source library. Do not export it as
