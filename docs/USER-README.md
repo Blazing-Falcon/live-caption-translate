@@ -30,7 +30,7 @@ All processing is on your computer. After the downloads, the app does not use th
 | Page | Settings |
 |---|---|
 | **Home** | What the app hears and who translates, Start or Pause, quick switches (show captions, Chinese line, move captions), and how it's going: how soon English appears, whether it keeps up, CPU and memory |
-| **Captions** | A live preview, layout (side panel or running text), card (Night or Outline), font, English and Chinese colors, size, card see-through, Chinese line, Chinese while someone is talking, lines kept, side of the screen, move |
+| **Captions** | A live preview, layout (side panel, running text or film subtitles), card (Night or Outline), font, English and Chinese colors, size, card see-through, Chinese line, Chinese while someone is talking, lines kept, side of the screen, move |
 | **Listening** | Everything on this PC (with a speaker or headset) or only the apps you pick, start when the app opens, **Double-check each line**, the pause that starts a new line, even out voices, threads |
 | **Translation** | A free online service (Microsoft, Google, Google Beta, Bing, Youdao, with a backup), on this PC (downloads the translator first), or your own AI server. A note always says who sees the Chinese text. |
 | **Screenshot** | How to use it, text direction, the text reader download |

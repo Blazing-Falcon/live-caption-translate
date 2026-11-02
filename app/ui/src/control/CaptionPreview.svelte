@@ -3,6 +3,7 @@
   import type { Config } from "../lib/settings";
   import CaptionPanel from "../overlay/CaptionPanel.svelte";
   import FlowText from "../overlay/FlowText.svelte";
+  import SubtitleText from "../overlay/SubtitleText.svelte";
 
   let { overlay, scene }: { overlay: Config["overlay"]; scene: "dark" | "bright" | "game" } = $props();
 
@@ -49,6 +50,8 @@
   >
     {#if overlay.style === "panel"}
       <CaptionPanel blocks={SAMPLE} showSource={overlay.show_source} panelLines={overlay.panel_lines} reducedMotion />
+    {:else if overlay.style === "subtitles"}
+      <SubtitleText blocks={SAMPLE} showSource={overlay.show_source} />
     {:else}
       <FlowText blocks={SAMPLE} showSource={overlay.show_source} flowLines={overlay.flow_lines} reducedMotion />
     {/if}

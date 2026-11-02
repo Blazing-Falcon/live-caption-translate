@@ -4,6 +4,20 @@ import type { PipelineEvent } from "../../src/lib/types";
 
 test.describe("overlay (browser simulation with mocked transport)", () => {
 
+  test("film subtitles show only the newest block and the one before it, dimmed", async ({ page }) => {
+    await open(page, "overlay", { config: { overlay: { style: "subtitles" } } });
+    for (const [id, zh, en] of [[1, "你好。", "Hello."], [2, "我们走吧。", "Let's go."], [3, "他们来了。", "They're here."]] as const) {
+      await emitEvent(page, NOW.asr(id, zh));
+      await emitEvent(page, NOW.sealed(id, [id], zh));
+      await emitEvent(page, NOW.final(id, en));
+    }
+    const shown = page.getByTestId("subtitles").locator("[data-block]");
+    await expect(shown).toHaveCount(2);
+    await expect(shown.locator(".english")).toHaveText(["Let's go.", "They're here."]);
+    await expect(shown.first()).toHaveClass(/older/);
+    await expect(shown.last()).not.toHaveClass(/older/);
+  });
+
   test("shows a live line, then pending, streaming and the final in the same elements", async ({ page }) => {
     const external = await open(page, "overlay", { config: { overlay: { style: "panel", english_color: "#ffd84d" } } });
     await emitEvent(page, NOW.partial(1, "这次华为发布的呢是整个"));

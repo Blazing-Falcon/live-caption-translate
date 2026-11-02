@@ -38,6 +38,12 @@
   const linesKey = $derived(overlay.style === "panel" ? "panel_lines" : "flow_lines");
   const lineCounts = Array.from({ length: OVERLAY_LIMITS.panel_lines.max }, (_, index) => index + 1);
 
+  const LAYOUT_HELP: Record<Overlay["style"], string> = {
+    panel: "Lines stack on one side of the screen.",
+    flow: "One English paragraph that keeps growing.",
+    subtitles: "The newest line at the bottom, like film subtitles, with the one before it above.",
+  };
+
   const save = (key: string, values: Partial<Overlay>) => session.save(`overlay.${key}`, overlayPatch(values));
 
   async function saveLines(event: Event): Promise<void> {
@@ -75,7 +81,7 @@
   </Section>
 
   <Section title="Look">
-    <Row title="Layout" help={overlay.style === "panel" ? "Lines stack on one side of the screen." : "One English paragraph that keeps growing."}>
+    <Row title="Layout" help={LAYOUT_HELP[overlay.style]}>
       {#snippet control()}
         <Segmented
           name="style"
@@ -84,6 +90,7 @@
           options={[
             { value: "panel", label: "Side panel" },
             { value: "flow", label: "Running text" },
+            { value: "subtitles", label: "Film subtitles" },
           ]}
           onchange={(style) => save("style", { style })}
         />
@@ -192,13 +199,15 @@
         <Switch label="Chinese while someone is talking" checked={overlay.live_source} onchange={(live_source) => save("live_source", { live_source })} />
       {/snippet}
     </Row>
-    <Row title={overlay.style === "panel" ? "Lines kept on screen" : "Lines of running text"} help="Older lines roll off the top.">
+{#if overlay.style !== "subtitles"}
+          <Row title={overlay.style === "panel" ? "Lines kept on screen" : "Lines of running text"} help="Older lines roll off the top.">
       {#snippet control()}
         <select class="field" aria-label={overlay.style === "panel" ? "Lines kept on screen" : "Lines of running text"} value={String(overlay[linesKey])} onchange={saveLines}>
           {#each lineCounts as count (count)}<option value={String(count)}>{count}</option>{/each}
         </select>
       {/snippet}
     </Row>
+    {/if}
   </Section>
 
   <Section title="Position">

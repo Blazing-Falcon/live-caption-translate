@@ -6,6 +6,7 @@
   import FlowText from "./FlowText.svelte";
   import MoveFrame from "./MoveFrame.svelte";
   import StatusChip from "./StatusChip.svelte";
+  import SubtitleText from "./SubtitleText.svelte";
 
   let { session }: { session: Session } = $props();
 
@@ -51,6 +52,8 @@
         panelLines={$config.overlay.panel_lines}
         {reducedMotion}
       />
+    {:else if $config.overlay.style === "subtitles"}
+      <SubtitleText blocks={$captions.blocks} status={$captions.status} showSource={$config.overlay.show_source} />
     {:else}
       <div class="flow-slot">
         <FlowText
@@ -90,7 +93,8 @@
     justify-content: center;
   }
 
-  [data-style="panel"] > :global(.panel) {
+  [data-style="panel"] > :global(.panel),
+  [data-style="subtitles"] > :global(.subtitles) {
     flex: 1;
     min-height: 0;
   }
