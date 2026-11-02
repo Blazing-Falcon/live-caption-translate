@@ -55,6 +55,21 @@ pub fn default_rect(style: OverlayStyle, edge_right: bool, monitor: &Monitor) ->
     }
 }
 
+/// Top-left of the tray panel in physical pixels: above and left of the click, kept inside the
+/// work area `(x, y, w, h)`. A taskbar at the top or a side puts the click near that edge, and the
+/// clamp then moves the panel beside it.
+pub fn tray_panel_origin(
+    click: (i32, i32),
+    size: (i32, i32),
+    area: (i32, i32, i32, i32),
+) -> (i32, i32) {
+    const GAP: i32 = 12;
+    let (x, y) = (click.0 - size.0 + GAP, click.1 - size.1 - GAP);
+    let max_x = (area.0 + area.2 - size.0).max(area.0);
+    let max_y = (area.1 + area.3 - size.1).max(area.1);
+    (x.clamp(area.0, max_x), y.clamp(area.1, max_y))
+}
+
 /// Saved rect to a physical window rect. The window is clamped inside the work area so a
 /// changed resolution can never leave it unreachable.
 pub fn to_physical(rect: &OverlayRect, monitor: &Monitor) -> Physical {
@@ -93,6 +108,27 @@ pub fn pick<'a>(saved: &str, monitors: &'a [Monitor], primary: usize) -> Option<
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn the_tray_panel_opens_above_the_icon_and_stays_inside_the_work_area() {
+        let area = (0, 0, 1920, 1032);
+        assert_eq!(
+            tray_panel_origin((1800, 1060), (360, 440), area),
+            (1452, 592)
+        );
+        assert_eq!(
+            tray_panel_origin((1910, 1060), (360, 440), area),
+            (1560, 592)
+        );
+        assert_eq!(
+            tray_panel_origin((1800, 10), (360, 440), (0, 48, 1920, 1032)),
+            (1452, 48)
+        );
+        assert_eq!(
+            tray_panel_origin((-1800, 1060), (360, 440), (-1920, 0, 1920, 1040)),
+            (-1920, 600)
+        );
+    }
+
     use super::*;
 
     fn monitor(name: &str, x: i32, w: u32, h: u32, scale: f64) -> Monitor {

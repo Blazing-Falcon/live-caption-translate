@@ -69,12 +69,11 @@ pub fn build(app: &AppHandle) -> tauri::Result<Tray> {
             if let TrayIconEvent::Click {
                 button: MouseButton::Left,
                 button_state: MouseButtonState::Up,
+                position,
                 ..
             } = event
             {
-                if let Some(shared) = tray.app_handle().try_state::<Arc<Shared>>() {
-                    shared.show_control();
-                }
+                crate::windows::toggle_tray_panel(tray.app_handle(), position);
             }
         })
         .build(app)?;

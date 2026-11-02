@@ -178,6 +178,13 @@ pub fn open_folder_native(shared: &Shared, which: &str) -> Reply<()> {
         .map_err(|e| format!("Could not open the folder: {e}"))
 }
 
+/// Opens the control window from the tray panel and closes the panel.
+#[tauri::command]
+pub fn open_settings(shared: Shell) {
+    crate::windows::hide_tray_panel(&shared.handle);
+    shared.show_control();
+}
+
 /// The saved transcripts, newest first.
 #[tauri::command]
 pub async fn list_transcripts(shared: Shell<'_>) -> Reply<Vec<lt_core::transcript::SavedSession>> {

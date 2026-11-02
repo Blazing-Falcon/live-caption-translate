@@ -200,6 +200,12 @@ pub fn run() {
                 }
                 return;
             }
+            if window.label() == windows::TRAY {
+                if let WindowEvent::Focused(false) = event {
+                    let _ = window.hide();
+                }
+                return;
+            }
             if window.label() != windows::CONTROL {
                 return;
             }
@@ -235,6 +241,7 @@ pub fn run() {
             commands::set_overlay_visible,
             commands::open_folder,
             commands::list_transcripts,
+            commands::open_settings,
             commands::read_transcript,
             commands::screen_select,
             commands::screen_plate,

@@ -64,7 +64,7 @@ fn observe(shared: &Shared, event: &PipelineEvent) {
 }
 
 fn forward(shared: &Shared, event: &PipelineEvent) {
-    for window in ["overlay", "control"] {
+    for window in ["overlay", "control", crate::windows::TRAY] {
         if let Err(error) = shared.handle.emit_to(window, EVENT, event) {
             tracing::debug!(%error, window, "Event not delivered");
         }

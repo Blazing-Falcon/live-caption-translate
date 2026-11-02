@@ -14,7 +14,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 | `crates/lt-ocr` | PP-OCRv6 text recognition for screenshots: a detector and a recognizer on the shared ONNX Runtime |
 | `crates/lt-cli` | Headless runner: `replay`, `screen`, `models fetch` |
 | `app/src-tauri` | Tauri 2 shell (Windows only): windows, tray, hotkeys, commands, event bridge, screen capture |
-| `app/ui` | Svelte UI: `overlay`, `control` and `screen` |
+| `app/ui` | Svelte UI: `overlay`, `control`, `screen` and `tray` (the quick panel), on one token set and kit (`lib/tokens.css`, `lib/ui/`) |
 | `models/manifest.json` | Model files, URLs and hashes |
 | `reference/fixtures`, `testdata`, `*/tests/fixtures`, `app/ui/src/lib/__fixtures__`, `app/ui/e2e/fixtures` | Recorded test data |
 
@@ -24,7 +24,7 @@ Live Translation captures the audio that a Windows PC plays. It recognizes Chine
 
 ```
 +------------------------- live-translation.exe ---------------------------+
-|  Tauri shell: overlay, control window, screen window, tray, hotkeys      |
+|  Tauri shell: overlay, control window, screen window, tray, tray panel   |
 |  lt-core pipeline: capture -> recognizer -> second pass -> scheduler     |
 |  lt-screen thread: screenshot text recognition and its translation       |
 +--------------------------------|-----------------------------------------+
