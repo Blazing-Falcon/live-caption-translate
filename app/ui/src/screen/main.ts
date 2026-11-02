@@ -1,5 +1,6 @@
 import { mount } from "svelte";
 import { createScreen } from "../lib/screen";
+import "../lib/fonts.css";
 import "../lib/tokens.css";
 import ScreenApp from "./ScreenApp.svelte";
 

@@ -173,6 +173,13 @@
   --cap-tag-bg: #ffd84d;
   --cap-tag-ink: #1c1c1c;
 
+  /* Screenshot toolbar: a pencil-yellow sticky note over a frozen screen of any color. */
+  --screen-note-bg: #ffe27a;
+  --screen-note-ink: #1c1c1c;
+  --screen-note-paper: #fffdf2;
+  --screen-note-warn: #8a3a00;
+  --screen-note-shadow: 0 8px 22px rgb(0 0 0 / 0.35);
+
   /* Sample video behind the caption preview in the control window. */
   --scene-dark: linear-gradient(180deg, #0b1222 0%, #1a2742 52%, #2a2632 53%, #141218 100%);
   --scene-bright: linear-gradient(180deg, #a9d3f5 0%, #e3f1fc 46%, #f4efe2 47%, #e7dcc0 100%);

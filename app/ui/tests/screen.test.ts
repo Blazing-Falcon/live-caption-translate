@@ -209,7 +209,7 @@ describe("a screen job", () => {
       0: { state: "translated", text: translated.text },
       2: { state: "failed", message: failed.message },
     });
-    expect(statusText(view(screen))).toBe("Done. 1 of 2 could not be translated.");
+    expect(statusText(view(screen))).toBe("1 of 2 bits couldn't be translated. Point at a red mark to see why.");
     expect(copyText(view(screen), "english")).toBe(translated.text);
     expect(copyText(view(screen), "chinese")).toBe(`${blocks.blocks[0]?.source}\n\n${blocks.blocks[2]?.source}`);
   });
@@ -305,7 +305,7 @@ describe("a missing text recognition model", () => {
     await flush();
     await send(reading, { ...error, job: JOB });
     expect(view(screen).model?.state).toBe("missing");
-    expect(statusText(view(screen))).toBe("Screen translation needs the text recognition model (23 MB).");
+    expect(statusText(view(screen))).toBe("To read screenshots, download the text reader (23 MB, once).");
 
     await screen.downloadModel();
     expect(backend.calls.filter((call) => call.cmd === "models_download_optional")).toEqual([
@@ -313,7 +313,7 @@ describe("a missing text recognition model", () => {
     ]);
     await emit(EVENTS.modelsProgress, [{ ...MODEL, state: "downloading", bytes_done: 12_000_000 }]);
     await flush();
-    expect(statusText(view(screen))).toBe("Downloading the text recognition model… 50%");
+    expect(statusText(view(screen))).toBe("Downloading the text reader… 50%");
 
     await emit(EVENTS.modelsProgress, [{ ...MODEL, state: "ready", bytes_done: MODEL.bytes_total }]);
     await flush();

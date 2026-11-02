@@ -178,9 +178,9 @@ export function modelBusy(model: ModelStatus | null): boolean {
 export function statusText(state: ScreenState): string {
   const { model } = state;
   if (model && model.state !== "ready") {
-    if (model.state === "downloading") return `Downloading the text recognition model… ${modelsPercent(model)}%`;
-    if (model.state === "verifying") return "Checking the downloaded model…";
-    return `Screen translation needs the text recognition model (${formatBytes(model.bytes_total)}).`;
+    if (model.state === "downloading") return `Downloading the text reader… ${modelsPercent(model)}%`;
+    if (model.state === "verifying") return "Checking the download…";
+    return `To read screenshots, download the text reader (${formatBytes(model.bytes_total)}, once).`;
   }
   switch (state.phase) {
     case "reading":
@@ -190,7 +190,8 @@ export function statusText(state: ScreenState): string {
       const { total, answered, failed } = progress(state);
       if (total === 0) return state.blocks.length === 0 ? "No text found." : "No Chinese text found.";
       if (state.phase === "translating") return `Translating ${answered} of ${total}…`;
-      return failed > 0 ? `Done. ${failed} of ${total} could not be translated.` : "Done.";
+      if (failed > 0) return `${failed} of ${total} ${total === 1 ? "bit" : "bits"} couldn't be translated. Point at a red mark to see why.`;
+      return `Done. ${total} ${total === 1 ? "bit" : "bits"} translated.`;
     }
     case "error":
       return state.message ?? "Something went wrong. Please try again.";
