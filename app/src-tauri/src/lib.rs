@@ -202,7 +202,7 @@ pub fn run() {
             }
             if window.label() == windows::TRAY {
                 if let WindowEvent::Focused(false) = event {
-                    let _ = window.hide();
+                    windows::hide_tray_panel_on_blur(window);
                 }
                 return;
             }

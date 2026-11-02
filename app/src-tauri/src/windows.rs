@@ -1,11 +1,19 @@
 //! The control window, a normal native window that hides to the tray when closed, and the tray
 //! panel, a small borderless window that opens above the tray icon and hides when it loses focus.
-use tauri::{AppHandle, Manager, PhysicalPosition, WebviewUrl, WebviewWindowBuilder};
+use std::{
+    sync::Mutex,
+    time::{Duration, Instant},
+};
+use tauri::{AppHandle, Manager, PhysicalPosition, WebviewUrl, WebviewWindowBuilder, Window};
 
 pub const CONTROL: &str = "control";
 pub const TRAY: &str = "tray";
 /// The tray panel's size in DIPs.
 const TRAY_SIZE: (f64, f64) = (360.0, 440.0);
+/// A press on the tray icon takes the focus, which hides the open panel before the click
+/// arrives. A toggle this soon after that hide belongs to the same click.
+const SAME_CLICK: Duration = Duration::from_millis(500);
+static HIDDEN_ON_BLUR: Mutex<Option<Instant>> = Mutex::new(None);
 
 pub fn create_control(app: &AppHandle) -> tauri::Result<()> {
     WebviewWindowBuilder::new(app, CONTROL, WebviewUrl::App("control.html".into()))
@@ -58,6 +66,12 @@ pub fn toggle_tray_panel(app: &AppHandle, click: PhysicalPosition<f64>) {
         let _ = window.hide();
         return;
     }
+    if crate::app::lock(&HIDDEN_ON_BLUR)
+        .take()
+        .is_some_and(|hidden| hidden.elapsed() < SAME_CLICK)
+    {
+        return;
+    }
     if let Ok(Some(monitor)) = app.monitor_from_point(click.x, click.y) {
         let scale = monitor.scale_factor();
         let size = (
@@ -79,6 +93,13 @@ pub fn toggle_tray_panel(app: &AppHandle, click: PhysicalPosition<f64>) {
     }
     let _ = window.show();
     let _ = window.set_focus();
+}
+
+pub fn hide_tray_panel_on_blur(window: &Window) {
+    if window.is_visible().unwrap_or(false) {
+        *crate::app::lock(&HIDDEN_ON_BLUR) = Some(Instant::now());
+        let _ = window.hide();
+    }
 }
 
 pub fn hide_tray_panel(app: &AppHandle) {
