@@ -390,6 +390,33 @@ mod residue_tests {
         );
     }
 
+    /// A two-character word can take a long English phrase; a runaway answer is still rejected.
+    #[test]
+    fn a_short_line_may_have_a_long_translation() {
+        let request = TranslateRequest {
+            id: UtteranceId(1),
+            text: "停刊",
+            max_tokens: None,
+            control: TranslationControl {
+                deadline: Instant::now() + Duration::from_secs(1),
+                cancelled: Arc::new(AtomicBool::new(false)),
+                abort: Arc::new(AtomicBool::new(false)),
+            },
+        };
+        let answer = |text: &str| TranslationOut {
+            text: text.into(),
+            ..TranslationOut::default()
+        };
+        assert_eq!(
+            answer_problem(&answer("Suspension of publication"), &request),
+            None
+        );
+        assert_eq!(
+            answer_problem(&answer(&"Suspension of publication. ".repeat(4)), &request),
+            Some("longer than a translation")
+        );
+    }
+
     /// A caption whose sentence goes on in the next one ends without an ellipsis, whether the
     /// model added it or copied the source's own unfinished mark.
     #[test]

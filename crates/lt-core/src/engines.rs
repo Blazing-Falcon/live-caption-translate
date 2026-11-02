@@ -225,6 +225,8 @@ pub fn max_tokens(text: &str) -> u32 {
 
 /// An answer this many times longer than its source in characters is not a translation of it.
 const MAX_LENGTH_RATIO: usize = 12;
+/// A one- or two-character word can need a long phrase: 高考 is "College entrance examination".
+const MIN_LENGTH_LIMIT: usize = 40;
 /// Openings of a reply that answers the instruction instead of translating the line. They are
 /// lowercase because the check lowercases the answer first.
 const REPLY_PHRASES: [&str; 6] = [
@@ -244,7 +246,7 @@ pub fn answer_problem(output: &TranslationOut, source_text: &str) -> Option<&'st
         return Some("empty");
     }
     let source = source_text.chars().count().max(1);
-    if output.text.chars().count() > MAX_LENGTH_RATIO * source {
+    if output.text.chars().count() > (MAX_LENGTH_RATIO * source).max(MIN_LENGTH_LIMIT) {
         return Some("longer than a translation");
     }
     // The model sometimes answers the instruction instead of translating: "Please translate the
