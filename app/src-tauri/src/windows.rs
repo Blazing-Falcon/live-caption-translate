@@ -6,8 +6,8 @@ pub const CONTROL: &str = "control";
 pub fn create_control(app: &AppHandle) -> tauri::Result<()> {
     WebviewWindowBuilder::new(app, CONTROL, WebviewUrl::App("control.html".into()))
         .title("Live Translation")
-        .inner_size(900.0, 620.0)
-        .min_inner_size(760.0, 520.0)
+        .inner_size(960.0, 680.0)
+        .min_inner_size(780.0, 540.0)
         .center()
         .visible(true)
         .build()?;

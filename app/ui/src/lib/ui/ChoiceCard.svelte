@@ -23,12 +23,18 @@
     meta?: string;
     disabled?: boolean;
     testid?: string;
-    onchange: () => void;
+    /** A failed save leaves `checked` as it was; the radio then shows it again. */
+    onchange: () => unknown;
   } = $props();
+
+  async function choose(input: HTMLInputElement): Promise<void> {
+    await onchange();
+    input.checked = checked;
+  }
 </script>
 
 <label class="choice" class:disabled data-testid={testid}>
-  <input type="radio" {name} {value} {checked} {disabled} onchange={() => onchange()} />
+  <input type="radio" {name} {value} {checked} {disabled} onchange={(event) => choose(event.currentTarget)} />
   <span class="icon"><Icon name={icon} size={22} /></span>
   <span class="title">{title}</span>
   <span class="description">{description}</span>
@@ -50,8 +56,12 @@
 
   input {
     position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
     opacity: 0;
-    pointer-events: none;
+    cursor: pointer;
   }
 
   .icon {

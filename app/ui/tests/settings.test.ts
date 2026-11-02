@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { OCR_MODEL_ID } from "../src/lib/screen";
-import { DEFAULT_CONFIG, HOTKEY_ACTIONS, applyPatch } from "../src/lib/settings";
+import { DEFAULT_CONFIG, HOTKEY_ACTIONS, applyPatch, recordShortcut } from "../src/lib/settings";
 
 function parseDefaultToml(): Record<string, unknown> {
   const doc = readFileSync(new URL("../../../docs/configuration.md", import.meta.url), "utf8");
@@ -79,3 +79,21 @@ describe("applyPatch", () => {
 });
 
 
+
+describe("shortcut recorder", () => {
+  const press = (code: string, key: string, mods: Partial<Record<"ctrlKey" | "altKey" | "shiftKey" | "metaKey", boolean>> = {}) =>
+    recordShortcut({ code, key, ctrlKey: false, altKey: false, shiftKey: false, metaKey: false, ...mods });
+
+  it("writes Tauri accelerators from the physical key, modifiers first", () => {
+    expect(press("KeyA", "A", { ctrlKey: true, shiftKey: true })).toEqual({ kind: "shortcut", accelerator: "Ctrl+Shift+A" });
+    expect(press("Digit7", "&", { altKey: true, shiftKey: true })).toEqual({ kind: "shortcut", accelerator: "Alt+Shift+7" });
+    expect(press("F9", "F9")).toEqual({ kind: "shortcut", accelerator: "F9" });
+  });
+
+  it("waits for a full shortcut and reads Escape and Backspace on their own", () => {
+    expect(press("KeyA", "a")).toEqual({ kind: "incomplete" });
+    expect(press("ControlLeft", "Control", { ctrlKey: true })).toEqual({ kind: "incomplete" });
+    expect(press("Escape", "Escape")).toEqual({ kind: "cancel" });
+    expect(press("Backspace", "Backspace")).toEqual({ kind: "clear" });
+  });
+});

@@ -11,9 +11,15 @@
     label: string;
     options: readonly { value: T; label: string }[];
     value: T;
-    onchange: (value: T) => void;
+    /** A failed save leaves `value` as it was; the radios then show it again. */
+    onchange: (value: T) => unknown;
     disabled?: boolean;
   } = $props();
+
+  async function choose(input: HTMLInputElement, next: T): Promise<void> {
+    await onchange(next);
+    for (const radio of input.closest(".segmented")?.querySelectorAll("input") ?? []) radio.checked = radio.value === value;
+  }
 </script>
 
 <div class="segmented" role="radiogroup" aria-label={label}>
@@ -25,7 +31,7 @@
         value={option.value}
         checked={value === option.value}
         {disabled}
-        onchange={() => onchange(option.value)}
+        onchange={(event) => choose(event.currentTarget, option.value)}
       />
       <span>{option.label}</span>
     </label>
@@ -50,8 +56,12 @@
 
   input {
     position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
     opacity: 0;
-    pointer-events: none;
+    cursor: pointer;
   }
 
   span {

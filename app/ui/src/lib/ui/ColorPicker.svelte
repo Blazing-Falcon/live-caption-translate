@@ -12,7 +12,7 @@
     label: string;
     presets: readonly ColorPreset[];
     value: string;
-    onchange: (value: string) => void;
+    onchange: (value: string) => unknown;
   } = $props();
 
   const custom = $derived(!presets.some((preset) => preset.value === value));
@@ -58,8 +58,12 @@
 
   .well input {
     position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
     opacity: 0;
-    pointer-events: none;
+    cursor: pointer;
   }
 
   .well span {

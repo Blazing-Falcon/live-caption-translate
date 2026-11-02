@@ -1,32 +1,50 @@
 <script lang="ts">
   import { tick } from "svelte";
   import * as api from "../lib/api";
-  import { provideSession } from "../lib/context";
+  import { providePending, provideSession } from "../lib/context";
+  import { createPendingChanges } from "../lib/pending";
   import type { Session } from "../lib/events";
-  import { footerText, modelsAllReady } from "../lib/format";
+  import { modelsAllReady } from "../lib/format";
+  import Icon from "../lib/ui/Icon.svelte";
+  import type { IconName } from "../lib/ui/icons";
+  import Mascot from "../lib/ui/Mascot.svelte";
+  import { homeStatus } from "../lib/wording";
   import FirstRun from "./FirstRun.svelte";
-  import HeaderCard from "./HeaderCard.svelte";
   import Notices from "./Notices.svelte";
-  import Capture from "./pages/Capture.svelte";
-  import Overlay from "./pages/Overlay.svelte";
-  import Performance from "./pages/Performance.svelte";
+  import About from "./pages/About.svelte";
+  import Captions from "./pages/Captions.svelte";
+  import History from "./pages/History.svelte";
+  import Home from "./pages/Home.svelte";
+  import Listening from "./pages/Listening.svelte";
+  import Screenshot from "./pages/Screenshot.svelte";
+  import Shortcuts from "./pages/Shortcuts.svelte";
+  import Translation from "./pages/Translation.svelte";
 
   let { session }: { session: Session } = $props();
   // The session is fixed for the lifetime of the window.
   // svelte-ignore state_referenced_locally
   provideSession(session);
+  // svelte-ignore state_referenced_locally
+  const pending = createPendingChanges(session);
+  providePending(pending);
+  $effect(() => () => pending.dispose());
 
   const PAGES = [
-    { id: "capture", label: "Capture" },
-    { id: "overlay", label: "Overlay" },
-    { id: "performance", label: "Performance" },
-  ] as const;
+    { id: "home", label: "Home", icon: "home" },
+    { id: "captions", label: "Captions", icon: "captions" },
+    { id: "listening", label: "Listening", icon: "listening" },
+    { id: "translation", label: "Translation", icon: "translation" },
+    { id: "screenshot", label: "Screenshot", icon: "screenshot" },
+    { id: "shortcuts", label: "Shortcuts", icon: "shortcuts" },
+    { id: "history", label: "History", icon: "history" },
+    { id: "about", label: "About & help", icon: "about" },
+  ] as const satisfies readonly { id: string; label: string; icon: IconName }[];
   type PageId = (typeof PAGES)[number]["id"];
 
   // svelte-ignore state_referenced_locally
-  const { config, appState, stats, models, loadError, busy } = session;
+  const { config, appState, models, loadError } = session;
 
-  let page = $state<PageId>("capture");
+  let page = $state<PageId>("home");
   let ready = $state(false);
   let firstRun = $state(false);
   let started = false;
@@ -40,21 +58,25 @@
     if (ready && !firstRun && !started && $models !== null && !modelsAllReady($models)) firstRun = true;
   });
 
+  const mood = $derived($config ? homeStatus($appState, $config).mood : "ready");
+
   async function finishFirstRun(): Promise<void> {
     if (started) return;
     started = true;
     firstRun = false;
-    page = "capture";
+    page = $config?.translate.engine === "openai" ? "translation" : $config?.capture.mode === "apps" ? "listening" : "home";
     await session.act("run", () => api.startListening());
+  }
+
+  function go(next: string): void {
+    if (PAGES.some((item) => item.id === next)) page = next as PageId;
   }
 
   async function onKey(event: KeyboardEvent, index: number): Promise<void> {
     const last = PAGES.length - 1;
     const keys: Record<string, number> = {
       ArrowDown: index === last ? 0 : index + 1,
-      ArrowRight: index === last ? 0 : index + 1,
       ArrowUp: index === 0 ? last : index - 1,
-      ArrowLeft: index === 0 ? last : index - 1,
       Home: 0,
       End: last,
     };
@@ -67,23 +89,14 @@
     await tick();
     document.getElementById(`tab-${next.id}`)?.focus();
   }
-
-  const footer = $derived(footerText($appState?.listening, $stats));
-
-  let confirmReset = $state(false);
-
-  async function reset(): Promise<void> {
-    if ($busy.has("config.reset")) return;
-    if (await session.reset()) confirmReset = false;
-  }
 </script>
 
 {#if !ready}
-  <p class="loading" role="status">Starting…</p>
+  <p class="loading" role="status">Getting ready…</p>
 {:else if $loadError && !$config}
   <div class="loading" role="alert">
     <p>{$loadError}</p>
-    <button type="button" class="btn" onclick={() => location.reload()}>Try again</button>
+    <button type="button" class="field" onclick={() => location.reload()}>Try again</button>
   </div>
 {:else if $config}
   {#if firstRun}
@@ -91,8 +104,10 @@
   {:else}
     <div class="shell">
       <nav class="nav" aria-label="Settings pages">
+        <div class="brand"><Mascot state={mood} size={24} />Live Translation</div>
         <div class="tabs" role="tablist" aria-orientation="vertical" aria-label="Settings pages">
           {#each PAGES as item, index (item.id)}
+            {#if item.id === "about"}<span class="nav-spacer"></span>{/if}
             <button
               type="button"
               role="tab"
@@ -104,77 +119,40 @@
               onclick={() => (page = item.id)}
               onkeydown={(event) => onKey(event, index)}
             >
-              {item.label}
+              <Icon name={item.icon} size={20} />{item.label}
             </button>
           {/each}
-        </div>
-        <div class="reset">
-          {#if confirmReset}
-            <p class="help small" id="reset-help">
-              Reset all settings to their defaults? The overlay position, the chosen apps and the downloaded models stay.
-            </p>
-            <div class="reset-actions">
-              <button
-                type="button"
-                class="btn"
-                aria-describedby="reset-help"
-                aria-disabled={$busy.has("config.reset")}
-                data-testid="reset-confirm"
-                onclick={reset}
-              >
-                Reset
-              </button>
-              <button type="button" class="btn" onclick={() => (confirmReset = false)}>Cancel</button>
-            </div>
-          {:else}
-            <button type="button" class="btn" data-testid="reset-settings" onclick={() => (confirmReset = true)}>
-              Reset settings
-            </button>
-          {/if}
         </div>
       </nav>
 
       <main class="content">
         <Notices />
-        <HeaderCard />
-        <div class="page-panel" id="page-panel" role="tabpanel" aria-labelledby={`tab-${page}`}>
-          {#if page === "capture"}
-            <Capture config={$config} />
-          {:else if page === "overlay"}
-            <Overlay config={$config} />
-          {:else if page === "performance"}
-            <Performance config={$config} />
+        <div id="page-panel" role="tabpanel" aria-labelledby={`tab-${page}`}>
+          {#if page === "home"}
+            <Home config={$config} onnavigate={go} />
+          {:else if page === "captions"}
+            <Captions config={$config} />
+          {:else if page === "listening"}
+            <Listening config={$config} />
+          {:else if page === "translation"}
+            <Translation config={$config} />
+          {:else if page === "screenshot"}
+            <Screenshot config={$config} onnavigate={go} />
+          {:else if page === "shortcuts"}
+            <Shortcuts config={$config} />
+          {:else if page === "history"}
+            <History config={$config} />
+          {:else}
+            <About config={$config} />
           {/if}
         </div>
       </main>
-
-      <footer class="footer" data-testid="footer">
-        <span>{footer}</span>
-      </footer>
     </div>
   {/if}
 {/if}
 
 <style>
-  .reset {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    margin-top: var(--space-5);
-    padding: 0 var(--space-1);
-  }
-
-  .reset-actions {
-    display: flex;
-    gap: var(--space-2);
-  }
-
-  .loading {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-3);
-    padding: var(--space-7);
-    color: var(--c-text-secondary);
+  .tabs {
+    flex: 1;
   }
 </style>

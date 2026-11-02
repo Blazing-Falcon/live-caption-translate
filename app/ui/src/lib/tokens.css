@@ -172,6 +172,11 @@
   --cap-night-halo: 0 0 2px rgb(0 0 0 / .85), 0 1px 3px rgb(0 0 0 / .7);
   --cap-tag-bg: #ffd84d;
   --cap-tag-ink: #1c1c1c;
+
+  /* Sample video behind the caption preview in the control window. */
+  --scene-dark: linear-gradient(180deg, #0b1222 0%, #1a2742 52%, #2a2632 53%, #141218 100%);
+  --scene-bright: linear-gradient(180deg, #a9d3f5 0%, #e3f1fc 46%, #f4efe2 47%, #e7dcc0 100%);
+  --scene-game: radial-gradient(circle at 76% 22%, #f6efd0 0 3.2%, transparent 3.4%), linear-gradient(180deg, #121c35 0%, #2c4466 48%, #43607e 60%, #2a3b2d 61%, #162016 100%);
 }
 
 @media (prefers-color-scheme: dark) {

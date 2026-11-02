@@ -52,6 +52,7 @@
   }
 
   .text {
+    flex: 1 1 14em;
     display: flex;
     flex-direction: column;
     gap: 1px;
@@ -69,7 +70,8 @@
   }
 
   .control {
-    flex: none;
+    flex: 0 1 auto;
+    min-width: 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;

@@ -37,7 +37,7 @@ Sizes and SHA-256 hashes are in the manifest. The text recognition model is 23 M
 - The text recognition model is optional (`"optional": true` in the manifest). The first-run
   download, `models_download` and `lt-cli models fetch` skip it; `lt-cli models fetch --optional` and
   `scripts/setup.ps1 -Models` include it. The app downloads it when the user
-  chooses **Download**: on the Performance page of the control window, or in the screenshot window,
+  chooses **Download**: on the Screenshot page of the control window, or in the screenshot window,
   which offers it when a screenshot finds the model missing and then reads the same box again. Listening
   never needs it.
 - Files go to `<models dir>/<id>/<file>`.

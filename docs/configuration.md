@@ -180,7 +180,7 @@ The endpoint streams responses. A temperature refusal is retried once without te
 | `visible` | bool | live | Show the overlay |
 | `style` | `panel`, `flow` | live | Caption panel, or running text: the lines joined into one English paragraph (and one Chinese paragraph with `show_source`), newest at the end. |
 | `font_px` | 12–40 | live | English text size. Chinese is 0.65 × this size, at least 12 px. Older lines are 0.8 × this size. |
-| `background` | 0–1 | live | Background opacity. The control window warns below 0.5. |
+| `background` | 0–1 | live | Opacity of the night card. The control window shows it as "see-through" (1 − `background`) and warns below 0.5. |
 | `show_source` | bool | live | Show the Chinese line above the English line |
 | `panel_edge` | `left`, `right` | live | Default edge for the panel |
 | `panel_lines` | 1–10 | live | Blocks kept in the panel. The panel fills from the top and rolls up. |

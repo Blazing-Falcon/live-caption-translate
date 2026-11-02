@@ -208,6 +208,45 @@ export function formatAccelerator(accelerator: string): string {
   return accelerator.split("+").map((part) => part.trim()).filter(Boolean).join(" ");
 }
 
+/** Manifest ids the control window names. */
+export const SECOND_PASS_MODEL_ID = "xasr-offline-int8-2026-06-03";
+export const TRANSLATOR_MODEL_ID = "hy-mt2-1.8b-ternary-tq2_0";
+export const SPEECH_MODEL_ID = "xasr-stream-480ms-int8-2026-06-05";
+
+/** The key part of a Tauri accelerator for a pressed key, or null for keys a shortcut cannot use. */
+function acceleratorKey(code: string): string | null {
+  if (/^Key[A-Z]$/.test(code)) return code.slice(3);
+  if (/^Digit[0-9]$/.test(code)) return code.slice(5);
+  if (/^F([1-9]|1[0-9]|2[0-4])$/.test(code)) return code;
+  const named: Record<string, string> = {
+    Space: "Space",
+    Insert: "Insert",
+    Delete: "Delete",
+    Home: "Home",
+    End: "End",
+    PageUp: "PageUp",
+    PageDown: "PageDown",
+    ArrowUp: "Up",
+    ArrowDown: "Down",
+    ArrowLeft: "Left",
+    ArrowRight: "Right",
+  };
+  return named[code] ?? null;
+}
+
+export type RecordedKeys = { kind: "shortcut"; accelerator: string } | { kind: "incomplete" } | { kind: "cancel" } | { kind: "clear" };
+
+/** Reads a key press while a shortcut is being recorded. A shortcut needs a modifier unless it is a function key. */
+export function recordShortcut(event: Pick<KeyboardEvent, "code" | "key" | "ctrlKey" | "altKey" | "shiftKey" | "metaKey">): RecordedKeys {
+  const modifiers = [event.ctrlKey && "Ctrl", event.altKey && "Alt", event.shiftKey && "Shift", event.metaKey && "Super"].filter(Boolean) as string[];
+  if (modifiers.length === 0 && event.key === "Escape") return { kind: "cancel" };
+  if (modifiers.length === 0 && (event.key === "Backspace" || event.key === "Delete")) return { kind: "clear" };
+  const key = acceleratorKey(event.code);
+  if (key === null) return { kind: "incomplete" };
+  if (modifiers.length === 0 && !/^F\d+$/.test(key)) return { kind: "incomplete" };
+  return { kind: "shortcut", accelerator: [...modifiers, key].join("+") };
+}
+
 /** Kept as a JSON initializer so the Rust parity test can read it directly. */
 export const DEFAULT_CONFIG: Config = {
   "screen": { "direction": "horizontal" },
