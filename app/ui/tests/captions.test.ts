@@ -360,3 +360,16 @@ describe("long synthetic event log", () => {
     expect(s.clock.pending()).toBe(0);
   }, 15_000);
 });
+
+describe("overlay chip", () => {
+  it("says nothing when listening starts but names a silent source", () => {
+    const { run, view } = setup();
+    run({ type: "listening_state", state: "listening" });
+    expect(view().chip).toBeNull();
+    run(
+      { type: "source_changed", info: { mode: "system", label: "Speakers", sample_rate: 48000, channels: 2 } },
+      { type: "source_state", state: "silent", detail: null },
+    );
+    expect(view().chip?.text).toBe("No audio playing on Speakers");
+  });
+});
