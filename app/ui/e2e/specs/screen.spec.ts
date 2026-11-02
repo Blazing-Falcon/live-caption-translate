@@ -159,7 +159,7 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
     await expect(page.getByRole("status")).toHaveText("Translating 1 of 2…");
     await send(page, [...translated.slice(1), ...ofType(1, "done")]);
     await expect(page.locator("[data-block]")).toHaveCount(2);
-    await expect(page.getByRole("status")).toHaveText("Done.");
+    await expect(page.getByRole("status")).toHaveText("Done. 2 bits translated.");
 
     // A group that reflows keeps its source width and left edge; the bubble grows by BUBBLE_EXPAND
     // (2 css px, so 2 * SCALE frame px) on every side and never shrinks below the source height.
@@ -216,7 +216,7 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
 
     await send(page, job(2));
     await expect(page.locator("[data-block]")).toHaveCount(2);
-    await expect(page.getByRole("status")).toHaveText("Done.");
+    await expect(page.getByRole("status")).toHaveText("Done. 2 bits translated.");
   });
 
   test("marks a block that failed and says why", async ({ page }) => {
@@ -233,12 +233,12 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
     await expect(page.locator("[data-block]")).toHaveCount(1);
     const mark = page.locator('[data-failed="0"]');
     await expect(mark).toHaveAttribute("title", "Translation took too long");
-    await expect(page.getByRole("status")).toHaveText("Done. 1 of 2 could not be translated.");
+    await expect(page.getByRole("status")).toHaveText("1 of 2 bits couldn't be translated. Point at a red mark to see why.");
     // The native tooltip may sit behind the always-on-top window, so the status line says it too.
     await mark.hover();
     await expect(page.getByRole("status")).toHaveText("Translation took too long");
     await page.mouse.move(700, 20);
-    await expect(page.getByRole("status")).toHaveText("Done. 1 of 2 could not be translated.");
+    await expect(page.getByRole("status")).toHaveText("1 of 2 bits couldn't be translated. Point at a red mark to see why.");
   });
 
   test("widens a narrow box for a word that does not fit and never breaks the word", async ({ page }) => {
@@ -311,7 +311,7 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
       { type: "reading", job: 1 },
       { type: "error", job: 1, message: "Cannot open the OCR model: file not found" },
     ]);
-    await expect(page.getByRole("status")).toContainText("Screen translation needs the text recognition model (23 MB).");
+    await expect(page.getByRole("status")).toContainText("To read screenshots, download the text reader (23 MB, once).");
 
     await page.getByRole("button", { name: "Download" }).click();
     expect(await calls(page, "models_download_optional")).toEqual([
@@ -319,7 +319,7 @@ test.describe("screenshot window (frame and events recorded by lt-cli at scale 1
     ]);
     await emitNamed(page, "models://progress", [{ ...OCR_MODEL, state: "downloading", bytes_done: 12_000_000 }]);
     await expect(page.getByRole("progressbar")).toHaveAttribute("value", "50");
-    await expect(page.getByRole("status")).toContainText("Downloading the text recognition model… 50%");
+    await expect(page.getByRole("status")).toContainText("Downloading the text reader… 50%");
 
     await emitNamed(page, "models://progress", [{ ...OCR_MODEL, state: "ready", bytes_done: OCR_MODEL.bytes_total }]);
     await expect.poll(async () => (await calls(page, "screen_select")).length).toBe(2);

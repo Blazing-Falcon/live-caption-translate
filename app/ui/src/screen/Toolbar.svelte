@@ -3,6 +3,7 @@
   import { modelsPercent } from "../lib/format";
   import { copyText, modelBusy, placeBar, statusText, type ScreenState, type Size } from "../lib/screen";
   import type { ScreenDirection } from "../lib/types";
+  import Mascot from "../lib/ui/Mascot.svelte";
 
   type CopyKind = "english" | "chinese";
 
@@ -35,7 +36,8 @@
   const COPIED_MS = 1500;
 
   const placement = $derived(view.selection ? placeBar(view.selection, { w: width, h: height }, viewport) : { left: Math.max(0, (viewport.w - width) / 2), top: 16 });
-  const text = $derived(hint ?? (view.phase === "selecting" ? "Drag over the text to translate it. D shows boxes. Esc closes." : statusText(view)));
+  const text = $derived(hint ?? (view.phase === "selecting" ? "Drag a box around Chinese text. Esc closes, D shows boxes." : statusText(view)));
+  const mood = $derived(view.phase === "error" ? "trouble" : view.phase === "done" ? "listening" : "ready");
   const needsModel = $derived(view.model !== null && view.model.state !== "ready");
   const downloading = $derived(modelBusy(view.model));
   const hasEnglish = $derived(copyText(view, "english") !== "");
@@ -73,6 +75,7 @@
     style:visibility={height === 0 ? "hidden" : "visible"}
   >
     <div class="status" role="status">
+      <Mascot state={mood} size={22} />
       <span class="text" class:hint={hint !== null}>{text}</span>
       {#if downloading && view.model}
         <progress max="100" value={modelsPercent(view.model)} aria-label="Download progress"></progress>
@@ -84,8 +87,8 @@
     <div class="actions">
       <label class="direction">Text direction
         <select aria-label="Text direction" value={view.direction} onchange={event => ondirection(event.currentTarget.value as ScreenDirection)}>
-          <option value="horizontal">Horizontal</option>
-          <option value="vertical">Vertical</option>
+          <option value="horizontal">Across</option>
+          <option value="vertical">Down</option>
         </select>
       </label>
       {#if needsModel && !downloading}
@@ -113,78 +116,90 @@
 {/if}
 
 <style>
+  /* A sticky note: it keeps one look over any frozen screen, whatever the app theme. */
   .bar {
+    --card: var(--screen-note-paper);
+    --paper-2: var(--screen-note-paper);
+    --ink: var(--screen-note-ink);
+    --ink-3: var(--screen-note-ink);
+    --pen-text: var(--screen-note-ink);
+    --hl-rose: var(--screen-note-paper);
+    --hl-mist: var(--screen-note-paper);
+    --cheek: var(--screen-note-bg);
     z-index: 4;
     position: absolute;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 8px;
     width: max-content;
-    max-width: min(440px, calc(100vw - var(--space-4)));
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--ov-divider);
-    border-radius: var(--radius-card);
-    background: var(--screen-bar-bg);
-    color: var(--ov-text);
-    font: var(--text-label) var(--font-ui);
+    max-width: min(460px, calc(100vw - var(--space-4)));
+    padding: 10px 12px;
+    border: 2px solid var(--screen-note-ink);
+    border-radius: 6px 6px 18px 6px;
+    background: var(--screen-note-bg);
+    box-shadow: var(--screen-note-shadow);
+    color: var(--screen-note-ink);
+    font: 700 13.5px / 1.35 var(--font-body);
     user-select: none;
   }
 
   .bar :focus-visible {
-    outline-color: var(--ov-accent);
+    outline: 2.5px solid var(--screen-note-ink);
+    outline-offset: 2px;
   }
 
   .status {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2);
+    gap: 8px;
     min-height: var(--space-5);
   }
 
-  .text {
-    color: var(--ov-text-bright);
-  }
-
-  .text.hint {
-    color: var(--ov-warning);
+  .text.hint,
+  .warning {
+    color: var(--screen-note-warn);
   }
 
   .warning {
     margin: 0;
-    color: var(--ov-warning);
   }
 
   progress {
     width: 120px;
-    accent-color: var(--ov-accent);
+    accent-color: var(--screen-note-ink);
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: 6px;
   }
 
-  button {
-    min-height: calc(var(--control-h) - var(--space-2));
-    padding: 0 var(--space-3);
-    border: 1px solid var(--ov-key-border);
-    border-radius: var(--radius-control);
-    background: transparent;
-    color: var(--ov-text);
+  button,
+  select {
+    min-height: 30px;
+    padding: 0 12px;
+    border: 2px solid var(--screen-note-ink);
+    border-radius: 999px;
+    background: var(--screen-note-paper);
+    color: var(--screen-note-ink);
+    font: inherit;
     cursor: pointer;
   }
 
   button:hover:not(:disabled) {
-    background: var(--ov-hover);
+    background: var(--screen-note-bg);
   }
 
   button:disabled {
-    color: var(--ov-meta);
+    opacity: 0.5;
     cursor: default;
   }
 
-  .direction { display: flex; align-items: center; gap: var(--space-2); }
-  select { min-height: calc(var(--control-h) - var(--space-2)); padding: 0 var(--space-2); border: 1px solid var(--ov-key-border); border-radius: var(--radius-control); background: var(--screen-bar-bg); color: var(--ov-text); font: inherit; }
+  .direction {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 </style>
