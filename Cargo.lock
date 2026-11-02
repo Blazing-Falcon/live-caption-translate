@@ -2417,7 +2417,7 @@ checksum = "11d3d7f243d5c5a8b9bb5d6dd2b1602c0cb0b9db1621bafc7ed66e35ff9fe092"
 
 [[package]]
 name = "live-translation"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "chrono",
  "crossbeam-channel",
@@ -2461,7 +2461,7 @@ checksum = "f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6"
 
 [[package]]
 name = "lt-audio"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "base64 0.22.1",
  "crossbeam-channel",
@@ -2481,7 +2481,7 @@ dependencies = [
 
 [[package]]
 name = "lt-cli"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2504,7 +2504,7 @@ dependencies = [
 
 [[package]]
 name = "lt-core"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "crossbeam-channel",
  "lt-core",
@@ -2521,7 +2521,7 @@ dependencies = [
 
 [[package]]
 name = "lt-llm"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "bzip2 0.6.1",
  "libc",
@@ -2537,7 +2537,7 @@ dependencies = [
 
 [[package]]
 name = "lt-ocr"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "lt-core",
  "lt-sherpa",
@@ -2550,7 +2550,7 @@ dependencies = [
 
 [[package]]
 name = "lt-sherpa"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "hound",
  "lt-core",
@@ -2562,7 +2562,7 @@ dependencies = [
 
 [[package]]
 name = "lt-web"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "aes",
  "base64 0.22.1",
