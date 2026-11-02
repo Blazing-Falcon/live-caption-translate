@@ -22,7 +22,8 @@ impl Overlay {
         app.get_webview_window(LABEL)
     }
 
-    /// Creates the window hidden, applies the native styles, then shows it without activation.
+    /// Creates the window shown without activation, applies the native styles, then hides it if
+    /// the overlay is off. The window is transparent until the page paints, so nothing flashes.
     pub fn create(&self, shared: &Shared) -> tauri::Result<()> {
         let app = &shared.handle;
         let window = WebviewWindowBuilder::new(app, LABEL, WebviewUrl::App("overlay.html".into()))
@@ -35,24 +36,19 @@ impl Overlay {
             .focusable(false)
             .shadow(false)
             .resizable(false)
-            .visible(false)
             .build()?;
         apply_native_styles(&window);
         window.set_ignore_cursor_events(true)?;
         self.place(shared);
-        if shared.config().overlay.visible {
-            window.show()?;
+        if !shared.config().overlay.visible {
+            show_natively(&window, false);
         }
         Ok(())
     }
 
     pub fn set_visible(&self, shared: &Shared, visible: bool) {
         if let Some(window) = self.window(&shared.handle) {
-            let _ = if visible {
-                window.show()
-            } else {
-                window.hide()
-            };
+            show_natively(&window, visible);
         }
     }
 
@@ -167,6 +163,28 @@ fn monitors(window: &WebviewWindow) -> Option<(Vec<Monitor>, usize)> {
         .and_then(|name| monitors.iter().position(|m| m.name == name))
         .unwrap_or(0);
     (!monitors.is_empty()).then_some((monitors, primary))
+}
+
+/// tao shows a window with SW_SHOW, which activates it despite WS_EX_NOACTIVATE and takes the
+/// focus from the video player or the tray panel. So tao only ever shows the overlay at creation,
+/// without activation, and still counts it visible after a hide here. Move mode shows the overlay
+/// before it changes any window flag, so tao never restyles it while it is hidden.
+#[cfg(windows)]
+fn show_natively(window: &WebviewWindow, visible: bool) {
+    use windows::Win32::UI::WindowsAndMessaging::{ShowWindowAsync, SW_HIDE, SW_SHOWNOACTIVATE};
+    if let Ok(hwnd) = window.hwnd() {
+        let command = if visible { SW_SHOWNOACTIVATE } else { SW_HIDE };
+        let _ = unsafe { ShowWindowAsync(hwnd, command) };
+    }
+}
+
+#[cfg(not(windows))]
+fn show_natively(window: &WebviewWindow, visible: bool) {
+    let _ = if visible {
+        window.show()
+    } else {
+        window.hide()
+    };
 }
 
 /// WS_EX_NOACTIVATE keeps focus on the video player; TOOLWINDOW hides it from Alt-Tab.
