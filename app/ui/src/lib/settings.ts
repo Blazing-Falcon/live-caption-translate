@@ -39,7 +39,7 @@ export interface Config {
   };
   overlay: {
     visible: boolean;
-    style: "panel" | "flow";
+    style: "panel" | "flow" | "subtitles";
     font_px: number;
     background: number;
     show_source: boolean;

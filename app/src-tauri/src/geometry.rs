@@ -32,7 +32,8 @@ fn dip(value: u32, scale: f64) -> f64 {
     f64::from(value) / scale
 }
 
-/// Default placement: the panel docked to an edge, running text bottom-centered (max 960 wide).
+/// Default placement: the panel docked to an edge, running text and subtitles bottom-centered
+/// (max 960 wide).
 pub fn default_rect(style: OverlayStyle, edge_right: bool, monitor: &Monitor) -> OverlayRect {
     let (work_w, work_h) = (dip(monitor.w, monitor.scale), dip(monitor.h, monitor.scale));
     let (x, y, w, h) = if style == OverlayStyle::Panel {

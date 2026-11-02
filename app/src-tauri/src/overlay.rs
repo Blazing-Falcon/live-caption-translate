@@ -68,7 +68,7 @@ impl Overlay {
         let style = config.overlay.style;
         let saved = match style {
             OverlayStyle::Panel => config.overlay.panel_rect.as_ref(),
-            OverlayStyle::Flow => config.overlay.flow_rect.as_ref(),
+            OverlayStyle::Flow | OverlayStyle::Subtitles => config.overlay.flow_rect.as_ref(),
         };
         let name = saved.map_or("", |rect| rect.monitor.as_str());
         let Some(monitor) = geometry::pick(name, &monitors, primary) else {
@@ -135,7 +135,7 @@ impl Overlay {
         shared.update_config(|config: &mut Config| {
             let slot: &mut Option<OverlayRect> = match style {
                 OverlayStyle::Panel => &mut config.overlay.panel_rect,
-                OverlayStyle::Flow => &mut config.overlay.flow_rect,
+                OverlayStyle::Flow | OverlayStyle::Subtitles => &mut config.overlay.flow_rect,
             };
             *slot = Some(rect);
         })

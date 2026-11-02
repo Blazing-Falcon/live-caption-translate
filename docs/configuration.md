@@ -59,7 +59,7 @@ prompt = ""                     # empty uses the built-in translation instructio
 
 [overlay]
 visible = true
-style = "panel"                 # "panel" (caption panel) | "flow" (running text)
+style = "panel"                 # "panel" (caption panel) | "flow" (running text) | "subtitles"
 font_px = 26
 background = 0.82               # 0.0 to 1.0
 show_source = true              # show the Chinese line above the English
@@ -178,7 +178,7 @@ The endpoint streams responses. A temperature refusal is retried once without te
 | Key | Range | Applies | Meaning |
 |---|---|---|---|
 | `visible` | bool | live | Show the overlay |
-| `style` | `panel`, `flow` | live | Caption panel, or running text: the lines joined into one English paragraph (and one Chinese paragraph with `show_source`), newest at the end. |
+| `style` | `panel`, `flow`, `subtitles` | live | Caption panel; running text: the lines joined into one English paragraph (and one Chinese paragraph with `show_source`), newest at the end; or subtitles: the newest block and the one before it, centered at the bottom like film subtitles. Subtitles use the running-text position (`flow_rect`). |
 | `font_px` | 12–40 | live | English text size. Chinese is 0.65 × this size, at least 12 px. Older lines are 0.8 × this size. |
 | `background` | 0–1 | live | Opacity of the night card. The control window shows it as "see-through" (1 − `background`) and warns below 0.5. |
 | `show_source` | bool | live | Show the Chinese line above the English line |

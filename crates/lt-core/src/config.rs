@@ -84,10 +84,12 @@ pub enum OverlayStyle {
     #[default]
     Panel,
     Flow,
+    /// The newest line and the one before it, bottom-centered. Placed like running text.
+    Subtitles,
 }
 
 impl OverlayStyle {
-    const NAMES: &'static [&'static str] = &["panel", "flow"];
+    const NAMES: &'static [&'static str] = &["panel", "flow", "subtitles"];
 }
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
