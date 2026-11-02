@@ -432,7 +432,7 @@ mod tests {
                     vec!["我们今天一起谈论这个问题。".into()],
                     0.8,
                 )),
-                second_pass: Box::<FakeOffline>::default(),
+                second_pass: Some(Box::<FakeOffline>::default()),
                 translator: Box::new(FakeTranslator::default()),
             },
             bus,

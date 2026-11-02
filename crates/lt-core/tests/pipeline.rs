@@ -359,7 +359,7 @@ fn start(
         Config::default(),
         source,
         asr,
-        Box::new(FakeOffline),
+        Some(Box::new(FakeOffline)),
         translator,
     )
 }
@@ -368,7 +368,7 @@ fn start_with(
     config: Config,
     source: VecSource,
     asr: impl StreamingAsr + 'static,
-    second_pass: Box<dyn OfflineAsr>,
+    second_pass: Option<Box<dyn OfflineAsr>>,
     translator: impl Translator + 'static,
 ) -> (PipelineHandle, EventReceiver) {
     let bus = EventBus::default();
@@ -653,7 +653,7 @@ fn running_text_translates_a_sentence_as_one_line_and_previews_it_while_spoken()
         config,
         VecSource::new(speech(chars.len(), 1.0)),
         AmplitudeStream::default(),
-        Box::new(FakeOffline),
+        Some(Box::new(FakeOffline)),
         translator,
     );
     finish(&mut handle);
@@ -884,7 +884,7 @@ fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_
         Config::default(),
         VecSource::new(tones(live.len())),
         fake_stream(&live),
-        Box::new(second_pass),
+        Some(Box::new(second_pass)),
         FakeTranslator::default(),
     );
     finish(&mut handle);
@@ -924,6 +924,46 @@ fn every_line_reaches_the_translator_once_and_in_order_whatever_the_second_pass_
     assert_eq!(live_text, Some(Some("他们来了。".into())));
 }
 
+/// With the second pass off, every line keeps its live text and is marked `off`, and the filter
+/// still drops fillers.
+#[test]
+fn without_a_second_pass_lines_keep_their_live_text_and_fillers_are_still_dropped() {
+    let live = ["你好世界。", "嗯。", "他们来了。"];
+    let (translator, requests) = RecordingTranslator::new();
+    let (mut handle, events) = start_with(
+        Config::default(),
+        VecSource::new(tones(live.len())),
+        fake_stream(&live),
+        None,
+        translator,
+    );
+    finish(&mut handle);
+    let events: Vec<_> = events.try_iter().collect();
+    assert_order(&events);
+    assert_eq!(
+        second_pass_outcomes(&events),
+        [
+            ("你好世界。".to_string(), SecondPassOutcome::Off),
+            ("他们来了。".to_string(), SecondPassOutcome::Off),
+        ]
+    );
+    assert_eq!(
+        count(&events, |event| matches!(
+            event,
+            PipelineEvent::Dropped {
+                reason: DropReason::Empty,
+                ..
+            }
+        )),
+        1
+    );
+    let texts = requests.lock().unwrap().clone();
+    assert!(
+        texts.iter().any(|text| text.contains("他们来了")),
+        "{texts:?}"
+    );
+}
+
 /// Stop returns while the second pass decodes and lines wait for it, and every line ends.
 #[test]
 fn stop_joins_every_thread_while_the_second_pass_decodes() {
@@ -938,7 +978,7 @@ fn stop_joins_every_thread_while_the_second_pass_decodes() {
         Config::default(),
         VecSource::new(tones(40)),
         FakeStream::new(vec!["你好。".into(); 40], PAUSE_S),
-        Box::new(second_pass),
+        Some(Box::new(second_pass)),
         FakeTranslator::default(),
     );
     decoding.recv_timeout(WATCHDOG).unwrap();
@@ -1042,7 +1082,7 @@ fn random_translation_timing_and_failures_keep_every_ordering_rule() {
             Config::default(),
             VecSource::new(samples),
             AmplitudeStream::default(),
-            Box::new(FakeOffline),
+            Some(Box::new(FakeOffline)),
             SeededTranslator::new(seed, 30),
         );
         finish(&mut handle);
@@ -1060,7 +1100,7 @@ fn clause_previews_use_only_closed_asr_lines_through_the_full_pipeline() {
         Config::default(),
         VecSource::new(speech(sentence_chars().len(), 1.0)),
         AmplitudeStream::default(),
-        Box::new(FakeOffline),
+        Some(Box::new(FakeOffline)),
         translator,
     );
     finish(&mut handle);

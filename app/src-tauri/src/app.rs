@@ -141,7 +141,9 @@ impl Shared {
     }
 
     fn on_config_changed(&self, old: &Config, new: &Config) {
-        if old.translate.engine != new.translate.engine {
+        if old.translate.engine != new.translate.engine
+            || old.asr.second_pass != new.asr.second_pass
+        {
             self.models.publish(self);
         }
         if old.hotkeys != new.hotkeys {

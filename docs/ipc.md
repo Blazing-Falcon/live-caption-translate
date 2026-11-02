@@ -51,7 +51,7 @@ Enum values:
 | `SkipReason` | `catch_up` |
 | `FailReason` | `timeout`, `server_unavailable`, `echo`, `runaway`, `error` |
 | `DropReason` | `empty`, `single_char` |
-| `SecondPassOutcome` | `used` (the final text comes from the second pass), `mismatch` (no part of its text matched the live text closely enough), `late` (the line waited longer than 1.5 s for the second pass), `failed` |
+| `SecondPassOutcome` | `used` (the final text comes from the second pass), `mismatch` (no part of its text matched the live text closely enough), `late` (the line waited longer than 1.5 s for the second pass), `failed`, `off` (`asr.second_pass` is off; the line keeps its live text) |
 | `EngineKind` | `asr`, `translator` |
 | `EngineState` | `loading`, `ready`, `restarting`, `failed` |
 | `SourceStateKind` | `playing`, `silent`, `no_device`, `no_apps_selected`, `apps_not_running`, `unsupported` |

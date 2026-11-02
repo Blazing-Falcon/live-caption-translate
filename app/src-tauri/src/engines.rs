@@ -15,14 +15,19 @@ use std::{
     time::Duration,
 };
 
-type Recognizers = (Box<dyn StreamingAsr>, Box<dyn OfflineAsr>);
+type Recognizers = (Box<dyn StreamingAsr>, Option<Box<dyn OfflineAsr>>);
 
 pub fn recognizers(config: &Config, models: &Path) -> Result<Recognizers, String> {
     let asr = lt_sherpa::XAsrStream::new(models.join(lt_sherpa::XASR_STREAM_MODEL), &config.asr)
         .map_err(|e| e.to_string())?;
-    let second_pass =
-        lt_sherpa::xasr_offline(models, config).map_err(|e| format!("Second pass: {e}"))?;
-    Ok((Box::new(asr), Box::new(second_pass)))
+    let second_pass: Option<Box<dyn OfflineAsr>> = if config.asr.second_pass {
+        let engine =
+            lt_sherpa::xasr_offline(models, config).map_err(|e| format!("Second pass: {e}"))?;
+        Some(Box::new(engine))
+    } else {
+        None
+    };
+    Ok((Box::new(asr), second_pass))
 }
 
 pub fn fail(bus: &EventBus, engine: EngineKind, message: &str) {
